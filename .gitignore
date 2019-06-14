@@ -147,3 +147,5 @@ mvnw*
 .bowerrc
 .settings
 
+!/lib/license-manage-1.0.0.jar
+!/lib/socketio-1.0.0.jar
