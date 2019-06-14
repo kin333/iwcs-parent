@@ -14,6 +14,7 @@
         <module>iwcs_dao</module>
         <module>iwcs_webservice</module>
         <module>iwcs_service</module>
+        <module>iwcs_devices</module>
     </modules>
     <packaging>pom</packaging>
     <name>iwcs-parent</name>
