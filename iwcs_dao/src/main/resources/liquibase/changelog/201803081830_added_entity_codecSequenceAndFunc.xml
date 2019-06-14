@@ -1,0 +1,75 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="CML (generated)" id="201803081830-1">
+        <createTable tableName="codec_sequence" remarks="序列表(包括业务流水号)">
+            <column autoIncrement="true" name="id" remarks="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="seq_name" remarks="序列表名称" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_value" remarks="最小值" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_value" remarks="最大值" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="current_val" remarks="当前值" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1" name="increment_val" remarks="步长" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="更新人" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime"/>
+            <column defaultValueNumeric="1" name="delete_flag" remarks="删除标识：0-已删除，1-未删除" type="INT"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+        <sqlFile path="liquibase/init_insert/codec_sequence.sql"/>
+    </changeSet>
+    <changeSet author="CML (generated)" id="201803081830-2">
+        <addUniqueConstraint columnNames="seq_name" constraintName="ak_unique_seq_name" tableName="codec_sequence"/>
+    </changeSet>
+    <changeSet author="CML (generated)" id="201803081830-3">
+        <createProcedure>
+            create function get_sequence(name varchar(50))
+            returns integer
+            begin
+            declare _cur int;
+            declare _minvalue int;
+            declare _maxvalue int;
+            declare _increment int;
+
+            set _increment = (select increment_val from codec_sequence where seq_name = name);
+            set _minvalue = (select min_value from codec_sequence where seq_name = name);
+            set _maxvalue = (select max_value from codec_sequence where seq_name = name);
+            set _cur = (select current_val from codec_sequence where seq_name = name);
+
+            update codec_sequence
+            set current_val = _cur + increment_val
+            where seq_name = name;
+
+            if(_cur + _increment >= _maxvalue) then
+            update codec_sequence
+            set current_val = _minvalue
+            where seq_name = name ;
+            end if;
+
+            return _cur;
+            end;
+        </createProcedure>
+    </changeSet>
+    <changeSet author="CML (generated)" id="201803081830-4">
+        <sqlFile path="liquibase/init_insert/codec_sequence_forder.sql"/>
+    </changeSet>
+    <changeSet author="CML (generated)" id="201803081830-5">
+        <sqlFile path="liquibase/init_insert/codec_sequence_fsettlement.sql"/>
+    </changeSet>
+    <changeSet author="CML (generated)" id="201803081830-6">
+        <sqlFile path="liquibase/init_insert/codec_sequence_fpayment.sql"/>
+    </changeSet>
+</databaseChangeLog>

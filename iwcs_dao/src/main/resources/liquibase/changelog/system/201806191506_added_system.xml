@@ -1,0 +1,254 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="devin (generated)" id="1529391343830-57">
+        <createTable tableName="s_authority" remarks="权限表">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" remarks="权限名称" type="VARCHAR(40)"/>
+            <column defaultValueNumeric="0" name="code" type="INT"/>
+            <column name="chinese_name" remarks="权限中文名" type="VARCHAR(40)"/>
+            <column name="url" type="VARCHAR(255)"/>
+            <column name="description" remarks="描述" type="VARCHAR(400)"/>
+            <column name="parent_id" remarks="父级权限id" type="INT"/>
+            <column name="auth_type" remarks="权限类型1:菜单权限 2:控件权限 3:数据权限" type="TINYINT(3)"/>
+            <column defaultValueNumeric="1000" name="sort_code" remarks="排序码" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="s_authority_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_authority.sql"/>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-59">
+        <createTable tableName="s_depart" remarks="组织架构表">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="departname" remarks="部门名称" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" remarks="描述" type="VARCHAR(500)"/>
+            <column name="parentdepartid" remarks="父部门ID" type="INT"/>
+            <column name="org_code" remarks="机构编码" type="VARCHAR(64)"/>
+            <column name="org_type" remarks="机构类型 1=公司 2=部门" type="VARCHAR(1)"/>
+            <column name="mobile" remarks="手机号" type="VARCHAR(32)"/>
+            <column name="fax" remarks="传真" type="VARCHAR(32)"/>
+            <column name="address" remarks="地址" type="VARCHAR(100)"/>
+            <column name="default_port_code" remarks="默认港口编码" type="VARCHAR(100)"/>
+            <column name="default_air_port_code" remarks="默认空运装货港" type="VARCHAR(50)"/>
+            <column name="finance_status" remarks="财务状态" type="VARCHAR(50)"/>
+            <column name="finance_date" remarks="财务日期" type="datetime(6)"/>
+            <column defaultValue="0" name="depart_order" remarks="排序" type="VARCHAR(5)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="last_modified_by" remarks="更新人" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="BIGINT"/>
+            <column defaultValueBoolean="false" name="delete_flag" remarks="删除标识：0-未删除，1-已删除" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="devin (generated)" id="1529391343830-70">
+        <createIndex indexName="FK_knnm3wb0bembwvm0il7tf6686" tableName="s_depart">
+            <column name="parentdepartid"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="s_depart_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_depart.sql"/>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-60">
+        <createTable tableName="s_depart_user" remarks="用户部门表">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="depart_id" remarks="部门的Id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" remarks="用户的Id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="INT"/>
+            <column defaultValueNumeric="1" name="relation_type" remarks="1管辖部门，2是所属部门" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="select_all" remarks="1为查看所有" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="s_depart_user_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_depart_user.sql"/>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-61">
+        <createTable tableName="s_group" remarks="小组表">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(200)"/>
+            <column name="code" type="VARCHAR(100)"/>
+            <column name="group_type" remarks="1制单，2揽货(销售),3商务" type="VARCHAR(50)"/>
+            <column name="remark" remarks="描述" type="VARCHAR(100)"/>
+            <column defaultValue="readonly" name="leader_auth_type" remarks="组长权限类型:readonly,write" type="VARCHAR(50)"/>
+            <column name="company_id" type="INT"/>
+            <column name="created_by" type="INT"/>
+            <column name="created_time" type="datetime(6)"/>
+            <column name="last_modified_by" type="INT"/>
+            <column name="last_modified_time" type="datetime(6)"/>
+            <column defaultValueNumeric="0" name="delete_flag" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-62">
+        <createTable tableName="s_role" remarks="角色表">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rolecode" remarks="角色编号" type="VARCHAR(10)"/>
+            <column name="role_name" remarks="名称" type="VARCHAR(40)"/>
+            <column defaultValueBoolean="false" name="is_sys_role" remarks="是否为系统角色：  0否 1是" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="true" name="available" remarks="是否可用,1：可用，0不可用" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" remarks="公司Id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="BIGINT"/>
+            <column name="last_modified_by" remarks="更新人" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="BIGINT"/>
+            <column defaultValueBoolean="false" name="delete_flag" remarks="删除标识：0-未删除，1-已删除" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="s_role_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_role.sql"/>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-63">
+        <createTable tableName="s_role_authority" remarks="角色权限表">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="roleid" remarks="角色id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="authority_id" remarks="菜单id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_rule" remarks="数据规则" type="VARCHAR(1000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="s_role_authority_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_role_authority.sql"/>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-64">
+        <createTable tableName="s_user" remarks="用户表">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_name" remarks="用户名" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="is_sys_account" remarks="用户名" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" remarks="密码" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="real_name" remarks="用户真实姓名" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" remarks="邮箱" type="VARCHAR(50)"/>
+            <column name="mobile" remarks="手机号" type="VARCHAR(30)"/>
+            <column name="employee_id" remarks="员工号" type="VARCHAR(30)"/>
+            <column name="duty" remarks="权限" type="VARCHAR(30)"/>
+            <column name="compose_name" remarks="职务" type="VARCHAR(30)"/>
+            <column name="sex" remarks="性别 0 男 1 女" type="VARCHAR(30)"/>
+            <column defaultValueNumeric="0" name="is_business" remarks="是否是商务 1为是" type="INT"/>
+            <column defaultValueNumeric="0" name="is_sales" remarks="是否销售" type="INT"/>
+            <column defaultValueNumeric="0" name="is_operation" remarks="是否是操作1为是" type="INT"/>
+            <column defaultValueNumeric="0" name="status" remarks="激活状态" type="TINYINT(3)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime(6)"/>
+            <column name="last_modified_by" remarks="更新人" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime(6)"/>
+            <column name="work_address" remarks="工作地址" type="VARCHAR(100)"/>
+            <column name="wechat" remarks="对应的微信账号" type="VARCHAR(40)"/>
+            <column defaultValueNumeric="0" name="super_admin_flag" remarks="是否是超级管理员，1为超级管理员" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标识：0-未删除，1-已删除" type="INT"/>
+            <column name="role_ids" type="VARCHAR(200)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="s_user_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_user.sql"/>
+    </changeSet>
+
+    <changeSet id="201807052016-001" author="devin">
+        <renameColumn tableName="s_user" oldColumnName="employee_id" newColumnName="employee_number"
+                      columnDataType="VARCHAR(30)"></renameColumn>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-65">
+        <createTable tableName="s_user_company_settings" remarks="用户分公司设置">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" remarks="用户id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" remarks="公司id,depart表" type="INT"/>
+            <column defaultValueNumeric="0" name="is_business" remarks="是否是商务 1为是" type="INT"/>
+            <column defaultValueNumeric="0" name="is_sales" remarks="是否销售1为是" type="INT"/>
+            <column defaultValueNumeric="0" name="is_operation" remarks="是否是操作1为是" type="INT"/>
+            <column defaultValueNumeric="0" name="is_service" remarks="是否是客服,1为是" type="INT"/>
+            <column defaultValueNumeric="0" name="is_document" remarks="是否是单证" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" type="datetime(6)"/>
+            <column name="last_modified_by" remarks="更新人" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime(6)"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标识：0-未删除，1-已删除" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-66">
+        <createTable tableName="s_user_group" remarks="用户小组关系">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="group_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="relation_type" remarks="0普通组员，1组长" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="INT"/>
+            <column name="created_time" type="datetime(6)"/>
+            <column name="last_modified_by" type="INT"/>
+            <column name="last_modified_time" type="datetime(6)"/>
+            <column defaultValueNumeric="1" name="delete_flag" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="devin (generated)" id="1529391343830-67">
+        <createTable tableName="s_user_role" remarks="用户角色表">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="INT"/>
+            <column name="role_id" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="s_user_role_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_user_role.sql"/>
+    </changeSet>
+</databaseChangeLog>

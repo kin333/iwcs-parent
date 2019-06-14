@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BaseMatMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BaseMat">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="bum_code" jdbcType="VARCHAR" property="bumCode"/>
+        <result column="pum_code" jdbcType="VARCHAR" property="pumCode"/>
+        <result column="gross_weight" jdbcType="DECIMAL" property="grossWeight"/>
+        <result column="net_weight" jdbcType="DECIMAL" property="netWeight"/>
+        <result column="weight_unit" jdbcType="VARCHAR" property="weightUnit"/>
+        <result column="length" jdbcType="DECIMAL" property="length"/>
+        <result column="width" jdbcType="DECIMAL" property="width"/>
+        <result column="height" jdbcType="DECIMAL" property="height"/>
+        <result column="dim_unit" jdbcType="VARCHAR" property="dimUnit"/>
+        <result column="min_stk_qty" jdbcType="DECIMAL" property="minStkQty"/>
+        <result column="max_stk_qty" jdbcType="DECIMAL" property="maxStkQty"/>
+        <result column="cntr_flag" jdbcType="VARCHAR" property="cntrFlag"/>
+        <result column="validate_lifetime" jdbcType="DECIMAL" property="validateLifetime"/>
+        <result column="expire_warn_time" jdbcType="DECIMAL" property="expireWarnTime"/>
+        <result column="expire_mat_out" jdbcType="VARCHAR" property="expireMatOut"/>
+        <result column="mat_type_code" jdbcType="VARCHAR" property="matTypeCode"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="carnm" jdbcType="VARCHAR" property="carnm"/>
+        <result column="spec_flag" jdbcType="VARCHAR" property="specFlag"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, mat_code, bum_code, pum_code, gross_weight, net_weight, weight_unit, length,
+        width, height, dim_unit, min_stk_qty, max_stk_qty, cntr_flag, validate_lifetime,
+        expire_warn_time, expire_mat_out, mat_type_code, valid_flag, delete_flag, created_by,
+        created_time, last_modified_by, last_modified_time,carnm,spec_flag
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_mat
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectByMatCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_mat
+        where mat_code = #{matCode,jdbcType=VARCHAR} and delete_flag = 0;
+    </select>
+    <update id="updateByMatCode" parameterType="com.wisdom.iwcs.domain.base.BaseMat">
+        update base_mat
+        <set>
+            <if test="matCode != null">
+                mat_code = #{matCode,jdbcType=VARCHAR}
+            </if>
+            <if test="bumCode != null">
+                bum_code = #{bumCode,jdbcType=VARCHAR},
+            </if>
+            <if test="pumCode != null">
+                pum_code = #{pumCode,jdbcType=VARCHAR},
+            </if>
+            <if test="grossWeight != null">
+                gross_weight = #{grossWeight,jdbcType=DECIMAL},
+            </if>
+            <if test="netWeight != null">
+                net_weight = #{netWeight,jdbcType=DECIMAL},
+            </if>
+            <if test="weightUnit != null">
+                weight_unit = #{weightUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="length != null">
+                length = #{length,jdbcType=DECIMAL},
+            </if>
+            <if test="width != null">
+                width = #{width,jdbcType=DECIMAL},
+            </if>
+            <if test="height != null">
+                height = #{height,jdbcType=DECIMAL},
+            </if>
+            <if test="dimUnit != null">
+                dim_unit = #{dimUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="minStkQty != null">
+                min_stk_qty = #{minStkQty,jdbcType=DECIMAL},
+            </if>
+            <if test="maxStkQty != null">
+                max_stk_qty = #{maxStkQty,jdbcType=DECIMAL},
+            </if>
+            <if test="cntrFlag != null">
+                cntr_flag = #{cntrFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="validateLifetime != null">
+                validate_lifetime = #{validateLifetime,jdbcType=DECIMAL},
+            </if>
+            <if test="expireWarnTime != null">
+                expire_warn_time = #{expireWarnTime,jdbcType=DECIMAL},
+            </if>
+            <if test="expireMatOut != null">
+                expire_mat_out = #{expireMatOut,jdbcType=VARCHAR},
+            </if>
+            <if test="matTypeCode != null">
+                mat_type_code = #{matTypeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                valid_flag = #{validFlag,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                last_modified_by = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifiedTime != null">
+                last_modified_time = #{lastModifiedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="carnm != null">
+                carnm = #{carnm,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mat_code = #{matCode,jdbcType=VARCHAR}
+    </update>
+</mapper>

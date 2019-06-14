@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="george" id="201902211511-1">
+        <addColumn tableName="outstock_order_mat">
+            <column name="out_storage_num" remarks="已出库数量（出库时反写）" type="DECIMAL(13, 3)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201902221833-1">
+        <addColumn tableName="outstock_order_mat">
+            <column name="order_mat_status" remarks="单据明细状态,如0：已创建登" type="VARCHAR(32)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201903011709-01">
+        <addColumn tableName="outstock_order_mat">
+            <column name="stk_character1" remarks="库存特征值1" type="VARCHAR(255)"/>
+            <column name="stk_character2" remarks="库存特征值2" type="VARCHAR(255)"/>
+            <column name="stk_character3" remarks="库存特征值3" type="VARCHAR(255)"/>
+            <column name="stk_character4" remarks="库存特征值4" type="VARCHAR(255)"/>
+            <column name="stk_character5" remarks="库存特征值5" type="VARCHAR(255)"/>
+            <column name="biz_whole_order_no" remarks="完整订单号，上游biz_order_code和src_order_item拼接，批量查询用"
+                    type="VARCHAR(128)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201903191621-02">
+        <addColumn tableName="outstock_order_mat">
+            <column name="container_code" remarks="容器编号" type="VARCHAR(16)"/>
+            <column name="spec_code" remarks="规格编号" type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

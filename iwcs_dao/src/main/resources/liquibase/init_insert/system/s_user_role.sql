@@ -1,0 +1,1 @@
+INSERT INTO `s_user_role` VALUES ('2', '1', '1');

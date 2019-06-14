@@ -1,0 +1,1 @@
+INSERT INTO `codec_sequence` (`id`, `seq_name`, `min_value`, `max_value`, `current_val`, `increment_val`, `created_by`, `created_time`, `last_modified_by`, `last_modified_time`, `delete_flag`, `remark`) VALUES 	(2, 'FOrderNo', 10000000, 999999999, 10000000, 1, 1, '2018-03-09 10:49:14', 1, '2018-03-09 10:49:18', 1, '账单汇总号');

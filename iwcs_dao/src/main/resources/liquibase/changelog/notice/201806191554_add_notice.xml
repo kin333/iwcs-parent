@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+
+    <changeSet author="devin (generated)" id="1529391343830-54">
+        <createTable tableName="notice">
+            <column autoIncrement="true" name="id" remarks="通知表  主键 自增" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="title" remarks="通知标题" type="VARCHAR(64)"/>
+            <column name="content" remarks="通知具体内容" type="VARCHAR(200)"/>
+            <column name="type" remarks="类型 1 系统消息 2 用户消息" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime(6)"/>
+            <column name="expiration_date" remarks="过期时间" type="datetime(6)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="delete_flag" remarks="删除标识：0-未删除，1-已删除" type="INT"/>
+            <column name="user_id" remarks="用户id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="devin (generated)" id="1529391343830-55">
+        <createTable tableName="notice_user">
+            <column autoIncrement="true" name="id" remarks="通知用户记录表 (记录用户与通知的关联) 主键 自增" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="notice_id" remarks="通知 id" type="INT"/>
+            <column name="send_id" remarks="发通知人" type="INT"/>
+            <column name="receive_id" remarks="接收用户" type="INT"/>
+            <column name="status" remarks="状态 0 未读 1 已读" type="INT"/>
+            <column name="delete_flag" remarks="是否拉入回收站  0 不拉入 1 拉入" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime(6)"/>
+            <column name="read_time" remarks="阅读时间" type="datetime(6)"/>
+            <column name="receive_company_id" remarks="所属公司Id" type="INT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

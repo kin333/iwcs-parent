@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="george" id="201903051357-01">
+        <addColumn tableName="base_mat">
+            <column name="carnm" remarks="货物描述" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201903181146-02">
+        <addColumn tableName="base_mat">
+            <column defaultValue="0" name="spec_flag" remarks="是否有规格，0为否，1为是" type="VARCHAR(1)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

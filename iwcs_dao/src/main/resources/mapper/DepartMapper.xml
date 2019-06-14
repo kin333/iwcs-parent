@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.DepartMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.Depart">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="departname" jdbcType="VARCHAR" property="departname"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="parentdepartid" jdbcType="INTEGER" property="parentdepartid"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="org_type" jdbcType="VARCHAR" property="orgType"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="fax" jdbcType="VARCHAR" property="fax"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="depart_order" jdbcType="VARCHAR" property="departOrder"/>
+        <result column="default_port_code" jdbcType="VARCHAR" property="defaultPortCode"/>
+        <result column="default_air_port_code" jdbcType="VARCHAR" property="defaultAirPortCode"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="BIGINT" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="BIT" property="deleteFlag"/>
+    </resultMap>
+    <resultMap id="getUserByIdResultMap" type="com.wisdom.iwcs.domain.system.dto.DepartUserDto">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="work_address" jdbcType="VARCHAR" property="workAddress"/>
+    </resultMap>
+    <resultMap id="UserDepartment" type="com.wisdom.iwcs.domain.system.DepartUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="depart_id" jdbcType="INTEGER" property="departId"/>
+        <result column="relation_type" jdbcType="INTEGER" property="relationType"/>
+        <result column="select_all" jdbcType="INTEGER" property="selectAll"/>
+    </resultMap>
+    <resultMap id="DepartmentRole" type="com.wisdom.iwcs.domain.system.DepartRole">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="depart_id" jdbcType="INTEGER" property="departId"/>
+    </resultMap>
+
+    <resultMap id="CompanyFinancialMap" type="com.wisdom.iwcs.domain.system.CompanyFinancial">
+        <id column="id" jdbcType="INTEGER" property="companyId"/>
+        <result column="finance_date" jdbcType="TIMESTAMP" property="financeDate"/>
+        <result column="finance_status" jdbcType="VARCHAR" property="financeStatus"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, departname, description, parentdepartid, org_code, org_type, mobile, fax, address,
+    depart_order,default_port_code, default_air_port_code,created_by, last_modified_by, last_modified_time, delete_flag
+  </sql>
+    <select id="selectAllDepart" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_depart
+        WHERE delete_flag = 0
+    </select>
+    <select id="selectAllDepartById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_depart
+        where id = #{id,jdbcType=INTEGER} and delete_flag = 0
+    </select>
+    <select id="selectOneById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_depart
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="getUserById" parameterType="java.lang.Integer" resultMap="getUserByIdResultMap">
+    SELECT
+        u.id,
+        u.user_name,
+        u.real_name,
+        u.mobile,
+        u.work_address
+    FROM
+      s_user AS u
+      LEFT JOIN s_depart_user AS du ON u.id = du.user_id
+      WHERE u.id IN(SELECT user_id FROM s_depart_user WHERE depart_id= #{id,jdbcType=INTEGER} )
+      AND du.depart_id =#{id,jdbcType=INTEGER}
+
+    </select>
+
+    <select id="getUserFromThisDepartment" resultMap="getUserByIdResultMap">
+        SELECT
+            u.id,
+            u.user_name,
+            u.real_name,
+            u.mobile,
+            u.work_address
+        FROM
+            s_user  u
+        WHERE u.id IN ( SELECT user_id FROM s_depart_user WHERE depart_id= #{departmentId,jdbcType=INTEGER} and relation_type =2 ) and u.delete_flag =0
+    </select>
+
+    <select id="getUserIdFromThisDepartment" resultType="integer">
+        SELECT user_id FROM s_depart_user WHERE depart_id= #{departmentId,jdbcType=INTEGER} and relation_type =2
+    </select>
+
+    <select id="getRoleById" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT role_id FROM s_depart_role WHERE
+    depart_id= #{id,jdbcType=INTEGER}
+  </select>
+    <select id="selectDepartByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_depart
+        where parentdepartid = #{departmentId,jdbcType=INTEGER} and delete_flag = 0
+    </select>
+
+    <update id="deleteById" parameterType="java.lang.Integer">
+    UPDATE s_depart SET delete_flag = 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <insert id="addDepartUser" parameterType="com.wisdom.iwcs.domain.system.DepartUser">
+        insert into s_depart_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="departId != null">
+                depart_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="companyId != null">
+                company_id,
+            </if>
+            <if test="relationType != null">
+                relation_type,
+            </if>
+            <if test="selectAll != null">
+                select_all,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="departId != null">
+                #{departId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="companyId != null">
+                #{companyId,jdbcType=INTEGER},
+            </if>
+            <if test="relationType != null">
+                #{relationType,jdbcType=INTEGER},
+            </if>
+            <if test="selectAll != null">
+                #{selectAll,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="addRoleToDeport" parameterType="com.wisdom.iwcs.domain.system.DepartRole">
+        insert into s_depart_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="departId != null">
+                depart_id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="departId != null">
+                #{departId,jdbcType=INTEGER},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=INTEGER},
+            </if>
+        </trim>
+
+    </insert>
+    <delete id="deleteDepartUser" parameterType="com.wisdom.iwcs.domain.system.DepartUser">
+    delete from s_depart_user
+    where depart_id = #{departId,jdbcType=INTEGER} AND user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteRoleByDepartId" parameterType="java.lang.Integer">
+    delete from s_depart_role
+    where depart_id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.wisdom.iwcs.domain.system.Depart">
+    insert into s_depart (id, departname, description,
+    parentdepartid, org_code, org_type,
+    mobile, fax, address,
+    depart_order, created_by, last_modified_by,
+    last_modified_time, delete_flag)
+    values (#{id,jdbcType=INTEGER}, #{departname,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+    #{parentdepartid,jdbcType=INTEGER}, #{orgCode,jdbcType=VARCHAR}, #{orgType,jdbcType=VARCHAR},
+    #{mobile,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+    #{departOrder,jdbcType=VARCHAR}, #{createdBy,jdbcType=INTEGER}, #{lastModifiedBy,jdbcType=INTEGER},
+    #{lastModifiedTime,jdbcType=BIGINT}, #{deleteFlag,jdbcType=BIT})
+  </insert>
+    <select id="getDepartmentById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_depart
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <insert id="insertSelective" parameterType="com.wisdom.iwcs.domain.system.Depart">
+        insert into s_depart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="departname != null">
+                departname,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="parentdepartid != null">
+                parentdepartid,
+            </if>
+            <if test="orgCode != null">
+                org_code,
+            </if>
+            <if test="orgType != null">
+                org_type,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="fax != null">
+                fax,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="departOrder != null">
+                depart_order,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="lastModifiedBy != null">
+                last_modified_by,
+            </if>
+            <if test="lastModifiedTime != null">
+                last_modified_time,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="departname != null">
+                #{departname,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="parentdepartid != null">
+                #{parentdepartid,jdbcType=INTEGER},
+            </if>
+            <if test="orgCode != null">
+                #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="orgType != null">
+                #{orgType,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="fax != null">
+                #{fax,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="departOrder != null">
+                #{departOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifiedBy != null">
+                #{lastModifiedBy,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifiedTime != null">
+                #{lastModifiedTime,jdbcType=BIGINT},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.wisdom.iwcs.domain.system.Depart">
+        update s_depart
+        <set>
+            <if test="departname != null">
+                departname = #{departname,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="parentdepartid != null">
+                parentdepartid = #{parentdepartid,jdbcType=INTEGER},
+            </if>
+            <if test="orgCode != null">
+                org_code = #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="orgType != null">
+                org_type = #{orgType,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="fax != null">
+                fax = #{fax,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="departOrder != null">
+                depart_order = #{departOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultPortCode != null">
+                default_port_code = #{defaultPortCode,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultAirPortCode != null">
+                default_air_port_code = #{defaultAirPortCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifiedBy != null">
+                last_modified_by = #{lastModifiedBy,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifiedTime != null">
+                last_modified_time = #{lastModifiedTime,jdbcType=BIGINT},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.wisdom.iwcs.domain.system.Depart">
+    update s_depart
+    set departname = #{departname,jdbcType=VARCHAR},
+    description = #{description,jdbcType=VARCHAR},
+    parentdepartid = #{parentdepartid,jdbcType=INTEGER},
+    org_code = #{orgCode,jdbcType=VARCHAR},
+    org_type = #{orgType,jdbcType=VARCHAR},
+    mobile = #{mobile,jdbcType=VARCHAR},
+    fax = #{fax,jdbcType=VARCHAR},
+    address = #{address,jdbcType=VARCHAR},
+    depart_order = #{departOrder,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=INTEGER},
+    last_modified_by = #{lastModifiedBy,jdbcType=INTEGER},
+    last_modified_time = #{lastModifiedTime,jdbcType=BIGINT},
+    delete_flag = #{deleteFlag,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <insert id="insertUserDepartmentList" parameterType="java.util.List">
+        insert into s_depart_user
+        (depart_id,user_id,company_id,relation_type,select_all)
+        values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (#{item.departId,jdbcType=INTEGER},#{item.userId,jdbcType=INTEGER},
+            #{item.companyId,jdbcType=INTEGER},#{item.relationType,jdbcType=INTEGER},#{item.selectAll,jdbcType=INTEGER})
+
+        </foreach>
+    </insert>
+
+    <select id="selectDepartmentsByUserId" resultMap="UserDepartment" parameterType="java.lang.Integer">
+      SELECT * from s_depart_user where user_id= #{userId,jdbcType=INTEGER}
+  </select>
+    <select id="selectDepartmentRolesByDepartmentIds" parameterType="java.util.List" resultMap="DepartmentRole">
+        SELECT * FROM s_depart_role WHERE depart_id in
+        <foreach open="(" close=")" collection="list" index="index" item="item" separator=",">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <delete id="deleteUserDepartmentsByUserId" parameterType="java.lang.Integer">
+        delete from s_depart_user
+        where user_id = #{userId,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteUserListFromDepartment">
+        DELETE FROM s_depart_user
+        where depart_id=#{departmentId,jdbcType=INTEGER} and user_id in
+        <foreach open="(" close=")" collection="userIds" index="index" item="item" separator=",">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+
+    </delete>
+    <select id="deleteUserFromDepartmentAndCompanyId" resultType="integer">
+        DELETE FROM s_depart_user
+        where  user_id= #{userId} and (depart_id=#{departmentId} or company_id = #{companyId})
+    </select>
+
+    <select id="getAllDepartUserByDepartmentId" parameterType="java.lang.Integer" resultMap="UserDepartment">
+    SELECT * from s_depart_user where depart_id=#{departmentId,jdbcType=INTEGER}
+  </select>
+    <select id="getAllCompanys" resultMap="BaseResultMap">
+    SELECT * from s_depart where org_type=1 and delete_flag = 0
+  </select>
+    <select id="getAllUsingCompanyForLogin" resultMap="BaseResultMap">
+    SELECT * from s_depart where org_type in (0,1) and delete_flag = 0
+  </select>
+
+    <select id="selectByUserIdAndCompanyId" resultMap="UserDepartment">
+    SELECT * from s_depart_user where company_id = #{companyId,jdbcType=INTEGER} and user_id =#{userId,jdbcType=INTEGER}
+  </select>
+    <delete id="deleteUserBelongDepartment">
+    DELETE from s_depart_user where user_id=#{userId}  and company_id = #{companyId,jdbcType=INTEGER} and relation_type=2
+  </delete>
+
+    <select id="selectByUserBelongDepartment" resultMap="UserDepartment">
+    SELECT * from s_depart_user where company_id = #{companyId,jdbcType=INTEGER} and user_id =#{userId,jdbcType=INTEGER} and relation_type=2
+    limit 1
+  </select>
+    <delete id="deletUserCompanyDepart">
+    DELETE from s_depart_user where user_id=#{userId}  and company_id = #{companyId,jdbcType=INTEGER}
+  </delete>
+
+    <delete id="deleteOtherDepartment">
+    DELETE from s_depart_user where user_id=#{userId}  and company_id = #{companyId,jdbcType=INTEGER} and relation_type=1
+  </delete>
+    <select id="getDefaultPortCodeById" resultType="string">
+    SELECT default_port_code from s_depart where id = #{departmentId}
+  </select>
+    <select id="getDefaultAirPortCodeById" resultType="string">
+        SELECT default_air_port_code from s_depart where id = #{departmentId}
+    </select>
+
+    <select id="companyDepartmentUserSelectAll" resultMap="UserDepartment">
+    select * from s_depart_user where user_id=#{userId}  and company_id = #{companyId,jdbcType=INTEGER} and select_all=1;
+  </select>
+    <select id="companyDepartmentUserSelectSelf" resultMap="UserDepartment">
+    select * from s_depart_user where user_id=#{userId}  and company_id = #{companyId,jdbcType=INTEGER} and select_all!=1;
+  </select>
+    <select id="getDepartmentByCode" resultMap="BaseResultMap">
+        SELECT * from s_depart where org_code = #{orgCode,jdbcType=VARCHAR} and delete_flag=0 ;
+    </select>
+
+    <select id="getUserCompanyDepartments" resultMap="BaseResultMap">
+       select d.* from s_depart_user sdu
+       left join s_depart d on d.id = sdu.depart_id
+       where
+        sdu.user_id=#{userId}  and sdu.company_id = #{companyId,jdbcType=INTEGER}
+  </select>
+
+    <select id="getCompanyFinancial" resultMap="CompanyFinancialMap">
+        select id,finance_date,finance_status from s_depart
+        where id = #{companyId}
+    </select>
+    <update id="updateCompanyFinancial">
+        update s_depart
+        set  finance_date =#{financeDate},
+        finance_status = #{financeStatus}
+        where id = #{companyId}
+    </update>
+    <select id="getAllCompany" resultMap="BaseResultMap">
+        select * from s_depart where org_type=1 and delete_flag=0
+    </select>
+    <select id="allFromCompany" resultMap="UserDepartment">
+        select *
+        from s_depart_user
+        where company_id = #{companyId};
+    </select>
+
+    <select id="hasBelongDepartmentUSerId" resultType="integer">
+        select user_id
+        from s_depart_user
+        where company_id = #{companyId} and relation_type =2
+    </select>
+
+    <select id="getCompanyByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_depart
+        WHERE delete_flag = 0 and org_type=1 and departname =#{name}
+    </select>
+
+    <select id="getDepartmentByNameAndParent" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_depart
+        WHERE delete_flag = 0 and org_type=2 and departname =#{name} and parentdepartid =#{parent}
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select * from s_depart where id=#{id}
+    </select>
+
+</mapper>

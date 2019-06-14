@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.inv.InvTaskBincodeProcessMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.inv.InvTaskBincodeProcess">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="src_inv_no" jdbcType="VARCHAR" property="srcInvNo"/>
+        <result column="task_bincode" jdbcType="VARCHAR" property="taskBincode"/>
+        <result column="podcode" jdbcType="VARCHAR" property="podcode"/>
+        <result column="inv_status" jdbcType="INTEGER" property="invStatus"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="inv_reporting_result_time" jdbcType="TIMESTAMP" property="invReportingResultTime"/>
+        <result column="if_out" jdbcType="INTEGER" property="ifOut"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, src_inv_no, task_bincode, podcode, inv_status, created_by, created_time, update_time,
+        inv_reporting_result_time, if_out
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_bincode_process
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <update id="updateInvBincodeStatus" parameterType="com.wisdom.iwcs.domain.inv.InvTaskBincodeProcess">
+    UPDATE inv_task_bincode_process
+    SET  inv_status =1,
+         update_time = NOW(),
+         if_out = 0
+    WHERE  inv_status =0
+    and src_inv_no = #{srcInvNo}
+    and  task_bincode = #{taskBincode}
+  </update>
+    <select id="queryTheRemainingBincodeOfInvTask" resultMap="BaseResultMap">
+    select  task_bincode from  inv_task_bincode_process
+    where inv_status =0
+    and src_inv_no = #{srcInvNo}
+  </select>
+    <select id="inquiryBincodeTask" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_bincode_process
+        where inv_status =0
+        and task_bincode = #{bincode}
+    </select>
+
+    <select id="selectProcessBySrcInvNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_bincode_process
+        where 1=1
+        and src_inv_no = #{srcInvNo}
+    </select>
+</mapper>

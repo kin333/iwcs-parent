@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.UserCompanySettingsMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.UserCompanySettings">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="company_id" jdbcType="INTEGER" property="companyId"/>
+        <result column="is_business" jdbcType="INTEGER" property="isBusiness"/>
+        <result column="is_sales" jdbcType="INTEGER" property="isSales"/>
+        <result column="is_operation" jdbcType="INTEGER" property="isOperation"/>
+        <result column="is_service" jdbcType="INTEGER" property="isService"/>
+        <result column="is_document" jdbcType="INTEGER" property="isDocument"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, user_id, company_id, is_business, is_sales, is_operation, is_service, is_document,
+        created_by, created_time, last_modified_by, last_modified_time, delete_flag
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user_company_settings
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <select id="getByCompanyIdAndType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user_company_settings
+        where 1=1 and company_id=#{companyId}
+        <if test="dutyType == 'business'">
+            and is_business=1
+        </if>
+        <if test="dutyType == 'sales'">
+            and is_sales=1
+        </if>
+        <if test="dutyType == 'operation'">
+            and is_operation=1
+        </if>
+        <if test="dutyType == 'service'">
+            and is_service=1
+        </if>
+        <if test="dutyType == 'document'">
+            and is_document=1
+        </if>
+    </select>
+    <select id="getByUserIdAndCompanyId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user_company_settings
+        where user_id= #{userId} and company_id=#{companyId} and delete_flag=0
+    </select>
+    <delete id="deleteByUserIdAndCompanyId">
+      delete from s_user_company_settings
+      where user_id= #{userId} and company_id=#{companyId}
+    </delete>
+</mapper>

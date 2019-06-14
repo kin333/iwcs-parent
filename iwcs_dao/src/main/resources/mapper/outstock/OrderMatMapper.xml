@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.outstock.OrderMatMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.outstock.OrderMat">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_mat_gen_code" jdbcType="VARCHAR" property="orderMatGenCode"/>
+        <result column="biz_order_code" jdbcType="VARCHAR" property="bizOrderCode"/>
+        <result column="src_order_item" jdbcType="VARCHAR" property="srcOrderItem"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="out_qty" jdbcType="DECIMAL" property="outQty"/>
+        <result column="batch_num" jdbcType="VARCHAR" property="batchNum"/>
+        <result column="cargo_owner" jdbcType="VARCHAR" property="cargoOwner"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="Out_unit" jdbcType="VARCHAR" property="outUnit"/>
+        <result column="pre_sn_flag" jdbcType="VARCHAR" property="preSnFlag"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="out_storage_num" jdbcType="DECIMAL" property="outStorageNum"/>
+        <result column="order_mat_status" jdbcType="VARCHAR" property="orderMatStatus"/>
+        <result column="stk_character1" jdbcType="VARCHAR" property="stkCharacter1"/>
+        <result column="stk_character2" jdbcType="VARCHAR" property="stkCharacter2"/>
+        <result column="stk_character3" jdbcType="VARCHAR" property="stkCharacter3"/>
+        <result column="stk_character4" jdbcType="VARCHAR" property="stkCharacter4"/>
+        <result column="stk_character5" jdbcType="VARCHAR" property="stkCharacter5"/>
+        <result column="biz_whole_order_no" jdbcType="VARCHAR" property="bizWholeOrderNo"/>
+        <result column="container_code" jdbcType="VARCHAR" property="containerCode"/>
+        <result column="spec_code" jdbcType="VARCHAR" property="specCode"/>
+        <result column="outstock_time" jdbcType="TIMESTAMP" property="outstockTime"/>
+
+    </resultMap>
+
+    <resultMap id="OutstockCharacterResultMap" type="com.wisdom.iwcs.domain.outstock.dto.OutstockCalPodParamDTO">
+        <result column="area_code" jdbcType="VARCHAR" property="stgAreaCode"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="batch_num" jdbcType="VARCHAR" property="batchNum"/>
+        <result column="cargo_owner" jdbcType="VARCHAR" property="cargoOwner"/>
+        <result column="out_qty" jdbcType="DECIMAL" property="outQty"/>
+        <result column="stk_character1" jdbcType="VARCHAR" property="stkCharacter1"/>
+        <result column="stk_character2" jdbcType="VARCHAR" property="stkCharacter2"/>
+        <result column="stk_character3" jdbcType="VARCHAR" property="stkCharacter3"/>
+        <result column="stk_character4" jdbcType="VARCHAR" property="stkCharacter4"/>
+        <result column="stk_character5" jdbcType="VARCHAR" property="stkCharacter5"/>
+        <result column="container_code" jdbcType="VARCHAR" property="containerCode"/>
+        <result column="spec_code" jdbcType="VARCHAR" property="specCode"/>
+    </resultMap>
+
+    <resultMap id="OutstockMatResultMap" extends="BaseResultMap"
+               type="com.wisdom.iwcs.domain.outstock.dto.OutStockOrderDto">
+        <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, order_mat_gen_code, biz_order_code, src_order_item, mat_code, out_qty, batch_num,
+        cargo_owner, area_code, Out_unit, pre_sn_flag, created_time, out_storage_num,order_mat_status,
+        stk_character1,stk_character2,stk_character3,stk_character4,stk_character5,biz_whole_order_no,
+        container_code,spec_code, outstock_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from outstock_order_mat
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <select id="selectByBizOrderCodeAndSrcOrderItem" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from outstock_order_mat
+        where biz_order_code = #{bizOrderCode} and src_order_item = #{srcOrderItem}
+    </select>
+
+    <update id="updateList">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update outstock_order_mat
+            <set>
+                mat_code = #{item.matCode}, out_qty = #{item.outQty}, batch_num = #{item.batchNum}, cargo_owner =
+                #{item.cargoOwner}, area_code = #{item.areaCode}, stk_character1 = #{item.stkCharacter1}, stk_character2
+                = #{item.stkCharacter2}, stk_character3 = #{item.stkCharacter3}, stk_character4 = #{item.stkCharacter4},
+                stk_character5 = #{item.stkCharacter5}, container_code = #{item.containerCode}, spec_code =
+                #{item.specCode}
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectCountBeginOutOrderByBizOrderCode" resultType="java.lang.Integer">
+    select COUNT(1) from outstock_order_mat a where a.out_storage_num != 0 and biz_order_code = #{bizOrderCode}
+  </select>
+    <select id="selectDistinctOrderMatGenCodeByBizOrderCodes" resultType="java.lang.String">
+        select DISTINCT order_mat_gen_code from outstock_order_mat where biz_order_code in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="deleteByBizOrderCodes">
+        delete from outstock_order_mat where biz_order_code in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectNotPreSnReadyOutstockCharacterByBizWholeOrderNoOrBizOrderCodesAndAreaCode"
+            resultMap="OutstockCharacterResultMap">
+        SELECT
+        area_code,
+        mat_code,
+        batch_num,
+        cargo_owner,
+        stk_character1,
+        stk_character2,
+        stk_character3,
+        stk_character4,
+        stk_character5,
+        container_code,
+        spec_code,
+        (
+        SUM(out_qty) - SUM(out_storage_num)
+        ) AS out_qty
+        FROM
+        outstock_order_mat
+        WHERE
+        order_mat_status != '2'
+        AND pre_sn_flag = '0'
+        AND area_code = #{areaCode}
+        <if test="bizWholeOrderNos != null and bizWholeOrderNos.size != 0">
+            AND biz_whole_order_no IN
+            <foreach collection="bizWholeOrderNos" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="bizOrderCodes != null and bizOrderCodes.size != 0">
+            AND biz_order_code IN
+            <foreach collection="bizOrderCodes" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY
+        mat_code,
+        batch_num,
+        cargo_owner,
+        stk_character1,
+        stk_character2,
+        stk_character3,
+        stk_character4,
+        stk_character5,
+        container_code,
+        spec_code
+    </select>
+
+
+    <select id="selectOutSnByBizWholeOrderNoOrBizOrderCodesAndAreaCode" resultType="java.lang.String">
+        SELECT
+        os.sn
+        FROM
+        outstock_order_mat om
+        LEFT JOIN outstock_order_sn os ON om.order_mat_gen_code = os.order_mat_gen_code
+        where om.pre_sn_flag = '1'
+        AND om.area_code = #{areaCode}
+        <if test="bizWholeOrderNos != null and bizWholeOrderNos.size != 0">
+            AND biz_whole_order_no IN
+            <foreach collection="bizWholeOrderNos" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="bizOrderCodes != null and bizOrderCodes.size != 0">
+            AND biz_order_code IN
+            <foreach collection="bizOrderCodes" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="selectOutStockOrder" resultMap="OutstockMatResultMap">
+        select oom.id, oom.order_mat_gen_code, oom.biz_order_code, oom.src_order_item, oom.mat_code, oom.out_qty,
+        oom.batch_num,
+        oom.cargo_owner, oom.area_code, oom.Out_unit, oom.pre_sn_flag, oom.created_time,
+        oom.out_storage_num,oom.order_mat_status,
+        oom.stk_character1,oom.stk_character2,oom.stk_character3,oom.stk_character4,oom.stk_character5,oom.biz_whole_order_no,
+        oom.container_code,oom.spec_code,obo.order_type, oom.outstock_time
+        from outstock_order_mat as oom
+        left join outstock_biz_order as obo on obo.biz_order_code = oom.biz_order_code
+        where 1=1
+        <if test="bizOrderCode != null and bizOrderCode != ''">
+            and oom.biz_order_code = #{bizOrderCode}
+        </if>
+        <if test="areaCode != null and areaCode != ''">
+            and oom.area_code = #{areaCode}
+        </if>
+        <if test="srcOrderItem != null and srcOrderItem != ''">
+            and oom.src_order_item = #{srcOrderItem}
+        </if>
+        <if test="matCode != null and matCode != ''">
+            and oom.mat_code = #{matCode}
+        </if>
+        <if test="batchNum != null and batchNum != ''">
+            and oom.batch_num = #{batchNum}
+        </if>
+        <if test="cargoOwner != null and cargoOwner != ''">
+            and oom.cargo_owner = #{cargoOwner}
+        </if>
+        <if test="preSnFlag != null and preSnFlag != ''">
+            and oom.pre_sn_flag = #{preSnFlag}
+        </if>
+        <if test="orderMatStatus != null and orderMatStatus != ''">
+            and oom.order_mat_status = #{orderMatStatus}
+        </if>
+        <if test="specCode != null and specCode != ''">
+            and oom.spec_code = #{specCode}
+        </if>
+        <if test="stkCharacter1 != null and stkCharacter1 != ''">
+            and oom.stk_character1 = #{stkCharacter1}
+        </if>
+        <if test="stkCharacter2 != null and stkCharacter2 != ''">
+            and oom.stk_character2 = #{stkCharacter2}
+        </if>
+        <if test="stkCharacter3 != null and stkCharacter3 != ''">
+            and oom.stk_character3 = #{stkCharacter3}
+        </if>
+        <if test="stkCharacter4 != null and stkCharacter4 != ''">
+            and oom.stk_character4 = #{stkCharacter4}
+        </if>
+        <if test="stkCharacter5 != null and stkCharacter5 != ''">
+            and oom.stk_character5 = #{stkCharacter5}
+        </if>
+        <if test="containerCode != null and containerCode != ''">
+            and oom.container_code = #{containerCode}
+        </if>
+
+        <if test="startCreatedTime != null">
+            and oom.created_time &gt;= #{startCreatedTime,jdbcType=BIGINT}
+        </if>
+        <if test="createdEndTime != null">
+            and oom.created_time &lt;= #{createdEndTime,jdbcType=BIGINT}
+        </if>
+    </select>
+
+</mapper>

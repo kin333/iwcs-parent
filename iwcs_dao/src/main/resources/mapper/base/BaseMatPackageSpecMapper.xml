@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BaseMatPackageSpecMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BaseMatPackageSpec">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="spec_code" jdbcType="VARCHAR" property="specCode"/>
+        <result column="spec_name" jdbcType="VARCHAR" property="specName"/>
+        <result column="spec_length" jdbcType="DECIMAL" property="specLength"/>
+        <result column="spec_width" jdbcType="DECIMAL" property="specWidth"/>
+        <result column="spec_height" jdbcType="DECIMAL" property="specHeight"/>
+        <result column="spec__size_unit" jdbcType="VARCHAR" property="specSizeUnit"/>
+        <result column="spec_wt" jdbcType="DECIMAL" property="specWt"/>
+        <result column="spec_wt_unit" jdbcType="VARCHAR" property="specWtUnit"/>
+        <result column="spec_qty" jdbcType="DECIMAL" property="specQty"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, spec_code, spec_name, spec_length, spec_width, spec_height, spec__size_unit,
+        spec_wt, spec_wt_unit, spec_qty, mat_code, valid_flag, delete_flag, created_by, created_time,
+        last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_mat_package_spec
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+</mapper>

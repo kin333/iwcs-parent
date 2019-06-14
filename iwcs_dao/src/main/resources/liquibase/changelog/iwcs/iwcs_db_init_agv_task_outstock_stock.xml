@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia (generated)" id="201903010938-01">
+        <createTable tableName="agv_task_outstock_stock">
+            <column autoIncrement="true" name="id" remarks="主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="task_no" remarks="工作台任务编号：自动生成唯一任务编号" type="VARCHAR(64)"/>
+            <column name="cargo_owner" remarks="货主" type="VARCHAR(32)"/>
+            <column name="mat_code" remarks="物料号" type="VARCHAR(32)"/>
+            <column name="stg_area_code" remarks="库区编号" type="varchar(32)"/>
+            <column name="batch_num" remarks="批次号" type="varchar(32)"/>
+            <column name="stk_character1" remarks="特征值1" type="varchar(255)"/>
+            <column name="stk_character2" remarks="特征值2" type="varchar(255)"/>
+            <column name="stk_character3" remarks="特征值3" type="varchar(255)"/>
+            <column name="stk_character4" remarks="特征值4" type="varchar(255)"/>
+            <column name="stk_character5" remarks="特征值5" type="varchar(255)"/>
+            <column name="total_need_qty" remarks="总需数量" type="DECIMAL(13,3)"/>
+            <column name="already_call_qty" remarks="已呼叫数量" type="DECIMAL(13,3)"/>
+            <column name="missing_qty" remarks="缺失数量" type="DECIMAL(13,3)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.UserGroupMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.UserGroup">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="group_id" jdbcType="INTEGER" property="groupId"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="relation_type" jdbcType="INTEGER" property="relationType"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+
+    <resultMap id="DTOResultMap" type="com.wisdom.iwcs.domain.system.dto.UserGroupDto">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="group_id" jdbcType="INTEGER" property="groupId"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="relation_type" jdbcType="INTEGER" property="relationType"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, group_id, user_id, relation_type, created_by, created_time, last_modified_by,
+        last_modified_time, delete_flag
+    </sql>
+    <select id="selectPage" resultMap="DTOResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user_group
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <select id="getGroupUsers" resultMap="DTOResultMap">
+        select sug.* ,su.user_name,su.real_name FROM s_user_group sug left join s_user su on sug.user_id = su.id
+        where 1=1 and sug.group_id= #{groupId }
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="userName != null">
+            and su.user_name = #{userName}
+        </if>
+        <if test="realName != null">
+            and su.real_name = #{realName}
+        </if>
+        order by sug.last_modified_time desc
+    </select>
+
+    <select id="selectUserIdAndGroupId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user_group
+        where 1=1 AND user_id =#{userId} AND group_id = #{groupId}
+    </select>
+
+    <select id="getManagedGroupByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user_group ug
+        LEFT JOIN s_group g ON ug.group_id = g.id
+        where ug.user_id =#{userId}
+        AND ug.relation_type = 1
+        <if test="groupType != null">
+            and g.group_type = #{groupType}
+        </if>
+    </select>
+
+    <select id="getManagedGroupIdByUserId" resultType="java.lang.Integer">
+        select g.id from s_user_group ug
+        LEFT JOIN s_group g ON ug.group_id = g.id
+        where ug.user_id =#{userId}
+        AND g.company_id = #{companyId}
+        AND ug.relation_type = 1
+        <if test="groupType != null">
+            and g.group_type = #{groupType}
+        </if>
+    </select>
+
+    <select id="getUserIdListInManagedGroup" resultType="java.lang.Integer">
+        select DISTINCT user_id from s_user_group
+        where 1 = 1
+        <if test="null != userGroupIds and userGroupIds.size > 0">
+            AND group_id IN
+            <foreach collection="userGroupIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="userManagedGroup" resultType="java.lang.Integer">
+    select DISTINCT
+    ug.group_id
+    from s_user_group ug
+    LEFT JOIN s_group g ON ug.group_id = g.id
+    where g.company_id = #{companyId}  and g.group_type = #{groupType}
+    and ug.user_id = #{userId} and relation_type = 1
+  </select>
+
+    <select id="userManagedAllGroup" resultType="java.lang.Integer">
+    select DISTINCT
+      ug.group_id
+    from s_user_group ug
+      LEFT JOIN s_group g ON ug.group_id = g.id
+    where g.company_id = #{companyId}
+          and ug.user_id = #{userId} and relation_type = 1
+  </select>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Administrator (generated)" id="201805071015-1">
+        <createTable tableName="s_user_defined_settings" remarks="用户自定义配置表">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="settings_class" remarks="设置类别" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="settings_name" remarks="设置名称" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="settings_content" remarks="设置内容(JSON)" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="settings_index" remarks="排序" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="逻辑删除标记" type="INT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

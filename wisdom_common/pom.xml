@@ -12,4 +12,11 @@
     <artifactId>wisdom-common</artifactId>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>com.wisdom</groupId>
+            <artifactId>wisdom-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

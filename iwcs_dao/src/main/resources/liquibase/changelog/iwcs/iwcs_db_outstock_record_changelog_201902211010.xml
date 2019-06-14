@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia" id="201902211127-1">
+        <addColumn tableName="outstock_record">
+            <column name="src_user_code" remarks="上游用户编码" type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201903061854-1">
+        <modifyDataType tableName="outstock_record" columnName="stk_code" newDataType="varchar(32)"/>
+
+    </changeSet>
+
+    <changeSet author="cecilia" id="201903191737-1">
+        <addColumn tableName="outstock_record">
+            <column name="spec_code" remarks="规格编号" type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

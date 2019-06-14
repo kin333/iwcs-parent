@@ -1,0 +1,84 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+
+    <changeSet author="devin (generated)" id="1529391343830-11">
+        <createTable tableName="codec_business_code" remarks="业务代码">
+            <column autoIncrement="true" name="id" remarks="主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="code_type"
+                    remarks="代码分类 VESCD=船名，PORTCD=港口，CTNCLCD=尺寸箱型，PKTP=包装，CTNOPE=船公司，FORWARD=代理，STATUS=箱动态，AGENCY=船代"
+                    type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="code" remarks="代码，港口代码以UN代码为准，尺寸箱型为实际类型，如20GP，其他代码自定义" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="chinese_name" remarks="代码中文名称" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="english_name" remarks="代码英文名称" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="state_code" remarks="州、地区代码（港口代码使用）" type="VARCHAR(200)"/>
+            <column defaultValue="" name="state_name" remarks="州名、地区名（港口代码使用）" type="VARCHAR(400)"/>
+            <column defaultValue="" name="country_code" remarks="国家代码（港口代码使用）" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="country_name" remarks="国家名称（港口代码使用）" type="VARCHAR(400)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_one" remarks="扩展字段 类型为船名时，表示船舶呼号 类型为港口名时,表示航线代码" type="VARCHAR(300)"/>
+            <column name="item_two" type="VARCHAR(300)"/>
+            <column name="item_three" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="sort_key" remarks="排序" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="freeze_flag" remarks="冻结标志" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="remark" remarks="备注" type="VARCHAR(200)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime(6)"/>
+            <column name="last_modified_by" remarks="更新人" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime(6)"/>
+            <column defaultValueNumeric="1" name="delete_flag" remarks="删除标识：1-未删除，0-已删除" type="INT"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="devin (generated)" id="1529391343830-15">
+        <createTable tableName="codec_country">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="country_ch" remarks="国家中文名称" type="VARCHAR(100)"/>
+            <column name="country_en" remarks="国家英文名称" type="VARCHAR(150)"/>
+            <column name="country_code" remarks="国家代码" type="VARCHAR(100)"/>
+            <column name="identifier" remarks="国家代码缩写" type="VARCHAR(100)"/>
+            <column name="freeze_flag" remarks="冻结标志 0 正常 1 冻结" type="VARCHAR(1)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime(6)"/>
+            <column name="last_modified_by" remarks="修改人" type="INT"/>
+            <column name="last_modified_time" remarks="修改时间" type="datetime(6)"/>
+            <column name="delete_flag" remarks="删除标识：1-已删除，0-未删除" type="INT"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="devin (generated)" id="1529391343830-75">
+        <createIndex indexName="code_index_001" tableName="codec_business_code">
+            <column name="code"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="devin (generated)" id="1529391343830-77">
+        <createIndex indexName="code_type_index_001" tableName="codec_business_code">
+            <column name="code_type"/>
+        </createIndex>
+    </changeSet>
+
+
+</databaseChangeLog>

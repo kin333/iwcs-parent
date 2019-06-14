@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.stock.StockMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.stock.Stock">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="stk_code" jdbcType="VARCHAR" property="stkCode"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="sub_order_no" jdbcType="VARCHAR" property="subOrderNo"/>
+        <result column="cargo_owner" jdbcType="VARCHAR" property="cargoOwner"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="bincode" jdbcType="VARCHAR" property="bincode"/>
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="init_qty" jdbcType="DECIMAL" property="initQty"/>
+        <result column="total_qty" jdbcType="DECIMAL" property="totalQty"/>
+        <result column="available_qty" jdbcType="DECIMAL" property="availableQty"/>
+        <result column="lock_qty" jdbcType="DECIMAL" property="lockQty"/>
+        <result column="stk_character1" jdbcType="VARCHAR" property="stkCharacter1"/>
+        <result column="stk_character2" jdbcType="VARCHAR" property="stkCharacter2"/>
+        <result column="stk_character3" jdbcType="VARCHAR" property="stkCharacter3"/>
+        <result column="stk_character4" jdbcType="VARCHAR" property="stkCharacter4"/>
+        <result column="stk_character5" jdbcType="VARCHAR" property="stkCharacter5"/>
+        <result column="wh_code" jdbcType="VARCHAR" property="whCode"/>
+        <result column="stg_area_code" jdbcType="VARCHAR" property="stgAreaCode"/>
+        <result column="batch_num" jdbcType="VARCHAR" property="batchNum"/>
+        <result column="spe_stk_flag" jdbcType="VARCHAR" property="speStkFlag"/>
+        <result column="spe_stk_code" jdbcType="VARCHAR" property="speStkCode"/>
+        <result column="freeze_flag" jdbcType="VARCHAR" property="freezeFlag"/>
+        <result column="blk_rea_code" jdbcType="VARCHAR" property="blkReaCode"/>
+        <result column="bum_code" jdbcType="VARCHAR" property="bumCode"/>
+        <result column="mat_weight" jdbcType="DECIMAL" property="matWeight"/>
+        <result column="weight_unit" jdbcType="VARCHAR" property="weightUnit"/>
+        <result column="plant_code" jdbcType="VARCHAR" property="plantCode"/>
+        <result column="inv_stat" jdbcType="VARCHAR" property="invStat"/>
+        <result column="last_inv_date" jdbcType="TIMESTAMP" property="lastInvDate"/>
+        <result column="container_code" jdbcType="VARCHAR" property="containerCode"/>
+        <result column="container_flag" jdbcType="VARCHAR" property="containerFlag"/>
+        <result column="sku_qty" jdbcType="DECIMAL" property="skuQty"/>
+        <result column="date_last_pm" jdbcType="TIMESTAMP" property="dateLastPm"/>
+        <result column="date_last_rm" jdbcType="TIMESTAMP" property="dateLastRm"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="spec_code" jdbcType="VARCHAR" property="specCode"/>
+    </resultMap>
+    <resultMap id="BaseStockDetailResultMap" type="com.wisdom.iwcs.domain.stock.dto.StockDetialDto">
+        <id column="total_qty" jdbcType="INTEGER" property="totalQty"/>
+        <id column="sku_count" jdbcType="INTEGER" property="skuCount"/>
+        <id column="all_total_count" jdbcType="INTEGER" property="allTotalCount"/>
+        <id column="all_f_total_count" jdbcType="INTEGER" property="allFTotalCount"/>
+        <id column="all_e_total_count" jdbcType="INTEGER" property="allETotalCount"/>
+        <id column="f1_total_count" jdbcType="INTEGER" property="f1TotalCount"/>
+        <id column="f1_e_count" jdbcType="INTEGER" property="f1ECount"/>
+        <id column="f1_f_count" jdbcType="INTEGER" property="f1FCount"/>
+        <id column="f2_total_count" jdbcType="INTEGER" property="f2TotalCount"/>
+        <id column="f2_e_count" jdbcType="INTEGER" property="f2ECount"/>
+        <id column="f2_f_count" jdbcType="INTEGER" property="f2FCount"/>
+        <id column="f3_total_count" jdbcType="INTEGER" property="f3TotalCount"/>
+        <id column="f3_e_count" jdbcType="INTEGER" property="f3ECount"/>
+        <id column="f3_f_count" jdbcType="INTEGER" property="f3FCount"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, stk_code, order_no, sub_order_no, cargo_owner, mat_code, bincode, pod_code, init_qty,
+        total_qty, available_qty, lock_qty, stk_character1, stk_character2, stk_character3,
+        stk_character4, stk_character5, wh_code, stg_area_code, batch_num, spe_stk_flag,
+        spe_stk_code, freeze_flag, blk_rea_code, bum_code, mat_weight, weight_unit, plant_code,
+        inv_stat, last_inv_date, container_code, container_flag, sku_qty, date_last_pm, date_last_rm,
+        delete_flag, created_by, created_time, last_modified_by, last_modified_time,spec_code
+    </sql>
+    <sql id="Stock_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        s.id, s.stk_code, s.order_no, s.sub_order_no, s.cargo_owner, s.mat_code, s.bincode, s.pod_code, s.init_qty,
+        s.total_qty, s.available_qty, s.lock_qty, s.stk_character1, s.stk_character2, s.stk_character3,
+        s.stk_character4, s.stk_character5, s.wh_code, s.stg_area_code, s.batch_num, s.spe_stk_flag,
+        s.spe_stk_code, s.freeze_flag, s.blk_rea_code, s.bum_code, s.mat_weight, s.weight_unit, s.plant_code,
+        s.inv_stat, s.last_inv_date, s.container_code, s.container_flag, s.sku_qty, s.date_last_pm, s.date_last_rm,
+        s.delete_flag, s.created_by, s.created_time, s.last_modified_by, s.last_modified_time,s.spec_code
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stock
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectCountExistValidTotalQtyStockByPodCode" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM stock WHERE pod_code = #{podCode} and total_qty > 0
+  </select>
+    <select id="selectStockByStockCharacter" parameterType="com.wisdom.iwcs.domain.stock.dto.StockQueryDTO"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stock
+        WHERE bincode = #{bincode} and stg_area_code = #{stgAreaCode}
+        <if test="cargoOwner != null and cargoOwner != ''">
+            and cargo_owner = #{cargoOwner}
+        </if>
+        <if test="matCode != null and matCode != ''">
+            and mat_code = #{matCode}
+        </if>
+        <if test="stkCharacter1 != null and stkCharacter1 != ''">
+            and stk_character1 = #{stkCharacter1}
+        </if>
+        <if test="stkCharacter2 != null and stkCharacter2 != ''">
+            and stk_character2 = #{stkCharacter2}
+        </if>
+        <if test="stkCharacter3 != null and stkCharacter3 != ''">
+            and stk_character3 = #{stkCharacter3}
+        </if>
+        <if test="stkCharacter4 != null and stkCharacter4 != ''">
+            and stk_character4 = #{stkCharacter4}
+        </if>
+        <if test="stkCharacter5 != null and stkCharacter5 != ''">
+            and stk_character5 = #{stkCharacter5}
+        </if>
+        <if test="batchNum != null and batchNum != ''">
+            and batch_num = #{batchNum}
+        </if>
+        <if test="containerCode != null and containerCode != ''">
+            and container_code = #{containerCode}
+        </if>
+        <if test="specCode != null and specCode != ''">
+            and spec_code = #{specCode}
+        </if>
+    </select>
+    <select id="selectCountByBincodeAndDeleteFlag" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM stock WHERE total_qty > 0 and bincode = #{binCode} and delete_flag = #{deleteFlag}
+  </select>
+    <select id="selectExistAvailableQtyStockByPodCodeAndDeleteFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stock WHERE pod_code = #{podCode} and delete_flag = #{deleteFlag}
+    </select>
+    <select id="selectAvailableStockByStockCharacter" resultMap="BaseResultMap">
+        select
+        <include refid="Stock_Column_List"/>
+        from stock s left join base_pod_detail pd on s.pod_code = pd.pod_code
+        WHERE s.stg_area_code = #{stgAreaCode} and s.available_qty > 0
+        <if test="excludeLock != null ">
+            and pd.lock_stat&amp;#{excludeLock}=0
+        </if>
+        <if test="cargoOwner != null and cargoOwner != ''">
+            and s.cargo_owner = #{cargoOwner}
+        </if>
+        <if test="matCode != null and matCode != ''">
+            and s.mat_code = #{matCode}
+        </if>
+        <if test="stkCharacter1 != null and stkCharacter1 != ''">
+            and s.stk_character1 = #{stkCharacter1}
+        </if>
+        <if test="stkCharacter2 != null and stkCharacter2 != ''">
+            and s.stk_character2 = #{stkCharacter2}
+        </if>
+        <if test="stkCharacter3 != null and stkCharacter3 != ''">
+            and s.stk_character3 = #{stkCharacter3}
+        </if>
+        <if test="stkCharacter4 != null and stkCharacter4 != ''">
+            and s.stk_character4 = #{stkCharacter4}
+        </if>
+        <if test="stkCharacter5 != null and stkCharacter5 != ''">
+            and s.stk_character5 = #{stkCharacter5}
+        </if>
+        <if test="batchNum != null and batchNum != ''">
+            and s.batch_num = #{batchNum}
+        </if>
+        <if test="specCode != null and specCode != ''">
+            and s.spec_code = #{specCode}
+        </if>
+        <if test="pointSns != null and pointSns.size > 0">
+            and stk_code in (select ss.stk_code from stock_sn ss where ss.sn in
+            <foreach close=")" collection="pointSns" index="index" item="item" open="(" separator=",">
+                #{item,jdbcType=VARCHAR}
+            </foreach>
+            )
+        </if>
+
+    </select>
+    <select id="invTaskCondQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stock
+        where 1=1
+        <if test="days != null and days !=0">
+            and NOW() - last_modified_time &lt;= #{days}
+        </if>
+        <if test="stock.orderNo != null and stock.orderNo !=''">
+            and order_no = #{stock.orderNo}
+        </if>
+        <if test="stock.subOrderNo != null and stock.subOrderNo != ''">
+            and sub_order_no =#{stock.subOrderNo}
+        </if>
+        <if test="stock.cargoOwner != null and stock.cargoOwner != ''">
+            and cargo_owner = #{stock.cargoOwner}
+        </if>
+        <if test="stock.matCode != null and stock.matCode != ''">
+            and mat_code = #{stock.matCode}
+        </if>
+        <if test="stock.whCode != null and stock.whCode != ''">
+            and wh_code = #{stock.whCode}
+        </if>
+        <if test="stock.stgAreaCode != null and stock.stgAreaCode != ''">
+            and stg_area_code = #{stock.stgAreaCode}
+        </if>
+        <if test="stock.batchNum != null and stock.batchNum != ''">
+            and batch_num = #{stock.batchNum}
+        </if>
+        <if test="stock.bincode != null and stock.bincode != ''">
+            and bincode = #{stock.bincode}
+        </if>
+        <if test="stock.podCode != null and stock.podCode != ''">
+            and pod_code = #{stock.podCode}
+        </if>
+        <if test="stock.stkCharacter1 != null and stock.stkCharacter1 != ''">
+            and stk_character1 = #{stock.stkCharacter1}
+        </if>
+        <if test="stock.stkCharacter2 != null and stock.stkCharacter2 != '' ">
+            and stk_character2 = #{stock.stkCharacter2}
+        </if>
+        <if test="stock.stkCharacter3 != null and stock.stkCharacter3 != '' ">
+            and stk_character3 = #{stock.stkCharacter3}
+        </if>
+        <if test="stock.stkCharacter4 != null and stock.stkCharacter4 != '' ">
+            and stk_character4 = #{stock.stkCharacter4}
+        </if>
+        <if test="stock.stkCharacter5 != null and stock.stkCharacter5 != '' ">
+            and stk_character5 = #{stock.stkCharacter5}
+        </if>
+    </select>
+    <select id="selectStockByStkCodeAndDeleteFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stock WHERE stk_code = #{stkCode} and delete_flag = #{deleteFlag}
+    </select>
+    <select id="selectStockByMatCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stock WHERE mat_code = #{matCode}
+    </select>
+    <select id="selectAvailableStockBySns" resultMap="BaseResultMap">
+        select
+        <include refid="Stock_Column_List"/>
+        from stock s where s.stock_code in(
+        select stk_code from stock_sn ss where ss.sn in
+        <foreach close=")" collection="pointSns" index="index" item="item" open="(" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+        )
+
+    </select>
+    <select id="selectStock" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stock
+        where 1=1
+        <if test="orderNo != null and orderNo !=''">
+            and order_no = #{orderNo}
+        </if>
+        <if test="subOrderNo != null and subOrderNo != ''">
+            and sub_order_no =#{subOrderNo}
+        </if>
+        <if test="cargoOwner != null and cargoOwner != ''">
+            and cargo_owner = #{cargoOwner}
+        </if>
+        <if test="matCode != null and matCode != ''">
+            and mat_code = #{matCode}
+        </if>
+        <if test="whCode != null and whCode != ''">
+            and wh_code = #{whCode}
+        </if>
+        <if test="stgAreaCode != null and stgAreaCode != ''">
+            and stg_area_code = #{stgAreaCode}
+        </if>
+        <if test="batchNum != null and batchNum != ''">
+            and batch_num = #{batchNum}
+        </if>
+        <if test="bincode != null and bincode != ''">
+            and bincode = #{bincode}
+        </if>
+        <if test="podCode != null and podCode != ''">
+            and pod_code = #{podCode}
+        </if>
+        <if test="stkCharacter1 != null and stkCharacter1 != ''">
+            and stk_character1 = #{stkCharacter1}
+        </if>
+        <if test="stkCharacter2 != null and stkCharacter2 != '' ">
+            and stk_character2 = #{stkCharacter2}
+        </if>
+        <if test="stkCharacter3 != null and stkCharacter3 != '' ">
+            and stk_character3 = #{stkCharacter3}
+        </if>
+        <if test="stkCharacter4 != null and stkCharacter4 != '' ">
+            and stk_character4 = #{stkCharacter4}
+        </if>
+        <if test="stkCharacter5 != null and stkCharacter5 != '' ">
+            and stk_character5 = #{stkCharacter5}
+        </if>
+        <if test="speStkFlag != null and speStkFlag != '' ">
+            and spe_stk_flag = #{speStkFlag}
+        </if>
+        <if test="speStkCode != null and speStkCode != '' ">
+            and spe_stk_code = #{speStkCode}
+        </if>
+        <if test="plantCode != null and plantCode != '' ">
+            and plant_code = #{plantCode}
+        </if>
+        <if test="containerCode != null and containerCode != '' ">
+            and container_code = #{containerCode}
+        </if>
+        <if test="containerFlag != null and containerFlag != '' ">
+            and container_flag = #{containerFlag}
+        </if>
+        <if test="freezeFlag != null and freezeFlag != '' ">
+            and freeze_flag = #{freezeFlag}
+        </if>
+        <if test="specCode != null and specCode != '' ">
+            and spec_code = #{specCode}
+        </if>
+        <if test="blkReaCode != null and blkReaCode != '' ">
+            and blk_rea_code LIKE CONCAT('%',#{blkReaCode},'%')
+        </if>
+
+        <if test="lastInvStartDate != null">
+            and last_inv_date &gt;= #{lastInvStartDate,jdbcType=BIGINT}
+        </if>
+        <if test="lastInvEndDate != null">
+            and last_inv_date &lt;= #{lastInvEndDate,jdbcType=BIGINT}
+        </if>
+
+        <if test="dateLastStartPm != null">
+            and date_last_pm &gt;= #{dateLastStartPm,jdbcType=BIGINT}
+        </if>
+        <if test="dateLastEndPm != null">
+            and date_last_pm &lt;= #{dateLastEndPm,jdbcType=BIGINT}
+        </if>
+
+        <if test="dateLastStartRm != null">
+            and date_last_rm &gt;= #{dateLastStartRm,jdbcType=BIGINT}
+        </if>
+        <if test="dateLastEndRm != null">
+            and date_last_rm &lt;= #{dateLastEndRm,jdbcType=BIGINT}
+        </if>
+
+        <if test="startCreatedTime != null">
+            and created_time &gt;= #{startCreatedTime,jdbcType=BIGINT}
+        </if>
+        <if test="createdEndTime != null">
+            and created_time &lt;= #{createdEndTime,jdbcType=BIGINT}
+        </if>
+        <if test="lastModifiedStartTime != null">
+            and last_modified_time &gt;= #{lastModifiedStartTime,jdbcType=BIGINT}
+        </if>
+        <if test="lastModifiedEndTime != null">
+            and last_modified_time &lt;= #{lastModifiedEndTime,jdbcType=BIGINT}
+        </if>
+
+    </select>
+    <select id="selectStockDeatilInfo" resultType="com.wisdom.iwcs.domain.stock.dto.StockDetialDto"
+            resultMap="BaseStockDetailResultMap">
+     select
+      sum(total_qty) as total_qty,
+      count(distinct mat_code) as sku_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk ) as all_total_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where e_bincode != 0) as all_f_total_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where e_bincode = 0) as all_e_total_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F1' )  as f1_total_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F1' and e_bincode = 0)  as f1_e_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F1' and e_bincode != 0) as f1_f_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F2' )  as f2_total_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F2' and e_bincode = 0) as f2_e_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F2' and e_bincode != 0) as f2_f_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F3' )  as f3_total_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F3' and e_bincode = 0) as f3_e_count,
+      (select count(distinct pod_code)  from base_pod_layer_stk where pod_type = 'F3' and e_bincode != 0)as f3_f_count
+    from stock
+  </select>
+</mapper>

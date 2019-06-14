@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.outstock.OutstockOrderSnMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.outstock.OutstockOrderSn">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_mat_gen_code" jdbcType="VARCHAR" property="orderMatGenCode"/>
+        <result column="sn" jdbcType="VARCHAR" property="sn"/>
+        <result column="valid_flag" jdbcType="TINYINT" property="validFlag"/>
+        <result column="delete_flag" jdbcType="TINYINT" property="deleteFlag"/>
+        <result column="created_time" jdbcType="INTEGER" property="createdTime"/>
+        <result column="last_modified_time" jdbcType="INTEGER" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, order_mat_gen_code, sn, valid_flag, delete_flag, created_time, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from outstock_order_sn
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectOutStockOrderDetailByGenCode" resultType="com.wisdom.iwcs.domain.outstock.OutstockOrderSn"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from outstock_order_sn
+        where 1=1
+        AND delete_flag = 0
+        AND order_mat_gen_code = #{orderMatGenCode}
+    </select>
+    <delete id="deleteByOrderMatGenCodes">
+        delete from outstock_order_sn where order_mat_gen_code in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

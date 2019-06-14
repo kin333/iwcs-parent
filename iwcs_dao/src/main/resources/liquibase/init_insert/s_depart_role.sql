@@ -1,0 +1,16 @@
+INSERT INTO `s_depart_role` VALUES (12, 6, 7);
+INSERT INTO `s_depart_role` VALUES (13, 6, 11);
+INSERT INTO `s_depart_role` VALUES (14, 8, 7);
+INSERT INTO `s_depart_role` VALUES (15, 8, 4);
+INSERT INTO `s_depart_role` VALUES (19, 2, 4);
+INSERT INTO `s_depart_role` VALUES (20, 2, 5);
+INSERT INTO `s_depart_role` VALUES (21, 1, 3);
+INSERT INTO `s_depart_role` VALUES (22, 1, 31);
+INSERT INTO `s_depart_role` VALUES (31, 3, 7);
+INSERT INTO `s_depart_role` VALUES (32, 3, 3);
+INSERT INTO `s_depart_role` VALUES (33, 3, 4);
+INSERT INTO `s_depart_role` VALUES (34, 3, 2);
+INSERT INTO `s_depart_role` VALUES (35, 3, 1);
+INSERT INTO `s_depart_role` VALUES (36, 3, 10);
+INSERT INTO `s_depart_role` VALUES (37, 3, 12);
+INSERT INTO `s_depart_role` VALUES (38, 3, 21);

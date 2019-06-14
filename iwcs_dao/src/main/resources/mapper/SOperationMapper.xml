@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.SOperationMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.SOperation">
+        <id column="ID" jdbcType="INTEGER" property="id"/>
+        <result column="operationcode" jdbcType="VARCHAR" property="operationcode"/>
+        <result column="operationicon" jdbcType="VARCHAR" property="operationicon"/>
+        <result column="operationname" jdbcType="VARCHAR" property="operationname"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="menu_id" jdbcType="INTEGER" property="menuId"/>
+        <result column="authority_id" jdbcType="INTEGER" property="authorityId"/>
+        <result column="iconid" jdbcType="VARCHAR" property="iconid"/>
+        <result column="operationtype" jdbcType="INTEGER" property="operationtype"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, operationcode, operationicon, operationname, status, menu_id, authority_id, iconid, 
+    operationtype, delete_flag
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_operation
+        where ID = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="getByMenuId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_operation
+        where menu_id = #{menuId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from s_operation
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByAuthorityId" parameterType="java.lang.Integer">
+    delete from s_operation
+    where authority_id = #{authorityId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.wisdom.iwcs.domain.system.SOperation">
+    insert into s_operation (ID, operationcode, operationicon, 
+      operationname, status, menu_id, 
+      authority_id, iconid, operationtype, 
+      delete_flag)
+    values (#{id,jdbcType=INTEGER}, #{operationcode,jdbcType=VARCHAR}, #{operationicon,jdbcType=VARCHAR}, 
+      #{operationname,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{menuId,jdbcType=INTEGER}, 
+      #{authorityId,jdbcType=INTEGER}, #{iconid,jdbcType=VARCHAR}, #{operationtype,jdbcType=INTEGER}, 
+      #{deleteFlag,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.wisdom.iwcs.domain.system.SOperation">
+        insert into s_operation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="operationcode != null">
+                operationcode,
+            </if>
+            <if test="operationicon != null">
+                operationicon,
+            </if>
+            <if test="operationname != null">
+                operationname,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="menuId != null">
+                menu_id,
+            </if>
+            <if test="authorityId != null">
+                authority_id,
+            </if>
+            <if test="iconid != null">
+                iconid,
+            </if>
+            <if test="operationtype != null">
+                operationtype,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="operationcode != null">
+                #{operationcode,jdbcType=VARCHAR},
+            </if>
+            <if test="operationicon != null">
+                #{operationicon,jdbcType=VARCHAR},
+            </if>
+            <if test="operationname != null">
+                #{operationname,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=INTEGER},
+            </if>
+            <if test="authorityId != null">
+                #{authorityId,jdbcType=INTEGER},
+            </if>
+            <if test="iconid != null">
+                #{iconid,jdbcType=VARCHAR},
+            </if>
+            <if test="operationtype != null">
+                #{operationtype,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.wisdom.iwcs.domain.system.SOperation">
+        update s_operation
+        <set>
+            <if test="operationcode != null">
+                operationcode = #{operationcode,jdbcType=VARCHAR},
+            </if>
+            <if test="operationicon != null">
+                operationicon = #{operationicon,jdbcType=VARCHAR},
+            </if>
+            <if test="operationname != null">
+                operationname = #{operationname,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="menuId != null">
+                menu_id = #{menuId,jdbcType=INTEGER},
+            </if>
+            <if test="authorityId != null">
+                authority_id = #{authorityId,jdbcType=INTEGER},
+            </if>
+            <if test="iconid != null">
+                iconid = #{iconid,jdbcType=VARCHAR},
+            </if>
+            <if test="operationtype != null">
+                operationtype = #{operationtype,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByAuthorityId" parameterType="com.wisdom.iwcs.domain.system.SOperation">
+        update s_operation
+        <set>
+            <if test="operationcode != null">
+                operationcode = #{operationcode,jdbcType=VARCHAR},
+            </if>
+            <if test="operationicon != null">
+                operationicon = #{operationicon,jdbcType=VARCHAR},
+            </if>
+            <if test="operationname != null">
+                operationname = #{operationname,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="menuId != null">
+                menu_id = #{menuId,jdbcType=INTEGER},
+            </if>
+            <if test="iconid != null">
+                iconid = #{iconid,jdbcType=VARCHAR},
+            </if>
+            <if test="operationtype != null">
+                operationtype = #{operationtype,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where authority_id = #{authorityId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.wisdom.iwcs.domain.system.SOperation">
+    update s_operation
+    set operationcode = #{operationcode,jdbcType=VARCHAR},
+      operationicon = #{operationicon,jdbcType=VARCHAR},
+      operationname = #{operationname,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      menu_id = #{menuId,jdbcType=INTEGER},
+      authority_id = #{authorityId,jdbcType=INTEGER},
+      iconid = #{iconid,jdbcType=VARCHAR},
+      operationtype = #{operationtype,jdbcType=INTEGER},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

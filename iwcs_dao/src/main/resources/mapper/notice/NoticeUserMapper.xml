@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.notice.NoticeUserMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.notice.NoticeUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="notice_id" jdbcType="INTEGER" property="noticeId"/>
+        <result column="send_id" jdbcType="INTEGER" property="sendId"/>
+        <result column="receive_id" jdbcType="INTEGER" property="receiveId"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="read_time" jdbcType="TIMESTAMP" property="readTime"/>
+    </resultMap>
+
+    <resultMap id="NoticeDtoResultMap" type="com.wisdom.iwcs.domain.notice.dto.NoticeDto">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="expiration_date" jdbcType="TIMESTAMP" property="expirationDate"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id,notice_id, send_id, receive_id, status, delete_flag, created_time, read_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from notice_user
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by t.last_modified_time desc
+    </select>
+
+    <select id="getUnReadNoticeNumByUserId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select  count(d.status) as receive_id, d.status from (
+	select a.id,a.title,a.content,a.created_time,
+	case when b.status is null then 0 when b.status=1 then 1 when b.status=2 then 2 else 0 end as status,
+	case when a.user_id is null then #{id} when a.user_id=#{id} then #{id} else 0 end as user_id,
+	case when b.delete_flag is null then 0 when b.delete_flag=1 then 1 else 0 end as delete_flag,
+	case when b.receive_company_id is null then #{companyId} when b.receive_company_id=#{companyId} then #{companyId} else 0 end as receive_company_id
+	from (select * from notice n where n.user_id=#{id} or type=1 ) a
+	left join ( select * from notice_user where receive_id=#{id} ) b on a.id=b.notice_id ) d
+	where d.user_id=#{id} and d.receive_company_id=#{companyId} and d.delete_flag=0 group by d.status order by d.status asc
+  </select>
+
+
+    <select id="selectNoticeCustomerByNoticeId" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select * from notice_user where notice_id=#{id} and receive_id=#{userId} and  receive_company_id=#{companyId}
+  </select>
+
+    <select id="getNoticeByStatus" resultMap="NoticeDtoResultMap" parameterType="java.util.Map">
+   select * from (
+	select a.id,a.title,a.content,a.created_time,
+	case when b.status is null then 0 when b.status=1 then 1 when b.status=2 then 2 else 0 end as status,
+	case when a.user_id is null then #{id} when a.user_id=#{id} then #{id} else 0 end as user_id,
+	case when b.delete_flag is null then 0 when b.delete_flag=1 then 1 else 0 end as delete_flag,
+	case when b.receive_company_id is null then #{companyId} when b.receive_company_id=#{companyId} then #{companyId} else 0 end as receive_company_id
+	from (select * from notice n where n.user_id=#{id} or type=1 ) a
+	left join ( select * from notice_user where receive_id=#{id} ) b on a.id=b.notice_id ) d
+	where d.status=#{status} and d.user_id=#{id} and d.receive_company_id=#{companyId} and d.delete_flag=0 order by d.created_time desc
+  </select>
+
+
+</mapper>

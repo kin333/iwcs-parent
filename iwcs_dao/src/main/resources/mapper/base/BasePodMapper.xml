@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BasePodMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BasePod">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="wh_code" jdbcType="VARCHAR" property="whCode"/>
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="pod_name" jdbcType="VARCHAR" property="podName"/>
+        <result column="pod_type_code" jdbcType="VARCHAR" property="podTypeCode"/>
+        <result column="bin_cnt" jdbcType="INTEGER" property="binCnt"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+
+    <resultMap id="ShowPodInfoResultMap" type="com.wisdom.iwcs.domain.base.dto.ShowPodInfoResultDTO">
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="pod_type_code" jdbcType="VARCHAR" property="podTypeCode"/>
+        <result column="ber_code" jdbcType="VARCHAR" property="berCode"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="last_bercode_update_time" jdbcType="TIMESTAMP" property="lastBercodeUpdateTime"/>
+        <result column="map_code" jdbcType="VARCHAR" property="mapCode"/>
+        <result column="stg_code" jdbcType="VARCHAR" property="stgCode"/>
+        <result column="coox" jdbcType="VARCHAR" property="coox"/>
+        <result column="cooy" jdbcType="VARCHAR" property="cooy"/>
+        <result column="pod_prop1" jdbcType="VARCHAR" property="podProp1"/>
+        <result column="pod_prop2" jdbcType="VARCHAR" property="podProp2"/>
+        <result column="pod_prop3" jdbcType="VARCHAR" property="podProp3"/>
+        <result column="pod_prop4" jdbcType="VARCHAR" property="podProp4"/>
+        <result column="pod_prop5" jdbcType="VARCHAR" property="podProp5"/>
+        <result column="lock_stat" jdbcType="INTEGER" property="lockStat"/>
+        <result column="total_layer" jdbcType="INTEGER" property="totalLayer"/>
+        <result column="bin_cnt" jdbcType="INTEGER" property="binCnt"/>
+        <result column="e_bincode" jdbcType="INTEGER" property="eBincode"/>
+        <result column="f_bincode" jdbcType="INTEGER" property="fBincode"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, wh_code, pod_code, pod_name, pod_type_code, bin_cnt, valid_flag, delete_flag,
+        created_by, created_time, last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <update id="deleteLogicByPodCodes">
+        UPDATE base_pod SET delete_flag = #{deleteFlag}, last_modified_time = NOW() WHERE pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="deleteByPodCodes" parameterType="java.util.List">
+        DELETE FROM base_pod WHERE pod_code IN
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="selectByPodCodeAndValidFlagAndDeleteFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod
+        where pod_code = #{podCode} and valid_flag = #{validFlag} and delete_flag = #{deleteFlag}
+    </select>
+    <select id="selectByDymaticSql" resultMap="BaseResultMap">
+      select * from base_pod where ${dymaticSql};
+    </select>
+    <update id="updateValidStatusByPodCodes">
+        UPDATE base_pod SET valid_flag = #{validStatus}, last_modified_time = NOW() WHERE pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+    <select id="selectPodTypeCodeByPodCode" resultType="java.lang.String">
+    select DISTINCT pod_type_code from base_pod where pod_code = #{podCode} order by created_time desc
+  </select>
+    <select id="showPodInfo" parameterType="com.wisdom.iwcs.domain.base.dto.ShowPodInfoCondDTO"
+            resultMap="ShowPodInfoResultMap">
+        SELECT
+        bp.pod_code,
+        bp.pod_type_code,
+        bp.bin_cnt,
+        bpd.ber_code,
+        bpd.last_bercode_update_time,
+        bpd.map_code,
+        bpd.area_code,
+        bpd.stg_code,
+        bpd.coox,
+        bpd.cooy,
+        bpd.pod_prop1,
+        bpd.pod_prop2,
+        bpd.pod_prop3,
+        bpd.pod_prop4,
+        bpd.pod_prop5,
+        bpd.lock_stat,
+        bpt.total_layer,
+        SUM(bpls.e_bincode) as e_bincode,
+        SUM(bpls.f_bincode) as f_bincode
+        FROM
+        base_pod bp
+        LEFT JOIN base_pod_detail bpd ON bp.pod_code = bpd.pod_code
+        LEFT JOIN base_pod_type bpt ON bp.pod_type_code = bpt.pod_type_code
+        LEFT JOIN base_pod_layer_stk bpls ON bp.pod_code = bpls.pod_code
+        WHERE 1=1
+        <if test="areaCode != null and areaCode != ''">
+            AND bpd.area_code = #{areaCode}
+        </if>
+        <if test="podCode != null and podCode != ''">
+            AND bp.pod_code = #{podCode}
+        </if>
+        <if test="podTypeCode != null and podTypeCode != ''">
+            AND bp.pod_type_code = #{podTypeCode}
+        </if>
+        <if test="podInitStatus != null and podInitStatus != '' and podInitStatus == '1'.toString()">
+            AND bpd.coox > '0'
+        </if>
+        <if test="podInitStatus != null and podInitStatus != '' and podInitStatus == '0'.toString()">
+            AND(bpd.coox is NULL or bpd.coox = '')
+        </if>
+        GROUP BY bpls.pod_code
+    </select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.instock.InstockCallStraPriMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.instock.InstockCallStraPri">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="priority_code" jdbcType="VARCHAR" property="priorityCode"/>
+        <result column="priority" jdbcType="VARCHAR" property="priority"/>
+        <result column="biz_code" jdbcType="VARCHAR" property="bizCode"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, priority_code, priority, biz_code, remark, status, created_by, created_time,
+        last_modified_by, last_modified_time, delete_flag
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from instock_call_stra_pri
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectStaPriByStraCode" resultMap="BaseResultMap">
+    SELECT
+    icsp.*
+    FROM
+    `instock_call_stra_pri` icsp,
+    `instock_call_stra` ics
+    WHERE
+    icsp.priority_code = ics.priority_code
+    AND ics.stra_code = #{straCode}
+  </select>
+</mapper>

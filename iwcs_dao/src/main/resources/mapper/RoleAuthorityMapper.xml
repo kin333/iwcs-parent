@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.RoleAuthorityMapper">
+    <sql id="Base_Column_List">
+    ID, roleid, authority_id, data_rule
+  </sql>
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.RoleAuthority">
+        <id column="ID" jdbcType="INTEGER" property="id"/>
+        <result column="roleid" jdbcType="INTEGER" property="roleid"/>
+        <result column="authority_id" jdbcType="INTEGER" property="authorityId"/>
+        <result column="data_rule" jdbcType="VARCHAR" property="dataRule"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority">
+    insert into s_role_authority (ID, roleid, authority_id, 
+      data_rule)
+    values (#{id,jdbcType=INTEGER}, #{roleid,jdbcType=INTEGER}, #{authorityId,jdbcType=INTEGER}, 
+      #{dataRule,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority">
+        insert into s_role_authority
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="roleid != null">
+                roleid,
+            </if>
+            <if test="authorityId != null">
+                authority_id,
+            </if>
+            <if test="dataRule != null">
+                data_rule,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="roleid != null">
+                #{roleid,jdbcType=INTEGER},
+            </if>
+            <if test="authorityId != null">
+                #{authorityId,jdbcType=INTEGER},
+            </if>
+            <if test="dataRule != null">
+                #{dataRule,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertInBatch">
+        insert into s_role_authority ( roleid, authority_id) values
+        <foreach close="" collection="list" index="index" item="item" open="" separator=",">
+            ( #{item.roleid,jdbcType=INTEGER}, #{item.authorityId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from s_role_authority
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByObject" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority">
+        delete from s_role_authority
+        <where>
+            <if test="id != null">
+                ID = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="roleid != null">
+                and roleid = #{roleid,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+            <if test="dataRule != null">
+                and data_rule = #{dataRule,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </delete>
+    <delete id="deleteByIds">
+        delete from s_role_authority
+        where ID in
+        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </delete>
+    <delete id="deleteAll">
+    delete from s_role_authority
+  </delete>
+    <update id="updateById" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority">
+    update s_role_authority
+    set roleid = #{roleid,jdbcType=INTEGER},
+      authority_id = #{authorityId,jdbcType=INTEGER},
+      data_rule = #{dataRule,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByIdSelective" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority">
+        update s_role_authority
+        <set>
+            <if test="roleid != null">
+                roleid = #{roleid,jdbcType=INTEGER},
+            </if>
+            <if test="authorityId != null">
+                authority_id = #{authorityId,jdbcType=INTEGER},
+            </if>
+            <if test="dataRule != null">
+                data_rule = #{dataRule,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByObject" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority">
+        update s_role_authority
+        <set>
+            <if test="dataRule != null">
+                data_rule = #{dataRule,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <where>
+            <if test="id != null">
+                ID = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="roleid != null">
+                and roleid = #{roleid,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
+    <select id="selectOneById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_role_authority
+        where ID = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByRoleIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_role_authority
+        where roleid in
+        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="selectByRoleId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_role_authority
+        where roleid = #{id}
+    </select>
+    <select id="selectOneByObject" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_role_authority
+        <where>
+            <if test="id != null">
+                ID = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="roleid != null">
+                and roleid = #{roleid,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+            <if test="dataRule != null">
+                and data_rule = #{dataRule,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByObject" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_role_authority
+        <where>
+            <if test="id != null">
+                ID = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="roleid != null">
+                and roleid = #{roleid,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+            <if test="dataRule != null">
+                and data_rule = #{dataRule,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByRoleIdsAndMenuId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_role_authority
+        where
+        authority_id = #{menuId,jdbcType=INTEGER}
+        and
+        roleid in
+        <foreach close=")" collection="roleIds" index="index" item="item" open="(" separator=",">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="selectByAuthorityId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_role_authority
+        where
+        authority_id = #{authorityId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_role_authority
+    </select>
+    <select id="count" parameterType="com.wisdom.iwcs.domain.system.RoleAuthority" resultType="long">
+        select count(1)
+        from s_role_authority
+        <where>
+            <if test="id != null">
+                and ID = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="roleid != null">
+                and roleid = #{roleid,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+            <if test="dataRule != null">
+                and data_rule = #{dataRule,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="countAll" resultType="long">
+    select count(1) 
+    from s_role_authority
+  </select>
+    <delete id="deleteByRoleIdAndAuthType">
+    DELETE FROM s_role_authority where ID in (select a.id from  (
+    select sra.id from s_role_authority sra LEFT join s_authority sa on sra.authority_id=sa.id
+    where sra.roleid=#{roleId,jdbcType=INTEGER} and sa.auth_type=#{authType,jdbcType=INTEGER}
+    ) a )
+  </delete>
+    <delete id="deleteByRoleIdAndAuthTypeAndAuthParentId">
+        DELETE FROM s_role_authority
+        where ID in (select a.id
+                     from (
+                              select sra.id
+                              from s_role_authority sra LEFT join s_authority sa on sra.authority_id = sa.id
+                              where sra.roleid = #{roleId,jdbcType=INTEGER} and
+                                    sa.auth_type = #{authType,jdbcType=INTEGER} and
+                                  sa.parent_id = #{authParentId ,jdbcType=INTEGER}
+                          ) a)
+    </delete>
+</mapper>

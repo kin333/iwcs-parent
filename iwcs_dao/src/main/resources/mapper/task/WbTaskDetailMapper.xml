@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.WbTaskDetailMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.WbTaskDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="wb_task_no" jdbcType="VARCHAR" property="wbTaskNo"/>
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="bin_code" jdbcType="VARCHAR" property="binCode"/>
+        <result column="task_status" jdbcType="VARCHAR" property="taskStatus"/>
+        <result column="task_seq" jdbcType="VARCHAR" property="taskSeq"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="task_finished_type" jdbcType="VARCHAR" property="taskFinishedType"/>
+        <result column="agv_action_rotate_type" jdbcType="VARCHAR" property="agvActionRotateType"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="task_type" jdbcType="VARCHAR" property="taskType"/>
+    </resultMap>
+
+    <resultMap id="DtoResultMap" type="com.wisdom.iwcs.domain.task.dto.WbTaskDetailDTO" extends="BaseResultMap">
+        <result column="wb_code" jdbcType="VARCHAR" property="wbCode"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, wb_task_no, pod_code, bin_code, task_status, task_seq, end_time, task_finished_type,
+        agv_action_rotate_type, created_by, created_time, last_modified_by,
+        last_modified_time,task_type
+    </sql>
+
+    <sql id="Task_Detail_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        wtd.id,wtd.wb_task_no, wtd.pod_code, wtd.bin_code, wtd.task_status, wtd.task_seq, wtd.end_time,
+        wtd.task_finished_type,
+        wtd.agv_action_rotate_type, wtd.created_by, wtd.created_time, wtd.last_modified_by,
+        wtd.last_modified_time,wtd.task_type
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from wb_task_detail
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <select id="selectCountNotCompletedTaskByPodCodeAndTaskEndStatus" resultType="java.lang.Integer">
+    SELECT  COUNT(1) FROM wb_task_detail WHERE pod_code = #{podCode} AND task_status &lt; #{taskStatus}
+  </select>
+    <select id="selectTaskNoByPod" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from wb_task_detail where bin_code =#{bincode} and wb_task_no = #{taskNo} AND task_status = '0'
+    </select>
+    <select id="selectCountUnCompletedTaskByPodCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from wb_task_detail
+        where pod_code = #{podCode} and task_status &lt; '9'
+    </select>
+    <select id="selectNotCompletedTaskByTaskNo" resultType="java.lang.Integer">
+    select COUNT(1) from wb_task_detail
+    where wb_task_no = #{taskNo} and task_status &lt; '9'
+  </select>
+    <select id="selectNotCompletedTaskByTaskNoAndPodCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from wb_task_detail
+        where wb_task_no = #{taskNo} and pod_code = #{podCode} and task_status &lt; '9'
+    </select>
+    <update id="updateTaskStatusByWbTaskNoAndTaskStatus">
+    update wb_task_detail set  task_status =  #{taskStatus} , last_modified_time = NOW() where wb_task_no = #{wbTaskNo} ;
+  </update>
+    <select id="selectUnCompletedTaskByWbTaskNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from wb_task_detail
+        where wb_task_no = #{wbTaskNo} and task_status &lt; '9'
+    </select>
+    <select id="selectUnCompletedTaskDetailByTaskTypes" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Task_Detail_Column_List"/>
+        FROM
+        wb_agv_task wat
+        LEFT JOIN wb_task_detail wtd ON wat.task_no = wtd.wb_task_no
+        WHERE wat.task_status &lt; '9'
+        and wtd.task_status &lt; '9'
+        and wat.task_type in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectArrivedTaskByWbCodeAndTaskType" resultMap="BaseResultMap">
+    select  wtd.bin_code
+    FROM wb_task_detail wtd
+    left  join  wb_agv_task wat  on  wtd.wb_task_no =  wat.task_no
+    where wat.task_status &lt;  '9'
+    and wtd.task_status &lt;  '9'
+    and  wat.task_type = #{taskType}
+    and wat.wb_code = #{wbCode}
+  </select>
+    <select id="numberOfJobs" resultType="INT">
+    SELECT  COUNT(1) FROM wb_task_detail wtd
+    left  join  wb_agv_task wat  on  wtd.wb_task_no =  wat.task_no
+    where wat.task_status &lt;  '9'
+    and wtd.task_status &lt;  '9'
+    AND wat.task_type = #{taskType}
+    AND and wat.biz_order_code = #{bizOrderCode}
+  </select>
+    <select id="selectAgvTaskDetail" resultType="com.wisdom.iwcs.domain.task.dto.WbTaskDetailDTO"
+            resultMap="DtoResultMap">
+        select
+        <include refid="Task_Detail_Column_List"/>
+        , wat.wb_code
+        from wb_task_detail wtd
+        LEFT JOIN wb_agv_task wat ON wat.task_no = wtd.wb_task_no
+        where 1=1
+        AND wtd.task_status &lt; '9'
+        AND wtd.wb_task_no = #{wbTaskNo}
+        order by wtd.last_modified_time desc
+    </select>
+</mapper>

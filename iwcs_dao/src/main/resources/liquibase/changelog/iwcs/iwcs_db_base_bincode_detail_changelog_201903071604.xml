@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia.yang" id="201903071604-01">
+        <dropColumn tableName="base_bincode_detail" columnName="lock_stat"/>
+        <addColumn tableName="base_bincode_detail">
+            <column defaultValue="0" name="lock_stat" remarks="锁状态，暂不启用" type="INT">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia.yang" id="201903071641-01">
+        <addColumn tableName="base_bincode_detail">
+            <column name="layer" remarks="层数，冗余，方便查询" type="INT">
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

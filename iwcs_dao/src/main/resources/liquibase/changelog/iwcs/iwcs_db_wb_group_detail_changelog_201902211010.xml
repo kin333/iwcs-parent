@@ -1,0 +1,13 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="George" id="201902211010-1">
+        <addColumn tableName="base_wb_group_detail">
+            <column name="wb_group_detail_prop1" remarks="预留子单属性" type="VARCHAR(255)"/>
+            <column name="wb_group_detail_prop2" remarks="预留子单属性" type="VARCHAR(255)"/>
+            <column name="wb_group_detail_prop3" remarks="预留子单属性" type="VARCHAR(255)"/>
+            <column name="wb_group_detail_prop4" remarks="预留子单属性" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

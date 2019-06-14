@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.log.InterfaceLogMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.log.InterfaceLog">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime"/>
+        <result column="src_client_code" jdbcType="VARCHAR" property="srcClientCode"/>
+        <result column="interface_code" jdbcType="VARCHAR" property="interfaceCode"/>
+        <result column="interface_name" jdbcType="VARCHAR" property="interfaceName"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="time_cost" jdbcType="VARCHAR" property="timeCost"/>
+        <result column="sev_thread_id" jdbcType="VARCHAR" property="sevThreadId"/>
+        <result column="sev_thread_name" jdbcType="VARCHAR" property="sevThreadName"/>
+        <result column="req_client_type" jdbcType="VARCHAR" property="reqClientType"/>
+        <result column="req_ip" jdbcType="VARCHAR" property="reqIp"/>
+        <result column="req_code" jdbcType="VARCHAR" property="reqCode"/>
+        <result column="req_prop1" jdbcType="VARCHAR" property="reqProp1"/>
+        <result column="req_prop2" jdbcType="VARCHAR" property="reqProp2"/>
+        <result column="req_prop3" jdbcType="VARCHAR" property="reqProp3"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.wisdom.iwcs.domain.log.InterfaceLog">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="in_param" jdbcType="LONGVARCHAR" property="inParam"/>
+        <result column="out_param" jdbcType="LONGVARCHAR" property="outParam"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, receive_time, src_client_code, interface_code, interface_name, end_time, time_cost,
+        sev_thread_id, sev_thread_name, req_client_type, req_ip, req_code, req_prop1, req_prop2,
+        req_prop3, remark, created_time
+    </sql>
+    <sql id="Blob_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        in_param, out_param
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from interface_log
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+</mapper>

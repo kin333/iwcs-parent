@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="george" id="201902211509-1">
+        <addColumn tableName="instock_order_detail">
+            <column name="in_storage_num" remarks="已入库数量（入库时反写）" type="DECIMAL(13, 3)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201902221832-01">
+        <addColumn tableName="instock_order_detail">
+            <column name="order_detail_status" remarks="单据明细状态,如0：已创建登" type="VARCHAR(32)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

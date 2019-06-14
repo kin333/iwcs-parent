@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="cecilia" id="201902271511-1">
+        <addColumn tableName="base_wb_biz_config">
+            <column name="agv_action_rotate_type" remarks="AGV旋转属性，支持单个的设置行为" type="VARCHAR(32)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201903191755-1">
+        <modifyDataType tableName="base_wb_biz_config" columnName="biz_type" newDataType="varchar(32)"/>
+    </changeSet>
+
+    <changeSet author="george" id="201903201600-1">
+        <addColumn tableName="base_wb_biz_config">
+            <column defaultValueNumeric="1" name="biz_default_num" remarks="呼叫默认数量" type="INT"/>
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>

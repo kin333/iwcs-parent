@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.AgvTaskDetailOutstockProcessMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.AgvTaskDetailOutstockProcess">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="task_no" jdbcType="VARCHAR" property="taskNo"/>
+        <result column="bin_code" jdbcType="VARCHAR" property="binCode"/>
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="stk_code" jdbcType="VARCHAR" property="stkCode"/>
+        <result column="cal_outstock_qty" jdbcType="DECIMAL" property="calOutstockQty"/>
+        <result column="actual_outstock_qty" jdbcType="DECIMAL" property="actualOutstockQty"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="cal_outstock_sns" jdbcType="VARCHAR" property="calOutstockSns"/>
+        <result column="actual_outstock_sns" jdbcType="VARCHAR" property="actualOutstockSns"/>
+        <result column="pre_sn_flag" jdbcType="VARCHAR" property="preSnFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, task_no, bin_code, pod_code, stk_code, cal_outstock_qty, actual_outstock_qty,
+        created_time, last_modified_time, cal_outstock_sns, actual_outstock_sns, pre_sn_flag
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from agv_task_detail_outstock_process
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectOutstockProcessByTaskNoAndBinCodeAndStkCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from agv_task_detail_outstock_process
+        where task_no = #{taskNo} and bin_code = #{binCode} and stk_code = #{stkCode}
+    </select>
+    <select id="selectUnCompletedOutStockProcessByTaskNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from agv_task_detail_outstock_process
+        where task_no = #{taskNo} and cal_outstock_qty != actual_outstock_qty
+    </select>
+    <select id="selectAgvDetailProcess" resultType="com.wisdom.iwcs.domain.task.AgvTaskDetailOutstockProcess"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from agv_task_detail_outstock_process
+        where 1=1
+        AND task_no in
+        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+            #{item.taskNo}
+        </foreach>
+        AND pod_code in
+        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+            #{item.podCode}
+        </foreach>
+    </select>
+</mapper>

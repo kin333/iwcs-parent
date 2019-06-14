@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.codec.ParameterSettingMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.codec.ParameterSetting">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="attribute" jdbcType="VARCHAR" property="attribute"/>
+        <result column="integer_code" jdbcType="INTEGER" property="integerCode"/>
+        <result column="decimal_code" jdbcType="VARCHAR" property="decimalCode"/>
+        <result column="string_code" jdbcType="VARCHAR" property="stringCode"/>
+        <result column="describe_a" jdbcType="VARCHAR" property="describeA"/>
+        <result column="describe_b" jdbcType="VARCHAR" property="describeB"/>
+        <result column="display_order" jdbcType="INTEGER" property="displayOrder"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, attribute, integer_code, decimal_code, string_code, describe_a, describe_b, display_order,
+        created_by, created_time, last_modified_by, last_modified_time, delete_flag
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from codec_parameter_setting
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+</mapper>

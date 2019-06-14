@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.codec.BusinessCodeMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.codec.BusinessCode">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="code_type" jdbcType="VARCHAR" property="codeType"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="chinese_name" jdbcType="VARCHAR" property="chineseName"/>
+        <result column="english_name" jdbcType="VARCHAR" property="englishName"/>
+        <result column="state_code" jdbcType="VARCHAR" property="stateCode"/>
+        <result column="state_name" jdbcType="VARCHAR" property="stateName"/>
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
+        <result column="country_name" jdbcType="VARCHAR" property="countryName"/>
+        <result column="sort_key" jdbcType="INTEGER" property="sortKey"/>
+        <result column="item_one" jdbcType="VARCHAR" property="itemOne"/>
+        <result column="item_two" jdbcType="VARCHAR" property="itemTwo"/>
+        <result column="item_three" jdbcType="VARCHAR" property="itemThree"/>
+        <result column="freeze_flag" jdbcType="VARCHAR" property="freezeFlag"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <resultMap id="DTOResultMap" type="com.wisdom.iwcs.domain.codec.dto.BusinessCodeDto">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="code_type" jdbcType="VARCHAR" property="codeType"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="chinese_name" jdbcType="VARCHAR" property="chineseName"/>
+        <result column="english_name" jdbcType="VARCHAR" property="englishName"/>
+        <result column="state_code" jdbcType="VARCHAR" property="stateCode"/>
+        <result column="state_name" jdbcType="VARCHAR" property="stateName"/>
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
+        <result column="country_name" jdbcType="VARCHAR" property="countryName"/>
+        <result column="sort_key" jdbcType="INTEGER" property="sortKey"/>
+        <result column="item_one" jdbcType="VARCHAR" property="itemOne"/>
+        <result column="item_two" jdbcType="VARCHAR" property="itemTwo"/>
+        <result column="item_three" jdbcType="VARCHAR" property="itemThree"/>
+        <result column="freeze_flag" jdbcType="VARCHAR" property="freezeFlag"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by_name" jdbcType="VARCHAR" property="createdByName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, code_type, code, chinese_name, english_name, state_code, state_name, country_code,
+        country_name, sort_key, item_one, item_two, item_three, freeze_flag, remark, created_by, created_time,
+        last_modified_by,
+        last_modified_time, delete_flag
+    </sql>
+    <sql id="DTO_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        cbc.id, cbc.code_type, cbc.code, cbc.chinese_name, cbc.english_name, cbc.state_code, cbc.state_name,
+        cbc.country_code,
+        cbc.country_name, cbc.sort_key, cbc.item_one, cbc.item_two, cbc.item_three, cbc.freeze_flag, cbc.remark,
+        cbc.created_by, cbc.created_time, cbc.last_modified_by,
+        cbc.last_modified_time, cbc.delete_flag
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from codec_business_code
+        where 1=1
+        <if test="codeType != null">
+            and code_type = #{codeType,jdbcType=VARCHAR}
+        </if>
+        <if test="businessCodeId != null and businessCodeId !=''">
+            and id = #{businessCodeId,jdbcType=INTEGER}
+        </if>
+        <if test="code != null and code !='' ">
+            and code = #{code,jdbcType=VARCHAR}
+        </if>
+        <if test="itemTwo != null and itemTwo !='' ">
+            and item_two = #{itemTwo,jdbcType=VARCHAR}
+        </if>
+        <if test="airPortFlag != null and airPortFlag !='' and airPortFlag == 'AIRPORT'  ">
+            and item_two is not null
+        </if>
+        <if test="airPortFlag != null and airPortFlag !='' and airPortFlag == 'SEASHIPPORT'  ">
+            and code is not null and code != ''
+        </if>
+        <if test="searchKey != null and searchKey != ''">
+            <choose>
+                <when test="searchFromBegin != null and searchKey != ''">
+                    and ( code LIKE CONCAT(#{searchKey},'%')
+                    or english_name LIKE CONCAT(#{searchKey},'%')
+                    or item_two LIKE CONCAT(#{searchKey},'%')
+                    or chinese_name LIKE CONCAT(#{searchKey},'%')
+                    or state_code LIKE CONCAT(#{searchKey},'%')
+                    or state_name LIKE CONCAT(#{searchKey},'%')
+                    or country_code LIKE CONCAT(#{searchKey},'%')
+                    or country_name LIKE CONCAT(#{searchKey},'%') )
+                </when>
+                <otherwise>
+                    and ( code LIKE CONCAT('%',#{searchKey},'%')
+                    or english_name LIKE CONCAT('%',#{searchKey},'%')
+                    or item_two LIKE CONCAT(#{searchKey},'%')
+                    or chinese_name LIKE CONCAT('%',#{searchKey},'%')
+                    or state_code LIKE CONCAT('%',#{searchKey},'%')
+                    or state_name LIKE CONCAT('%',#{searchKey},'%')
+                    or country_code LIKE CONCAT('%',#{searchKey},'%')
+                    or country_name LIKE CONCAT('%',#{searchKey},'%') )
+                </otherwise>
+            </choose>
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+
+    <select id="selectDTOByMap" resultMap="DTOResultMap">
+        select<include refid="DTO_Column_List"/>,
+        su.real_name as created_by_name
+        from codec_business_code cbc
+        left join s_user su on su.id = cbc.created_by
+        where 1=1
+        <if test="ignoreFreeze ==null or ignoreFreeze ==''">
+            and freeze_flag = 0
+        </if>
+        <if test="codeType != null">
+            and code_type = #{codeType,jdbcType=VARCHAR}
+        </if>
+        <if test="businessCodeId != null and businessCodeId !=''">
+            and id = #{businessCodeId,jdbcType=INTEGER}
+        </if>
+        <if test="code != null and code !='' ">
+            and code = #{code,jdbcType=VARCHAR}
+        </if>
+        <if test="itemTwo != null and itemTwo !='' ">
+            and item_two = #{itemTwo,jdbcType=VARCHAR}
+        </if>
+        <if test="airPortFlag != null and airPortFlag !='' and airPortFlag == 'AIRPORT'  ">
+            and item_two is not null
+        </if>
+        <if test="airPortFlag != null and airPortFlag !='' and airPortFlag == 'SEASHIPPORT'  ">
+            and code is not null and code != ''
+        </if>
+        <if test="searchKey != null and searchKey != ''">
+            <choose>
+                <when test="searchFromBegin != null and searchKey != ''">
+                    and ( code LIKE CONCAT(#{searchKey},'%')
+                    or english_name LIKE CONCAT(#{searchKey},'%')
+                    or item_two LIKE CONCAT(#{searchKey},'%')
+                    or chinese_name LIKE CONCAT(#{searchKey},'%')
+                    or state_code LIKE CONCAT(#{searchKey},'%')
+                    or state_name LIKE CONCAT(#{searchKey},'%')
+                    or country_code LIKE CONCAT(#{searchKey},'%')
+                    or country_name LIKE CONCAT(#{searchKey},'%') )
+                </when>
+                <otherwise>
+                    and ( code LIKE CONCAT('%',#{searchKey},'%')
+                    or english_name LIKE CONCAT('%',#{searchKey},'%')
+                    or item_two LIKE CONCAT(#{searchKey},'%')
+                    or chinese_name LIKE CONCAT('%',#{searchKey},'%')
+                    or state_code LIKE CONCAT('%',#{searchKey},'%')
+                    or state_name LIKE CONCAT('%',#{searchKey},'%')
+                    or country_code LIKE CONCAT('%',#{searchKey},'%')
+                    or country_name LIKE CONCAT('%',#{searchKey},'%') )
+                </otherwise>
+            </choose>
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="getAllCodeByType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from codec_business_code
+        where code_type = #{codeType,jdbcType=VARCHAR} and freeze_flag = 0 and delete_flag =1
+    </select>
+    <select id="searchFromAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from codec_business_code
+        where code_type = #{codeType,jdbcType=VARCHAR} and freeze_flag = 0 and delete_flag =1
+        <if test="searchKey != null and searchKey != ''">
+            and ( code LIKE CONCAT('%',#{searchKey},'%')
+            or english_name LIKE CONCAT('%',#{searchKey},'%')
+            or chinese_name LIKE CONCAT('%',#{searchKey},'%')
+            or state_code LIKE CONCAT('%',#{searchKey},'%')
+            or state_name LIKE CONCAT('%',#{searchKey},'%')
+            or country_code LIKE CONCAT('%',#{searchKey},'%')
+            or country_name LIKE CONCAT('%',#{searchKey},'%') )
+        </if>
+        <if test="limit !=null and limit !=''">
+            limit #{limit,jdbcType=INTEGER }
+        </if>
+
+    </select>
+    <select id="getByCodeAndType" resultMap="BaseResultMap">
+    select * from codec_business_code where code_type = #{codeType,jdbcType=VARCHAR} and code = #{code,jdbcType=VARCHAR} and freeze_flag = 0 and delete_flag =1
+  </select>
+    <select id="getByCodeListAndType" resultMap="BaseResultMap">
+        select * from codec_business_code where code_type = #{codeType,jdbcType=VARCHAR} and freeze_flag = 0 and
+        delete_flag =1
+        and code in
+        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <update id="updatePortRoute">
+        update codec_business_code
+        set item_one =#{routeCode,jdbcType=VARCHAR}
+        where id in
+        <foreach close=")" collection="portIdList" index="index" item="item" open="(" separator=",">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </update>
+
+    <select id="getAllUseBusinessCode" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from codec_business_code
+        where 1=1
+        <if test="code!=null and code!=''">
+            and code = #{code,jdbcType=VARCHAR}
+        </if>
+        <if test="codeType!=null and codeType!=''">
+            and code_type = #{codeType,jdbcType=VARCHAR}
+        </if>
+        <if test="freezeFlag!=null and freezeFlag!=''">
+            and freeze_flag = #{freezeFlag,jdbcType=VARCHAR}
+        </if>
+        <if test="deleteFlag!=null and deleteFlag!=''">
+            and delete_flag = #{deleteFlag,jdbcType=INTEGER}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <select id="updateRouteByCountryCode" parameterType="com.wisdom.iwcs.domain.codec.BusinessCode"
+            resultType="integer">
+    update codec_business_code
+    set  item_one =#{itemOne,jdbcType=VARCHAR}
+    where code_type = 'PORTCD' and  country_code = #{countryCode}
+  </select>
+</mapper>

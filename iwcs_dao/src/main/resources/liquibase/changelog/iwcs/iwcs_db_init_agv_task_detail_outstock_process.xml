@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia (generated)" id="201903010933-7">
+        <createTable tableName="agv_task_detail_outstock_process">
+            <column autoIncrement="true" name="id" remarks="主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="task_no" remarks="工作台任务编号：自动生成唯一任务编号" type="VARCHAR(64)"/>
+            <column name="bin_code" remarks="参与出库的bincode" type="VARCHAR(64)"/>
+            <column name="pod_code" remarks="货架号,冗余" type="VARCHAR(64)"/>
+            <column name="stk_code" remarks="库存唯一编号" type="VARCHAR(32)"/>
+            <column name="cal_outstock_qty" remarks="应出数量" type="DECIMAL(13,3)"/>
+            <column name="actual_outstock_qty" remarks="实际出库数量" type="DECIMAL(13,3)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,910 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="ted (generated)" id="1550455310899-1">
+        <createTable tableName="agv_task_log">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="log_type" remarks="类型，1到达工作台，2到达排队区，待拓展" type="VARCHAR(64)"/>
+            <column name="pod_code" remarks="货架编号" type="VARCHAR(32)"/>
+            <column name="task_seq" remarks="任务编号，和海康交互用，对应本次任务的task_code" type="VARCHAR(64)"/>
+            <column name="bin_code" remarks="仓位编号，该货架的任意一个仓位编号，冗余用" type="VARCHAR(32)"/>
+            <column name="agv_sub_task_seq" remarks="Agv子任务编号（厂家内部子任务）" type="VARCHAR(64)"/>
+            <column name="src_ber_code" remarks="起始地码" type="VARCHAR(64)"/>
+            <column name="trgt_ber_code" remarks="目标地码" type="VARCHAR(64)"/>
+            <column name="cur_bercode" remarks="当前地码" type="VARCHAR(64)"/>
+            <column name="agv_code" remarks="AGV车号" type="VARCHAR(64)"/>
+            <column name="task_time" remarks="发生时间" type="VARCHAR(64)"/>
+            <column name="agv_prop1" remarks="agv预留" type="VARCHAR(64)"/>
+            <column name="agv_prop2" remarks="agv预留" type="VARCHAR(64)"/>
+            <column name="agv_prop3" remarks="agv预留" type="VARCHAR(64)"/>
+            <column name="source_type" remarks="日志来源类型：AGV,iwcs," type="VARCHAR(64)"/>
+            <column defaultValue="0" name="source_code" remarks="日志来源标示代码" type="VARCHAR(64)"/>
+            <column defaultValue="0" name="source_prop1" remarks="日志来源预留参数" type="VARCHAR(64)"/>
+            <column name="source_prop2" remarks="日志来源预留参数" type="VARCHAR(64)"/>
+            <column name="source_prop3" remarks="日志来源预留参数" type="VARCHAR(64)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-2">
+        <createTable tableName="base_bincode_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="bincode" remarks="仓位编号" type="VARCHAR(64)"/>
+            <column name="pod_code" remarks="货架编号" type="VARCHAR(64)"/>
+            <column name="area_code" remarks="库区编码" type="VARCHAR(16)"/>
+            <column name="map_code" remarks="地图编码" type="VARCHAR(32)"/>
+            <column name="cargo_capacity_status" remarks="载货状态：0 空仓，1 有货未满 2满仓" type="VARCHAR(1)"/>
+            <column name="lock_stat" remarks="锁状态，Y入库锁，Z出库锁，X其他锁，N无锁" type="VARCHAR(1)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-3">
+        <createTable tableName="base_bincode_type">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wh_code" remarks="仓库编码" type="VARCHAR(16)"/>
+            <column name="bin_type_code" remarks="仓位类型编码" type="VARCHAR(32)"/>
+            <column name="bin_type_name" remarks="仓位类型名称" type="VARCHAR(64)"/>
+            <column name="depth" remarks="深" type="DECIMAL(13, 3)"/>
+            <column name="width" remarks="宽" type="DECIMAL(13, 3)"/>
+            <column name="height" remarks="高" type="DECIMAL(13, 3)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-4">
+        <createTable tableName="base_ctnr">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="ctnr_code" remarks="容器编号" type="VARCHAR(64)"/>
+            <column name="ctnr_name" remarks="容器名称" type="VARCHAR(64)"/>
+            <column name="cntr_length" remarks="容器长度" type="DECIMAL(13, 3)"/>
+            <column name="cntr_width" remarks="容器宽度" type="DECIMAL(13, 3)"/>
+            <column name="cntr_height" remarks="容器高度" type="DECIMAL(13, 3)"/>
+            <column name="cntr__size_unit" remarks="容器尺寸单位" type="VARCHAR(16)"/>
+            <column name="cntr_wt" remarks="容器重量" type="DECIMAL(13, 3)"/>
+            <column name="cntr_wt_unit" remarks="容器重量单位" type="VARCHAR(16)"/>
+            <column name="cntr_qty" remarks="一容器数量" type="DECIMAL(13, 3)"/>
+            <column name="mat_code" remarks="物料编号" type="VARCHAR(64)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-5">
+        <createTable tableName="base_map">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="map_code" remarks="地图编号" type="VARCHAR(32)"/>
+            <column name="map_name" remarks="地图名称" type="VARCHAR(64)"/>
+            <column name="row_count" remarks="行数" type="INT"/>
+            <column name="col_count" remarks="列数" type="INT"/>
+            <column defaultValueNumeric="1000" name="width" remarks="每格宽度，毫米，默认1000" type="INT"/>
+            <column defaultValueNumeric="1000" name="height" remarks="每格高度，毫米，默认1000" type="INT"/>
+            <column name="map_type" remarks="地图类型，1为栅格地图，2为拓扑地图" type="VARCHAR(1)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(200)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-6">
+        <createTable tableName="base_map_berth">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="map_code" remarks="地图编号" type="VARCHAR(32)"/>
+            <column name="ber_code" remarks="点位地码" type="VARCHAR(128)"/>
+            <column name="coox" remarks="x坐标" type="VARCHAR(64)"/>
+            <column name="cooy" remarks="y坐标" type="VARCHAR(64)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-7">
+        <createTable tableName="base_map_section">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="area_code" remarks="库区code" type="VARCHAR(16)"/>
+            <column name="map_code" remarks="地图code" type="VARCHAR(32)"/>
+            <column name="sec_code" remarks="存储区代码" type="VARCHAR(16)"/>
+            <column name="sec_name" remarks="存储区名称" type="VARCHAR(64)"/>
+            <column name="stg_type_code" remarks="存储区类型" type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(200)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-8">
+        <createTable tableName="base_mat">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="mat_code" remarks="物料编码" type="VARCHAR(32)"/>
+            <column name="bum_code" remarks="基本计量单位" type="VARCHAR(16)"/>
+            <column name="pum_code" remarks="采购单位" type="VARCHAR(16)"/>
+            <column defaultValueNumeric="0" name="gross_weight" remarks="毛重" type="DECIMAL(13, 3)"/>
+            <column defaultValueNumeric="0" name="net_weight" remarks="净重" type="DECIMAL(13, 3)"/>
+            <column name="weight_unit" remarks="重量单位" type="VARCHAR(16)"/>
+            <column defaultValueNumeric="0" name="length" remarks="长度" type="DECIMAL(13, 3)"/>
+            <column defaultValueNumeric="0" name="width" remarks="宽度" type="DECIMAL(13, 3)"/>
+            <column defaultValueNumeric="0" name="height" remarks="高度" type="DECIMAL(13, 3)"/>
+            <column name="dim_unit" remarks="尺寸单位" type="VARCHAR(16)"/>
+            <column defaultValueNumeric="0" name="min_stk_qty" remarks="最小安全库存" type="DECIMAL(13, 3)"/>
+            <column defaultValueNumeric="0" name="max_stk_qty" remarks="最大安全库存" type="DECIMAL(13, 3)"/>
+            <column name="cntr_flag" remarks="按容器管理" type="VARCHAR(1)"/>
+            <column defaultValueNumeric="0" name="validate_lifetime" remarks="寿命期，可以为空，单位天" type="DECIMAL(13, 3)"/>
+            <column defaultValueNumeric="0" name="expire_warn_time" remarks="过期预警时间，可以为空，单位天" type="DECIMAL(13, 3)"/>
+            <column name="expire_mat_out" remarks="是否允许过期物料出库，0否，1是" type="VARCHAR(2)"/>
+            <column name="mat_type_code" remarks="物料类型code" type="VARCHAR(16)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-9">
+        <createTable tableName="base_pod">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wh_code" remarks="仓库编码" type="VARCHAR(16)"/>
+            <column name="pod_code" remarks="货架编号" type="VARCHAR(64)"/>
+            <column name="pod_name" remarks="货架名称" type="VARCHAR(64)"/>
+            <column name="pod_type_code" remarks="货架类型编码" type="VARCHAR(32)"/>
+            <column name="bin_cnt" remarks="bincode数量" type="INT"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-10">
+        <createTable tableName="base_pod_bincode">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="bincode" remarks="仓位编号" type="VARCHAR(64)"/>
+            <column name="pod_code" remarks="货架编号" type="VARCHAR(64)"/>
+            <column name="bin_type_code" remarks="仓位类型code" type="VARCHAR(32)"/>
+            <column name="direction" remarks="方向，冗余，方便查询" type="INT"/>
+            <column name="layer" remarks="层数，冗余，方便查询" type="INT"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-11">
+        <createTable tableName="base_pod_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="pod_code" remarks="货架编号" type="VARCHAR(64)"/>
+            <column name="ber_code" remarks="当前货架地码信息" type="VARCHAR(128)"/>
+            <column name="last_bercode_update_time" remarks="地码最后更新时间" type="datetime"/>
+            <column name="area_code" remarks="库区编码" type="VARCHAR(16)"/>
+            <column name="map_code" remarks="地图编码" type="VARCHAR(32)"/>
+            <column name="stg_type_code" remarks="存储区类型代码" type="VARCHAR(32)"/>
+            <column name="stg_code" remarks="存储区代码" type="VARCHAR(32)"/>
+            <column name="coox" remarks="x坐标" type="VARCHAR(64)"/>
+            <column name="cooy" remarks="y坐标" type="VARCHAR(64)"/>
+            <column name="lock_stat" remarks="锁状态，Y入库锁，Z出库锁，X其他锁，N无锁" type="VARCHAR(1)"/>
+            <column name="stk_stat" remarks="货物状态，各层是否有货，可视化库存展示用" type="VARCHAR(16)"/>
+            <column name="o_bin_cnt" remarks="被占用BINCODE数量" type="INT"/>
+            <column name="e_bin_cnt" remarks="空BINCODE数量" type="INT"/>
+            <column name="pod_prop1" remarks="货架预留属性，如货主" type="VARCHAR(255)"/>
+            <column name="pod_prop2" remarks="货架预留属性" type="VARCHAR(255)"/>
+            <column name="pod_prop3" remarks="货架预留属性" type="VARCHAR(255)"/>
+            <column name="pod_prop4" remarks="货架预留属性" type="VARCHAR(255)"/>
+            <column name="pod_prop5" remarks="货架预留属性" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-12">
+        <createTable tableName="base_pod_type">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wh_code" remarks="仓库编码" type="VARCHAR(16)"/>
+            <column name="pod_type_code" remarks="货架类型编码" type="VARCHAR(32)"/>
+            <column name="pod_type_name" remarks="货架类型名称" type="VARCHAR(64)"/>
+            <column name="total_layer" remarks="货架类型共几层" type="INT"/>
+            <column name="weight" remarks="货架重量" type="DECIMAL(13, 3)"/>
+            <column name="length" remarks="长" type="DECIMAL(13, 3)"/>
+            <column name="width" remarks="宽" type="DECIMAL(13, 3)"/>
+            <column name="height" remarks="高" type="DECIMAL(13, 3)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-13">
+        <createTable tableName="base_pod_type_bincode_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="pod_type_code" remarks="货架类型编码" type="VARCHAR(32)"/>
+            <column name="pod_type_name" remarks="货架类型名称" type="VARCHAR(64)"/>
+            <column name="layer" remarks="层数，表示第几层" type="INT"/>
+            <column name="direction" remarks="方向，表示哪一面" type="INT"/>
+            <column name="bin_type_code" remarks="仓位类型编码" type="VARCHAR(32)"/>
+            <column name="bincode_num" remarks="该层该面有多少个仓位" type="VARCHAR(32)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-14">
+        <createTable tableName="base_stg_type">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="area_code" remarks="库区代码" type="VARCHAR(16)"/>
+            <column name="map_code" remarks="地图编码" type="VARCHAR(32)"/>
+            <column name="stg_type_code" remarks="存储类型代码" type="VARCHAR(16)"/>
+            <column name="stg_type_name" remarks="存储类型名称" type="VARCHAR(64)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(200)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-15">
+        <createTable tableName="base_wa_map">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="map_code" remarks="地图编号" type="VARCHAR(32)"/>
+            <column name="area_code" remarks="库区代码" type="VARCHAR(16)"/>
+            <column name="map_prop1" remarks="地图属性，如楼层等" type="VARCHAR(32)"/>
+            <column name="map_prop2" remarks="地图属性，预留" type="VARCHAR(32)"/>
+            <column name="map_prop3" remarks="地图属性，预留" type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(200)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-16">
+        <createTable tableName="base_wb">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wb_code" remarks="工作台编码" type="VARCHAR(32)"/>
+            <column name="area_code" remarks="库区编码" type="VARCHAR(16)"/>
+            <column name="map_code" remarks="地图编码" type="VARCHAR(32)"/>
+            <column name="ber_code" remarks="点位地码" type="VARCHAR(128)"/>
+            <column name="wb_name" remarks="工作台名称" type="VARCHAR(255)"/>
+            <column name="wb_type" remarks="工作台类型，暂时无用" type="VARCHAR(32)"/>
+            <column name="coox" remarks="x坐标" type="VARCHAR(64)"/>
+            <column name="cooy" remarks="Y坐标" type="VARCHAR(64)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-016">
+        <createTable tableName="base_wb_biz_config">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wb_code" remarks="工作台编码" type="VARCHAR(32)"/>
+            <column name="biz_type" remarks="业务类型：出库＼入库＼盘点" type="INT"/>
+            <column name="biz_batch_max_num" remarks="业务最大呼叫数" type="VARCHAR(32)"/>
+            <column name="agv_lift_status" remarks="到达目的地后是否举升着 举升-0 放下-1 放下释放小车-2" type="VARCHAR(32)"/>
+            <column name="agv_return_pod_type" remarks="默认为空：货架回库　任务类型：1－初始化入库　2－循环入库回库　3－理货业务回库　4－自动化工作台回库（货架放下）"
+                    type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-17">
+        <createTable tableName="base_wb_group">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="group_code" remarks="分组编号" type="VARCHAR(32)"/>
+            <column name="group_name" remarks="分组名称" type="VARCHAR(16)"/>
+            <column name="group_type_code" remarks="分组类型（互斥－MUTEX、备货－－STOCK_UP）" type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-18">
+        <createTable tableName="base_wb_group_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="group_code" remarks="分组编号" type="VARCHAR(32)"/>
+            <column name="wb_code" remarks="工作台编号" type="VARCHAR(16)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-19">
+        <createTable tableName="base_wh">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wh_code" remarks="仓库代码" type="VARCHAR(16)"/>
+            <column name="wh_name" remarks="仓库名称" type="VARCHAR(64)"/>
+            <column defaultValueNumeric="1" name="wh_type" remarks="仓库类型，0传统仓，1AGV仓库" type="INT"/>
+            <column name="wh_province" remarks="省" type="VARCHAR(32)"/>
+            <column name="wh_city" remarks="市" type="VARCHAR(32)"/>
+            <column name="wh_district" remarks="区县" type="VARCHAR(32)"/>
+            <column name="wh_address" remarks="详细地址" type="VARCHAR(255)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-20">
+        <createTable tableName="base_wh_area">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wh_code" remarks="仓库code" type="VARCHAR(16)"/>
+            <column name="area_code" remarks="库区代码" type="VARCHAR(16)"/>
+            <column name="area_name" remarks="库区名称" type="VARCHAR(64)"/>
+            <column defaultValueNumeric="0" name="area_status" remarks="库区状态，0可用，1锁定" type="INT"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-21">
+        <createTable tableName="instock_order">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="order_type" remarks="单据类型" type="VARCHAR(16)"/>
+            <column name="wh_code" remarks="仓库编码" type="VARCHAR(64)"/>
+            <column name="src" remarks="任务单来源，0本地创建，1上游同步" type="VARCHAR(1)"/>
+            <column name="order_prop1" remarks="预留字段" type="VARCHAR(255)"/>
+            <column name="order_prop2" remarks="预留字段" type="VARCHAR(255)"/>
+            <column name="order_prop3" remarks="预留字段" type="VARCHAR(255)"/>
+            <column name="order_prop4" remarks="预留字段" type="VARCHAR(255)"/>
+            <column name="order_prop5" remarks="预留字段" type="VARCHAR(255)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-22">
+        <createTable tableName="instock_order_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="instaock_order_id" remarks="入库主单id" type="VARCHAR(16)"/>
+            <column name="order_no" remarks="业务单据编号（冗余）" type="VARCHAR(32)"/>
+            <column name="sub_order_no" remarks="子单编号" type="VARCHAR(32)"/>
+            <column name="mat_code" remarks="物料编号" type="VARCHAR(32)"/>
+            <column name="plant_code" remarks="工厂编号" type="VARCHAR(16)"/>
+            <column name="priority" remarks="优先级" type="VARCHAR(16)"/>
+            <column name="batch_num" remarks="批次号" type="VARCHAR(32)"/>
+            <column name="spe_stk_flag" remarks="特殊库存标识" type="VARCHAR(32)"/>
+            <column name="spe_stk_num" remarks="特殊库存编号" type="VARCHAR(32)"/>
+            <column name="expected_date" remarks="预计入库时间" type="datetime"/>
+            <column defaultValueNumeric="0" name="mat_qty" remarks="物料数量" type="DECIMAL(13, 3)"/>
+            <column name="mat_unit" remarks="物料单位" type="VARCHAR(16)"/>
+            <column name="cargo_owner" remarks="货主" type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column name="sub_order_prop1" remarks="预留子单属性" type="VARCHAR(255)"/>
+            <column name="sub_order_prop2" remarks="预留子单属性" type="VARCHAR(255)"/>
+            <column name="sub_order_prop3" remarks="预留子单属性" type="VARCHAR(255)"/>
+            <column name="sub_order_prop4" remarks="预留子单属性" type="VARCHAR(255)"/>
+            <column name="sub_order_prop5" remarks="预留子单属性" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-23">
+        <createTable tableName="instock_record">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="instk_biz_type" remarks="入库业务类型：normal(正常入库)、异常库存调整（exception_adjust）等" type="VARCHAR(32)"/>
+            <column name="stk_code" remarks="库存唯一编号" type="VARCHAR(32)"/>
+            <column name="order_no" remarks="业务单号" type="VARCHAR(32)"/>
+            <column name="sub_order_no" remarks="子单号" type="VARCHAR(32)"/>
+            <column name="cargo_owner" remarks="货主" type="VARCHAR(32)"/>
+            <column name="mat_code" remarks="物料号" type="VARCHAR(32)"/>
+            <column name="instock_type" remarks="入库方式，0按数量，1按条码" type="VARCHAR(1)"/>
+            <column name="bincode" remarks="仓位编号" type="VARCHAR(64)"/>
+            <column name="stk_character1" remarks="特征值1" type="VARCHAR(255)"/>
+            <column name="stk_character2" remarks="特征值2" type="VARCHAR(255)"/>
+            <column name="stk_character3" remarks="特征值3" type="VARCHAR(255)"/>
+            <column name="stk_character4" remarks="特征值4" type="VARCHAR(255)"/>
+            <column name="stk_character5" remarks="特征值5" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="total_qty" remarks="总数量" type="DECIMAL(13, 3)"/>
+            <column name="wh_code" remarks="仓库编号" type="VARCHAR(32)"/>
+            <column name="area_code" remarks="库区编号" type="VARCHAR(32)"/>
+            <column name="batch_num" remarks="批次号" type="VARCHAR(32)"/>
+            <column name="spe_stk_flag" remarks="特殊库存标识" type="VARCHAR(32)"/>
+            <column name="container_flag" remarks="按容器管理标识，0否，1是" type="VARCHAR(1)"/>
+            <column defaultValueNumeric="0" name="sku_qty" remarks="包装规格数量，按容器管理时使用，其他为0" type="DECIMAL(13, 3)"/>
+            <column name="spe_stk_code" remarks="特殊库存编号" type="VARCHAR(32)"/>
+            <column name="freeze_flag" remarks="库存冻结标识，0未冻结，1冻结" type="VARCHAR(1)"/>
+            <column name="blk_rea_code" remarks="冻结原因" type="VARCHAR(16)"/>
+            <column name="bum_code" remarks="基本计量单位" type="VARCHAR(16)"/>
+            <column defaultValueNumeric="0" name="mat_weight" remarks="单位物料重量" type="DECIMAL(13, 3)"/>
+            <column name="weight_unit" remarks="重量单位" type="VARCHAR(16)"/>
+            <column name="plant_code" remarks="工厂" type="VARCHAR(16)"/>
+            <column name="container_code" remarks="容器编号" type="VARCHAR(16)"/>
+            <column name="src_biz_req_code" remarks="上游呼叫编号" type="VARCHAR(64)"/>
+            <column name="record_prop1" remarks="预留字段" type="VARCHAR(255)"/>
+            <column name="record_prop2" remarks="预留字段" type="VARCHAR(255)"/>
+            <column name="record_prop3" remarks="预留字段" type="VARCHAR(255)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-24">
+        <createTable tableName="instock_record_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="stk_code" remarks="库存唯一编号" type="VARCHAR(32)"/>
+            <column name="bincode" remarks="仓位编号" type="VARCHAR(64)"/>
+            <column name="sn" remarks="条码" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-25">
+        <createTable tableName="interface_log">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="receive_time" remarks="接收方法时间" type="datetime"/>
+            <column name="src_client_code" remarks="调用接口方，如RRS,CML等" type="VARCHAR(32)"/>
+            <column name="interface_code" remarks="接口方法code" type="VARCHAR(64)"/>
+            <column name="interface_name" remarks="接口方法描述" type="VARCHAR(64)"/>
+            <column name="end_time" remarks="接口方法结束时间" type="datetime"/>
+            <column name="time_cost" remarks="接口耗费时间" type="VARCHAR(64)"/>
+            <column name="in_param" remarks="接口传入参数" type="LONGTEXT"/>
+            <column name="out_param" remarks="接口返回参数" type="LONGTEXT"/>
+            <column name="sev_thread_id" remarks="线程id" type="VARCHAR(64)"/>
+            <column name="sev_thread_name" remarks="线程名称" type="VARCHAR(64)"/>
+            <column name="req_client_type" remarks="请求终端类型" type="VARCHAR(64)"/>
+            <column name="req_ip" type="VARCHAR(64)"/>
+            <column name="req_code" remarks="请求唯一编码" type="VARCHAR(64)"/>
+            <column name="req_prop1" remarks="请求预留参数" type="VARCHAR(64)"/>
+            <column name="req_prop2" remarks="请求预留参数" type="VARCHAR(64)"/>
+            <column name="req_prop3" remarks="请求预留参数" type="VARCHAR(64)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(64)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-26">
+        <createTable tableName="iwcs_inv_result">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="task_id" remarks="盘点任务ID" type="INT"/>
+            <column name="bincode" remarks="仓位编号" type="VARCHAR(64)"/>
+            <column name="sys_mat_code" remarks="系统物料编号" type="VARCHAR(32)"/>
+            <column defaultValueNumeric="0" name="sys_pkgs" remarks="系统件数" type="DECIMAL(13, 3)"/>
+            <column name="inv_mat_code" remarks="盘点物料编号" type="VARCHAR(32)"/>
+            <column defaultValueNumeric="0" name="inv_pkgs" remarks="盘点件数" type="DECIMAL(13, 3)"/>
+            <column defaultValue="0" name="replace_stk_flag" remarks="是否直接将盘点结果替换为库存，0否，1是" type="VARCHAR(1)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-27">
+        <createTable tableName="iwcs_inv_sn">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="task_id" remarks="盘点任务ID" type="INT"/>
+            <column name="bincode" remarks="仓位编号" type="VARCHAR(64)"/>
+            <column name="sys_sn" remarks="系统SN" type="VARCHAR(64)"/>
+            <column name="inv_sn" remarks="盘点SN" type="VARCHAR(64)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-28">
+        <createTable tableName="iwcs_inv_task">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="inv_order_no" remarks="业务单号，如盘点单号" type="VARCHAR(32)"/>
+            <column name="sub_order_no" remarks="子单号" type="VARCHAR(32)"/>
+            <column name="cargo_owner" remarks="货主" type="VARCHAR(32)"/>
+            <column name="mat_code" remarks="物料号" type="VARCHAR(32)"/>
+            <column name="bincode" remarks="仓位" type="VARCHAR(64)"/>
+            <column name="days" remarks="盘点物料在几天内有变化" type="INT"/>
+            <column defaultValueNumeric="0" name="inv_target" remarks="盘点目标，0按仓位，等" type="INT"/>
+            <column name="inv_type" remarks="盘点类型，0明盘，1暗盘" type="INT"/>
+            <column defaultValueNumeric="0" name="per_sn" remarks="是否按SN盘点，0是，1否" type="INT"/>
+            <column defaultValueNumeric="0" name="if_out" remarks="盘点货架是否到达工作台，0是，1否" type="INT"/>
+            <column defaultValue="0" name="task_desc" remarks="任务描述" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="inv_status" remarks="盘点状态，0未盘点，1已盘点" type="INT"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-29">
+        <createTable tableName="iwcs_inv_task_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="inv_order_no" remarks="业务单号，如盘点单号" type="VARCHAR(32)"/>
+            <column name="sub_order_no" remarks="子单号" type="VARCHAR(32)"/>
+            <column name="bincode" remarks="仓位" type="VARCHAR(64)"/>
+            <column name="sn" remarks="按SN盘点时，指定的sn号" type="VARCHAR(64)"/>
+            <column defaultValueNumeric="0" name="inv_status" remarks="盘点状态，0未盘点，1已盘点" type="INT"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-30">
+        <createTable tableName="iwcs_stg">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wh_code" remarks="仓库编号" type="VARCHAR(16)"/>
+            <column name="stg_name" remarks="策略名称，如FIFO等" type="VARCHAR(64)"/>
+            <column name="stg_type" remarks="策略类型，0入库，1出库" type="INT"/>
+            <column name="stg_code" remarks="策略编码" type="VARCHAR(32)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-31">
+        <createTable tableName="outstock_biz_order">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="biz_order_code" remarks="业务单据编号" type="VARCHAR(32)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-32">
+        <createTable tableName="outstock_mat_config_relation">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="config_code" remarks="配置号" type="VARCHAR(32)"/>
+            <column name="order_mat_gen_code" remarks="出库材料编号" type="VARCHAR(16)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-33">
+        <createTable tableName="outstock_order_action_config">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="config_code" remarks="配置号" type="VARCHAR(32)"/>
+            <column name="config_type" remarks="配置类型：派车单等" type="VARCHAR(16)"/>
+            <column name="config_prop1" remarks="配置参数" type="VARCHAR(1)"/>
+            <column name="config_prop2" remarks="配置参数" type="VARCHAR(32)"/>
+            <column name="config_prop3" remarks="配置参数" type="VARCHAR(32)"/>
+            <column name="config_prop4" remarks="配置参数" type="VARCHAR(32)"/>
+            <column defaultValue="0" name="config_prop5" remarks="配置参数" type="VARCHAR(32)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-34">
+        <createTable tableName="outstock_order_mat">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="order_mat_gen_code" remarks="出库材料唯一标识码（自动生成）" type="VARCHAR(64)"/>
+            <column name="biz_order_code" remarks="业务订单号" type="VARCHAR(32)"/>
+            <column name="src_order_item" remarks="上游item" type="VARCHAR(32)"/>
+            <column name="mat_code" remarks="物料号" type="VARCHAR(32)"/>
+            <column name="out_qty" remarks="计划出库数量" type="DECIMAL(13, 3)"/>
+            <column name="batch_num" remarks="批次" type="VARCHAR(64)"/>
+            <column name="cargo_owner" remarks="货主" type="VARCHAR(32)"/>
+            <column name="area_code" remarks="库区" type="VARCHAR(32)"/>
+            <column name="Out_unit" remarks="出库单位:计量单位、容器" type="VARCHAR(32)"/>
+            <column defaultValue="0" name="pre_sn_flag" remarks="是否指定SN出库，0为否，1为是" type="VARCHAR(1)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-35">
+        <createTable tableName="outstock_order_sn">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="order_mat_gen_code" remarks="出库材料号" type="VARCHAR(64)"/>
+            <column name="sn" remarks="条码" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-36">
+        <createTable tableName="outstock_record">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="outstk_type" remarks="出库类型：normal,exception_adjust" type="VARCHAR(32)"/>
+            <column name="stk_code" remarks="库存编号" type="VARCHAR(16)"/>
+            <column name="config_code" remarks="出库配置号" type="VARCHAR(32)"/>
+            <column name="biz_order_code" remarks="业务单号" type="VARCHAR(32)"/>
+            <column name="biz_order_item" remarks="业务单项，如行号" type="VARCHAR(32)"/>
+            <column name="stk_character1" remarks="特征值1" type="VARCHAR(255)"/>
+            <column name="stk_character2" remarks="特征值2" type="VARCHAR(255)"/>
+            <column name="stk_character3" remarks="特征值3" type="VARCHAR(255)"/>
+            <column name="stk_character4" remarks="特征值4" type="VARCHAR(255)"/>
+            <column name="stk_character5" remarks="特征值5" type="VARCHAR(255)"/>
+            <column name="cargo_owner" remarks="货主" type="VARCHAR(32)"/>
+            <column name="mat_code" remarks="物料号" type="VARCHAR(32)"/>
+            <column name="bincode" remarks="货架号" type="VARCHAR(64)"/>
+            <column name="outstock_type" remarks="出库方式，0按数量，1按条码" type="VARCHAR(1)"/>
+            <column name="total_qty" remarks="出库数量" type="DECIMAL(13, 3)"/>
+            <column name="wh_code" remarks="仓库编号" type="VARCHAR(16)"/>
+            <column name="stg_area_code" remarks="库区编号" type="VARCHAR(16)"/>
+            <column name="batch_num" remarks="批次号" type="VARCHAR(32)"/>
+            <column name="spe_stk_flag" remarks="特殊库存标识" type="VARCHAR(32)"/>
+            <column name="spe_stk_code" remarks="特殊库存编号" type="VARCHAR(32)"/>
+            <column defaultValue="0" name="freeze_flag" remarks="库存冻结标识，0未冻结，1已冻结" type="VARCHAR(1)"/>
+            <column name="container_code" remarks="容器编号" type="VARCHAR(16)"/>
+            <column name="container_flag" remarks="按容器管理标识，0否，1是" type="VARCHAR(1)"/>
+            <column defaultValueNumeric="0" name="sku_qty" remarks="包装规格数量，按容器管理时启用，其他为0" type="DECIMAL(13, 3)"/>
+            <column name="blk_rea_code" remarks="冻结原因" type="VARCHAR(16)"/>
+            <column name="bum_code" remarks="基本计量单位" type="VARCHAR(16)"/>
+            <column name="mat_weight" remarks="单位物料重量" type="DECIMAL(13, 3)"/>
+            <column name="weight_unit" remarks="重量单位" type="VARCHAR(16)"/>
+            <column name="plant_code" remarks="工厂" type="VARCHAR(16)"/>
+            <column name="src_biz_req_code" remarks="上游呼叫编号" type="VARCHAR(64)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-37">
+        <createTable tableName="outstock_record_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="outstock_record" remarks="出库记录id" type="INT"/>
+            <column name="stk_code" remarks="库存唯一编号" type="VARCHAR(32)"/>
+            <column name="bincode" remarks="仓位编号" type="VARCHAR(64)"/>
+            <column name="sn" remarks="条码" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-38">
+        <createTable tableName="stock">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="stk_code" remarks="库存唯一编号" type="VARCHAR(32)"/>
+            <column name="order_no" remarks="业务单号" type="VARCHAR(32)"/>
+            <column name="sub_order_no" remarks="子单号" type="VARCHAR(32)"/>
+            <column name="cargo_owner" remarks="货主" type="VARCHAR(32)"/>
+            <column name="mat_code" remarks="物料号" type="VARCHAR(32)"/>
+            <column name="bincode" remarks="仓位号" type="VARCHAR(64)"/>
+            <column name="pod_code" remarks="货架号" type="VARCHAR(64)"/>
+            <column name="init_qty" remarks="原始库存数" type="DECIMAL(13, 3)"/>
+            <column name="total_qty" remarks="总数量(当前库内)" type="DECIMAL(13, 3)"/>
+            <column name="available_qty" remarks="有效数量" type="DECIMAL(13, 3)"/>
+            <column name="lock_qty" remarks="锁定数量" type="DECIMAL(13, 3)"/>
+            <column name="stk_character1" remarks="特征值1" type="VARCHAR(255)"/>
+            <column name="stk_character2" remarks="特征值2" type="VARCHAR(255)"/>
+            <column name="stk_character3" remarks="特征值3" type="VARCHAR(255)"/>
+            <column name="stk_character4" remarks="特征值4" type="VARCHAR(255)"/>
+            <column name="stk_character5" remarks="特征值5" type="VARCHAR(255)"/>
+            <column name="wh_code" remarks="仓库编号" type="VARCHAR(32)"/>
+            <column name="stg_area_code" remarks="库区编号" type="VARCHAR(32)"/>
+            <column name="batch_num" remarks="批次号" type="VARCHAR(32)"/>
+            <column name="spe_stk_flag" remarks="特殊库存标识" type="VARCHAR(32)"/>
+            <column name="spe_stk_code" remarks="特殊库存编号" type="VARCHAR(32)"/>
+            <column name="freeze_flag" remarks="库存冻结标识，0未冻结，1已冻结" type="VARCHAR(1)"/>
+            <column name="blk_rea_code" remarks="冻结原因" type="VARCHAR(16)"/>
+            <column name="bum_code" remarks="基本计量单位" type="VARCHAR(16)"/>
+            <column defaultValueNumeric="0" name="mat_weight" remarks="单位物料重量" type="DECIMAL(13, 3)"/>
+            <column name="weight_unit" remarks="重量单位" type="VARCHAR(16)"/>
+            <column name="plant_code" remarks="工厂" type="VARCHAR(16)"/>
+            <column name="inv_stat" remarks="盘点标识，0否，1是" type="VARCHAR(1)"/>
+            <column name="last_inv_date" remarks="上次盘点日期" type="datetime"/>
+            <column name="container_code" remarks="容器编号" type="VARCHAR(16)"/>
+            <column name="container_flag" remarks="按容器管理标识，0否，1是" type="VARCHAR(1)"/>
+            <column defaultValueNumeric="0" name="sku_qty" remarks="包装规格数量，按容器管理时启用，其他为0" type="DECIMAL(13, 3)"/>
+            <column name="date_last_pm" remarks="最近入库时间" type="datetime"/>
+            <column name="date_last_rm" remarks="最近出库时间" type="datetime"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-39">
+        <createTable tableName="stock_container">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="stk_code" remarks="库存唯一编号" type="VARCHAR(32)"/>
+            <column name="cont_code" remarks="容器编号" type="VARCHAR(16)"/>
+            <column defaultValueNumeric="0" name="sku_qty" remarks="包装规格数量，按容器管理时启用，其他为0" type="DECIMAL(13, 3)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-40">
+        <createTable tableName="stock_sn">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="stk_code" remarks="库存唯一编号" type="VARCHAR(32)"/>
+            <column name="cont_code" remarks="容器编号" type="VARCHAR(16)"/>
+            <column defaultValue="0" name="sn" remarks="SN号" type="VARCHAR(64)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-41">
+        <createTable tableName="wb_agv_task">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="task_no" remarks="工作台任务编号：自动生成唯一任务编号，" type="VARCHAR(64)"/>
+            <column name="wb_code" remarks="工作台编号" type="VARCHAR(16)"/>
+            <column name="task_type" remarks="任务类型，0出库，1入库，2盘点" type="VARCHAR(32)"/>
+            <column name="task_status" remarks="任务状态，0正在执行，9已完成" type="VARCHAR(64)"/>
+            <column name="end_time" remarks="任务结束时间" type="datetime"/>
+            <column name="agv_action_rotate_type" remarks="AGV旋转属性，到达工作台后AGV的动作" type="VARCHAR(32)"/>
+            <column name="agv_lift_status" remarks="到达目的地后是否举升着 举升-0 放下-1 放下释放小车-2" type="VARCHAR(32)"/>
+            <column name="agv_return_pod_type" remarks="默认为空：货架回库　任务类型：1－初始化入库　2－循环入库回库　3－理货业务回库　4－自动化工作台回库（货架放下）"
+                    type="VARCHAR(32)"/>
+            <column name="biz_item1" remarks="业务参数1" type="VARCHAR(255)"/>
+            <column name="biz_item2" remarks="业务参数2" type="VARCHAR(255)"/>
+            <column name="biz_item3" remarks="业务参数3" type="VARCHAR(255)"/>
+            <column defaultValue="0" name="src_client_type" remarks="呼叫客户端类型，0手持，1PC端，2上游系统" type="VARCHAR(1)"/>
+            <column name="src_req_code" remarks="呼叫编号,上游系统指定" type="VARCHAR(64)"/>
+            <column name="src_client_code" remarks="呼叫客户端编号，手持设备编号等" type="VARCHAR(64)"/>
+            <column name="src_user_code" remarks="呼叫用户编号，登陆用户等" type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column name="biz_item4" remarks="业务参数4" type="VARCHAR(255)"/>
+            <column name="biz_item5" remarks="业务参数5" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ted (generated)" id="1550455310899-42">
+        <createTable tableName="wb_task_detail">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="wb_task_no" remarks="货架号" type="VARCHAR(64)"/>
+            <column name="pod_code" remarks="货架号" type="VARCHAR(64)"/>
+            <column name="bin_code" remarks="托盘号，该货架任意一个bincode，冗余用" type="VARCHAR(64)"/>
+            <column name="task_status" remarks="任务状态，0已创建，9已结束" type="VARCHAR(1)"/>
+            <column name="task_seq" remarks="任务code,和海康交互使用，海康叫task_code" type="VARCHAR(64)"/>
+            <column name="end_time" remarks="结束时间" type="datetime"/>
+            <column name="task_finished_type" remarks="任务完成类型:NORMALBATCH_CANCLED" type="VARCHAR(32)"/>
+            <column name="agv_action_rotate_type" remarks="AGV旋转属性，支持单个的设置行为" type="VARCHAR(32)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="201905231829" author="han">
+        <addColumn tableName="outstock_order_mat">
+            <column name="outstock_time" type="datetime" remarks="出库时间"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

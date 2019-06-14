@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BaseWhAreaMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BaseWhArea">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="wh_code" jdbcType="VARCHAR" property="whCode"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+        <result column="area_status" jdbcType="INTEGER" property="areaStatus"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, wh_code, area_code, area_name, area_status, remark, delete_flag, created_by,
+        created_time, last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_wh_area
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectCountByWhCodeAndDeleteFlag" resultType="java.lang.Integer">
+    SELECT  COUNT(1) FROM base_wh_area WHERE wh_code = #{whCode} and delete_flag = #{deleteFlag}
+  </select>
+    <select id="selectByAreaCodeAndDeleteFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_wh_area
+        where area_code = #{areaCode} and delete_flag = #{deleteFlag}
+    </select>
+
+</mapper>

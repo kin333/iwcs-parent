@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.WbAgvTaskMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.WbAgvTask">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="task_no" jdbcType="VARCHAR" property="taskNo"/>
+        <result column="wb_code" jdbcType="VARCHAR" property="wbCode"/>
+        <result column="task_type" jdbcType="VARCHAR" property="taskType"/>
+        <result column="task_status" jdbcType="VARCHAR" property="taskStatus"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="agv_action_rotate_type" jdbcType="VARCHAR" property="agvActionRotateType"/>
+        <result column="agv_lift_status" jdbcType="VARCHAR" property="agvLiftStatus"/>
+        <result column="agv_return_pod_type" jdbcType="VARCHAR" property="agvReturnPodType"/>
+        <result column="biz_item1" jdbcType="VARCHAR" property="bizItem1"/>
+        <result column="biz_item2" jdbcType="VARCHAR" property="bizItem2"/>
+        <result column="biz_item3" jdbcType="VARCHAR" property="bizItem3"/>
+        <result column="src_client_type" jdbcType="VARCHAR" property="srcClientType"/>
+        <result column="src_req_code" jdbcType="VARCHAR" property="srcReqCode"/>
+        <result column="src_client_code" jdbcType="VARCHAR" property="srcClientCode"/>
+        <result column="src_user_code" jdbcType="VARCHAR" property="srcUserCode"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="biz_item4" jdbcType="VARCHAR" property="bizItem4"/>
+        <result column="biz_item5" jdbcType="VARCHAR" property="bizItem5"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="biz_order_code" jdbcType="VARCHAR" property="bizOrderCode"/>
+        <result column="cycletp" jdbcType="VARCHAR" property="cycletp"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, task_no, wb_code, task_type, task_status, end_time, agv_action_rotate_type, agv_lift_status,
+        agv_return_pod_type, biz_item1, biz_item2, biz_item3, src_client_type, src_req_code,
+        src_client_code, src_user_code, remark, biz_item4, biz_item5,
+        created_by, created_time, last_modified_by, last_modified_time, biz_order_code, cycletp
+    </sql>
+    <sql id="Task_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        wat.id, wat.task_no,wat.wb_code, wat.task_type, wat.task_status, wat.end_time, wat.agv_action_rotate_type,
+        wat.agv_lift_status,wat.agv_return_pod_type, wat.biz_item1, wat.biz_item2, wat.biz_item3, wat.src_client_type,
+        wat.src_req_code,
+        wat.src_client_code, wat.src_user_code, wat.remark, wat.biz_item4, wat.biz_item5,
+        wat.created_by, wat.created_time, wat.last_modified_by, wat.last_modified_time,wat.biz_order_code
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from wb_agv_task
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <select id="selectCountNotCompletedTaskByWbCodeAndTaskEndStatus" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM wb_agv_task WHERE wb_code = #{wbCode} and task_status &lt; #{taskStatus}
+  </select>
+    <select id="selectUnCompletedTaskInfoByPodCodeAndTaskType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Task_Column_List"/>
+        FROM
+        wb_agv_task wat
+        LEFT JOIN wb_task_detail wtd ON wat.task_no = wtd.wb_task_no
+        WHERE
+        wtd.pod_code = #{podCode}
+        <if test="taskType != null and taskType != ''">
+            AND wat.task_type = #{taskType}
+        </if>
+        AND wtd.task_status = '0'
+        AND wat.task_status = '0'
+    </select>
+    <select id="selectArrivedTaskByPodCodeAndTaskType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Task_Column_List"/>
+        FROM
+        agv_task_log atl
+        LEFT JOIN wb_task_detail wtd ON atl.task_seq = wtd.task_seq
+        LEFT JOIN wb_agv_task wat ON wtd.wb_task_no = wat.task_no
+        WHERE
+        wat.task_status = '0'
+        AND wtd.task_status = '0'
+        AND atl.log_type = '1'
+        AND atl.pod_code = #{podCode}
+        <if test="taskType != null and taskType != ''">
+            AND wat.task_type = #{taskType}
+        </if>
+    </select>
+
+    <select id="selectUnCompletedTaskByWbCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from wb_agv_task
+        where wb_code = #{wbCode} and task_status &lt; '9'
+    </select>
+    <select id="selectCountNotCompletedTaskNumByMutexWbCode" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM wb_agv_task WHERE task_status &lt; '9' and wb_code in
+        <foreach collection="wbCodes" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        where wb_code = #{wbCode} and task_status &lt; '9'
+    </select>
+    <update id="updateTaskStatusByTaskNoAndTaskStatus">
+    update wb_agv_task  set  task_status = #{taskStatus} , last_modified_time = NOW() where task_no = #{taskNo};
+  </update>
+    <select id="selectedByTaskNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from wb_agv_task
+        where task_no = #{taskNo}
+    </select>
+    <select id="selectCountNotCompletedTaskByWbCodes" resultType="java.lang.Integer">
+        SELECT count(1) FROM wb_agv_task WHERE task_status &lt; '9' AND wb_code in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectCountNotCompletedTaskByWbCodeAndNotPointTaskType" resultType="java.lang.Integer">
+    SELECT count(1) FROM wb_agv_task WHERE task_status &lt; '9' AND wb_code = #{wbCode} and task_type != #{taskType}
+  </select>
+    <select id="selectWbAgvTaskInfo" resultType="com.wisdom.iwcs.domain.task.dto.WbAgvTaskDTO"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        wb_agv_task
+        WHERE
+        1=1
+        <if test="taskType != null and taskType != ''">
+            AND task_type = #{taskType}
+        </if>
+        AND task_status &lt; '9'
+
+    </select>
+</mapper>

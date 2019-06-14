@@ -1,0 +1,2 @@
+INSERT INTO `s_depart` VALUES (1, '青岛盈智科技', '青岛盈智科技公司', 0, 'A001', '1', NULL, NULL, NULL, 'CNTAO', 'TAO', '1', '2018-6-14 15:29:30', '0', 1, 1, NULL, '');
+INSERT INTO `s_depart` VALUES (2, 'IT部', 'IT部', 1, 'A002', '2', '', '', '', NULL, NULL, NULL, '2018-6-19 17:15:24', '0', 1, 1, NULL, '');

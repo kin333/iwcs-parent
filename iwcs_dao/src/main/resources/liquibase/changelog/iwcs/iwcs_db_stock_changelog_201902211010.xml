@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia" id="201902211126-1">
+        <dropColumn tableName="stock" columnName="valid_flag"/>
+    </changeSet>
+    <changeSet author="george" id="201902211126-2">
+        <dropColumn tableName="stock" columnName="lock_qty"/>
+        <addColumn tableName="stock">
+            <column defaultValueNumeric="0" name="lock_qty" remarks="锁定数量" type="DECIMAL(13, 3)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="george" id="201902211126-3">
+        <dropColumn tableName="stock" columnName="freeze_flag"/>
+        <addColumn tableName="stock">
+            <column defaultValueNumeric="0" name="freeze_flag" remarks="库存冻结标识，0未冻结，1已冻结" type="VARCHAR(1)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="george" id="201902211126-4">
+        <dropColumn tableName="stock" columnName="inv_stat"/>
+        <addColumn tableName="stock">
+            <column defaultValueNumeric="0" name="inv_stat" remarks="盘点标识，0否，1是" type="VARCHAR(1)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201903181102-5">
+        <addColumn tableName="stock">
+            <column name="spec_code" remarks="规格编号" type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

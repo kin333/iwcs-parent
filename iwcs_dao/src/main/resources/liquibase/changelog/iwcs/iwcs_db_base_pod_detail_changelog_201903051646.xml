@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia.yang" id="201903051649-01">
+        <dropColumn tableName="base_pod_detail" columnName="stk_stat"/>
+        <addColumn tableName="base_pod_detail">
+            <column defaultValue="0" name="stk_stat" remarks="货物状态，各层是否有货，可视化库存展示用" type="INT">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia.yang" id="201903071601-01">
+        <dropColumn tableName="base_pod_detail" columnName="lock_stat"/>
+        <addColumn tableName="base_pod_detail">
+            <column defaultValue="0" name="lock_stat" remarks="锁状态，0为无锁" type="INT">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="cecilia.yang" id="201903181054-01">
+        <dropColumn tableName="base_pod_detail" columnName="o_bin_cnt"/>
+        <dropColumn tableName="base_pod_detail" columnName="e_bin_cnt"/>
+        <dropColumn tableName="base_pod_detail" columnName="stk_stat"/>
+    </changeSet>
+</databaseChangeLog>

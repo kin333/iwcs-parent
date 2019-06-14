@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.GroupMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.Group">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="group_type" jdbcType="VARCHAR" property="groupType"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="leader_auth_type" jdbcType="VARCHAR" property="leaderAuthType"/>
+        <result column="company_id" jdbcType="INTEGER" property="companyId"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+
+    <resultMap id="GroupDTOMap" type="com.wisdom.iwcs.domain.system.dto.GroupDto">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="group_type" jdbcType="VARCHAR" property="groupType"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="leader_auth_type" jdbcType="VARCHAR" property="leaderAuthType"/>
+        <result column="company_id" jdbcType="INTEGER" property="companyId"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="departname" jdbcType="VARCHAR" property="companyName"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, name, code, group_type, remark, leader_auth_type, company_id, created_by, created_time,
+        last_modified_by, last_modified_time, delete_flag
+    </sql>
+    <select id="selectPage" resultMap="GroupDTOMap">
+        select g.*,d.departname from s_group g left join s_depart d on g.company_id = d.id
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and g.created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and g.created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        <if test="companyId != null">
+            and g.company_id = #{companyId,jdbcType=INTEGER}
+        </if>
+        order by g.last_modified_time desc
+    </select>
+</mapper>

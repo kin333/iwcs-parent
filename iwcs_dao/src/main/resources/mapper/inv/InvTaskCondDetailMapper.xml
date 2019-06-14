@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.inv.InvTaskCondDetailMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.inv.InvTaskCondDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="inv_num" jdbcType="VARCHAR" property="invNum"/>
+        <result column="inv_type" jdbcType="INTEGER" property="invType"/>
+        <result column="stk_order_no" jdbcType="VARCHAR" property="stkOrderNo"/>
+        <result column="stk_sub_order_no" jdbcType="VARCHAR" property="stkSubOrderNo"/>
+        <result column="cargo_owner" jdbcType="VARCHAR" property="cargoOwner"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="stk_character1" jdbcType="VARCHAR" property="stkCharacter1"/>
+        <result column="stk_character2" jdbcType="VARCHAR" property="stkCharacter2"/>
+        <result column="stk_character3" jdbcType="VARCHAR" property="stkCharacter3"/>
+        <result column="stk_character4" jdbcType="VARCHAR" property="stkCharacter4"/>
+        <result column="stk_character5" jdbcType="VARCHAR" property="stkCharacter5"/>
+        <result column="days" jdbcType="INTEGER" property="days"/>
+        <result column="per_sn" jdbcType="INTEGER" property="perSn"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="stg_area_code" jdbcType="VARCHAR" property="stgAreaCode"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, inv_num, inv_type, stk_order_no, stk_sub_order_no, cargo_owner, mat_code, stk_character1,
+        stk_character2, stk_character3, stk_character4, stk_character5, days, per_sn, valid_flag,
+        delete_flag, created_by, created_time, last_modified_by, last_modified_time, stg_area_code
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_cond_detail
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="getCorrespondCondInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_cond_detail
+        where inv_num = #{srcInvNo}
+    </select>
+    <select id="selectInvTaskCondDetail" resultType="com.wisdom.iwcs.domain.inv.InvTaskCondDetail"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_cond_detail
+        where 1=1
+        and inv_num = #{invNum}
+    </select>
+</mapper>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.outstock.OutstockRecordMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.outstock.OutstockRecord">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="outstk_type" jdbcType="VARCHAR" property="outstkType"/>
+        <result column="stk_code" jdbcType="VARCHAR" property="stkCode"/>
+        <result column="config_code" jdbcType="VARCHAR" property="configCode"/>
+        <result column="biz_order_code" jdbcType="VARCHAR" property="bizOrderCode"/>
+        <result column="biz_order_item" jdbcType="VARCHAR" property="bizOrderItem"/>
+        <result column="stk_character1" jdbcType="VARCHAR" property="stkCharacter1"/>
+        <result column="stk_character2" jdbcType="VARCHAR" property="stkCharacter2"/>
+        <result column="stk_character3" jdbcType="VARCHAR" property="stkCharacter3"/>
+        <result column="stk_character4" jdbcType="VARCHAR" property="stkCharacter4"/>
+        <result column="stk_character5" jdbcType="VARCHAR" property="stkCharacter5"/>
+        <result column="cargo_owner" jdbcType="VARCHAR" property="cargoOwner"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="bincode" jdbcType="VARCHAR" property="bincode"/>
+        <result column="outstock_type" jdbcType="VARCHAR" property="outstockType"/>
+        <result column="total_qty" jdbcType="DECIMAL" property="totalQty"/>
+        <result column="wh_code" jdbcType="VARCHAR" property="whCode"/>
+        <result column="stg_area_code" jdbcType="VARCHAR" property="stgAreaCode"/>
+        <result column="batch_num" jdbcType="VARCHAR" property="batchNum"/>
+        <result column="spe_stk_flag" jdbcType="VARCHAR" property="speStkFlag"/>
+        <result column="spe_stk_code" jdbcType="VARCHAR" property="speStkCode"/>
+        <result column="freeze_flag" jdbcType="VARCHAR" property="freezeFlag"/>
+        <result column="container_code" jdbcType="VARCHAR" property="containerCode"/>
+        <result column="container_flag" jdbcType="VARCHAR" property="containerFlag"/>
+        <result column="sku_qty" jdbcType="DECIMAL" property="skuQty"/>
+        <result column="blk_rea_code" jdbcType="VARCHAR" property="blkReaCode"/>
+        <result column="bum_code" jdbcType="VARCHAR" property="bumCode"/>
+        <result column="mat_weight" jdbcType="DECIMAL" property="matWeight"/>
+        <result column="weight_unit" jdbcType="VARCHAR" property="weightUnit"/>
+        <result column="plant_code" jdbcType="VARCHAR" property="plantCode"/>
+        <result column="src_biz_req_code" jdbcType="VARCHAR" property="srcBizReqCode"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="src_user_code" jdbcType="VARCHAR" property="srcUserCode"/>
+        <result column="spec_code" jdbcType="VARCHAR" property="specCode"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, outstk_type, stk_code, config_code, biz_order_code, biz_order_item, stk_character1,
+        stk_character2, stk_character3, stk_character4, stk_character5, cargo_owner, mat_code,
+        bincode, outstock_type, total_qty, wh_code, stg_area_code, batch_num, spe_stk_flag,
+        spe_stk_code, freeze_flag, container_code, container_flag, sku_qty, blk_rea_code,
+        bum_code, mat_weight, weight_unit, plant_code, src_biz_req_code, created_time, last_modified_time,
+        src_user_code,spec_code
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from outstock_record
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectOutStockRecord" resultType="com.wisdom.iwcs.domain.outstock.OutstockRecord"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from outstock_record
+        where 1=1
+        <if test="outstkType != null and outstkType != ''">
+            and outstk_type = #{outstkType}
+        </if>
+        <if test="configCode != null and configCode != ''">
+            and config_code = #{configCode}
+        </if>
+        <if test="bizOrderCode != null and bizOrderCode != ''">
+            and biz_order_code = #{bizOrderCode}
+        </if>
+        <if test="bizOrderItem != null and bizOrderItem != ''">
+            and biz_order_item = #{bizOrderItem}
+        </if>
+        <if test="stkCharacter1 != null and stkCharacter1 != ''">
+            and stk_character1 = #{stkCharacter1}
+        </if>
+        <if test="stkCharacter2 != null and stkCharacter2 != ''">
+            and stk_character2 = #{stkCharacter2}
+        </if>
+        <if test="stkCharacter3 != null and stkCharacter3 != ''">
+            and stk_character3 = #{stkCharacter3}
+        </if>
+        <if test="stkCharacter4 != null and stkCharacter4 != ''">
+            and stk_character4 = #{stkCharacter4}
+        </if>
+        <if test="stkCharacter5 != null and stkCharacter5 != ''">
+            and stk_character5 = #{stkCharacter5}
+        </if>
+        <if test="cargoOwner != null and cargoOwner != ''">
+            and cargo_owner = #{cargoOwner}
+        </if>
+        <if test="matCode != null and matCode != ''">
+            and mat_code = #{matCode}
+        </if>
+        <if test="bincode != null and bincode != ''">
+            and bincode = #{bincode}
+        </if>
+        <if test="podCode != null and podCode != ''">
+            and LEFT(bincode, 6) = #{podCode}
+        </if>
+        <if test="outstockType != null and outstockType != ''">
+            and outstock_type = #{outstockType}
+        </if>
+        <if test="batchNum != null and batchNum != ''">
+            and batch_num = #{batchNum}
+        </if>
+        <if test="speStkFlag != null and speStkFlag != ''">
+            and spe_stk_flag = #{speStkFlag}
+        </if>
+        <if test="freezeFlag != null and freezeFlag != ''">
+            and freeze_flag = #{freezeFlag}
+        </if>
+        <if test="containerCode != null and containerCode != ''">
+            and container_code = #{containerCode}
+        </if>
+        <if test="containerFlag != null and containerFlag != ''">
+            and container_flag = #{containerFlag}
+        </if>
+        <if test="blkReaCode != null and blkReaCode != ''">
+            and blk_rea_code LIKE CONCAT ('%',#{blkReaCode},'%')
+        </if>
+        <if test="plantCode != null and plantCode != ''">
+            and plant_code = #{plantCode}
+        </if>
+        <if test="srcBizReqCode != null and srcBizReqCode != ''">
+            and src_biz_req_code = #{srcBizReqCode}
+        </if>
+        <if test="srcUserCode != null and srcUserCode != ''">
+            and src_user_code = #{srcUserCode}
+        </if>
+        <if test="specCode != null and specCode != ''">
+            and spec_code = #{specCode}
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+    </select>
+</mapper>

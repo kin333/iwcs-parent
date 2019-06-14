@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia" id="201902211122-1">
+        <dropColumn tableName="wb_agv_task" columnName="valid_flag"/>
+        <dropColumn tableName="wb_agv_task" columnName="delete_flag"/>
+    </changeSet>
+
+    <changeSet author="cecilia" id="201902251723-1">
+        <addColumn tableName="wb_agv_task">
+            <column name="biz_virtual_order_code" remarks="上游未按照订单号呼叫时，IWCS自动生成虚拟单据，虚拟单据号与任务绑定，后续操作时追踪单号用"
+                    type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="george" id="201902281412-1">
+        <addColumn tableName="wb_agv_task">
+            <column name="cycletp" remarks="是否循环呼叫,0为否，1为是" type="VARCHAR(1)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="201903011855-1" author="cecilia.yang">
+        <renameColumn tableName="wb_agv_task" oldColumnName="biz_virtual_order_code" newColumnName="biz_order_code"
+                      columnDataType="varchar(64)" remarks="上游未按照订单号呼叫时，IWCS自动生成虚拟单据，虚拟单据号与任务绑定，后续操作时追踪单号用"/>
+    </changeSet>
+</databaseChangeLog>

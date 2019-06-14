@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="ted" id="201902221124-1">
+        <createTable tableName="base_biz_concurrent_rules">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="src_biz_type" remarks="原业务类型编号" type="VARCHAR(64)"/>
+            <column name="unable_concurrent_biz" remarks="与原业务类型不可同时并发的业务类型" type="VARCHAR(64)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

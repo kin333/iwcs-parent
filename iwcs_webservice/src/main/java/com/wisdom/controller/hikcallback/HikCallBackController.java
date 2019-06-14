@@ -1,0 +1,85 @@
+package com.wisdom.controller.hikcallback;
+
+import com.wisdom.config.SystemInterfaceLog;
+import com.wisdom.iwcs.domain.hikSync.*;
+import com.wisdom.service.hikCallback.IHikCallBackGetPodReturnAreaService;
+import com.wisdom.service.hikCallback.IHikCallBackNotifyPodArrService;
+import com.wisdom.service.hikCallback.IHikCallBackSyncService;
+import com.wisdom.service.hikCallback.IHikCallBackTaskNotifyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.*;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.*;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_HIK;
+
+/**
+ * @author Enter your name here...
+ * @version Enter version here..., 17/10/11
+ */
+@RestController
+@RequestMapping("/hikCallback")
+public class HikCallBackController {
+
+    @Autowired
+    private IHikCallBackSyncService IHikCallBackSyncService;
+    @Autowired
+    private IHikCallBackTaskNotifyService IHikCallBackTaskNotifyService;
+    @Autowired
+    private IHikCallBackGetPodReturnAreaService IHikCallBackGetPodReturnAreaService;
+    @Autowired
+    private IHikCallBackNotifyPodArrService IHikCallBackNotifyPodArrService;
+
+    /**
+     * 同步海康基础数据
+     *
+     * @param syncNotifyRequestDto
+     * @return
+     */
+    @PostMapping(value = "/syncNotify")
+    @SystemInterfaceLog(methodCode = SYNC_NOTIFY_CODE, methodName = SYNC_NOTIFY_NAME, methodThansfer = SRC_HIK)
+    public HikSyncResponse receiveSyncBaseInfoNotify(@RequestBody SyncNotifyRequestDto syncNotifyRequestDto) {
+
+        return IHikCallBackSyncService.receiveSyncBaseInfoNotify(syncNotifyRequestDto);
+    }
+
+    /**
+     * 指定条件下通知客户端
+     *
+     * @param notifyClientRequestDTO
+     * @return
+     */
+    @PostMapping(value = "/notifyClient")
+    @SystemInterfaceLog(methodCode = NOTIFY_CLIENT_CODE, methodName = NOTIFY_CLIENT_NAME, methodThansfer = SRC_HIK)
+    public HikSyncResponse receiveTaskNotify(@RequestBody NotifyClientRequestDTO notifyClientRequestDTO) {
+        return IHikCallBackTaskNotifyService.receiveTaskNotify(notifyClientRequestDTO);
+    }
+
+    /**
+     * 海康获取货架回库策略
+     *
+     * @param podReturnAreaRequestDTO
+     * @return
+     */
+    @PostMapping(value = "/podReturnArea")
+    @SystemInterfaceLog(methodCode = POD_RETURN_STRA_CODE, methodName = POD_RETURN_STRA_NAME, methodThansfer = SRC_HIK)
+    public HikReturnPodStraResponse getPodReturnArea(@RequestBody PodReturnAreaRequestDTO podReturnAreaRequestDTO) {
+        return IHikCallBackGetPodReturnAreaService.returnPodReturnArea(podReturnAreaRequestDTO);
+    }
+
+    /**
+     * 通知货架返程回储位
+     *
+     * @param notifyPodArrRequestDTO
+     * @return
+     */
+    @PostMapping(value = "/notifyPodArr")
+    @SystemInterfaceLog(methodCode = NOTIFY_POD_ARR_CODE, methodName = NOTIFY_POD_ARR_NAME, methodThansfer = SRC_HIK)
+    public HikSyncResponse receivePodArriveStorageNotify(@RequestBody NotifyPodArrRequestDTO notifyPodArrRequestDTO) {
+        return IHikCallBackNotifyPodArrService.receivePodArriveStorageNotify(notifyPodArrRequestDTO);
+    }
+
+}

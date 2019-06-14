@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BasePodDetailMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BasePodDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="ber_code" jdbcType="VARCHAR" property="berCode"/>
+        <result column="last_bercode_update_time" jdbcType="TIMESTAMP" property="lastBercodeUpdateTime"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="map_code" jdbcType="VARCHAR" property="mapCode"/>
+        <result column="stg_type_code" jdbcType="VARCHAR" property="stgTypeCode"/>
+        <result column="stg_code" jdbcType="VARCHAR" property="stgCode"/>
+        <result column="coox" jdbcType="VARCHAR" property="coox"/>
+        <result column="cooy" jdbcType="VARCHAR" property="cooy"/>
+        <result column="lock_stat" jdbcType="INTEGER" property="lockStat"/>
+        <result column="pod_prop1" jdbcType="VARCHAR" property="podProp1"/>
+        <result column="pod_prop2" jdbcType="VARCHAR" property="podProp2"/>
+        <result column="pod_prop3" jdbcType="VARCHAR" property="podProp3"/>
+        <result column="pod_prop4" jdbcType="VARCHAR" property="podProp4"/>
+        <result column="pod_prop5" jdbcType="VARCHAR" property="podProp5"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, pod_code, ber_code, last_bercode_update_time, area_code, map_code, stg_type_code,
+        stg_code, coox, cooy, lock_stat, pod_prop1, pod_prop2,
+        pod_prop3, pod_prop4, pod_prop5, valid_flag, delete_flag, created_by, created_time,
+        last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_detail
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <update id="deleteLogicByPodCodes">
+        UPDATE base_pod_detail SET delete_flag = #{deleteFlag} WHERE pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="deleteByPodCodes" parameterType="java.util.List">
+        DELETE FROM base_pod_detail WHERE pod_code IN
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="selectByPodCodeAndValidFlagAndDeleteFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_detail
+        where pod_code = #{podCode} and valid_flag = #{validFlag} and delete_flag = #{deleteFlag}
+    </select>
+    <update id="updatePodTaskLockByPodCodesAndLockStat">
+        UPDATE base_pod_detail SET lock_stat = lock_stat|#{lockStat} WHERE pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+    <select id="selectByTypeAndAreaCodeAndStkStatus" resultMap="BaseResultMap">
+        select bpd.* from base_pod_detail bpd left join base_pod bp on bp.pod_code = bpd.pod_code
+        where 1=1
+        <if test="podTypeCode != null">
+            and pod_type_code = #{podTypeCode}
+        </if>
+        <if test="areaCode != null">
+            and area_code = #{areaCode}
+        </if>
+        <if test="stkStat != null">
+            and stk_stat = #{stkStat}
+        </if>
+        <if test="count != null">
+            limit 0,#{count}
+        </if>
+    </select>
+    <update id="updateAreaCodeByMapCode">
+    UPDATE base_pod_detail SET  area_code = #{areaCode} , last_modified_time = NOW()  WHERE map_code = #{mapCode}
+  </update>
+    <update id="updateValidStatusByPodCodes">
+        UPDATE base_pod_detail SET valid_flag = #{validStatus}, last_modified_time = NOW() WHERE pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+    <update id="removePodTaskLockByPodCodesAndLockStat">
+        UPDATE base_pod_detail SET lock_stat = lock_stat^#{lockStat} WHERE lock_stat&amp;#{lockStat} and pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+    <select id="selectEmptyPodByTypeAndAreaCodeAndStkStatus" resultMap="BaseResultMap">
+        select bpd.* from base_pod_detail bpd left join base_pod bp on bp.pod_code = bpd.pod_code
+        where 1=1 and bpd.pod_code in (select pod_code from base_pod_layer_stk ls GROUP BY pod_code HAVING
+        SUM(e_bincode) = SUM(bincode_count))
+        <if test="excludeLock != null ">
+            and lock_stat&amp;#{excludeLock}=0
+        </if>
+        <if test="podTypeCode != null">
+            and pod_type_code = #{podTypeCode}
+        </if>
+        <if test="areaCode != null">
+            and area_code = #{areaCode}
+        </if>
+        <if test="stkStat != null">
+            and stk_stat = #{stkStat}
+        </if>
+        <if test="count != null">
+            limit 0,#{count}
+        </if>
+
+    </select>
+    <select id="selectPodByPodFliterCon" resultMap="BaseResultMap">
+        select bpd.* from base_pod_detail bpd left join base_pod bp on bp.pod_code = bpd.pod_code where 1 = 1
+        <if test="areaCode != null and areaCode != ''">
+            and bpd.area_code = #{areaCode}
+        </if>
+        <if test="mapCodes != null and mapCodes.size()>0">
+            and bpd.map_code in
+            <foreach collection="mapCodes" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="podTypeCodes != null and podTypeCodes.size() > 0">
+            and bp.pod_type_code in
+            <foreach collection="podTypeCodes" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="exculdePodTaskLockValueSum != null ">
+            and bpd.lock_stat&amp;#{exculdePodTaskLockValueSum}=0
+        </if>
+        <if test="podStkSta != null">
+            and bpd.pod_code in
+            (select pod_code from base_pod_layer_stk ls GROUP BY pod_code HAVING
+            <choose>
+                <when test="podStkSta == @com.wisdom.iwcs.commonDto.fliterConOptions.PodStkEnum@COMPLETELY_EMPTY">
+                    SUM(ls.f_bincode) = 0
+                </when>
+                <when test="podStkSta == @com.wisdom.iwcs.commonDto.fliterConOptions.PodStkEnum@HALF_EMPTY">
+                    SUM(ls.e_bincode) > 0)
+                </when>
+                <when test="podStkSta == @com.wisdom.iwcs.commonDto.fliterConOptions.PodStkEnum@FULL">
+                    SUM(ls.e_bincode) = 0)
+                </when>
+                <otherwise>
+                    SUM(ls.e_bincode) > 0)
+                </otherwise>
+            </choose>
+            )
+        </if>
+
+        <if test="podLayerStkStaCon != null">
+            and bpd.pod_code in
+            (select pod_code from base_pod_layer_stk ls GROUP BY pod_code,layer HAVING
+            <choose>
+                <when test="podLayerStkStaCon.layerConType = @com.wisdom.iwcs.commonDto.fliterConOptions.LayerConTypeEnum@SPEC_LAYERS">
+                    sum(f_bincode)= 0 and ls.layer in
+                    <foreach collection="podLayerStkStaCon.specificLayers" index="index" item="item" open="(" close=")"
+                             separator=",">
+                        #{item}
+                    </foreach>
+                </when>
+                <when test="podLayerStkStaCon.layerConType = @com.wisdom.iwcs.commonDto.fliterConOptions.LayerConTypeEnum@SPEC_LAYER_UP">
+                    sum(f_bincode)= 0 and ls.layer &gt;= #{fromLayer}
+                </when>
+                <when test="podLayerStkStaCon.layerConType = @com.wisdom.iwcs.commonDto.fliterConOptions.LayerConTypeEnum@SPEC_LAYER_DOWN">
+                    sum(f_bincode)= 0 and ls.layer &lt;= #{fromLayer}
+                </when>
+                <when test="podLayerStkStaCon.layerConType = @com.wisdom.iwcs.commonDto.fliterConOptions.LayerConTypeEnum@SPEC_LAYER_BETWEEN">
+                    sum(f_bincode)= 0 and ls.layer &gt;= #{fromLayer} and ls.layer &lt;= #{toLayer}
+                </when>
+            </choose>
+            )
+        </if>
+        <if test="basePodDetailCon != null and basePodDetailCon.stgTypeCode != null and basePodDetailCon.stgTypeCode != ''">
+            and bpd.stg_type_code = #{basePodDetailCon.stgTypeCode}
+        </if>
+        <if test="basePodDetailCon != null and basePodDetailCon.stgCode != null and basePodDetailCon.stgCode != ''">
+            and bpd.stg_code = #{basePodDetailCon.stgCode}
+        </if>
+        <if test="basePodDetailCon != null and basePodDetailCon.podProp1 != null and basePodDetailCon.podProp1 != ''">
+            and bpd.pod_prop1 = #{basePodDetailCon.podProp1}
+        </if>
+        <if test="basePodDetailCon != null and basePodDetailCon.podProp2 != null and basePodDetailCon.podProp2 != ''">
+            and bpd.pod_prop2 = #{basePodDetailCon.podProp2}
+        </if>
+        <if test="basePodDetailCon != null and basePodDetailCon.podProp3 != null and basePodDetailCon.podProp3 != ''">
+            and bpd.pod_prop3 = #{basePodDetailCon.podProp3}
+        </if>
+        <if test="basePodDetailCon != null and basePodDetailCon.podProp4 != null and basePodDetailCon.podProp4 != ''">
+            and bpd.pod_prop4 = #{basePodDetailCon.podProp4}
+        </if>
+        <if test="basePodDetailCon != null and basePodDetailCon.podProp5 != null and basePodDetailCon.podProp5 != ''">
+            and bpd.pod_prop5= #{basePodDetailCon.podProp5}
+        </if>
+
+    </select>
+</mapper>

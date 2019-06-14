@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="george" id="201902211406-1">
+        <addColumn tableName="instock_order">
+            <column name="order_no" remarks="订单编号" type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="george" id="201902211406-2">
+        <addColumn tableName="instock_order">
+            <column name="area_code" remarks="库区编号" type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="george" id="201902211406-3">
+        <dropColumn tableName="instock_order" columnName="instock_record_id"/>
+    </changeSet>
+</databaseChangeLog>

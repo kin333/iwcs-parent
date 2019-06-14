@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BasePodBincodeMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BasePodBincode">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="bincode" jdbcType="VARCHAR" property="bincode"/>
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="bin_type_code" jdbcType="VARCHAR" property="binTypeCode"/>
+        <result column="direction" jdbcType="INTEGER" property="direction"/>
+        <result column="layer" jdbcType="INTEGER" property="layer"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, bincode, pod_code, bin_type_code, direction, layer, valid_flag, delete_flag,
+        created_by, created_time, last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_bincode
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <update id="deleteLogicByPodCodes">
+        UPDATE base_pod_bincode SET delete_flag = #{deleteFlag}, last_modified_time = NOW() WHERE pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="deleteByPodCodes" parameterType="java.util.List">
+        DELETE FROM base_pod_bincode WHERE pod_code IN
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectByPodCodeAndLayerAndValidFlagAndDeletedFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_bincode
+        where pod_code = #{podCode} and layer = #{layer} and valid_flag = #{validFlag} and delete_flag = #{deletedFlag}
+    </select>
+    <select id="podConvertBincode" resultType="java.lang.String" parameterType="java.util.List">
+        select bincode from base_pod_bincode WHERE
+        pod_code IN
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        Group by pod_code
+    </select>
+    <update id="updateValidStatusByPodCodes">
+        UPDATE base_pod_bincode SET valid_flag = #{validStatus}, last_modified_time = NOW() WHERE pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+    <select id="selectByBincodeAndValidFlagAndDeletedFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_bincode WHERE bincode = #{bincode} and valid_flag = #{validFlag} and delete_flag = #{deletedFlag}
+    </select>
+    <select id="selectRandomBincodeByPodCodeAndValidFlagAndDeletedFlag" resultType="java.lang.String">
+    SELECT
+        bincode
+    FROM
+        base_pod_bincode
+    WHERE
+        pod_code = #{podCode}
+    AND valid_flag = #{validFlag}
+    AND delete_flag = #{deletedFlag}
+    LIMIT 1
+  </select>
+    <select id="selectRandomBincodeListByPodCodeListAndValidFlagAndDeleteFlag" resultType="java.lang.String">
+        SELECT
+        bincode
+        FROM
+        base_pod_bincode
+        WHERE
+        valid_flag = #{validFlag}
+        AND delete_flag = #{deletedFlag}
+        AND pod_code IN
+        <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        GROUP BY
+        pod_code
+    </select>
+</mapper>

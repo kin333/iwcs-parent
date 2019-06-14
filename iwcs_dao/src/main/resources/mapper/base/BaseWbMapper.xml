@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BaseWbMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BaseWb">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="wb_code" jdbcType="VARCHAR" property="wbCode"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="map_code" jdbcType="VARCHAR" property="mapCode"/>
+        <result column="ber_code" jdbcType="VARCHAR" property="berCode"/>
+        <result column="wb_name" jdbcType="VARCHAR" property="wbName"/>
+        <result column="wb_type" jdbcType="VARCHAR" property="wbType"/>
+        <result column="coox" jdbcType="VARCHAR" property="coox"/>
+        <result column="cooy" jdbcType="VARCHAR" property="cooy"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, wb_code, area_code, map_code, ber_code, wb_name, wb_type, coox, cooy, remark,
+        valid_flag, delete_flag, created_by, created_time, last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_wb
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <select id="selectByBerCodeAndDeleteFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_wb
+        where ber_code = #{berCode} and delete_flag = #{deleteFlag}
+    </select>
+    <select id="selectByWbCodeAndValidFlagAndDeleteFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_wb
+        where wb_code = #{wbCode} and delete_flag = #{deleteFlag} and valid_flag = #{validFlag}
+    </select>
+    <update id="updateAreaCodeByMapCode">
+    UPDATE base_wb SET  area_code = #{areaCode} , last_modified_time = NOW()  WHERE map_code = #{mapCode}
+  </update>
+    <select id="selectFreeWbInfoByValidFlagAndDeleteFlag" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        base_wb
+        WHERE
+        wb_code NOT IN (
+        SELECT
+        wb_code
+        FROM
+        wb_agv_task
+        WHERE
+        task_status &lt; '9'
+        )
+        AND valid_flag = #{validFlag}
+        AND delete_flag = #{deleteFlag}
+    </select>
+</mapper>

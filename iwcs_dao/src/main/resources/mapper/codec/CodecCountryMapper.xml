@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.codec.CodecCountryMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.codec.CodecCountry">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="country_ch" jdbcType="VARCHAR" property="countryCh"/>
+        <result column="country_en" jdbcType="VARCHAR" property="countryEn"/>
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
+        <result column="identifier" jdbcType="VARCHAR" property="identifier"/>
+        <result column="freeze_flag" jdbcType="VARCHAR" property="freezeFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+
+    <resultMap id="CodecCountryDtoResultMap" type="com.wisdom.iwcs.domain.codec.dto.CodecCountryDto">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="country_ch" jdbcType="VARCHAR" property="countryCh"/>
+        <result column="country_en" jdbcType="VARCHAR" property="countryEn"/>
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
+        <result column="identifier" jdbcType="VARCHAR" property="identifier"/>
+        <result column="freeze_flag" jdbcType="VARCHAR" property="freezeFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by_name" jdbcType="INTEGER" property="createdByName"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        cc.id, cc.country_ch, cc.country_en, cc.country_code, cc.identifier, cc.freeze_flag, cc.created_by,
+        cc.created_time,
+        cc.last_modified_by, cc.last_modified_time, cc.delete_flag
+    </sql>
+    <select id="selectPage" resultMap="CodecCountryDtoResultMap">
+        select<include refid="Base_Column_List"/>,su.real_name as created_by_name
+        from codec_country cc
+        left join s_user su on su.id = cc.created_by
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and (cc.country_ch LIKE CONCAT('%',#{searchKey},'%') or cc.country_en LIKE CONCAT('%',#{searchKey},'%') or
+            cc.country_code LIKE CONCAT('%',#{searchKey},'%') or cc.identifier LIKE CONCAT('%',#{searchKey},'%') )
+        </if>
+        <if test="identifier != null and identifier != ''">
+            and identifier = #{identifier}
+        </if>
+
+        order by cc.created_time desc
+    </select>
+</mapper>

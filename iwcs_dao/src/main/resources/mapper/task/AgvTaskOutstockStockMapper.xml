@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.AgvTaskOutstockStockMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.AgvTaskOutstockStock">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="task_no" jdbcType="VARCHAR" property="taskNo"/>
+        <result column="cargo_owner" jdbcType="VARCHAR" property="cargoOwner"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="stg_area_code" jdbcType="VARCHAR" property="stgAreaCode"/>
+        <result column="batch_num" jdbcType="VARCHAR" property="batchNum"/>
+        <result column="stk_character1" jdbcType="VARCHAR" property="stkCharacter1"/>
+        <result column="stk_character2" jdbcType="VARCHAR" property="stkCharacter2"/>
+        <result column="stk_character3" jdbcType="VARCHAR" property="stkCharacter3"/>
+        <result column="stk_character4" jdbcType="VARCHAR" property="stkCharacter4"/>
+        <result column="stk_character5" jdbcType="VARCHAR" property="stkCharacter5"/>
+        <result column="total_need_qty" jdbcType="DECIMAL" property="totalNeedQty"/>
+        <result column="already_call_qty" jdbcType="DECIMAL" property="alreadyCallQty"/>
+        <result column="missing_qty" jdbcType="DECIMAL" property="missingQty"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="already_call_sns" jdbcType="VARCHAR" property="alreadyCallSns"/>
+        <result column="missing_sns" jdbcType="VARCHAR" property="missingSns"/>
+        <result column="pre_sn_flag" jdbcType="VARCHAR" property="preSnFlag"/>
+        <result column="spec_code" jdbcType="VARCHAR" property="specCode"/>
+        <result column="container_code" jdbcType="VARCHAR" property="containerCode"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, task_no, cargo_owner, mat_code, stg_area_code, batch_num, stk_character1, stk_character2,
+        stk_character3, stk_character4, stk_character5, total_need_qty, already_call_qty,
+        missing_qty, created_time, last_modified_time, already_call_sns, missing_sns, pre_sn_flag,
+        spec_code, container_code
+    </sql>
+    <sql id="Stock_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        atos.id, atos.task_no, atos.cargo_owner, atos.mat_code, atos.stg_area_code, atos.batch_num, atos.stk_character1,
+        atos.stk_character2,
+        atos.stk_character3, atos.stk_character4, atos.stk_character5, atos.total_need_qty, atos.already_call_qty,
+        atos.missing_qty, atos.created_time, atos.last_modified_time, atos.already_call_sns,
+        atos.missing_sns,atos.pre_sn_flag,
+        atos.spec_code, atos.container_code
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from agv_task_outstock_stock
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectMissingOutstockStockInfoOrderByCreatedTimeAsc" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Stock_Column_List"/>
+        FROM
+        agv_task_outstock_stock atos
+        LEFT JOIN wb_agv_task wat ON atos.task_no = wat.task_no
+        WHERE
+        atos.missing_qty &gt; 0
+        AND wat.task_status &lt; '9'
+        ORDER BY
+        created_time ASC
+    </select>
+    <select id="selectMissingOutstockStockInfoByTaskNo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Stock_Column_List"/>
+        FROM
+        agv_task_outstock_stock atos
+        WHERE atos.task_no = #{taskNo}
+        AND atos.missing_qty &gt; 0
+    </select>
+    <select id="selectByOutstockCalPodParam" resultMap="BaseResultMap"
+            resultType="com.wisdom.iwcs.domain.outstock.dto.OutstockCalPodParamDTO">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        agv_task_outstock_stock
+        WHERE 1=1
+        <if test="stgAreaCode != null and stgAreaCode != ''">
+            and stg_area_code = #{stgAreaCode}
+        </if>
+        <if test="cargoOwner != null and cargoOwner != ''">
+            and cargo_owner = #{cargoOwner}
+        </if>
+        <if test="matCode != null and matCode != ''">
+            and mat_code = #{matCode}
+        </if>
+        <if test="batchNum != null and batchNum != ''">
+            and batch_num = #{batchNum}
+        </if>
+        <if test="stkCharacter1 != null and stkCharacter1 != ''">
+            and stk_character1 = #{stkCharacter1}
+        </if>
+        <if test="stkCharacter2 != null and stkCharacter2 != ''">
+            and stk_character2 = #{stkCharacter2}
+        </if>
+        <if test="stkCharacter3 != null and stkCharacter3 != ''">
+            and stk_character3 = #{stkCharacter3}
+        </if>
+        <if test="stkCharacter4 != null and stkCharacter4 != ''">
+            and stk_character4 = #{stkCharacter4}
+        </if>
+        <if test="stkCharacter5 != null and stkCharacter5 != ''">
+            and stk_character5 = #{stkCharacter5}
+        </if>
+        <if test="containerCode != null and containerCode != ''">
+            and container_code = #{containerCode}
+        </if>
+        <if test="specCode != null and specCode != ''">
+            and spec_code = #{specCode}
+        </if>
+        <if test="wbTaskNo != null and wbTaskNo != ''">
+            and task_no = #{wbTaskNo}
+        </if>
+    </select>
+    <select id="selectAgvTaskOutStockByTaskNo" resultType="com.wisdom.iwcs.domain.task.AgvTaskOutstockStock"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        agv_task_outstock_stock
+        WHERE 1=1
+        AND task_no = #{taskNo}
+    </select>
+</mapper>

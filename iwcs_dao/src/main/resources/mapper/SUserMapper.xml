@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.SUserMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.SUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="is_sys_account" jdbcType="INTEGER" property="isSysAccount"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="employee_number" jdbcType="VARCHAR" property="employeeNumber"/>
+        <result column="duty" jdbcType="VARCHAR" property="duty"/>
+        <result column="compose_name" jdbcType="VARCHAR" property="composeName"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="is_business" jdbcType="TINYINT" property="isBusiness"/>
+        <result column="is_sales" jdbcType="TINYINT" property="isSales"/>
+        <result column="is_operation" jdbcType="TINYINT" property="isOperation"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="DATE" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="DATE" property="lastModifiedTime"/>
+        <result column="work_address" jdbcType="VARCHAR" property="workAddress"/>
+        <result column="wechat" jdbcType="VARCHAR" property="wechat"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="super_admin_flag" jdbcType="INTEGER" property="superAdminFlag"/>
+    </resultMap>
+    <resultMap id="QueryResultMap" type="com.wisdom.iwcs.domain.system.SUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="is_sys_account" jdbcType="INTEGER" property="isSysAccount"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="employee_number" jdbcType="VARCHAR" property="employeeNumber"/>
+        <result column="duty" jdbcType="VARCHAR" property="duty"/>
+        <result column="compose_name" jdbcType="VARCHAR" property="composeName"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="is_business" jdbcType="TINYINT" property="isBusiness"/>
+        <result column="is_sales" jdbcType="TINYINT" property="isSales"/>
+        <result column="is_operation" jdbcType="TINYINT" property="isOperation"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="DATE" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="DATE" property="lastModifiedTime"/>
+        <result column="work_address" jdbcType="VARCHAR" property="workAddress"/>
+        <result column="wechat" jdbcType="VARCHAR" property="wechat"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="super_admin_flag" jdbcType="INTEGER" property="superAdminFlag"/>
+    </resultMap>
+    <resultMap id="UserAuthResultMap" type="com.wisdom.iwcs.domain.system.SUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="employee_number" jdbcType="VARCHAR" property="employeeNumber"/>
+        <result column="duty" jdbcType="VARCHAR" property="duty"/>
+        <result column="compose_name" jdbcType="VARCHAR" property="composeName"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="is_business" jdbcType="TINYINT" property="isBusiness"/>
+        <result column="is_sales" jdbcType="TINYINT" property="isSales"/>
+        <result column="is_operation" jdbcType="TINYINT" property="isOperation"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="DATE" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="DATE" property="lastModifiedTime"/>
+        <result column="super_admin_flag" jdbcType="INTEGER" property="superAdminFlag"/>
+    </resultMap>
+
+    <!--<resultMap id="InvoiceUserMap" type="com.wisdom.iwcs.domain.financial.dto.FinancialInvoiceUserInfoDTO">-->
+    <!--<id column="id" jdbcType="INTEGER" property="id" />-->
+    <!--<result column="departname" jdbcType="VARCHAR" property="departname" />-->
+    <!--<result column="real_name" jdbcType="VARCHAR" property="realName" />-->
+    <!--<result column="employee_number" jdbcType="VARCHAR" property="employeeId" />-->
+    <!--<result column="departId" jdbcType="INTEGER" property="departId" />-->
+    <!--</resultMap>-->
+
+    <sql id="Base_Column_List">
+    id, user_name, is_sys_account, password, real_name, email, mobile, employee_number,duty, compose_name, sex,
+     is_business,is_sales,is_operation
+     status,
+    created_by, created_time, last_modified_by, last_modified_time, work_address, wechat, 
+    delete_flag, super_admin_flag
+  </sql>
+    <sql id="Base_Column_List_withAlias_u">
+    u.id, u.user_name, u.is_sys_account, u.password, u.real_name, u.email, u.mobile, u.employee_number,u.duty, u.compose_name, u.sex, u.status,
+    u.created_by, u.created_time, u.last_modified_by, u.last_modified_time, u.work_address, u.wechat,
+    u.delete_flag, super_admin_flag
+  </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="QueryResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user
+        where user_name = #{userName,jdbcType=VARCHAR} and delete_flag=0
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from s_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.wisdom.iwcs.domain.system.SUser">
+    insert into s_user (id, user_name, is_sys_account, 
+      password, real_name, email, 
+      mobile, employee_number,
+      duty, compose_name,
+      sex,is_business,is_sales,is_operation, status, created_by, created_time,
+      last_modified_by, last_modified_time, work_address, 
+      wechat,
+      delete_flag
+      )
+    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{isSysAccount,jdbcType=INTEGER}, 
+      #{password,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{employeeNumber,jdbcType=VARCHAR},
+       #{duty,jdbcType=VARCHAR}, #{composeName,jdbcType=VARCHAR},
+      #{sex,jdbcType=VARCHAR}, #{isBusiness,jdbcType=TINYINT},#{isSales,jdbcType=TINYINT},#{isOperation,jdbcType=TINYINT},
+      #{status,jdbcType=TINYINT}, #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=BIGINT},
+      #{lastModifiedBy,jdbcType=INTEGER}, #{lastModifiedTime,jdbcType=BIGINT}, #{workAddress,jdbcType=VARCHAR}, 
+      #{wechat,jdbcType=VARCHAR},
+      #{deleteFlag,jdbcType=INTEGER}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.wisdom.iwcs.domain.system.SUser" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into s_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="isSysAccount != null">
+                is_sys_account,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="employeeNumber != null">
+                employee_number,
+            </if>
+            <if test="duty != null">
+                duty,
+            </if>
+            <if test="composeName != null">
+                compose_name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="isBusiness != null">
+                is_business,
+            </if>
+            <if test="isSales != null">
+                is_sales,
+            </if>
+            <if test="isOperation != null">
+                is_operation,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="lastModifiedBy != null">
+                last_modified_by,
+            </if>
+            <if test="lastModifiedTime != null">
+                last_modified_time,
+            </if>
+            <if test="workAddress != null">
+                work_address,
+            </if>
+            <if test="wechat != null">
+                wechat,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="isSysAccount != null">
+                #{isSysAccount,jdbcType=INTEGER},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="employeeNumber != null">
+                #{employeeNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="duty != null">
+                #{duty,jdbcType=VARCHAR},
+            </if>
+            <if test="composeName != null">
+                #{composeName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="isBusiness != null">
+                #{isBusiness,jdbcType=TINYINT},
+            </if>
+            <if test="isSales != null">
+                #{isSales,jdbcType=TINYINT},
+            </if>
+            <if test="isOperation != null">
+                #{isOperation,jdbcType=TINYINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=BIGINT},
+            </if>
+            <if test="lastModifiedBy != null">
+                #{lastModifiedBy,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifiedTime != null">
+                #{lastModifiedTime,jdbcType=BIGINT},
+            </if>
+            <if test="workAddress != null">
+                #{workAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="wechat != null">
+                #{wechat,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.wisdom.iwcs.domain.system.SUser">
+        update s_user
+        <set>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="isSysAccount != null">
+                is_sys_account = #{isSysAccount,jdbcType=INTEGER},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="employeeNumber != null">
+                employee_number = #{employeeNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="duty != null">
+                duty = #{duty,jdbcType=VARCHAR},
+            </if>
+            <if test="composeName != null">
+                compose_name = #{composeName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="isBusiness !=null">
+                is_business =#{isBusiness,jdbcType=TINYINT},
+            </if>
+            <if test="isSales !=null">
+                is_sales =#{isSales,jdbcType=TINYINT},
+            </if>
+            <if test="isOperation !=null">
+                is_operation =#{isOperation,jdbcType=TINYINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=DATE},
+            </if>
+            <if test="lastModifiedBy != null">
+                last_modified_by = #{lastModifiedBy,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifiedTime != null">
+                last_modified_time = #{lastModifiedTime,jdbcType=DATE},
+            </if>
+            <if test="workAddress != null">
+                work_address = #{workAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="wechat != null">
+                wechat = #{wechat,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.wisdom.iwcs.domain.system.SUser">
+    update s_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      is_sys_account = #{isSysAccount,jdbcType=INTEGER},
+      password = #{password,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      employee_number = #{employeeNumber,jdbcType=VARCHAR},
+      duty = #{duty,jdbcType=VARCHAR},
+      compose_name = #{composeName,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      created_by = #{createdBy,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=DATE},
+      last_modified_by = #{lastModifiedBy,jdbcType=INTEGER},
+      last_modified_time = #{lastModifiedTime,jdbcType=DATE},
+      work_address = #{workAddress,jdbcType=VARCHAR},
+      wechat = #{wechat,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPage" parameterType="java.util.Map" resultMap="QueryResultMap">
+        select
+        *
+        from s_user su
+        where 1=1 and delete_flag = 0
+        <if test="searchKey !=null and searchKey !=''">
+            and (
+            su.real_name LIKE CONCAT('%',#{searchKey},'%')
+            or su.user_name LIKE CONCAT('%',#{searchKey},'%')
+            or su.mobile LIKE CONCAT('%',#{searchKey},'%')
+            or su.email LIKE CONCAT('%',#{searchKey},'%')
+            )
+        </if>
+        <if test="userName != null">
+            and su.user_name = #{userName,jdbcType=VARCHAR}
+        </if>
+        <if test="id != null">
+            and su.id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="userId != null">
+            and su.created_by = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="companyId != null">
+            and id in (
+            select user_id from s_depart_user where company_id=#{companyId,jdbcType=INTEGER}
+            )
+        </if>
+        order by su.id
+    </select>
+    <update id="deleteByIds" parameterType="java.util.List">
+        update s_user
+        <set>
+            delete_flag = 1
+        </set>
+        where id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <!-- 根据用户登录名和状态值查询用户 -->
+    <select id="findOneByUserNameAndStatus" resultMap="UserAuthResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_user
+        where user_name = #{userName} and status= #{status}
+    </select>
+    <!--根据用户登录名、公司id和状态值查询用户  -->
+    <select id="findOneByUserNameAndCompanyIdAndStatus" resultMap="UserAuthResultMap">
+        select
+        DISTINCT (u.id),
+        <include refid="Base_Column_List_withAlias_u"/>
+        from s_user u left join s_depart_user sdu on sdu.user_id = u.id
+        where u.user_name = #{userName} and u.status= #{status} and sdu.company_id = #{companyId}
+    </select>
+    <update id="enabledUsers" parameterType="java.util.List">
+        UPDATE s_user
+        <set>
+            status = 1
+        </set>
+        where id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="disabledUsers" parameterType="java.util.List">
+        UPDATE s_user
+        <set>
+            status = 0
+        </set>
+        where id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <select id="getAllUsers" resultMap="BaseResultMap">
+    SELECT * from s_user where  delete_flag=0;
+  </select>
+    <select id="getCompanyUsers" resultMap="BaseResultMap">
+    SELECT * from s_user where  delete_flag=0
+    and id in
+    (select user_id from s_depart_user where company_id=#{companyId})
+  </select>
+
+    <select id="getUsersByIds" resultMap="BaseResultMap">
+        select * from s_user
+        where delete_flag=0 and id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <update id="updateUserPassword">
+        update s_user
+        <set>
+            password = #{password,jdbcType=VARCHAR}
+        </set>
+        where id = #{userId}
+    </update>
+
+    <select id="userNoInThisList" resultMap="BaseResultMap">
+        select * from s_user where delete_flag=0
+        <if test="list != null and list.size>0">
+            and id not in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="getUserByMap" resultMap="BaseResultMap">
+        select * from s_user where delete_flag=0
+        <if test="list != null and list.size>0">
+            and id in
+            <foreach collection="idList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="searchKey !=null and searchKey !=''">
+            and (
+            user_name LIKE CONCAT('%',#{searchKey},'%')
+            or
+            real_name LIKE CONCAT('%',#{searchKey},'%')
+            or
+            mobile LIKE CONCAT('%',#{searchKey},'%')
+            )
+        </if>
+    </select>
+
+    <select id="checkUserNameExist" resultType="integer">
+        select count(*) from s_user where delete_flag=0 and user_name = #{userName,jdbcType=VARCHAR}
+        <if test="userId !=null and userId !=''">
+            and id != #{userId}
+        </if>
+    </select>
+</mapper>

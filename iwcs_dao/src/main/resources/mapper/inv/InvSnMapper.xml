@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.inv.InvSnMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.inv.InvSn">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="task_id" jdbcType="INTEGER" property="taskId"/>
+        <result column="bincode" jdbcType="VARCHAR" property="bincode"/>
+        <result column="sys_sn" jdbcType="VARCHAR" property="sysSn"/>
+        <result column="inv_sn" jdbcType="VARCHAR" property="invSn"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, task_id, bincode, sys_sn, inv_sn, valid_flag, delete_flag, created_by, created_time,
+        last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_sn
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <update id="updateInvSNResults" parameterType="com.wisdom.iwcs.domain.inv.InvSn">
+    update inv_sn
+      set inv_sn = #{invSn},
+        last_modified_by = #{lastModifiedBy},
+        last_modified_time = #{lastModifiedTime}
+       where  task_id = #{taskId} and bincode = #{bincode}
+   </update>
+</mapper>

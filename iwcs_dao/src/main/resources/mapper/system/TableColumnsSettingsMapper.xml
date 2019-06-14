@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.TableColumnsSettingsMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.TableColumnsSettings">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="table_name" jdbcType="VARCHAR" property="tableName"/>
+        <result column="columns_settings" jdbcType="VARCHAR" property="columnsSettings"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, table_name, columns_settings, created_by, created_time, last_modified_by, last_modified_time,
+        delete_flag
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_table_columns_settings
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+    </select>
+    <delete id="deleteByTableName" parameterType="com.wisdom.iwcs.domain.system.dto.TableColumnsSettingsDto">
+    DELETE FROM s_table_columns_settings WHERE table_name = #{tableName,jdbcType=VARCHAR} AND created_by = #{createdBy,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByLayout" parameterType="com.wisdom.iwcs.domain.system.dto.TableColumnsSettingsDto">
+    DELETE FROM s_table_columns_settings WHERE table_name = #{tableName,jdbcType=VARCHAR}
+  </delete>
+</mapper>

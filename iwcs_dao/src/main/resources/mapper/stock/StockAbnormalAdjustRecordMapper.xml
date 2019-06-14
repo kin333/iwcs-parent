@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.stock.StockAbnormalAdjustRecordMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.stock.StockAbnormalAdjustRecord">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="before_adjust_stk_code" jdbcType="VARCHAR" property="beforeAdjustStkCode"/>
+        <result column="after_adjust_stk_code" jdbcType="VARCHAR" property="afterAdjustStkCode"/>
+        <result column="src_adjust_no" jdbcType="VARCHAR" property="srcAdjustNo"/>
+        <result column="sys_adjust_no" jdbcType="VARCHAR" property="sysAdjustNo"/>
+        <result column="adjust_type" jdbcType="VARCHAR" property="adjustType"/>
+        <result column="src_adjust_user_code" jdbcType="VARCHAR" property="srcAdjustUserCode"/>
+        <result column="stg_area_code" jdbcType="VARCHAR" property="stgAreaCode"/>
+        <result column="adjust_qty" jdbcType="DECIMAL" property="adjustQty"/>
+        <result column="before_sno" jdbcType="VARCHAR" property="beforeSno"/>
+        <result column="after_sno" jdbcType="VARCHAR" property="afterSno"/>
+        <result column="before_cargo_owner" jdbcType="VARCHAR" property="beforeCargoOwner"/>
+        <result column="before_mat_code" jdbcType="VARCHAR" property="beforeMatCode"/>
+        <result column="before_bincode" jdbcType="VARCHAR" property="beforeBincode"/>
+        <result column="before_pod_code" jdbcType="VARCHAR" property="beforePodCode"/>
+        <result column="before_batch_num" jdbcType="VARCHAR" property="beforeBatchNum"/>
+        <result column="before_container_code" jdbcType="VARCHAR" property="beforeContainerCode"/>
+        <result column="before_spec_code" jdbcType="VARCHAR" property="beforeSpecCode"/>
+        <result column="before_stk_character1" jdbcType="VARCHAR" property="beforeStkCharacter1"/>
+        <result column="before_stk_character2" jdbcType="VARCHAR" property="beforeStkCharacter2"/>
+        <result column="before_stk_character3" jdbcType="VARCHAR" property="beforeStkCharacter3"/>
+        <result column="before_stk_character4" jdbcType="VARCHAR" property="beforeStkCharacter4"/>
+        <result column="before_stk_character5" jdbcType="VARCHAR" property="beforeStkCharacter5"/>
+        <result column="after_cargo_owner" jdbcType="VARCHAR" property="afterCargoOwner"/>
+        <result column="after_mat_code" jdbcType="VARCHAR" property="afterMatCode"/>
+        <result column="after_bincode" jdbcType="VARCHAR" property="afterBincode"/>
+        <result column="after_pod_code" jdbcType="VARCHAR" property="afterPodCode"/>
+        <result column="after_batch_num" jdbcType="VARCHAR" property="afterBatchNum"/>
+        <result column="after_container_code" jdbcType="VARCHAR" property="afterContainerCode"/>
+        <result column="after_spec_code" jdbcType="VARCHAR" property="afterSpecCode"/>
+        <result column="after_stk_character1" jdbcType="VARCHAR" property="afterStkCharacter1"/>
+        <result column="after_stk_character2" jdbcType="VARCHAR" property="afterStkCharacter2"/>
+        <result column="after_stk_character3" jdbcType="VARCHAR" property="afterStkCharacter3"/>
+        <result column="after_stk_character4" jdbcType="VARCHAR" property="afterStkCharacter4"/>
+        <result column="after_stk_character5" jdbcType="VARCHAR" property="afterStkCharacter5"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="adjust_wb_code" jdbcType="VARCHAR" property="adjustWbCode"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs"
+               type="com.wisdom.iwcs.domain.stock.StockAbnormalAdjustRecord">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="adjust_sn_list" jdbcType="LONGVARCHAR" property="adjustSnList"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, before_adjust_stk_code, after_adjust_stk_code, src_adjust_no, sys_adjust_no,
+        adjust_type, src_adjust_user_code, stg_area_code, adjust_qty, before_sno, after_sno,
+        before_cargo_owner, before_mat_code, before_bincode, before_pod_code, before_batch_num,
+        before_container_code, before_spec_code, before_stk_character1, before_stk_character2,
+        before_stk_character3, before_stk_character4, before_stk_character5, after_cargo_owner,
+        after_mat_code, after_bincode, after_pod_code, after_batch_num, after_container_code,
+        after_spec_code, after_stk_character1, after_stk_character2, after_stk_character3,
+        after_stk_character4, after_stk_character5, created_time, last_modified_time,adjust_wb_code
+    </sql>
+    <sql id="Blob_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        adjust_sn_list
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stock_abnormal_adjust_record
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+</mapper>

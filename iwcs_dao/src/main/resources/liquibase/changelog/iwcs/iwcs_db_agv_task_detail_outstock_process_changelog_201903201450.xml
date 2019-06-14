@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia.yang" id="201903201451-01">
+        <addColumn tableName="agv_task_detail_outstock_process">
+            <column name="cal_outstock_sns" remarks="存在指定SN呼叫时，该层bincode应拿SN" type="VARCHAR(255)"></column>
+            <column name="actual_outstock_sns" remarks="存在指定SN呼叫时，缺失的SN信息" type="VARCHAR(255)"></column>
+            <column defaultValue="0" name="pre_sn_flag" remarks="是否指定SN出库，0为否，1为是" type="VARCHAR(1)"></column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

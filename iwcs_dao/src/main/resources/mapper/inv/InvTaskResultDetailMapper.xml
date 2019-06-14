@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.inv.InvTaskResultDetailMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.inv.InvTaskResultDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="src_inv_no" jdbcType="INTEGER" property="srcInvNo"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="sub_order_no" jdbcType="VARCHAR" property="subOrderNo"/>
+        <result column="cargo_owner" jdbcType="VARCHAR" property="cargoOwner"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="stk_character1" jdbcType="VARCHAR" property="stkCharacter1"/>
+        <result column="stk_character2" jdbcType="VARCHAR" property="stkCharacter2"/>
+        <result column="stk_character3" jdbcType="VARCHAR" property="stkCharacter3"/>
+        <result column="stk_character4" jdbcType="VARCHAR" property="stkCharacter4"/>
+        <result column="stk_character5" jdbcType="VARCHAR" property="stkCharacter5"/>
+        <result column="per_sn" jdbcType="INTEGER" property="perSn"/>
+        <result column="task_desc" jdbcType="VARCHAR" property="taskDesc"/>
+        <result column="inv_status" jdbcType="INTEGER" property="invStatus"/>
+        <result column="podcode" jdbcType="VARCHAR" property="podcode"/>
+        <result column="bincode" jdbcType="VARCHAR" property="bincode"/>
+        <result column="stk_code" jdbcType="VARCHAR" property="stkCode"/>
+        <result column="sys_qty" jdbcType="DECIMAL" property="sysQty"/>
+        <result column="inv_qty" jdbcType="DECIMAL" property="invQty"/>
+        <result column="inv_result_report_time" jdbcType="TIMESTAMP" property="invResultReportTime"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, src_inv_no, order_no, sub_order_no, cargo_owner, mat_code, stk_character1, stk_character2,
+        stk_character3, stk_character4, stk_character5, per_sn, task_desc, inv_status, podcode,
+        bincode, stk_code, sys_qty, inv_qty, inv_result_report_time, valid_flag, delete_flag,
+        created_by, created_time, last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_result_detail
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <update id="updateActualInvData" parameterType="com.wisdom.iwcs.domain.inv.InvTaskResultDetail">
+        UPDATE inv_task_result_detail
+        SET
+        <if test="invQty != null and invQty != ''">
+            inv_qty = #{invQty},
+            inv_status = 1,
+            last_modified_by =#{lastModifiedBy},
+            last_modified_time = #{lastModifiedTime}
+        </if>
+        WHERE
+        bincode = #{bincode} and src_inv_no = #{srcInvNo}
+    </update>
+    <select id="queryInvResultOfSrcInvNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_result_detail
+        where inv_status =1
+        <if test="srcInvNo != null and srcInvNo != '' ">
+            and src_inv_no =#{srcInvNo}
+        </if>
+    </select>
+
+    <select id="selectAllBySrcInvNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task_result_detail
+        where 1=1
+        and src_inv_no =#{srcInvNo}
+    </select>
+</mapper>

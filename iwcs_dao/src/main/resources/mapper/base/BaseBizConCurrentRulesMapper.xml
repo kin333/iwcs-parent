@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BaseBizConCurrentRulesMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BaseBizConCurrentRules">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="src_biz_type" jdbcType="VARCHAR" property="srcBizType"/>
+        <result column="unable_concurrent_biz" jdbcType="VARCHAR" property="unableConcurrentBiz"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, src_biz_type, unable_concurrent_biz, remark, created_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_biz_concurrent_rules
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+
+    <select id="selectBySrcBizType" resultType="java.lang.String">
+    select  unable_concurrent_biz from base_biz_concurrent_rules
+    where src_biz_type = #{srcBizType}
+  </select>
+</mapper>

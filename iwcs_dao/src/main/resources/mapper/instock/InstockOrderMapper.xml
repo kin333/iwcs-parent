@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.instock.InstockOrderMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.instock.InstockOrder">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
+        <result column="wh_code" jdbcType="VARCHAR" property="whCode"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="src" jdbcType="VARCHAR" property="src"/>
+        <result column="order_prop1" jdbcType="VARCHAR" property="orderProp1"/>
+        <result column="order_prop2" jdbcType="VARCHAR" property="orderProp2"/>
+        <result column="order_prop3" jdbcType="VARCHAR" property="orderProp3"/>
+        <result column="order_prop4" jdbcType="VARCHAR" property="orderProp4"/>
+        <result column="order_prop5" jdbcType="VARCHAR" property="orderProp5"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, order_no, order_type, wh_code, area_code, src, order_prop1, order_prop2, order_prop3, order_prop4,
+        order_prop5, remark, valid_flag, created_by, created_time, last_modified_by, last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from instock_order
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="checkInstockOrder" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from instock_order
+        where order_no = #{orderNo,jdbcType=VARCHAR} and valid_flag = 0
+    </select>
+    <select id="selectInstockOrder" resultType="com.wisdom.iwcs.domain.instock.dto.InstockOrderDTO"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from instock_order
+        where 1=1
+        and valid_flag = 0
+        <if test="orderType != null and orderType != ''">
+            and order_type LIKE CONCAT ('%',#{orderType},'%')
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and order_no LIKE CONCAT ('%',#{orderNo},'%')
+        </if>
+        <if test="orderProp1 != null and orderProp1 != ''">
+            and order_prop1 = #{orderProp1}
+        </if>
+        <if test="orderProp2 != null and orderProp2 != ''">
+            and order_prop2 = #{orderProp2}
+        </if>
+        <if test="orderProp3 != null and orderProp3 != ''">
+            and order_prop3 = #{orderProp3}
+        </if>
+        <if test="orderProp4 != null and orderProp4 != ''">
+            and order_prop4 = #{orderProp4}
+        </if>
+        <if test="areaCode != null and areaCode != ''">
+            and area_code = #{areaCode}
+        </if>
+        <if test="startTime != null and startTime >= 0">
+            and UNIX_TIMESTAMP(created_time) &gt;= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
+        </if>
+        <if test="endTime != null and endTime >= 0">
+            and UNIX_TIMESTAMP(created_time) &lt;= (#{endTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
+        </if>
+        order by last_modified_time desc
+    </select>
+</mapper>

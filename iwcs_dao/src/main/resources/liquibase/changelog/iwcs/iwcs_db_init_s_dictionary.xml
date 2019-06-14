@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia (generated)" id="201902251743-7">
+        <createTable tableName="s_dictionary">
+            <column autoIncrement="true" name="id" remarks="主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="dict_type" remarks="类别" type="VARCHAR(50)"/>
+            <column name="dict_type_name" remarks="类别说明" type="VARCHAR(50)"/>
+            <column name="dict_name" remarks="名称" type="VARCHAR(50)"/>
+            <column name="dict_value" remarks="值" type="VARCHAR(51)"/>
+            <column name="sort_code" remarks="排序" type="INT"/>
+            <column name="status" remarks="激活状态" type="TINYINT(3)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="BIGINT"/>
+            <column name="last_modified_by" remarks="更新人" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="BIGINT"/>
+            <column defaultValueNumeric="1" name="delete_flag" remarks="删除标记 0为删除 1为正常" type="INT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

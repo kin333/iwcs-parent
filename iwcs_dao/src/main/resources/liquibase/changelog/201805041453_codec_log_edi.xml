@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Mr.Du" id="201805041453-1">
+        <createTable tableName="codec_log_edi">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="log_id" remarks="LOGID唯一标识" type="VARCHAR(20)"/>
+            <column name="oper_time" remarks="操作时间" type="datetime"/>
+            <column defaultValue="" name="oper_name" remarks="操作人员" type="VARCHAR(40)"/>
+            <column defaultValueNumeric="" name="oper_id" remarks="操作人员JOBID" type="INT"/>
+            <column defaultValueNumeric="9" name="oper_type" remarks="操作类型 9=新增 4=变更 3=删除" type="INT"/>
+            <column defaultValue="" name="order_no" remarks="业务流水号" type="VARCHAR(50)"/>
+            <column defaultValue="" name="bl_no" remarks="提单号 Bl_No" type="VARCHAR(50)"/>
+            <column defaultValue="" name="sys_code" remarks="系统代码" type="VARCHAR(10)"/>
+            <column defaultValue="" name="ship_name" remarks="船公司" type="VARCHAR(20)"/>
+            <column defaultValue="" name="edi_msg_type" remarks="报文类型" type="VARCHAR(30)"/>
+            <column defaultValue="" name="edi_name" remarks="报文名称" type="VARCHAR(100)"/>
+            <column defaultValue="0" name="if_file" remarks="是否生成了本地文件 0=否 1=是" type="VARCHAR(1)"/>
+            <column defaultValue="" name="file_name" remarks="本地文件名称" type="VARCHAR(100)"/>
+            <column defaultValue="0" name="if_date" remarks="是否保存了数据 0=否 1=是" type="VARCHAR(1)"/>
+            <column name="file_data" remarks="edi报文数据" type="TEXT"/>
+            <column defaultValue="" name="bl_no_array" remarks="报文里的所有提单号" type="VARCHAR(200)"/>
+            <column defaultValue="0" name="if_ftp" remarks="是否自动上传了FTP 0=否 1=是" type="VARCHAR(1)"/>
+            <column defaultValue="" name="note" remarks="备注" type="VARCHAR(200)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="更新人" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标识：0-未删除，1-已删除" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Mr.Du" id="201805041453-2">
+        <addColumn tableName="codec_log_edi">
+            <column name="subsidiary" remarks="子公司(ID)" type="INT"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

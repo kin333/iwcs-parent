@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.TypeMapper">
+
+    <resultMap id="BincodeType" type="com.wisdom.iwcs.domain.base.CodeAndName">
+        <result column="bin_type_code" jdbcType="VARCHAR" property="code"/>
+        <result column="bin_type_name" jdbcType="VARCHAR" property="name"/>
+    </resultMap>
+    <resultMap id="PodType" type="com.wisdom.iwcs.domain.base.CodeAndName">
+        <result column="pod_type_code" jdbcType="VARCHAR" property="code"/>
+        <result column="pod_type_name" jdbcType="VARCHAR" property="name"/>
+    </resultMap>
+    <resultMap id="WhAreaType" type="com.wisdom.iwcs.domain.base.CodeAndName">
+        <result column="area_code" jdbcType="VARCHAR" property="code"/>
+        <result column="area_name" jdbcType="VARCHAR" property="name"/>
+    </resultMap>
+    <resultMap id="WhType" type="com.wisdom.iwcs.domain.base.CodeAndName">
+        <result column="wh_code" jdbcType="VARCHAR" property="code"/>
+        <result column="wh_name" jdbcType="VARCHAR" property="name"/>
+    </resultMap>
+
+    <select id="getBincodeType" resultMap="BincodeType">
+        select DISTINCT bin_type_code,bin_type_name from base_bincode_type
+        where 1=1
+        <if test="whCode != null and whCode != ''">
+            and wh_code = #{whCode}
+        </if>
+    </select>
+    <select id="getPodType" resultMap="PodType">
+        select DISTINCT pod_type_code,pod_type_name from base_pod_type
+        where 1=1
+        <if test="whCode != null and whCode != ''">
+            and wh_code = #{whCode}
+        </if>
+    </select>
+
+    <select id="getWhAreaType" resultMap="WhAreaType">
+        select DISTINCT area_code,area_name from base_wh_area
+        where 1=1
+        <if test="whCode != null and whCode != ''">
+            and wh_code = #{whCode}
+        </if>
+    </select>
+
+    <select id="getWhType" resultMap="WhType">
+        select DISTINCT wh_code,wh_name from base_wh
+    </select>
+
+</mapper>

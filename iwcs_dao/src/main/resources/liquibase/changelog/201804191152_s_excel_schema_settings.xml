@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Mr.Du" id="201804191152-1">
+        <createTable tableName="s_excel_schema_settings">
+            <column autoIncrement="true" name="id" remarks="方案ID" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="schema_name" remarks="方案名称" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="table_name" remarks="表名" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="class_name" remarks="分类名称" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="columns_settings" remarks="表格设置" type="VARCHAR(10000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="逻辑删除标记" type="INT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

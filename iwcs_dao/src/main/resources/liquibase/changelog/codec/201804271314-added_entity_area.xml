@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="devin" id="1524806155-002n">
+        <createTable tableName="codec_area" remarks="全国地区信息表">
+            <column autoIncrement="true" name="id" remarks="主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="code" type="VARCHAR(200)" remarks="代码"></column>
+
+            <column name="name" type="VARCHAR(200)" remarks="名称"></column>
+
+            <column name="parent_id" type="INT" remarks="父级id"></column>
+
+            <column name="area_level" type="INT" remarks="级别：0，国家；1，省；2市；3.区；4街道；5；居委会"></column>
+
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

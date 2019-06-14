@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="ted" id="201903070924-1">
+        <createTable tableName="base_pod_layer_stk">
+            <column autoIncrement="true" name="id" remarks="主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="pod_code" remarks="货架编号" type="VARCHAR(50)"/>
+            <column name="pod_type" remarks="货架类别" type="VARCHAR(50)"/>
+            <column name="total_layer" remarks="该货架类型共几层" type="INT"/>
+            <column name="layer" remarks="第几层" type="INT"/>
+            <column name="bincode_count" remarks="改层bincode总数量" type="INT"/>
+            <column name="e_bincode" remarks="空bincode数量" type="INT"/>
+            <column name="f_bincode" remarks="有货bincode数量" type="INT"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

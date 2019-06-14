@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.log.AgvTaskLogMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.log.AgvTaskLog">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="log_type" jdbcType="VARCHAR" property="logType"/>
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="task_seq" jdbcType="VARCHAR" property="taskSeq"/>
+        <result column="bin_code" jdbcType="VARCHAR" property="binCode"/>
+        <result column="agv_sub_task_seq" jdbcType="VARCHAR" property="agvSubTaskSeq"/>
+        <result column="src_ber_code" jdbcType="VARCHAR" property="srcBerCode"/>
+        <result column="trgt_ber_code" jdbcType="VARCHAR" property="trgtBerCode"/>
+        <result column="cur_bercode" jdbcType="VARCHAR" property="curBercode"/>
+        <result column="agv_code" jdbcType="VARCHAR" property="agvCode"/>
+        <result column="task_time" jdbcType="VARCHAR" property="taskTime"/>
+        <result column="agv_prop1" jdbcType="VARCHAR" property="agvProp1"/>
+        <result column="agv_prop2" jdbcType="VARCHAR" property="agvProp2"/>
+        <result column="agv_prop3" jdbcType="VARCHAR" property="agvProp3"/>
+        <result column="source_type" jdbcType="VARCHAR" property="sourceType"/>
+        <result column="source_code" jdbcType="VARCHAR" property="sourceCode"/>
+        <result column="source_prop1" jdbcType="VARCHAR" property="sourceProp1"/>
+        <result column="source_prop2" jdbcType="VARCHAR" property="sourceProp2"/>
+        <result column="source_prop3" jdbcType="VARCHAR" property="sourceProp3"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, log_type, pod_code, task_seq, bin_code, agv_sub_task_seq, src_ber_code, trgt_ber_code,
+        cur_bercode, agv_code, task_time, agv_prop1, agv_prop2, agv_prop3, source_type, source_code,
+        source_prop1, source_prop2, source_prop3, created_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from agv_task_log
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+</mapper>

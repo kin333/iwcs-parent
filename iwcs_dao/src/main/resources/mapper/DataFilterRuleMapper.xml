@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.system.DataFilterRuleMapper">
+    <sql id="Base_Column_List">
+    id, rule_name, rule_column, rule_conditions, rule_value, create_date, create_by, 
+    create_name, update_date, update_by, update_name, menu_id, authority_id
+  </sql>
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.system.DataFilterRule">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="rule_name" jdbcType="VARCHAR" property="ruleName"/>
+        <result column="rule_column" jdbcType="VARCHAR" property="ruleColumn"/>
+        <result column="rule_conditions" jdbcType="VARCHAR" property="ruleConditions"/>
+        <result column="rule_value" jdbcType="VARCHAR" property="ruleValue"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="create_name" jdbcType="VARCHAR" property="createName"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="update_name" jdbcType="VARCHAR" property="updateName"/>
+        <result column="menu_id" jdbcType="INTEGER" property="menuId"/>
+        <result column="authority_id" jdbcType="INTEGER" property="authorityId"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule">
+    insert into s_data_rule (id, rule_name, rule_column, 
+      rule_conditions, rule_value, create_date, 
+      create_by, create_name, update_date, 
+      update_by, update_name, menu_id, authority_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{ruleName,jdbcType=VARCHAR}, #{ruleColumn,jdbcType=VARCHAR}, 
+      #{ruleConditions,jdbcType=VARCHAR}, #{ruleValue,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{createName,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateName,jdbcType=VARCHAR}, #{menuId,jdbcType=VARCHAR},
+      #{authorityId,jdbcType=INTEGER}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule">
+        insert into s_data_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="ruleName != null">
+                rule_name,
+            </if>
+            <if test="ruleColumn != null">
+                rule_column,
+            </if>
+            <if test="ruleConditions != null">
+                rule_conditions,
+            </if>
+            <if test="ruleValue != null">
+                rule_value,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createName != null">
+                create_name,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateName != null">
+                update_name,
+            </if>
+            <if test="menuId != null">
+                menu_id,
+            </if>
+            <if test="authorityId != null">
+                authority_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="ruleName != null">
+                #{ruleName,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleColumn != null">
+                #{ruleColumn,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleConditions != null">
+                #{ruleConditions,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleValue != null">
+                #{ruleValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createName != null">
+                #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateName != null">
+                #{updateName,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=INTEGER},
+            </if>
+            <if test="authorityId != null">
+                #{authorityId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertInBatch">
+        insert into s_data_rule (id, rule_name, rule_column, rule_conditions, rule_value, create_date, create_by,
+        create_name, update_date, update_by, update_name, menu_id, authority_id) values
+        <foreach close="" collection="list" index="index" item="item" open="" separator=",">
+            (#{item.id,jdbcType=INTEGER}, #{item.ruleName,jdbcType=VARCHAR}, #{item.ruleColumn,jdbcType=VARCHAR},
+            #{item.ruleConditions,jdbcType=VARCHAR}, #{item.ruleValue,jdbcType=VARCHAR},
+            #{item.createDate,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+            #{item.createName,jdbcType=VARCHAR}, #{item.updateDate,jdbcType=TIMESTAMP},
+            #{item.updateBy,jdbcType=VARCHAR}, #{item.updateName,jdbcType=VARCHAR}, #{item.menuId,jdbcType=INTEGER},
+            #{item.authorityId,jdbcType=INTEGER}),
+        </foreach>
+    </insert>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from s_data_rule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByAuthorityId" parameterType="java.lang.Integer">
+    delete from s_data_rule
+    where authority_id = #{authorityId,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByObject" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule">
+        delete from s_data_rule
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="ruleName != null">
+                and rule_name = #{ruleName,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleColumn != null">
+                and rule_column = #{ruleColumn,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleConditions != null">
+                and rule_conditions = #{ruleConditions,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleValue != null">
+                and rule_value = #{ruleValue,jdbcType=VARCHAR}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="createName != null">
+                and create_name = #{createName,jdbcType=VARCHAR}
+            </if>
+            <if test="updateDate != null">
+                and update_date = #{updateDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateName != null">
+                and update_name = #{updateName,jdbcType=VARCHAR}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </delete>
+    <delete id="deleteByIds">
+        delete from s_data_rule
+        where id in
+        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </delete>
+    <delete id="deleteAll">
+    delete from s_data_rule
+  </delete>
+    <update id="updateById" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule">
+    update s_data_rule
+    set rule_name = #{ruleName,jdbcType=VARCHAR},
+      rule_column = #{ruleColumn,jdbcType=VARCHAR},
+      rule_conditions = #{ruleConditions,jdbcType=VARCHAR},
+      rule_value = #{ruleValue,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_name = #{createName,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_name = #{updateName,jdbcType=VARCHAR},
+      menu_id = #{menuId,jdbcType=INTEGER},
+      authority_id = #{authorityId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByAuthorityIdSelective" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule">
+        update s_data_rule
+        <set>
+            <if test="ruleName != null">
+                rule_name = #{ruleName,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleColumn != null">
+                rule_column = #{ruleColumn,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleConditions != null">
+                rule_conditions = #{ruleConditions,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleValue != null">
+                rule_value = #{ruleValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createName != null">
+                create_name = #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateName != null">
+                update_name = #{updateName,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId != null">
+                menu_id = #{menuId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where authority_id = #{authorityId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByIdSelective" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule">
+        update s_data_rule
+        <set>
+            <if test="ruleName != null">
+                rule_name = #{ruleName,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleColumn != null">
+                rule_column = #{ruleColumn,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleConditions != null">
+                rule_conditions = #{ruleConditions,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleValue != null">
+                rule_value = #{ruleValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createName != null">
+                create_name = #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateName != null">
+                update_name = #{updateName,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId != null">
+                menu_id = #{menuId,jdbcType=INTEGER},
+            </if>
+            <if test="authorityId != null">
+                authority_id = #{authorityId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectOneById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_data_rule
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectOneByObject" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_data_rule
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="ruleName != null">
+                and rule_name = #{ruleName,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleColumn != null">
+                and rule_column = #{ruleColumn,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleConditions != null">
+                and rule_conditions = #{ruleConditions,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleValue != null">
+                and rule_value = #{ruleValue,jdbcType=VARCHAR}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="createName != null">
+                and create_name = #{createName,jdbcType=VARCHAR}
+            </if>
+            <if test="updateDate != null">
+                and update_date = #{updateDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateName != null">
+                and update_name = #{updateName,jdbcType=VARCHAR}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="selectByObject" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_data_rule
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="ruleName != null">
+                and rule_name = #{ruleName,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleColumn != null">
+                and rule_column = #{ruleColumn,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleConditions != null">
+                and rule_conditions = #{ruleConditions,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleValue != null">
+                and rule_value = #{ruleValue,jdbcType=VARCHAR}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="createName != null">
+                and create_name = #{createName,jdbcType=VARCHAR}
+            </if>
+            <if test="updateDate != null">
+                and update_date = #{updateDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateName != null">
+                and update_name = #{updateName,jdbcType=VARCHAR}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="selectByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_data_rule
+        where id in
+        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from s_data_rule
+    </select>
+    <select id="count" parameterType="com.wisdom.iwcs.domain.system.DataFilterRule" resultType="long">
+        select count(1)
+        from s_data_rule
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="ruleName != null">
+                and rule_name = #{ruleName,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleColumn != null">
+                and rule_column = #{ruleColumn,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleConditions != null">
+                and rule_conditions = #{ruleConditions,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleValue != null">
+                and rule_value = #{ruleValue,jdbcType=VARCHAR}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="createName != null">
+                and create_name = #{createName,jdbcType=VARCHAR}
+            </if>
+            <if test="updateDate != null">
+                and update_date = #{updateDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateName != null">
+                and update_name = #{updateName,jdbcType=VARCHAR}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId,jdbcType=INTEGER}
+            </if>
+            <if test="authorityId != null">
+                and authority_id = #{authorityId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="countAll" resultType="long">
+    select count(1) 
+    from s_data_rule
+  </select>
+
+    <select id="selectDataFilterRuleByUserIdAndMenuRoleName" resultMap="BaseResultMap">
+    SELECT
+	sdr.*
+    FROM
+	s_data_rule sdr
+    INNER JOIN s_authority sa ON sa.id = sdr.authority_id
+      AND sa.auth_type = 3
+    INNER JOIN s_authority sa1 ON sa1.id = sa.parent_id
+      AND sa1.`name` = #{menuRoleName, jdbcType=VARCHAR}
+    INNER JOIN s_role_authority sra ON sra.authority_id = sdr.authority_id
+      AND sra.roleid IN (
+	    SELECT
+		  role_ids
+	    FROM
+		  s_user
+	    WHERE
+		  id = #{userId, jdbcType=INTEGER}
+      );
+  </select>
+
+</mapper>

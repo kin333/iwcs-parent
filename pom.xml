@@ -10,12 +10,10 @@
     <modules>
         <module>wisdom_base</module>
         <module>wisdom_common</module>
-        <module>iwcs-modules-core</module>
-        <module>iwcs_web_service</module>
-        <module>iwcs_web_service_rrs_adapter</module>
-        <module>iwcs-modules-api</module>
-        <module>iwcs_modules_api</module>
-        <module>iwcs_modules_pub_api</module>
+        <module>iwcs_modules_core</module>
+        <module>iwcs_dao</module>
+        <module>iwcs_webservice</module>
+        <module>iwcs_service</module>
     </modules>
     <packaging>pom</packaging>
     <name>iwcs-parent</name>
@@ -490,8 +488,10 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>${liquibase.version}</version>
                 <configuration>
-                    <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
-                    <diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
+                    <changeLogFile>src/main/resources/liquibase/master.xml</changeLogFile>
+                    <diffChangeLogFile>
+                        src/main/resources/liquibase/changelog/${maven.build.timestamp}_changelog.xml
+                    </diffChangeLogFile>
                     <driver>com.mysql.jdbc.Driver</driver>
                     <url>jdbc:mysql://localhost:3306/mydb</url>
                     <defaultSchemaName>mydb</defaultSchemaName>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.inv.InvTaskMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.inv.InvTask">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="inv_type" jdbcType="INTEGER" property="invType"/>
+        <result column="src_inv_no" jdbcType="VARCHAR" property="srcInvNo"/>
+        <result column="days" jdbcType="INTEGER" property="days"/>
+        <result column="inv_status" jdbcType="INTEGER" property="invStatus"/>
+        <result column="sys_inv_num" jdbcType="VARCHAR" property="sysInvNum"/>
+        <result column="task_desc" jdbcType="VARCHAR" property="taskDesc"/>
+        <result column="src_user_code" jdbcType="INTEGER" property="srcUserCode"/>
+        <result column="inv_type" jdbcType="INTEGER" property="invType"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!-- clear
+          WARNING - @mbg.generated
+        -->
+        id,src_inv_no,days,inv_status,sys_inv_num,task_desc,src_user_code,
+        inv_type,created_time,last_modified_by,last_modified_time
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <insert id="saveInvTaskInfo" parameterType="com.wisdom.iwcs.domain.inv.InvTask" useGeneratedKeys="true"
+            keyProperty="id">
+    insert  into inv_task (
+  src_inv_no,days,inv_status,sys_inv_num,task_desc,src_user_code,
+  inv_type,created_time,last_modified_by,last_modified_time)
+  values (
+  #{srcInvNo},
+  #{days},
+  #{invStatus},
+  #{sysInvNum},
+  #{taskDesc},
+  #{srcUserCode},
+  #{invType},
+  NOW(),
+  #{srcUserCode},
+  NOW()
+  )
+  </insert>
+    <select id="updateTheFinalStatusOfInvTask" resultType="int" parameterType="com.wisdom.iwcs.domain.inv.InvTask">
+    update inv_task
+    set inv_status = 1 ,
+    last_modified_time = now(),
+    last_modified_by = #{lastModifiedBy}
+    where src_inv_no = #{srcInvNo}
+  </select>
+    <select id="selectInvTask" resultType="com.wisdom.iwcs.domain.inv.InvTask" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from inv_task
+        where 1=1
+        <if test="srcInvNo != null and srcInvNo != ''">
+            and src_inv_no = #{srcInvNo}
+        </if>
+        <if test="days != null">
+            and days = #{days}
+        </if>
+        <if test="invStatus != null">
+            and inv_status = #{invStatus}
+        </if>
+        <if test="srcUserCode != null and srcUserCode != ''">
+            and src_user_code = #{srcUserCode}
+        </if>
+        <if test="invType != null">
+            and inv_type = #{invType}
+        </if>
+        <if test="creatStartTime != null">
+            and created_time &gt;= #{creatStartTime,jdbcType=BIGINT}
+        </if>
+        <if test="creatEndTime != null">
+            and created_time &lt;= #{creatEndTime,jdbcType=BIGINT}
+        </if>
+    </select>
+</mapper>

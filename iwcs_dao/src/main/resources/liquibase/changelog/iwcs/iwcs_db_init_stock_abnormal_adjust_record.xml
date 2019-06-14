@@ -1,0 +1,49 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="cecilia.yang" id="201903211455-1">
+        <createTable tableName="stock_abnormal_adjust_record">
+            <column autoIncrement="true" name="id" remarks="主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="before_adjust_stk_code" remarks="调整前库存编号" type="VARCHAR(32)"/>
+            <column name="after_adjust_stk_code" remarks="调整后库存编号" type="VARCHAR(32)"/>
+            <column name="src_adjust_no" remarks="上游调整编号" type="VARCHAR(64)"/>
+            <column name="sys_adjust_no" remarks="系统自生成调整编号,唯一编号" type="VARCHAR(64)"/>
+            <column name="adjust_type" remarks="调整类型" type="VARCHAR(32)"/>
+            <column name="src_adjust_user_code" remarks="上游调整人" type="VARCHAR(64)"/>
+            <column name="stg_area_code" remarks="库区编号" type="VARCHAR(32)"/>
+            <column name="adjust_qty" remarks="调整数量" type="DECIMAL(13, 3)"/>
+            <column name="adjust_sn_list" remarks="调整SN" type="LONGTEXT"/>
+            <column name="before_sno" remarks="调整前SN" type="VARCHAR(255)"/>
+            <column name="after_sno" remarks="调整后SN" type="VARCHAR(255)"/>
+            <column name="before_cargo_owner" remarks="调整前货主" type="VARCHAR(32)"/>
+            <column name="before_mat_code" remarks="调整前物料号" type="VARCHAR(32)"/>
+            <column name="before_bincode" remarks="调整前仓位号" type="VARCHAR(64)"/>
+            <column name="before_pod_code" remarks="调整前货架号" type="VARCHAR(64)"/>
+            <column name="before_batch_num" remarks="调整前批次号" type="VARCHAR(32)"/>
+            <column name="before_container_code" remarks="调整前容器编号" type="VARCHAR(16)"/>
+            <column name="before_spec_code" remarks="调整前规格编号" type="VARCHAR(64)"/>
+            <column name="before_stk_character1" remarks="调整前特征值1" type="VARCHAR(255)"/>
+            <column name="before_stk_character2" remarks="调整前特征值2" type="VARCHAR(255)"/>
+            <column name="before_stk_character3" remarks="调整前特征值3" type="VARCHAR(255)"/>
+            <column name="before_stk_character4" remarks="调整前特征值4" type="VARCHAR(255)"/>
+            <column name="before_stk_character5" remarks="调整前特征值5" type="VARCHAR(255)"/>
+            <column name="after_cargo_owner" remarks="调整后货主" type="VARCHAR(32)"/>
+            <column name="after_mat_code" remarks="调整后物料号" type="VARCHAR(32)"/>
+            <column name="after_bincode" remarks="调整后仓位号" type="VARCHAR(64)"/>
+            <column name="after_pod_code" remarks="调整后货架号" type="VARCHAR(64)"/>
+            <column name="after_batch_num" remarks="调整后批次号" type="VARCHAR(32)"/>
+            <column name="after_container_code" remarks="调整后容器编号" type="VARCHAR(16)"/>
+            <column name="after_spec_code" remarks="调整后规格编号" type="VARCHAR(64)"/>
+            <column name="after_stk_character1" remarks="调整后特征值1" type="VARCHAR(255)"/>
+            <column name="after_stk_character2" remarks="调整后特征值2" type="VARCHAR(255)"/>
+            <column name="after_stk_character3" remarks="调整后特征值3" type="VARCHAR(255)"/>
+            <column name="after_stk_character4" remarks="调整后特征值4" type="VARCHAR(255)"/>
+            <column name="after_stk_character5" remarks="调整后特征值5" type="VARCHAR(255)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

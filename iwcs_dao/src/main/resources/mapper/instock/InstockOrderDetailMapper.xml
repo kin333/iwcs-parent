@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.instock.InstockOrderDetailMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.instock.InstockOrderDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="instaock_order_id" jdbcType="VARCHAR" property="instaockOrderId"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="sub_order_no" jdbcType="VARCHAR" property="subOrderNo"/>
+        <result column="mat_code" jdbcType="VARCHAR" property="matCode"/>
+        <result column="plant_code" jdbcType="VARCHAR" property="plantCode"/>
+        <result column="priority" jdbcType="VARCHAR" property="priority"/>
+        <result column="batch_num" jdbcType="VARCHAR" property="batchNum"/>
+        <result column="spe_stk_flag" jdbcType="VARCHAR" property="speStkFlag"/>
+        <result column="spe_stk_num" jdbcType="VARCHAR" property="speStkNum"/>
+        <result column="expected_date" jdbcType="TIMESTAMP" property="expectedDate"/>
+        <result column="mat_qty" jdbcType="DECIMAL" property="matQty"/>
+        <result column="mat_unit" jdbcType="VARCHAR" property="matUnit"/>
+        <result column="cargo_owner" jdbcType="VARCHAR" property="cargoOwner"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="sub_order_prop1" jdbcType="VARCHAR" property="subOrderProp1"/>
+        <result column="sub_order_prop2" jdbcType="VARCHAR" property="subOrderProp2"/>
+        <result column="sub_order_prop3" jdbcType="VARCHAR" property="subOrderProp3"/>
+        <result column="sub_order_prop4" jdbcType="VARCHAR" property="subOrderProp4"/>
+        <result column="sub_order_prop5" jdbcType="VARCHAR" property="subOrderProp5"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="in_storage_num" jdbcType="DECIMAL" property="inStorageNum"/>
+        <result column="order_detail_status" jdbcType="VARCHAR" property="orderDetailStatus"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, instaock_order_id, order_no, sub_order_no, mat_code, plant_code, priority, batch_num,
+        spe_stk_flag, spe_stk_num, expected_date, mat_qty, mat_unit, cargo_owner, remark,
+        sub_order_prop1, sub_order_prop2, sub_order_prop3, sub_order_prop4, sub_order_prop5,
+        valid_flag, delete_flag, created_by, created_time, last_modified_by, last_modified_time,
+        in_storage_num,order_detail_status
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from instock_order_detail
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectInstockOrderDetail" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from instock_order_detail
+        where order_no = #{orderNo,jdbcType=VARCHAR} and sub_order_no = #{subOrderNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectInstockDetail" resultType="com.wisdom.iwcs.domain.instock.InstockOrderDetail"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from instock_order_detail
+        where 1=1
+        and delete_flag = 0
+        and order_no = #{orderNo}
+        order by last_modified_time desc
+    </select>
+    <delete id="deleteInstockOrder">
+        delete from instock_order_detail
+        where order_no = #{orderNo,jdbcType=VARCHAR}
+        <if test="subOrderNos != null and subOrderNos != ''">
+            and sub_order_no in subOrderNos
+        </if>
+    </delete>
+    <select id="selectInstockOrderAllDetail" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from instock_order_detail
+        where 1=1
+        <if test="orderNo != null and orderNo != ''">
+            and order_no = #{orderNo}
+        </if>
+        <if test="subOrderNo != null and subOrderNo != ''">
+            and sub_order_no = #{subOrderNo}
+        </if>
+        <if test="matCode != null and matCode != ''">
+            and mat_code = #{matCode}
+        </if>
+        <if test="plantCode != null and plantCode != ''">
+            and plant_code = #{plantCode}
+        </if>
+        <if test="priority != null and priority != ''">
+            and priority = #{priority}
+        </if>
+        <if test="batchNum != null and batchNum != ''">
+            and batch_num = #{batchNum}
+        </if>
+        <if test="speStkFlag != null and speStkFlag != ''">
+            and spe_stk_flag = #{speStkFlag}
+        </if>
+        <if test="speStkNum != null and speStkNum != ''">
+            and spe_stk_num = #{speStkNum}
+        </if>
+        <if test="startExpectedDate != null">
+            and expected_date &gt;= #{startExpectedDate,jdbcType=BIGINT}
+        </if>
+        <if test="endExpectedDate != null">
+            and expected_date &lt;= #{endExpectedDate,jdbcType=BIGINT}
+        </if>
+        <if test="matQty != null and matQty != ''">
+            and mat_qty = #{matQty}
+        </if>
+        <if test="matUnit != null and matUnit != ''">
+            and mat_unit = #{matUnit}
+        </if>
+        <if test="cargoOwner != null and cargoOwner != ''">
+            and cargo_owner = #{cargoOwner}
+        </if>
+        <if test="startCreateTime != null">
+            and created_time &gt;= #{startCreateTime,jdbcType=BIGINT}
+        </if>
+        <if test="endCreateTime != null">
+            and created_time &lt;= #{endCreateTime,jdbcType=BIGINT}
+        </if>
+        <if test="inStorageNum != null and inStorageNum != ''">
+            and in_storage_num = #{inStorageNum}
+        </if>
+        <if test="orderDetailStatus != null and orderDetailStatus != ''">
+            and order_detail_status = #{orderDetailStatus}
+        </if>
+        order by last_modified_time desc
+    </select>
+</mapper>

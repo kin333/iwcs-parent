@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <!--<include file="liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>-->
+    <!--<include file="liquibase/changelog/db.changelog.xml" />-->
+    <!--<include file="liquibase/changelog/201803051530_added_entity_saleAndSeaShips.xml" relativeToChangelogFile="false"/>-->
+
+    <include file="liquibase/changelog/201803081830_added_entity_codecSequenceAndFunc.xml"
+             relativeToChangelogFile="false"/>
+
+    <include file="liquibase/changelog/iwcs/iwcs_db_init.xml" relativeToChangelogFile="false"/>
+
+    <include file="liquibase/changelog/iwcs/iwcs_db_wb_group_detail_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_base_spec_changelog_201902211039.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_instock_order_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_instock_order_detail_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_outstock_order_mat_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <!---->
+    <include file="liquibase/changelog/iwcs/iwcs_db_instock_record_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_outstock_record_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_stock_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_wb_agv_task_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_wb_task_detail_changelog_201902211010.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_base_map_changelog_201902221609.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_biz_concurrent_rules_createtable_201902221123.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_outstock_mat_config_relation_changelog_201902251540.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_outstock_biz_order_changelog_201902251726.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_init_s_dictionary.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_outstock_record_detail_changelog_201902261408.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_s_dictionary_changelog_201902270951.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_wb_biz_config_changelog_201902271510.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_pod_type_changelog_201902271730.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_init_agv_task_detail_outstock_process.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_init_agv_task_outstock_stock.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_mat_changelog_201902271730.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_pod_detail_changelog_201903051646.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_init_base_pod_layer_stk.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_bincode_detail_changelog_201903071604.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_init_instock_call_stra_param.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_spec_changelog_201903181137.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_agv_task_detail_outstock_process_changelog_201903201450.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_agv_task_outstock_stock_changelog_201903201450.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_init_stock_abnormal_adjust_record.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_stock_abnormal_adjust_record_changelog_201903211541.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_init_quartz.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_pod_layer_stk_changelog_201904191039.xml"
+             relativeToChangelogFile="false"/>
+
+    <!--用户自定义信息配置-->
+    <include file="liquibase/changelog/201805071015_added_entity_userDefinedSettings.xml"
+             relativeToChangelogFile="false"/>
+
+
+    <!--系统设置-->
+    <include file="liquibase/changelog/system/201806191506_added_system.xml" relativeToChangelogFile="false"/>
+
+
+    <!--通知-->
+    <include file="liquibase/changelog/notice/201806191554_add_notice.xml" relativeToChangelogFile="false"/>
+
+    <!-- codec init-->
+    <include file="liquibase/changelog/codec/201806191539_add_codec_init.xml" relativeToChangelogFile="false"/>
+
+    <!--区域-->
+    <include file="liquibase/changelog/codec/201804271314-added_entity_area.xml"
+             relativeToChangelogFile="false"/>
+
+    <!-- 盘点-->
+    <include file="liquibase/changelog/iwcs/iwcs_db_inv_201903011010.xml" relativeToChangelogFile="false"/>
+
+</databaseChangeLog>

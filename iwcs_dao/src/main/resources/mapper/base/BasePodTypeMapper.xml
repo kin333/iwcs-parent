@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.base.BasePodTypeMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.base.BasePodType">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="wh_code" jdbcType="VARCHAR" property="whCode"/>
+        <result column="pod_type_code" jdbcType="VARCHAR" property="podTypeCode"/>
+        <result column="pod_type_name" jdbcType="VARCHAR" property="podTypeName"/>
+        <result column="total_layer" jdbcType="INTEGER" property="totalLayer"/>
+        <result column="weight" jdbcType="DECIMAL" property="weight"/>
+        <result column="length" jdbcType="DECIMAL" property="length"/>
+        <result column="width" jdbcType="DECIMAL" property="width"/>
+        <result column="height" jdbcType="DECIMAL" property="height"/>
+        <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
+        <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="default_return_strategy" jdbcType="VARCHAR" property="defaultReturnStrategy"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, wh_code, pod_type_code, pod_type_name, total_layer, weight, length, width, height,
+        valid_flag, delete_flag, created_by, created_time, last_modified_by, last_modified_time,default_return_strategy
+    </sql>
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_type
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+        </if>
+        <if test="endTime != null">
+            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+        </if>
+        order by last_modified_time desc
+    </select>
+    <select id="selectByPodTypeCodeAndValidFlagAndDeleteFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_type WHERE pod_type_code = #{podTypeCode} and valid_flag = #{validFlag} and delete_flag =
+        #{deleteFlag}
+    </select>
+</mapper>
