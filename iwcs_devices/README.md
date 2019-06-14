@@ -11,6 +11,7 @@ iwcs管理系统--设备通信模块
 #### 模块package分包原则
 - 每种设备独立package
 - 设备无关工具类独立成包
+- 命名示例：com.wisdom.iwcs.device.agv
     
 
 
