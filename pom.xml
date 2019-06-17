@@ -10,10 +10,10 @@
     <modules>
         <module>wisdom_base</module>
         <module>wisdom_common</module>
-        <module>iwcs_modules_core</module>
+        <module>iwcs_service_core</module>
         <module>iwcs_dao</module>
         <module>iwcs_webservice</module>
-        <module>iwcs_service</module>
+        <module>iwcs_service_biz</module>
         <module>iwcs_devices</module>
     </modules>
     <packaging>pom</packaging>
