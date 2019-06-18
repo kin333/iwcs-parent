@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>com.wisdom</groupId>
-            <artifactId>iwcs-service</artifactId>
+            <artifactId>iwcs-service-biz</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>iwcs-service</artifactId>
+    <artifactId>iwcs-service-biz</artifactId>
     <packaging>jar</packaging>
-    <name>iwcs_service</name>
+    <name>iwcs_service_biz</name>
     <description>iwcs biz service</description>
     <dependencies>
         <dependency>
