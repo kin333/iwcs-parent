@@ -10,6 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>iwcs_devices</artifactId>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.wisdom</groupId>
+            <artifactId>wisdom-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

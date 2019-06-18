@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.wisdom</groupId>
-            <artifactId>iwcs-modules-core</artifactId>
+            <artifactId>iwcs-service-core</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
