@@ -9,8 +9,8 @@ import com.wisdom.iwcs.domain.system.RoleAuthority;
 import com.wisdom.iwcs.domain.system.dto.AuthorityDto;
 import com.wisdom.iwcs.domain.system.dto.DataFilterRuleDto;
 import com.wisdom.iwcs.domain.system.dto.MenuTreeDto;
-import com.wisdom.service.system.AuthorityService;
-import com.wisdom.service.system.RoleAuthorityService;
+import com.wisdom.iwcs.service.system.AuthorityService;
+import com.wisdom.iwcs.service.system.RoleAuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

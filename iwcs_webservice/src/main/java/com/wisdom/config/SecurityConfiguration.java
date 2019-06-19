@@ -1,9 +1,9 @@
 package com.wisdom.config;
 
-import com.wisdom.security.AuthoritiesConstants;
-import com.wisdom.security.Http401UnauthorizedEntryPoint;
-import com.wisdom.security.jwt.JWTConfigurer;
-import com.wisdom.security.jwt.TokenProvider;
+import com.wisdom.iwcs.service.security.AuthoritiesConstants;
+import com.wisdom.iwcs.service.security.Http401UnauthorizedEntryPoint;
+import com.wisdom.iwcs.service.security.jwt.JWTConfigurer;
+import com.wisdom.iwcs.service.security.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;

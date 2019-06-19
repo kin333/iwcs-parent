@@ -1,11 +1,11 @@
 package com.wisdom.controller.outstock;
 
-import com.wisdom.controller.mapstruct.outstock.OutstockOrderSnMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.outstock.dto.OutstockOrderSnDTO;
-import com.wisdom.service.outstock.IOutstockOrderSnService;
+import com.wisdom.iwcs.mapstruct.outstock.OutstockOrderSnMapStruct;
+import com.wisdom.iwcs.service.outstock.IOutstockOrderSnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

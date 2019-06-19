@@ -1,11 +1,11 @@
 package com.wisdom.controller.quartz;
 
-import com.wisdom.controller.mapstruct.quartz.QuartzJobMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.quartz.dto.QuartzJobDTO;
-import com.wisdom.service.quartz.QuartzJobService;
+import com.wisdom.iwcs.mapstruct.quartz.QuartzJobMapStruct;
+import com.wisdom.iwcs.service.quartz.QuartzJobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

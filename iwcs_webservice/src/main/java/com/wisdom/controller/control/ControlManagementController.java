@@ -1,12 +1,12 @@
 package com.wisdom.controller.control;
 
-import com.wisdom.config.SystemInterfaceLog;
+import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.control.*;
-import com.wisdom.service.base.IBaseWbService;
-import com.wisdom.service.callHik.IEndTaskService;
-import com.wisdom.service.callHik.IRotatePodService;
-import com.wisdom.service.control.*;
+import com.wisdom.iwcs.service.base.IBaseWbService;
+import com.wisdom.iwcs.service.callHik.IEndTaskService;
+import com.wisdom.iwcs.service.callHik.IRotatePodService;
+import com.wisdom.iwcs.service.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

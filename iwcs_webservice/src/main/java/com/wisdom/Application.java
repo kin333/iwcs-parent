@@ -1,6 +1,6 @@
 package com.wisdom;
 
-import com.wisdom.config.ApplicationProperties;
+import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.socket.SocketApplication;
 import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
 import io.prometheus.client.spring.boot.EnableSpringBootMetricsCollector;

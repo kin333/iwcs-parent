@@ -22,7 +22,7 @@ public class AspectConfiguration {
      * @param joinPoint
      * @throws Throwable
      */
-//    @Around(" execution (* com.wisdom.service.impl.*.*(..))")
+//    @Around(" execution (* com.wisdom.iwcs.service.impl.*.*(..))")
 //    public void exampleAround(ProceedingJoinPoint joinPoint) throws Throwable{
 //        try{
 //            //do something before the method executes.

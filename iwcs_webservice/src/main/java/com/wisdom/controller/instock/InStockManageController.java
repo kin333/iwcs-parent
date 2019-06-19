@@ -3,9 +3,9 @@ package com.wisdom.controller.instock;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.instock.dto.instockrequest.BeginUnloadRequestDTO;
 import com.wisdom.iwcs.domain.instock.dto.instockrequest.InboundRequestDTO;
-import com.wisdom.service.instock.IBeginUnloadService;
-import com.wisdom.service.instock.ICycleCallPodService;
-import com.wisdom.service.instock.IInboundUnloadService;
+import com.wisdom.iwcs.service.instock.IBeginUnloadService;
+import com.wisdom.iwcs.service.instock.ICycleCallPodService;
+import com.wisdom.iwcs.service.instock.IInboundUnloadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,7 +2,7 @@ package com.wisdom.test;
 
 import com.wisdom.iwcs.commonDto.fliterConOptions.LayerConTypeEnum;
 import com.wisdom.iwcs.commonDto.fliterCondition.PodFliterCondition;
-import com.wisdom.service.common.IPodCal;
+import com.wisdom.iwcs.service.common.IPodCal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

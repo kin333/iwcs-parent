@@ -1,9 +1,9 @@
 package com.wisdom.controller;
 
 import com.wisdom.iwcs.domain.system.dto.LoginDTO;
-import com.wisdom.security.TokenUser;
-import com.wisdom.security.jwt.JWTConfigurer;
-import com.wisdom.security.jwt.TokenProvider;
+import com.wisdom.iwcs.service.security.TokenUser;
+import com.wisdom.iwcs.service.security.jwt.JWTConfigurer;
+import com.wisdom.iwcs.service.security.jwt.TokenProvider;
 import com.wisdom.socket.utils.TokenUtil;
 import com.wisdom.socket.utils.User;
 import org.springframework.beans.factory.annotation.Autowired;

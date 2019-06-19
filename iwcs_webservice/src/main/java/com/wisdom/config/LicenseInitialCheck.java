@@ -1,6 +1,6 @@
 package com.wisdom.config;
 
-import com.wisdom.service.system.LicenseService;
+import com.wisdom.iwcs.service.system.LicenseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;

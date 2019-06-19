@@ -1,11 +1,11 @@
 package com.wisdom.controller.log;
 
-import com.wisdom.controller.mapstruct.log.InterfaceLogMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.log.dto.InterfaceLogDTO;
-import com.wisdom.service.log.IInterfaceLogService;
+import com.wisdom.iwcs.mapstruct.log.InterfaceLogMapStruct;
+import com.wisdom.iwcs.service.log.IInterfaceLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

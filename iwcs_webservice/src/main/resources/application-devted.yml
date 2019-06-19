@@ -42,7 +42,7 @@ spring:
         wall:
           config:
             multi-statement-allow: true
-      aop-patterns: com.wisdom.service.*.*
+      aop-patterns: com.wisdom.iwcs.service.*.*
   mvc:
     favicon:
       enabled: false

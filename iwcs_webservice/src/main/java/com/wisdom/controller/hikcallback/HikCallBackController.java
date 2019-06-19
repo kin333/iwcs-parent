@@ -1,11 +1,11 @@
 package com.wisdom.controller.hikcallback;
 
-import com.wisdom.config.SystemInterfaceLog;
+import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.domain.hikSync.*;
-import com.wisdom.service.hikCallback.IHikCallBackGetPodReturnAreaService;
-import com.wisdom.service.hikCallback.IHikCallBackNotifyPodArrService;
-import com.wisdom.service.hikCallback.IHikCallBackSyncService;
-import com.wisdom.service.hikCallback.IHikCallBackTaskNotifyService;
+import com.wisdom.iwcs.service.hikCallback.IHikCallBackGetPodReturnAreaService;
+import com.wisdom.iwcs.service.hikCallback.IHikCallBackNotifyPodArrService;
+import com.wisdom.iwcs.service.hikCallback.IHikCallBackSyncService;
+import com.wisdom.iwcs.service.hikCallback.IHikCallBackTaskNotifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

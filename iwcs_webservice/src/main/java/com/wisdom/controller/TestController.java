@@ -1,9 +1,9 @@
 package com.wisdom.controller;
 
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.service.common.IPodCal;
-import com.wisdom.service.message.NotificationService;
-import com.wisdom.service.notice.NoticeUserMsgService;
+import com.wisdom.iwcs.service.common.IPodCal;
+import com.wisdom.iwcs.service.message.NotificationService;
+import com.wisdom.iwcs.service.notice.NoticeUserMsgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

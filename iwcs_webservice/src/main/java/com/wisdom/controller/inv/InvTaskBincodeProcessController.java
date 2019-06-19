@@ -2,7 +2,7 @@ package com.wisdom.controller.inv;
 
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.inv.InvTaskBincodeProcess;
-import com.wisdom.service.inv.invImpl.InvTaskBincodeProcessService;
+import com.wisdom.iwcs.service.inv.invImpl.InvTaskBincodeProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,5 +1,6 @@
 package com.wisdom.config;
 
+import com.wisdom.base.context.ApplicationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

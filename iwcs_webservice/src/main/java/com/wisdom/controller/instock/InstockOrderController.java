@@ -1,13 +1,13 @@
 package com.wisdom.controller.instock;
 
-import com.wisdom.controller.mapstruct.instock.InstockOrderMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.instock.dto.InstockOrderConditionDto;
 import com.wisdom.iwcs.domain.instock.dto.InstockOrderDTO;
 import com.wisdom.iwcs.domain.instock.dto.instockrequest.DeleteInstockOrderDTO;
-import com.wisdom.service.instock.instockImpl.InstockOrderService;
+import com.wisdom.iwcs.mapstruct.instock.InstockOrderMapStruct;
+import com.wisdom.iwcs.service.instock.instockImpl.InstockOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

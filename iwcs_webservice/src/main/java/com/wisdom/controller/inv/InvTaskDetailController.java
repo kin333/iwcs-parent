@@ -1,13 +1,13 @@
 package com.wisdom.controller.inv;
 
-import com.wisdom.controller.mapstruct.inv.InvTaskResultDetailMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.inv.dto.InvTaskResultDetailDTO;
 import com.wisdom.iwcs.domain.inv.dto.InvTaskStartDto;
-import com.wisdom.service.inv.invImpl.InvSnService;
-import com.wisdom.service.inv.invImpl.InvTaskDetailService;
+import com.wisdom.iwcs.mapstruct.inv.InvTaskResultDetailMapStruct;
+import com.wisdom.iwcs.service.inv.invImpl.InvSnService;
+import com.wisdom.iwcs.service.inv.invImpl.InvTaskDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

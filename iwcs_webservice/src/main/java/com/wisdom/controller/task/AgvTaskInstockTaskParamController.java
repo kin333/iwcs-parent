@@ -1,11 +1,11 @@
 package com.wisdom.controller.task;
 
-import com.wisdom.controller.mapstruct.task.AgvTaskInstockTaskParamMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.AgvTaskInstockTaskParamDTO;
-import com.wisdom.service.task.AgvTaskInstockTaskParamService;
+import com.wisdom.iwcs.mapstruct.task.AgvTaskInstockTaskParamMapStruct;
+import com.wisdom.iwcs.service.task.AgvTaskInstockTaskParamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

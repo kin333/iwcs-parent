@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class LogExecuteTimeInterceptor {
     private static Logger logger = LoggerFactory.getLogger(LogExecuteTimeInterceptor.class);
 
-    @Pointcut("@annotation(com.wisdom.annotation.LogExecuteTimeRecord)||@annotation(com.wisdom.annotation.LogExecuteParamsAndTimeRecord)||@within(com.wisdom.annotation.LogExecuteParamsAndTimeRecord)||@within(com.wisdom.annotation.LogExecuteTimeRecord)")
+    @Pointcut("@annotation(com.wisdom.base.annotation.LogExecuteTimeRecord)||@annotation(com.wisdom.base.annotation.LogExecuteParamsAndTimeRecord)||@within(com.wisdom.base.annotation.LogExecuteParamsAndTimeRecord)||@within(com.wisdom.base.annotation.LogExecuteTimeRecord)")
     public void logTimeMethodPointcut() {
 
     }

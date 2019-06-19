@@ -3,7 +3,7 @@ package com.wisdom.controller.system;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.system.Dictionary;
-import com.wisdom.service.system.DictionaryService;
+import com.wisdom.iwcs.service.system.DictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -83,4 +83,83 @@ public class InvTaskBincodeProcess implements Serializable {
     @Column(name = "if_out")
     private Integer ifOut;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getSrcInvNo() {
+        return srcInvNo;
+    }
+
+    public void setSrcInvNo(String srcInvNo) {
+        this.srcInvNo = srcInvNo;
+    }
+
+    public String getTaskBincode() {
+        return taskBincode;
+    }
+
+    public void setTaskBincode(String taskBincode) {
+        this.taskBincode = taskBincode;
+    }
+
+    public String getPodcode() {
+        return podcode;
+    }
+
+    public void setPodcode(String podcode) {
+        this.podcode = podcode;
+    }
+
+    public Integer getInvStatus() {
+        return invStatus;
+    }
+
+    public void setInvStatus(Integer invStatus) {
+        this.invStatus = invStatus;
+    }
+
+    public Integer getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Integer createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Date getInvReportingResultTime() {
+        return invReportingResultTime;
+    }
+
+    public void setInvReportingResultTime(Date invReportingResultTime) {
+        this.invReportingResultTime = invReportingResultTime;
+    }
+
+    public Integer getIfOut() {
+        return ifOut;
+    }
+
+    public void setIfOut(Integer ifOut) {
+        this.ifOut = ifOut;
+    }
 }

@@ -1,11 +1,11 @@
 package com.wisdom.controller.base;
 
-import com.wisdom.controller.mapstruct.base.BaseStgTypeMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.dto.BaseStgTypeDTO;
-import com.wisdom.service.base.IBaseStgTypeService;
+import com.wisdom.iwcs.mapstruct.base.BaseStgTypeMapStruct;
+import com.wisdom.iwcs.service.base.IBaseStgTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,12 +1,12 @@
 package com.wisdom.controller.outstock;
 
-import com.wisdom.controller.mapstruct.outstock.OutstockRecordMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.outstock.dto.OutstockRecordConditionDTO;
 import com.wisdom.iwcs.domain.outstock.dto.OutstockRecordDTO;
-import com.wisdom.service.outstock.IOutstockRecordService;
+import com.wisdom.iwcs.mapstruct.outstock.OutstockRecordMapStruct;
+import com.wisdom.iwcs.service.outstock.IOutstockRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

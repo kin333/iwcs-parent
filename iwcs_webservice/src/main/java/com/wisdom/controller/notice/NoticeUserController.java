@@ -1,13 +1,13 @@
 package com.wisdom.controller.notice;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wisdom.controller.mapstruct.notice.NoticeUserMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.notice.dto.NoticeTypeDto;
 import com.wisdom.iwcs.domain.notice.dto.NoticeUserDto;
-import com.wisdom.service.notice.NoticeUserService;
+import com.wisdom.iwcs.mapstruct.notice.NoticeUserMapStruct;
+import com.wisdom.iwcs.service.notice.NoticeUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

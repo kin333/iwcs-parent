@@ -1,6 +1,5 @@
 package com.wisdom.controller.inv;
 
-import com.wisdom.controller.mapstruct.inv.InvTaskMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
@@ -8,8 +7,9 @@ import com.wisdom.iwcs.domain.inv.InvTask;
 import com.wisdom.iwcs.domain.inv.InvTaskCondDetail;
 import com.wisdom.iwcs.domain.inv.dto.InvTaskDTO;
 import com.wisdom.iwcs.domain.inv.dto.InvTaskSearchDto;
-import com.wisdom.service.inv.invImpl.InvTaskCondDetailService;
-import com.wisdom.service.inv.invImpl.InvTaskService;
+import com.wisdom.iwcs.mapstruct.inv.InvTaskMapStruct;
+import com.wisdom.iwcs.service.inv.invImpl.InvTaskCondDetailService;
+import com.wisdom.iwcs.service.inv.invImpl.InvTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

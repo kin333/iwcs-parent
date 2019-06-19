@@ -1,5 +1,6 @@
 package com.wisdom.config;
 
+import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.domain.log.InterfaceLog;
 import com.wisdom.iwcs.mapper.log.InterfaceLogMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -37,7 +38,7 @@ public class AspectInterfaceLogConfiguration {
 
     /**
      * 定义切入点，可以是规则表达式，也可以是package下的所有函数，也可以是一个注解等
-     * public * com.wisdom.service.TPSService..*.*(..)
+     * public * com.wisdom.iwcs.service.TPSService..*.*(..)
      */
     @Pointcut("execution(public * com.wisdom.controller..*.*(..))")
     public void cutController() {

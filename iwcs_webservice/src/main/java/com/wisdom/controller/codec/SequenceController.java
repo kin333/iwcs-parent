@@ -1,11 +1,11 @@
 package com.wisdom.controller.codec;
 
-import com.wisdom.controller.mapstruct.codec.SequenceMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.codec.dto.SequenceDto;
-import com.wisdom.service.codec.SequenceService;
+import com.wisdom.iwcs.mapstruct.codec.SequenceMapStruct;
+import com.wisdom.iwcs.service.codec.SequenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

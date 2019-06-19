@@ -6,8 +6,8 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.system.Depart;
 import com.wisdom.iwcs.domain.system.dto.DepartUserDto;
 import com.wisdom.iwcs.domain.system.dto.MenuTreeDto;
-import com.wisdom.security.SecurityUtils;
-import com.wisdom.service.system.DepartService;
+import com.wisdom.iwcs.service.security.SecurityUtils;
+import com.wisdom.iwcs.service.system.DepartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

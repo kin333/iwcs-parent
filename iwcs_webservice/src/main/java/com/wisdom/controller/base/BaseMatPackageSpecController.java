@@ -1,11 +1,11 @@
 package com.wisdom.controller.base;
 
-import com.wisdom.controller.mapstruct.base.BaseMatPackageSpecMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.dto.BaseMatPackageSpecDTO;
-import com.wisdom.service.base.IBaseMatPackageSpecService;
+import com.wisdom.iwcs.mapstruct.base.BaseMatPackageSpecMapStruct;
+import com.wisdom.iwcs.service.base.IBaseMatPackageSpecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

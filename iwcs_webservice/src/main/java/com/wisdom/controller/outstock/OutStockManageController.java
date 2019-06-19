@@ -1,11 +1,11 @@
 package com.wisdom.controller.outstock;
 
-import com.wisdom.config.SystemInterfaceLog;
+import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.outstock.dto.OutBoundRequestDTO;
 import com.wisdom.iwcs.domain.outstock.dto.OutStockCallRequestDTO;
-import com.wisdom.service.outstock.IOutBoundService;
-import com.wisdom.service.outstock.IOutStockCallOutService;
+import com.wisdom.iwcs.service.outstock.IOutBoundService;
+import com.wisdom.iwcs.service.outstock.IOutStockCallOutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

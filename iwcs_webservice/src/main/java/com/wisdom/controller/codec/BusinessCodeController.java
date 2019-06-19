@@ -1,13 +1,13 @@
 package com.wisdom.controller.codec;
 
-import com.wisdom.controller.mapstruct.codec.BusinessCodeMapStruct;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.codec.BusinessCode;
 import com.wisdom.iwcs.domain.codec.dto.BusinessCodeDto;
 import com.wisdom.iwcs.domain.codec.dto.BusinessCodePageRequest;
 import com.wisdom.iwcs.domain.system.BusinessCodeSearchDTO;
-import com.wisdom.service.codec.BusinessCodeService;
+import com.wisdom.iwcs.mapstruct.codec.BusinessCodeMapStruct;
+import com.wisdom.iwcs.service.codec.BusinessCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

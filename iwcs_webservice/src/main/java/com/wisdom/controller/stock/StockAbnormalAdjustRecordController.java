@@ -1,13 +1,13 @@
 package com.wisdom.controller.stock;
 
-import com.wisdom.config.SystemInterfaceLog;
-import com.wisdom.controller.mapstruct.stock.StockAbnormalAdjustRecordMapStruct;
+import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.stock.dto.StockAbnormalAdjustRecordDTO;
 import com.wisdom.iwcs.domain.stock.dto.StockAdjustRequestDTO;
-import com.wisdom.service.stock.IStockAbnormalAdjustRecordService;
+import com.wisdom.iwcs.mapstruct.stock.StockAbnormalAdjustRecordMapStruct;
+import com.wisdom.iwcs.service.stock.IStockAbnormalAdjustRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

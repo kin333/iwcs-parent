@@ -1,11 +1,11 @@
 package com.wisdom.controller.codec;
 
-import com.wisdom.controller.mapstruct.codec.CodecCountryMapStruct;
 import com.wisdom.iwcs.common.utils.GridCountryPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.codec.dto.CodecCountryDto;
-import com.wisdom.service.codec.CodecCountryService;
+import com.wisdom.iwcs.mapstruct.codec.CodecCountryMapStruct;
+import com.wisdom.iwcs.service.codec.CodecCountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

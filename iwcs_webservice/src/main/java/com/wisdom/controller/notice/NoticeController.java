@@ -1,11 +1,11 @@
 package com.wisdom.controller.notice;
 
-import com.wisdom.controller.mapstruct.notice.NoticeMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.notice.dto.NoticeDto;
-import com.wisdom.service.notice.NoticeService;
+import com.wisdom.iwcs.mapstruct.notice.NoticeMapStruct;
+import com.wisdom.iwcs.service.notice.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,11 +1,11 @@
 package com.wisdom.controller.instock;
 
-import com.wisdom.controller.mapstruct.instock.InstockCallStraCondParamMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.instock.dto.InstockCallStraCondParamDTO;
-import com.wisdom.service.instock.instockImpl.InstockCallStraCondParamService;
+import com.wisdom.iwcs.mapstruct.instock.InstockCallStraCondParamMapStruct;
+import com.wisdom.iwcs.service.instock.instockImpl.InstockCallStraCondParamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

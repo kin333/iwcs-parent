@@ -3,7 +3,7 @@ package com.wisdom.controller.quartz;
 
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.quartz.QuartzJob;
-import com.wisdom.service.quartz.IQuartzJobManagementService;
+import com.wisdom.iwcs.service.quartz.IQuartzJobManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,13 +1,13 @@
 package com.wisdom.controller.stock;
 
-import com.wisdom.controller.mapstruct.stock.StockMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.stock.dto.StockConditionDto;
 import com.wisdom.iwcs.domain.stock.dto.StockDTO;
 import com.wisdom.iwcs.domain.stock.dto.StockDetialDto;
-import com.wisdom.service.stock.IStockService;
+import com.wisdom.iwcs.mapstruct.stock.StockMapStruct;
+import com.wisdom.iwcs.service.stock.IStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

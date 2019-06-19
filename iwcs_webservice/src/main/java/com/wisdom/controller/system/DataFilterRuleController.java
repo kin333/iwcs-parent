@@ -8,8 +8,8 @@ import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.system.DataFilterRule;
 import com.wisdom.iwcs.domain.system.RoleAuthority;
-import com.wisdom.service.system.DataFilterRuleService;
-import com.wisdom.service.system.RoleAuthorityService;
+import com.wisdom.iwcs.service.system.DataFilterRuleService;
+import com.wisdom.iwcs.service.system.RoleAuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

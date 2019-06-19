@@ -1,11 +1,11 @@
 package com.wisdom.controller.codec;
 
-import com.wisdom.controller.mapstruct.codec.ParameterSettingMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.codec.dto.ParameterSettingDto;
-import com.wisdom.service.codec.ParameterSettingService;
+import com.wisdom.iwcs.mapstruct.codec.ParameterSettingMapStruct;
+import com.wisdom.iwcs.service.codec.ParameterSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

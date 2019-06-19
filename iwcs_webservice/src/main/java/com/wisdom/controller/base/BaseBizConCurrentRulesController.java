@@ -1,11 +1,11 @@
 package com.wisdom.controller.base;
 
-import com.wisdom.controller.mapstruct.base.BaseBizConCurrentRulesMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.dto.BaseBizConCurrentRulesDTO;
-import com.wisdom.service.base.IBaseBizConCurrentRulesService;
+import com.wisdom.iwcs.mapstruct.base.BaseBizConCurrentRulesMapStruct;
+import com.wisdom.iwcs.service.base.IBaseBizConCurrentRulesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

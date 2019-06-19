@@ -1,12 +1,12 @@
 package com.wisdom.controller.outstock;
 
-import com.wisdom.controller.mapstruct.outstock.OrderMatMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.outstock.dto.OrderMatDTO;
 import com.wisdom.iwcs.domain.outstock.dto.OutStockOrderDto;
-import com.wisdom.service.outstock.IOrderMatService;
+import com.wisdom.iwcs.mapstruct.outstock.OrderMatMapStruct;
+import com.wisdom.iwcs.service.outstock.IOrderMatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

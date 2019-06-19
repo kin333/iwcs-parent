@@ -1,12 +1,12 @@
 package com.wisdom.controller.instock;
 
-import com.wisdom.controller.mapstruct.instock.InstockRecordMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.instock.dto.InstockRecordConditionDto;
 import com.wisdom.iwcs.domain.instock.dto.InstockRecordDTO;
-import com.wisdom.service.instock.instockImpl.InstockRecordService;
+import com.wisdom.iwcs.mapstruct.instock.InstockRecordMapStruct;
+import com.wisdom.iwcs.service.instock.instockImpl.InstockRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

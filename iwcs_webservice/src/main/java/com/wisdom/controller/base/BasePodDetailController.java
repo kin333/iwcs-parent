@@ -1,11 +1,11 @@
 package com.wisdom.controller.base;
 
-import com.wisdom.controller.mapstruct.base.BasePodDetailMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
-import com.wisdom.service.base.IBasePodDetailService;
+import com.wisdom.iwcs.mapstruct.base.BasePodDetailMapStruct;
+import com.wisdom.iwcs.service.base.IBasePodDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

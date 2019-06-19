@@ -1,11 +1,11 @@
 package com.wisdom.controller.system;
 
-import com.wisdom.controller.mapstruct.system.UserDefinedSettingsMapStruct;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.system.dto.UserDefinedSettingsDto;
-import com.wisdom.service.system.UserDefinedSettingsService;
+import com.wisdom.iwcs.mapstruct.system.UserDefinedSettingsMapStruct;
+import com.wisdom.iwcs.service.system.UserDefinedSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
