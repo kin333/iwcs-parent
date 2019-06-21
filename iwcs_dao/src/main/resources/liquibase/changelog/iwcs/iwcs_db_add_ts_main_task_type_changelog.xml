@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="han (generated)" id="1561103888987-2">
+        <createTable tableName="ts_main_task_type" remarks="主任务类型">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="main_task_type_code" remarks="主任务类型编号" type="VARCHAR(32)"/>
+            <column name="main_task_type_name" remarks="主任务类型名称" type="VARCHAR(256)"/>
+            <column name="exec_bean" remarks="执行类" type="VARCHAR(256)"/>
+            <column name="priority" remarks="任务优先级" type="INT"/>
+            <column name="loop_exec" remarks="循环执行" type="VARCHAR(2)"/>
+            <column name="interval_time" remarks="循环间隔时间" type="INT"/>
+            <column name="multi_target_task" remarks="目标物是否多任务" type="VARCHAR(2)"/>
+            <column name="rel_vice_task_typ" remarks="关联附任务模板" type="VARCHAR(32)"/>
+            <column name="create_date" remarks="创建时间" type="datetime(6)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(256)"/>
+            <column name="is_default" remarks="是否是系统默认模板" type="INT"/>
+            <column name="decomp_num" remarks="分解任务个数" type="INT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,44 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="han (generated)" id="1561102935905-2">
+        <createTable tableName="ts_sub_task_log" remarks="子任务单日志">
+            <column autoIncrement="true" name="id" remarks="子任务日志id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="sub_task_num" remarks="子任务编号" type="VARCHAR(32)"/>
+            <column name="sub_task_typ" remarks="子任务类型" type="VARCHAR(32)"/>
+            <column name="sub_task_seq" remarks="子任务执行顺序" type="INT"/>
+            <column name="main_task_num" remarks="主任务编号" type="VARCHAR(256)"/>
+            <column name="main_task_seq" remarks="主任务执行顺序" type="INT"/>
+            <column name="main_task_type" remarks="任务类型（主任务）" type="VARCHAR(32)"/>
+            <column name="group_flag" remarks="任务组/子任务" type="VARCHAR(32)"/>
+            <column name="task_group_code" remarks="任务组编号" type="VARCHAR(255)"/>
+            <column name="create_date" remarks="创建时间" type="datetime(6)"/>
+            <column name="date_chg" remarks="更新时间" type="VARCHAR(64)"/>
+            <column name="task_msg" remarks="任务消息体" type="VARCHAR(2000)"/>
+            <column name="send_status" remarks="下发状态" type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(256)"/>
+            <column name="need_confirm" remarks="需要确认" type="VARCHAR(2)"/>
+            <column name="need_inform" remarks="是否通知" type="VARCHAR(2)"/>
+            <column name="need_trigger" remarks="是否需要触发" type="VARCHAR(2)"/>
+            <column name="trigger_type" remarks="通过什么字段触发任务：任务号、呼叫号、系统自动、设备号、条件触发" type="VARCHAR(16)"/>
+            <column name="condition_handler" remarks="条件触发类型下必填，根据业务拓展" type="VARCHAR(255)"/>
+            <column name="third_invoke_type" remarks="sqop/rest/tcp" type="VARCHAR(255)"/>
+            <column name="third_type" remarks="第三方(应用)类型" type="VARCHAR(255)"/>
+            <column name="app_code" remarks="应用编号" type="VARCHAR(255)"/>
+            <column name="third_url" remarks="第3方路径" type="VARCHAR(255)"/>
+            <column name="third_start_method" remarks="任务开始3方通知方法" type="VARCHAR(255)"/>
+            <column name="third_end_method" remarks="任务结束3方通知方法" type="VARCHAR(255)"/>
+            <column name="point_access" remarks="如：固定点、线路、呼叫路径、关联点、主叫号、策略配置、电梯等待位、关联区域" type="VARCHAR(255)"/>
+            <column name="sequence" remarks="执行顺序" type="INT"/>
+            <column name="cancel_flag" remarks="取消标志" type="INT"/>
+            <column name="cancel_id" remarks="取消id" type="INT"/>
+            <column name="cancel_type" remarks="取消类型" type="VARCHAR(64)"/>
+            <column name="group_id" remarks="组id" type="VARCHAR(64)"/>
+            <column name="loop_exec" remarks="循环执行" type="VARCHAR(2)"/>
+            <column name="priority" remarks="优先级" type="INT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

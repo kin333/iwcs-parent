@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="han (generated)" id="1561102935905-4">
+        <createTable tableName="ts_task_group" remarks="任务组">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="task_group_code" remarks="任务组编号" type="VARCHAR(32)"/>
+            <column name="task_group_name" remarks="任务组名称" type="VARCHAR(256)"/>
+            <column name="create_date" remarks="创建时间" type="datetime(6)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(256)"/>
+            <column name="is_default" remarks="是否是系统默认" type="INT"/>
+            <column name="task_group_type" remarks="任务组类型" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

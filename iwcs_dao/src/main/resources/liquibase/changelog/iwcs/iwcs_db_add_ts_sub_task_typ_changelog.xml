@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="han (generated)" id="1561102935905-3">
+        <createTable tableName="ts_sub_task_typ" remarks="子任务类型">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="sub_task_typ_code" remarks="子任务类型编号" type="VARCHAR(32)"/>
+            <column name="sub_task_typ_name" remarks="子任务类型名称" type="VARCHAR(256)"/>
+            <column name="create_date" remarks="创建时间" type="datetime(6)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(256)"/>
+            <column name="is_default" remarks="是否是系统默认" type="INT"/>
+            <column name="task_typ" remarks="任务类型标识" type="VARCHAR(256)"/>
+            <column name="sub_task_mes_send" remarks="发送消息体" type="VARCHAR(2000)"/>
+            <column name="worker_type" remarks="执行者类型" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

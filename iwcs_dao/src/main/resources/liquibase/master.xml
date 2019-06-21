@@ -101,4 +101,14 @@
     <!-- 盘点-->
     <include file="liquibase/changelog/iwcs/iwcs_db_inv_201903011010.xml" relativeToChangelogFile="false"/>
 
+
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_sub_task_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_sub_task_log_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_sub_task_typ_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_task_group_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_task_group_item_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_task_rel_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_main_task_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_main_task_type_changelog.xml" relativeToChangelogFile="false"/>
+
 </databaseChangeLog>

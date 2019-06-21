@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.SubTaskLogMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.SubTaskLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sub_task_num" jdbcType="VARCHAR" property="subTaskNum" />
+    <result column="sub_task_typ" jdbcType="VARCHAR" property="subTaskTyp" />
+    <result column="sub_task_seq" jdbcType="INTEGER" property="subTaskSeq" />
+    <result column="main_task_num" jdbcType="VARCHAR" property="mainTaskNum" />
+    <result column="main_task_seq" jdbcType="INTEGER" property="mainTaskSeq" />
+    <result column="main_task_type" jdbcType="VARCHAR" property="mainTaskType" />
+    <result column="group_flag" jdbcType="VARCHAR" property="groupFlag" />
+    <result column="task_group_code" jdbcType="VARCHAR" property="taskGroupCode" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="date_chg" jdbcType="VARCHAR" property="dateChg" />
+    <result column="task_msg" jdbcType="VARCHAR" property="taskMsg" />
+    <result column="send_status" jdbcType="VARCHAR" property="sendStatus" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="need_confirm" jdbcType="VARCHAR" property="needConfirm" />
+    <result column="need_inform" jdbcType="VARCHAR" property="needInform" />
+    <result column="need_trigger" jdbcType="VARCHAR" property="needTrigger" />
+    <result column="trigger_type" jdbcType="VARCHAR" property="triggerType" />
+    <result column="condition_handler" jdbcType="VARCHAR" property="conditionHandler" />
+    <result column="third_invoke_type" jdbcType="VARCHAR" property="thirdInvokeType" />
+    <result column="third_type" jdbcType="VARCHAR" property="thirdType" />
+    <result column="app_code" jdbcType="VARCHAR" property="appCode" />
+    <result column="third_url" jdbcType="VARCHAR" property="thirdUrl" />
+    <result column="third_start_method" jdbcType="VARCHAR" property="thirdStartMethod" />
+    <result column="third_end_method" jdbcType="VARCHAR" property="thirdEndMethod" />
+    <result column="point_access" jdbcType="VARCHAR" property="pointAccess" />
+    <result column="sequence" jdbcType="INTEGER" property="sequence" />
+    <result column="cancel_flag" jdbcType="INTEGER" property="cancelFlag" />
+    <result column="cancel_id" jdbcType="INTEGER" property="cancelId" />
+    <result column="cancel_type" jdbcType="VARCHAR" property="cancelType" />
+    <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+    <result column="loop_exec" jdbcType="VARCHAR" property="loopExec" />
+    <result column="priority" jdbcType="INTEGER" property="priority" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, sub_task_num, sub_task_typ, sub_task_seq, main_task_num, main_task_seq, main_task_type, 
+    group_flag, task_group_code, create_date, date_chg, task_msg, send_status, remark, 
+    need_confirm, need_inform, need_trigger, trigger_type, condition_handler, third_invoke_type, 
+    third_type, app_code, third_url, third_start_method, third_end_method, point_access, 
+    sequence, cancel_flag, cancel_id, cancel_type, group_id, loop_exec, priority
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_sub_task_log
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>

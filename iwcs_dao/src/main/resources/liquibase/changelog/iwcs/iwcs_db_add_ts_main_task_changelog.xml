@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="han (generated)" id="1561103888987-1">
+        <createTable tableName="ts_main_task" remarks="任务模板配置关系表">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="main_task_num" remarks="主任务编号" type="VARCHAR(32)"/>
+            <column name="main_task_type_code" remarks="任务类型" type="VARCHAR(256)"/>
+            <column name="task_status" remarks="任务状态" type="INT"/>
+            <column name="date_chg" remarks="状态变更时间" type="datetime(6)"/>
+            <column name="main_task_seq" remarks="主任务顺序" type="INT"/>
+            <column name="group_id" remarks="组编号" type="VARCHAR(255)"/>
+            <column name="sequence" remarks="执行顺序" type="INT"/>
+            <column name="create_date" remarks="创建时间" type="datetime(6)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(256)"/>
+            <column name="priority" remarks="优先级" type="INT"/>
+            <column name="task_group_code" remarks="任务组编号" type="VARCHAR(256)"/>
+            <column name="exector_num" remarks="执行者编号、设备号、系统名称" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="han (generated)" id="1561103888987-3">
+        <createIndex indexName="AK_idx_task_num" tableName="ts_main_task">
+            <column name="main_task_num"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
