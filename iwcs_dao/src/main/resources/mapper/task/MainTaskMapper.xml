@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.MainTaskMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.MainTask">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="main_task_num" jdbcType="VARCHAR" property="mainTaskNum" />
+    <result column="main_task_type_code" jdbcType="VARCHAR" property="mainTaskTypeCode" />
+    <result column="task_status" jdbcType="INTEGER" property="taskStatus" />
+    <result column="date_chg" jdbcType="TIMESTAMP" property="dateChg" />
+    <result column="main_task_seq" jdbcType="INTEGER" property="mainTaskSeq" />
+    <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+    <result column="sequence" jdbcType="INTEGER" property="sequence" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="priority" jdbcType="INTEGER" property="priority" />
+    <result column="task_group_code" jdbcType="VARCHAR" property="taskGroupCode" />
+    <result column="exector_num" jdbcType="VARCHAR" property="exectorNum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, main_task_num, main_task_type_code, task_status, date_chg, main_task_seq, group_id, 
+    sequence, create_date, remark, priority, task_group_code, exector_num
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_main_task
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>
