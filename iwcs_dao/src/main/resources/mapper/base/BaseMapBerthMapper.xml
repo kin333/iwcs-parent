@@ -16,13 +16,15 @@
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
         <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
         <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="berth_type_value" jdbcType="VARCHAR" property="berthTypeValue"/>
+
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, map_code, ber_code, coox, cooy, valid_flag, delete_flag, created_by, created_time,
-        last_modified_by, last_modified_time
+        last_modified_by, last_modified_time,berth_type_value
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select

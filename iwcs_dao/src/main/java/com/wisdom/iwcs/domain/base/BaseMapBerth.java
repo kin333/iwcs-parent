@@ -67,6 +67,19 @@ public class BaseMapBerth {
      */
     @Column(name = "last_modified_time")
     private Date lastModifiedTime;
+    /**
+     * 地码类型,对应字典表
+     */
+    @Column(name = "berth_type_value")
+    private String berthTypeValue;
+
+    public String getBerthTypeValue() {
+        return berthTypeValue;
+    }
+
+    public void setBerthTypeValue(String berthTypeValue) {
+        this.berthTypeValue = berthTypeValue;
+    }
 
     /**
      * @return id

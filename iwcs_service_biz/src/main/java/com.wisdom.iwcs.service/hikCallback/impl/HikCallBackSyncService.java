@@ -648,6 +648,7 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
                         String cooy = pointInfoDto.getYpos().replace("", "");
                         String berCode = coox + mapContent.getMapQRCode() + cooy;
                         baseMapBerth.setBerCode(berCode);
+                        baseMapBerth.setBerthTypeValue(pointInfoDto.getValue());
                         baseMapBerth.setValidFlag(VALID.getStatus());
                         baseMapBerth.setDeleteFlag(NOT_DELETED.getStatus());
                         baseMapBerth.setCreatedTime(new Date());

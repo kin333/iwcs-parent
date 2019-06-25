@@ -17,7 +17,7 @@ public class PointInfoDto {
     private String ypos;
 
 
-    private MapValueDto value;
+    private String value;
 
     private String RoadProperty;
 
@@ -74,11 +74,11 @@ public class PointInfoDto {
         this.ypos = ypos;
     }
 
-    public MapValueDto getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(MapValueDto value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
