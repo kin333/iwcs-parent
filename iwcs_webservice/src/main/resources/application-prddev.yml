@@ -11,7 +11,7 @@ spring:
   datasource:
     druid:
       name: default
-      url: jdbc:mysql://${mysql.host}:${mysql.port}/iwms_prd_dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false
+      url: jdbc:mysql://${mysql.host}:${mysql.port}/iwcs_prd_dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false
       username: root
       password: root
       type: com.alibaba.druid.pool.DruidDataSource
