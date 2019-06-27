@@ -1,12 +1,15 @@
 package com.wisdom.test;
 
+import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.commonDto.fliterConOptions.LayerConTypeEnum;
 import com.wisdom.iwcs.commonDto.fliterCondition.PodFliterCondition;
 import com.wisdom.iwcs.service.common.IPodCal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * 货架计算测试
@@ -33,4 +36,8 @@ public class PodCalTestController {
         System.out.println(layerConTypeEnum);
     }
 
+    @GetMapping("/testRabbitMQ")
+    public void testRabbitMQ() throws IOException, TimeoutException {
+        RabbitMQUtil.getConnection();
+    }
 }
