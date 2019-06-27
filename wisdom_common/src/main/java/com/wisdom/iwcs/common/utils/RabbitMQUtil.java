@@ -98,9 +98,7 @@ public class RabbitMQUtil {
      * @return 一个消费者与消息队列之间连接的标记, 用于取消连接
      * @throws IOException
      */
-    public static String startConsume(Channel channel, Consumer consumer) throws IOException {
-        //队列名称
-        String queue = "";
+    public static String startConsume(Channel channel, String queue, Consumer consumer) throws IOException {
         String consumerTag = channel.basicConsume(queue, consumer);
         return consumerTag;
     }
