@@ -41,4 +41,9 @@
             <column name="priority" remarks="优先级" type="INT"/>
         </createTable>
     </changeSet>
+    <changeSet id="add_task_status" author="ted">
+        <addColumn tableName="ts_sub_task">
+            <column name="task_status" remarks="任务状态" type="VARCHAR(32)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

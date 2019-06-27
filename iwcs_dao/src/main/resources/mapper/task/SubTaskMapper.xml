@@ -38,6 +38,8 @@
     <result column="group_id" jdbcType="VARCHAR" property="groupId" />
     <result column="loop_exec" jdbcType="VARCHAR" property="loopExec" />
     <result column="priority" jdbcType="INTEGER" property="priority" />
+    <result column="task_status" jdbcType="VARCHAR" property="taskStatus"/>
+
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -46,8 +48,8 @@
     id, sub_task_num, sub_task_typ, sub_task_seq, main_task_num, main_task_seq, main_task_type, 
     group_flag, task_group_code, create_date, task_msg, send_status, remark, need_confirm, 
     need_inform, need_trigger, trigger_type, condition_handler, third_invoke_type, third_type, 
-    app_code, third_url, third_start_method, third_end_method, point_access, sequence, 
-    cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec, priority
+    app_code, third_url, third_start_method, third_end_method, point_access, sequence,
+    cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec, priority,task_status
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task

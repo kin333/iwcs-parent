@@ -1,7 +1,9 @@
 package com.wisdom.iwcs.domain.task;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "ts_sub_task")
 public class SubTask {
@@ -199,6 +201,11 @@ public class SubTask {
      * 优先级
      */
     private Integer priority;
+    /**
+     * 任务状态
+     */
+    @Column(name = "task_status")
+    private String taskStatus;
 
     /**
      * 获取id
@@ -792,5 +799,13 @@ public class SubTask {
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public String getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
     }
 }
