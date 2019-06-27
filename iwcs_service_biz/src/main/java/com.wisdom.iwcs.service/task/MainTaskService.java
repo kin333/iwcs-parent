@@ -3,14 +3,15 @@ package com.wisdom.iwcs.service.task;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wisdom.iwcs.common.utils.DeleteFlagEnum;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.MainTask;
+import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
+import com.wisdom.iwcs.domain.task.dto.MainTaskWithSubTaskInfos;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -20,14 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class MainTaskService {
+public class MainTaskService implements IMainTaskService {
     private final Logger logger = LoggerFactory.getLogger(MainTaskService.class);
 
     private final MainTaskMapper mainTaskMapper;
@@ -48,6 +48,7 @@ public class MainTaskService {
      *
      * @return int
      */
+    @Override
     public int insert(MainTaskDTO record) {
         MainTask mainTask = mainTaskMapStruct.toEntity(record);
 
@@ -67,6 +68,7 @@ public class MainTaskService {
      *
      * @return int
      */
+    @Override
     public int insertBatch(List<MainTaskDTO> records) {
         List<MainTask> recordList = mainTaskMapStruct.toEntity(records);
 
@@ -86,6 +88,7 @@ public class MainTaskService {
      *
      * @return {@link MainTaskDTO }
      */
+    @Override
     public MainTaskDTO selectByPrimaryKey(Integer id) {
 
         MainTask mainTask = mainTaskMapper.selectByPrimaryKey(id);
@@ -102,6 +105,7 @@ public class MainTaskService {
      *
      * @return {@link List<MainTaskDTO> }
      */
+    @Override
     public List<MainTaskDTO> selectSelective(MainTaskDTO record) {
         MainTask mainTask = mainTaskMapStruct.toEntity(record);
 
@@ -117,6 +121,7 @@ public class MainTaskService {
      *
      * @return int
      */
+    @Override
     public int updateByPrimaryKey(MainTaskDTO record) {
         MainTask mainTask = mainTaskMapStruct.toEntity(record);
 
@@ -137,6 +142,7 @@ public class MainTaskService {
      *
      * @return int
      */
+    @Override
     public int updateByPrimaryKeySelective(MainTaskDTO record) {
         MainTask mainTask = mainTaskMapStruct.toEntity(record);
 
@@ -156,6 +162,7 @@ public class MainTaskService {
      *
      * @return int
      */
+    @Override
     public int deleteByPrimaryKey(Integer id) {
         int num = mainTaskMapper.deleteByPrimaryKey(id);
         Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
@@ -183,6 +190,7 @@ public class MainTaskService {
      *
      * @return int
      */
+    @Override
     public int deleteMore(List<String> ids){
         return mainTaskMapper.deleteByIds(String.join(",", ids));
     }
@@ -207,6 +215,7 @@ public class MainTaskService {
      *
      * @return {@link GridReturnData<MainTaskDTO> }
      */
+    @Override
     public GridReturnData<MainTaskDTO> selectPage(GridPageRequest gridPageRequest){
         GridReturnData<MainTaskDTO> mGridReturnData = new GridReturnData<>();
         List<GridFilterInfo> filterList = gridPageRequest.getFilterList();
@@ -230,5 +239,16 @@ public class MainTaskService {
         mGridReturnData.setPageInfo(pageInfoFinal);
 
         return mGridReturnData;
+    }
+
+    @Override
+    public List<MainTaskWithSubTaskInfos> getAllUnDispatchedTask() {
+        //查询状态为未执行的主任务
+        return null;
+    }
+
+    @Override
+    public boolean subtaskPreConditionMetCheck(SubTask firstSubTask) {
+        return false;
     }
 }

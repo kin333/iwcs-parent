@@ -1,5 +1,6 @@
 package com.wisdom;
 
+import com.wisdom.base.context.AppContext;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.socket.SocketApplication;
 import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
@@ -28,7 +30,9 @@ public class Application {
         Object[] objects = new Object[2];
         objects[0] = Application.class;
         objects[1] = SocketApplication.class;
-        SpringApplication.run(objects, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(objects, args);
+        AppContext.setContext(applicationContext);
+
     }
 
     @Bean
