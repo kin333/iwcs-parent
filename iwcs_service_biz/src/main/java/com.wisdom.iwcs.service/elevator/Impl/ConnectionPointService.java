@@ -26,7 +26,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class ConnectionPointService {
+public class ConnectionPointService implements com.wisdom.iwcs.service.elevator.IConnectionPointService {
 
     private final Logger logger = LoggerFactory.getLogger(ConnectionPointService.class);
 
@@ -48,6 +48,7 @@ public class ConnectionPointService {
      *
      * @return int
      */
+    @Override
     public int insert(ConnectionPointDTO record) {
         ConnectionPoint connectionPoint = connectionPointMapStruct.toEntity(record);
 
@@ -72,6 +73,7 @@ public class ConnectionPointService {
      *
      * @return int
      */
+    @Override
     public int insertBatch(List<ConnectionPointDTO> records) {
         List<ConnectionPoint> recordList = connectionPointMapStruct.toEntity(records);
 
@@ -98,6 +100,7 @@ public class ConnectionPointService {
      *
      * @return {@link ConnectionPointDTO }
      */
+    @Override
     public ConnectionPointDTO selectByPrimaryKey(Integer id) {
 
         ConnectionPoint connectionPoint = connectionPointMapper.selectByPrimaryKey(id);
@@ -114,6 +117,7 @@ public class ConnectionPointService {
      *
      * @return {@link List<ConnectionPointDTO> }
      */
+    @Override
     public List<ConnectionPointDTO> selectSelective(ConnectionPointDTO record) {
         ConnectionPoint connectionPoint = connectionPointMapStruct.toEntity(record);
 
@@ -129,6 +133,7 @@ public class ConnectionPointService {
      *
      * @return int
      */
+    @Override
     public int updateByPrimaryKey(ConnectionPointDTO record) {
         ConnectionPoint connectionPoint = connectionPointMapStruct.toEntity(record);
 
@@ -151,6 +156,7 @@ public class ConnectionPointService {
      *
      * @return int
      */
+    @Override
     public int updateByPrimaryKeySelective(ConnectionPointDTO record) {
         ConnectionPoint connectionPoint = connectionPointMapStruct.toEntity(record);
 
@@ -172,6 +178,7 @@ public class ConnectionPointService {
      *
      * @return int
      */
+    @Override
     public int deleteByPrimaryKey(Integer id) {
         int num = connectionPointMapper.deleteByPrimaryKey(id);
         Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
@@ -199,6 +206,7 @@ public class ConnectionPointService {
      *
      * @return int
      */
+    @Override
     public int deleteMore(List<String> ids){
         return connectionPointMapper.deleteByIds(String.join(",", ids));
     }
@@ -223,6 +231,7 @@ public class ConnectionPointService {
      *
      * @return {@link GridReturnData<ConnectionPointDTO> }
      */
+    @Override
     public GridReturnData<ConnectionPointDTO> selectPage(GridPageRequest gridPageRequest){
         GridReturnData<ConnectionPointDTO> mGridReturnData = new GridReturnData<>();
         List<GridFilterInfo> filterList = gridPageRequest.getFilterList();

@@ -1,25 +1,23 @@
 package com.wisdom.controller.elevator;
 
+import java.util.List;
+
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.domain.elevator.dto.ConnectionPointDTO;
-import com.wisdom.iwcs.mapstruct.elevator.ConnectionPointMapStruct;
-import com.wisdom.iwcs.service.elevator.IConnectionPointService;
+import com.wisdom.iwcs.domain.elevator.dto.CrossFloorTaskDTO;
+import com.wisdom.iwcs.mapstruct.elevator.CrossFloorTaskMapStruct;
+import com.wisdom.iwcs.service.elevator.ICrossFloorTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-
 @RestController
-@RequestMapping("/api/connection_point")
-public class ConnectionPointController {
+@RequestMapping("/api/cross_floor_task")
+public class CrossFloorTaskController {
     @Autowired
-    IConnectionPointService IConnectionPointService;
+    ICrossFloorTaskService ICrossFloorTaskService;
     @Autowired
-    ConnectionPointMapStruct connectionPointMapStruct;
-
+    CrossFloorTaskMapStruct crossFloorTaskMapStruct;
     /**
      * 根据主键ID删除
      *
@@ -30,7 +28,7 @@ public class ConnectionPointController {
      */
     @DeleteMapping(value = "/{id}")
     public Result deleteByPrimaryKey(@PathVariable Integer id) {
-        IConnectionPointService.deleteByPrimaryKey(id);
+        ICrossFloorTaskService.deleteByPrimaryKey(id);
 
         return new Result();
     }
@@ -45,7 +43,7 @@ public class ConnectionPointController {
      */
     @DeleteMapping
     public Result deleteMoreByIds(@RequestBody List<String> ids) {
-        IConnectionPointService.deleteMore(ids);
+        ICrossFloorTaskService.deleteMore(ids);
 
         return new Result();
     }
@@ -54,14 +52,14 @@ public class ConnectionPointController {
      * 新增记录
      *
      *
-     * @param connectionPointDTO {@link ConnectionPointDTO }
+     * @param crossFloorTaskDTO {@link CrossFloorTaskDTO }
      *
      * @return {@link Result }
      */
 
     @PostMapping
-    public Result insert(@RequestBody ConnectionPointDTO connectionPointDTO) {
-        IConnectionPointService.insert(connectionPointDTO);
+    public Result insert(@RequestBody CrossFloorTaskDTO crossFloorTaskDTO) {
+        ICrossFloorTaskService.insert(crossFloorTaskDTO);
 
         return new Result();
     }
@@ -76,9 +74,9 @@ public class ConnectionPointController {
      */
     @GetMapping(value = "/{id}")
     public Result selectByPrimaryKey(@PathVariable Integer id) {
-        ConnectionPointDTO connectionPointDTO = IConnectionPointService.selectByPrimaryKey(id);
+        CrossFloorTaskDTO crossFloorTaskDTO = ICrossFloorTaskService.selectByPrimaryKey(id);
 
-        return new Result(connectionPointDTO);
+        return new Result(crossFloorTaskDTO);
     }
 
     /**
@@ -91,7 +89,7 @@ public class ConnectionPointController {
      */
     @PostMapping(value = "/page")
     public Result selectPage(@RequestBody GridPageRequest gridPageRequest) {
-        GridReturnData<ConnectionPointDTO> records = IConnectionPointService.selectPage(gridPageRequest);
+        GridReturnData<CrossFloorTaskDTO> records = ICrossFloorTaskService.selectPage(gridPageRequest);
 
         return new Result(records);
     }
@@ -100,13 +98,13 @@ public class ConnectionPointController {
      * 更新记录
      *
      *
-     * @param connectionPointDTO {@link ConnectionPointDTO }
+     * @param crossFloorTaskDTO {@link CrossFloorTaskDTO }
      *
      * @return {@link Result }
      */
     @PutMapping
-    public Result updateByPrimaryKey(@RequestBody ConnectionPointDTO connectionPointDTO) {
-        IConnectionPointService.updateByPrimaryKey(connectionPointDTO);
+    public Result updateByPrimaryKey(@RequestBody CrossFloorTaskDTO crossFloorTaskDTO) {
+        ICrossFloorTaskService.updateByPrimaryKey(crossFloorTaskDTO);
 
         return new Result();
     }
