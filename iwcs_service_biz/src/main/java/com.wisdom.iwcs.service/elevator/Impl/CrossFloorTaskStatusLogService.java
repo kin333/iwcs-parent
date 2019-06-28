@@ -1,6 +1,5 @@
 package com.wisdom.iwcs.service.elevator.Impl;
 
-import com.wisdom.iwcs.common.utils.DeleteFlagEnum;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
@@ -10,6 +9,7 @@ import com.wisdom.iwcs.domain.elevator.CrossFloorTaskStatusLog;
 import com.wisdom.iwcs.domain.elevator.dto.CrossFloorTaskStatusLogDTO;
 import com.wisdom.iwcs.mapper.elevator.CrossFloorTaskStatusLogMapper;
 import com.wisdom.iwcs.mapstruct.elevator.CrossFloorTaskStatusLogMapStruct;
+import com.wisdom.iwcs.service.elevator.ICrossFloorTaskStatusLogService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +18,6 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;

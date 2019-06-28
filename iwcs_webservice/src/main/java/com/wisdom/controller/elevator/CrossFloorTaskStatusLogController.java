@@ -5,7 +5,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.elevator.dto.CrossFloorTaskStatusLogDTO;
 import com.wisdom.iwcs.mapstruct.elevator.CrossFloorTaskStatusLogMapStruct;
-import com.wisdom.iwcs.service.elevator.Impl.ICrossFloorTaskStatusLogService;
+import com.wisdom.iwcs.service.elevator.ICrossFloorTaskStatusLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

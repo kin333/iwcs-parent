@@ -1,4 +1,4 @@
-package com.wisdom.iwcs.service.elevator.Impl;
+package com.wisdom.iwcs.service.elevator;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
