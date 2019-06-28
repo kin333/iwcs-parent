@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -99,8 +103,48 @@ public class RabbitMQUtil {
      * @throws IOException
      */
     public static String startConsume(Channel channel, String queue, Consumer consumer) throws IOException {
+        if (queue == null ||channel == null || consumer == null) {
+            throw new NullPointerException("startConsume()的参数不能为空!");
+        }
         String consumerTag = channel.basicConsume(queue, consumer);
         return consumerTag;
+    }
+
+    /**
+     * 在多个队列上注册一个消费者
+     * @param channel
+     * @param queues
+     * @param consumer
+     * @return 消费者与所有消息队列之间连接的标记, 用于取消连接
+     * @throws IOException
+     */
+    public static List<String> startMoreConsume(Channel channel, String[] queues, Consumer consumer) throws IOException {
+        if (queues == null) {
+            throw new NullPointerException("startMoreConsume()的参数不能为空!");
+        }
+        List<String> queueList = Arrays.asList(queues);
+        return startMoreConsume(channel, queueList, consumer);
+    }
+
+    /**
+     * 在多个队列上注册一个消费者
+     * @param channel
+     * @param queues
+     * @param consumer
+     * @return
+     * @throws IOException
+     */
+    public static List<String> startMoreConsume(Channel channel, List<String> queues, Consumer consumer) throws IOException {
+        if (queues == null || channel == null || consumer == null) {
+            throw new NullPointerException("startMoreConsume()的参数不能为空!");
+        }
+        List<String> consumerTags = new ArrayList<>();
+        for (String queue : queues) {
+            //在某个队列上注册消费者
+            String consumerTag = channel.basicConsume(queue, consumer);
+            consumerTags.add(consumerTag);
+        }
+        return consumerTags;
     }
 
     /**
@@ -110,6 +154,39 @@ public class RabbitMQUtil {
      * @throws IOException
      */
     public static void cancelConsume(Channel channel, String consumerTag) throws IOException {
+        if (channel == null || consumerTag == null) {
+            throw new NullPointerException("cancelConsume()的参数不能为空!");
+        }
         channel.basicCancel(consumerTag);
+    }
+
+    /**
+     * 批量取消消费者与消息队列之间的连接
+     * @param channel
+     * @param consumerTags
+     * @throws IOException
+     */
+    public static void cancelMoreConsume(Channel channel, String[] consumerTags) throws IOException {
+        if (consumerTags == null) {
+            throw new NullPointerException("startMoreConsume()的参数不能为空!");
+        }
+        List<String> consumerList = Arrays.asList(consumerTags);
+        cancelMoreConsume(channel, consumerList);
+    }
+
+    /**
+     * 批量取消消费者与消息队列之间的连接
+     * @param channel
+     * @param consumerTags
+     * @throws IOException
+     */
+    public static void cancelMoreConsume(Channel channel, List<String> consumerTags) throws IOException {
+        if (channel == null || consumerTags == null) {
+            throw new NullPointerException("startMoreConsume()的参数不能为空!");
+        }
+        for (String consumerTag : consumerTags) {
+            //取消消费者与某个消息队列之间的连接
+            channel.basicCancel(consumerTag);
+        }
     }
 }
