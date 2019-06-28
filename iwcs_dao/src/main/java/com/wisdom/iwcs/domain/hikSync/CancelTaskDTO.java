@@ -1,7 +1,6 @@
 package com.wisdom.iwcs.domain.hikSync;
 
-
-public class ContinueTaskDTo {
+public class CancelTaskDTO {
 
     /**
      * 请求编号，每个请求都要一个唯一编号， 同一个请求重复提交， 使用同一编号。
@@ -17,12 +16,6 @@ public class ContinueTaskDTo {
      * 客户端编号，如 PDA，HCWMS 等
      */
     private String clientCode;
-
-    /**
-     * 令牌号, 由调度系统颁发
-     */
-    private String tokenCode;
-
     /**
      * continueTask
      * TCP 协议必传，REST 协议不用传， 传了也不影响
@@ -30,14 +23,9 @@ public class ContinueTaskDTo {
     private String interfaceName;
 
     /**
-     * 工作位
+     * 令牌号, 由调度系统颁发
      */
-    private String wbCode;
-
-    /**
-     * 货架编号
-     */
-    private String podCode;
+    private String tokenCode;
 
     /**
      * 任务单号
@@ -50,20 +38,10 @@ public class ContinueTaskDTo {
     private String agvCode;
 
     /**
-     * 子任务的序列
+     * 取消任务
+     * 通过任务组批量取消, 在批量生成任务单后才能使用
      */
-    private String taskSeq;
-
-    /**
-     * 下一个位置信息
-     */
-    private Object nextPositionCode;
-
-    /**
-     * 自定义字段
-     */
-    private String data;
-
+    private String taskGroupCode;
 
     public String getReqCode() {
         return reqCode;
@@ -105,22 +83,6 @@ public class ContinueTaskDTo {
         this.interfaceName = interfaceName;
     }
 
-    public String getWbCode() {
-        return wbCode;
-    }
-
-    public void setWbCode(String wbCode) {
-        this.wbCode = wbCode;
-    }
-
-    public String getPodCode() {
-        return podCode;
-    }
-
-    public void setPodCode(String podCode) {
-        this.podCode = podCode;
-    }
-
     public String getTaskCode() {
         return taskCode;
     }
@@ -137,31 +99,12 @@ public class ContinueTaskDTo {
         this.agvCode = agvCode;
     }
 
-    public String getTaskSeq() {
-        return taskSeq;
+    public String getTaskGroupCode() {
+        return taskGroupCode;
     }
 
-    public void setTaskSeq(String taskSeq) {
-        this.taskSeq = taskSeq;
+    public void setTaskGroupCode(String taskGroupCode) {
+        this.taskGroupCode = taskGroupCode;
     }
-
-    public Object getNextPositionCode() {
-        return nextPositionCode;
-    }
-
-    public void setNextPositionCode(Object nextPositionCode) {
-        this.nextPositionCode = nextPositionCode;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-
-
 
 }

@@ -49,9 +49,9 @@ public interface ITransferHikHttpRequestService {
     /**
      * 取消任务
      *
-     * @param continueTaskDTo
+     * @param cancelTaskDTO
      * @return
      */
     @SystemInterfaceLog(methodCode = CANCEL_TASK_CODE, methodName = CANCEL_TASK_NAME, methodThansfer = SRC_IWCS)
-    String transferCancelTask(ContinueTaskDTo continueTaskDTo);
+    String transferCancelTask(CancelTaskDTO cancelTaskDTO);
 }

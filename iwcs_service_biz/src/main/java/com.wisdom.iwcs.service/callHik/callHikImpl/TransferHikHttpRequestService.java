@@ -247,17 +247,17 @@ public class TransferHikHttpRequestService implements ITransferHikHttpRequestSer
      * 取消任务
      * cancelTask
      *
-     * @param continueTaskDTo
+     * @param cancelTaskDTO
      * @return
      */
     @Override
     @SystemInterfaceLog(methodCode = CANCEL_TASK_CODE, methodName = CANCEL_TASK_NAME, methodThansfer = SRC_IWCS)
-    public String transferCancelTask(ContinueTaskDTo continueTaskDTo) {
+    public String transferCancelTask(CancelTaskDTO cancelTaskDTO) {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
 
-        HttpEntity<ContinueTaskDTo> requestEntity = new HttpEntity<>(continueTaskDTo, httpHeaders);
+        HttpEntity<CancelTaskDTO> requestEntity = new HttpEntity<>(cancelTaskDTO, httpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getHikParam().getCancelTaskUrl(),
