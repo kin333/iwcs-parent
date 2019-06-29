@@ -5,7 +5,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.WbAgvTaskDTO;
 import com.wisdom.iwcs.mapstruct.task.WbAgvTaskMapStruct;
-import com.wisdom.iwcs.service.task.IWbAgvTaskService;
+import com.wisdom.iwcs.service.task.intf.IWbAgvTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

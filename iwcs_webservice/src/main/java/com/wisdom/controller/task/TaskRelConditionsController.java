@@ -7,7 +7,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.TaskRelConditionsDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelConditionsMapStruct;
-import com.wisdom.iwcs.service.task.ITaskRelConditionsService;
+import com.wisdom.iwcs.service.task.intf.ITaskRelConditionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

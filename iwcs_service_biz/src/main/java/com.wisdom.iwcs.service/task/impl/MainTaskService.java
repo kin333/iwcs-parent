@@ -1,4 +1,4 @@
-package com.wisdom.iwcs.service.task;
+package com.wisdom.iwcs.service.task.impl;
 
 
 import com.github.pagehelper.PageHelper;
@@ -15,6 +15,7 @@ import com.wisdom.iwcs.domain.task.dto.MainTaskWithSubTaskInfos;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
+import com.wisdom.iwcs.service.task.intf.IMainTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

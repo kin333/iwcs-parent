@@ -6,7 +6,7 @@ import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.AgvTaskDetailOutstockProcessDTO;
 import com.wisdom.iwcs.domain.task.dto.SearchAgvTaskProcessDto;
 import com.wisdom.iwcs.mapstruct.task.AgvTaskDetailOutstockProcessMapStruct;
-import com.wisdom.iwcs.service.task.IAgvTaskDetailOutstockProcessService;
+import com.wisdom.iwcs.service.task.intf.IAgvTaskDetailOutstockProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

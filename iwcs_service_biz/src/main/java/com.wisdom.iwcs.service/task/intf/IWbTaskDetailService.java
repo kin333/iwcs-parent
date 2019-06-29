@@ -1,4 +1,4 @@
-package com.wisdom.iwcs.service.task;
+package com.wisdom.iwcs.service.task.intf;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;

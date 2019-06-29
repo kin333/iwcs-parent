@@ -7,7 +7,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.SubTaskLogDTO;
 import com.wisdom.iwcs.mapstruct.task.SubTaskLogMapStruct;
-import com.wisdom.iwcs.service.task.SubTaskLogService;
+import com.wisdom.iwcs.service.task.impl.SubTaskLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

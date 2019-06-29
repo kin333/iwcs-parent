@@ -12,7 +12,7 @@ import com.wisdom.iwcs.domain.task.dto.SubTaskConditionsDTO;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionsMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskConditionsMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
-import com.wisdom.iwcs.service.task.ISubTaskConditionsService;
+import com.wisdom.iwcs.service.task.intf.ISubTaskConditionsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

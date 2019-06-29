@@ -1,4 +1,4 @@
-package com.wisdom.iwcs.service.task;
+package com.wisdom.iwcs.service.task.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

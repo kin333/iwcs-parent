@@ -1,18 +1,17 @@
-package com.wisdom.iwcs.service.task;
+package com.wisdom.iwcs.service.task.impl;
 
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wisdom.iwcs.common.utils.DeleteFlagEnum;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
-import com.wisdom.iwcs.domain.task.MainTaskType;
-import com.wisdom.iwcs.domain.task.dto.MainTaskTypeDTO;
-import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
-import com.wisdom.iwcs.mapstruct.task.MainTaskTypeMapStruct;
+import com.wisdom.iwcs.domain.task.TaskGroupItem;
+import com.wisdom.iwcs.domain.task.dto.TaskGroupItemDTO;
+import com.wisdom.iwcs.mapper.task.TaskGroupItemMapper;
+import com.wisdom.iwcs.mapstruct.task.TaskGroupItemMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,40 +19,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class MainTaskTypeService {
-    private final Logger logger = LoggerFactory.getLogger(MainTaskTypeService.class);
+public class TaskGroupItemService {
+    private final Logger logger = LoggerFactory.getLogger(TaskGroupItemService.class);
 
-    private final MainTaskTypeMapper mainTaskTypeMapper;
+    private final TaskGroupItemMapper TaskGroupItemMapper;
 
-    private final MainTaskTypeMapStruct mainTaskTypeMapStruct;
+    private final TaskGroupItemMapStruct TaskGroupItemMapStruct;
 
     @Autowired
-    public MainTaskTypeService(MainTaskTypeMapStruct mainTaskTypeMapStruct, MainTaskTypeMapper mainTaskTypeMapper) {
-        this.mainTaskTypeMapStruct = mainTaskTypeMapStruct;
-        this.mainTaskTypeMapper = mainTaskTypeMapper;
+    public TaskGroupItemService(TaskGroupItemMapStruct TaskGroupItemMapStruct, TaskGroupItemMapper TaskGroupItemMapper) {
+        this.TaskGroupItemMapStruct = TaskGroupItemMapStruct;
+        this.TaskGroupItemMapper = TaskGroupItemMapper;
     }
 
     /**
      * 写入记录
      *
      *
-     * @param record {@link MainTaskTypeDTO }
+     * @param record {@link TaskGroupItemDTO }
      *
      * @return int
      */
-    public int insert(MainTaskTypeDTO record) {
-        MainTaskType mainTaskType = mainTaskTypeMapStruct.toEntity(record);
+    public int insert(TaskGroupItemDTO record) {
+        TaskGroupItem TaskGroupItem = TaskGroupItemMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 
-        int num = mainTaskTypeMapper.insert(mainTaskType);
+        int num = TaskGroupItemMapper.insert(TaskGroupItem);
         Preconditions.checkArgument(num > 0, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -63,16 +61,16 @@ public class MainTaskTypeService {
      * 批量写入记录
      *
      *
-     * @param records {@link List<MainTaskTypeDTO> }
+     * @param records {@link List<TaskGroupItemDTO> }
      *
      * @return int
      */
-    public int insertBatch(List<MainTaskTypeDTO> records) {
-        List<MainTaskType> recordList = mainTaskTypeMapStruct.toEntity(records);
+    public int insertBatch(List<TaskGroupItemDTO> records) {
+        List<TaskGroupItem> recordList = TaskGroupItemMapStruct.toEntity(records);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 
-        int num = mainTaskTypeMapper.insertList(recordList);
+        int num = TaskGroupItemMapper.insertList(recordList);
         Preconditions.checkArgument(num == recordList.size(), ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -84,45 +82,45 @@ public class MainTaskTypeService {
      *
      * @param id {@link Integer }
      *
-     * @return {@link MainTaskTypeDTO }
+     * @return {@link TaskGroupItemDTO }
      */
-    public MainTaskTypeDTO selectByPrimaryKey(Integer id) {
+    public TaskGroupItemDTO selectByPrimaryKey(Integer id) {
 
-        MainTaskType mainTaskType = mainTaskTypeMapper.selectByPrimaryKey(id);
-        Preconditions.checkNotNull(mainTaskType, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
+        TaskGroupItem TaskGroupItem = TaskGroupItemMapper.selectByPrimaryKey(id);
+        Preconditions.checkNotNull(TaskGroupItem, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
 
-        return mainTaskTypeMapStruct.toDto(mainTaskType);
+        return TaskGroupItemMapStruct.toDto(TaskGroupItem);
     }
 
     /**
      * 根据字段选择性查询
      *
      *
-     * @param record {@link MainTaskTypeDTO }
+     * @param record {@link TaskGroupItemDTO }
      *
-     * @return {@link List<MainTaskTypeDTO> }
+     * @return {@link List<TaskGroupItemDTO> }
      */
-    public List<MainTaskTypeDTO> selectSelective(MainTaskTypeDTO record) {
-        MainTaskType mainTaskType = mainTaskTypeMapStruct.toEntity(record);
+    public List<TaskGroupItemDTO> selectSelective(TaskGroupItemDTO record) {
+        TaskGroupItem TaskGroupItem = TaskGroupItemMapStruct.toEntity(record);
 
-        List<MainTaskType> mainTaskTypeList = mainTaskTypeMapper.select(mainTaskType);
-        return mainTaskTypeMapStruct.toDto(mainTaskTypeList);
+        List<TaskGroupItem> TaskGroupItemList = TaskGroupItemMapper.select(TaskGroupItem);
+        return TaskGroupItemMapStruct.toDto(TaskGroupItemList);
     }
 
     /**
      * 根据主键更新
      *
      *
-     * @param record {@link MainTaskTypeDTO }
+     * @param record {@link TaskGroupItemDTO }
      *
      * @return int
      */
-    public int updateByPrimaryKey(MainTaskTypeDTO record) {
-        MainTaskType mainTaskType = mainTaskTypeMapStruct.toEntity(record);
+    public int updateByPrimaryKey(TaskGroupItemDTO record) {
+        TaskGroupItem TaskGroupItem = TaskGroupItemMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 
-        int num = mainTaskTypeMapper.updateByPrimaryKey(mainTaskType);
+        int num = TaskGroupItemMapper.updateByPrimaryKey(TaskGroupItem);
         Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -133,16 +131,16 @@ public class MainTaskTypeService {
      * 根据主键选择性更新
      *
      *
-     * @param record {@link MainTaskTypeDTO }
+     * @param record {@link TaskGroupItemDTO }
      *
      * @return int
      */
-    public int updateByPrimaryKeySelective(MainTaskTypeDTO record) {
-        MainTaskType mainTaskType = mainTaskTypeMapStruct.toEntity(record);
+    public int updateByPrimaryKeySelective(TaskGroupItemDTO record) {
+        TaskGroupItem TaskGroupItem = TaskGroupItemMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 
-        int num = mainTaskTypeMapper.updateByPrimaryKeySelective(mainTaskType);
+        int num = TaskGroupItemMapper.updateByPrimaryKeySelective(TaskGroupItem);
         Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -157,7 +155,7 @@ public class MainTaskTypeService {
      * @return int
      */
     public int deleteByPrimaryKey(Integer id) {
-        int num = mainTaskTypeMapper.deleteByPrimaryKey(id);
+        int num = TaskGroupItemMapper.deleteByPrimaryKey(id);
         Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -172,7 +170,7 @@ public class MainTaskTypeService {
      * @return int
      */
 //    public int deleteLogicByPrimaryKey(Integer id) {
-//        return mainTaskTypeMapper.deleteLogicByPrimaryKey(id);
+//        return TaskGroupItemMapper.deleteLogicByPrimaryKey(id);
 //    }
 
     /**
@@ -184,7 +182,7 @@ public class MainTaskTypeService {
      * @return int
      */
     public int deleteMore(List<String> ids){
-        return mainTaskTypeMapper.deleteByIds(String.join(",", ids));
+        return TaskGroupItemMapper.deleteByIds(String.join(",", ids));
     }
 
     /**
@@ -196,7 +194,7 @@ public class MainTaskTypeService {
      * @return int
      */
 //    public int deleteMoreLogic(List<String> ids){
-//        return mainTaskTypeMapper.deleteLogicByIds(String.join(",", ids));
+//        return TaskGroupItemMapper.deleteLogicByIds(String.join(",", ids));
 //    }
 
     /**
@@ -205,10 +203,10 @@ public class MainTaskTypeService {
      *
      * @param gridPageRequest {@link GridPageRequest }
      *
-     * @return {@link GridReturnData<MainTaskTypeDTO> }
+     * @return {@link GridReturnData<TaskGroupItemDTO> }
      */
-    public GridReturnData<MainTaskTypeDTO> selectPage(GridPageRequest gridPageRequest){
-        GridReturnData<MainTaskTypeDTO> mGridReturnData = new GridReturnData<>();
+    public GridReturnData<TaskGroupItemDTO> selectPage(GridPageRequest gridPageRequest){
+        GridReturnData<TaskGroupItemDTO> mGridReturnData = new GridReturnData<>();
         List<GridFilterInfo> filterList = gridPageRequest.getFilterList();
         Map<String, Object> map = new HashMap<>(2);
         filterList.forEach(gridFilterInfo -> {
@@ -222,10 +220,10 @@ public class MainTaskTypeService {
         String sortMyBatisByString = gridPageRequest.getSortMybatisString();
         PageHelper.startPage(gridPageRequest.getPageNum(), gridPageRequest.getPageSize(), sortMyBatisByString);
 
-        List<MainTaskType> list = mainTaskTypeMapper.selectPage(map);
+        List<TaskGroupItem> list = TaskGroupItemMapper.selectPage(map);
 
-        PageInfo<MainTaskType> pageInfo = new PageInfo<>(list);
-        PageInfo<MainTaskTypeDTO> pageInfoFinal = new PageInfo<>(mainTaskTypeMapStruct.toDto(list));
+        PageInfo<TaskGroupItem> pageInfo = new PageInfo<>(list);
+        PageInfo<TaskGroupItemDTO> pageInfoFinal = new PageInfo<>(TaskGroupItemMapStruct.toDto(list));
         pageInfoFinal.setTotal(pageInfo.getTotal());
         mGridReturnData.setPageInfo(pageInfoFinal);
 

@@ -13,7 +13,7 @@ import com.wisdom.iwcs.domain.task.dto.AgvTaskOutstockStockDTO;
 import com.wisdom.iwcs.mapper.task.AgvTaskOutstockStockMapper;
 import com.wisdom.iwcs.mapstruct.task.AgvTaskOutstockStockMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
-import com.wisdom.iwcs.service.task.IAgvTaskOutstockStockService;
+import com.wisdom.iwcs.service.task.intf.IAgvTaskOutstockStockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

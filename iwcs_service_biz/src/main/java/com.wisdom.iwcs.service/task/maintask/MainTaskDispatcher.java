@@ -4,7 +4,7 @@ import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.MainTaskWithSubTaskInfos;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
-import com.wisdom.iwcs.service.task.IMainTaskService;
+import com.wisdom.iwcs.service.task.intf.IMainTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -12,7 +12,7 @@ import com.wisdom.iwcs.domain.task.dto.WbAgvTaskDTO;
 import com.wisdom.iwcs.mapper.task.WbAgvTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.WbAgvTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
-import com.wisdom.iwcs.service.task.IWbAgvTaskService;
+import com.wisdom.iwcs.service.task.intf.IWbAgvTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

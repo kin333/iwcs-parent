@@ -7,7 +7,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.TaskGroupItemDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskGroupItemMapStruct;
-import com.wisdom.iwcs.service.task.TaskGroupItemService;
+import com.wisdom.iwcs.service.task.impl.TaskGroupItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

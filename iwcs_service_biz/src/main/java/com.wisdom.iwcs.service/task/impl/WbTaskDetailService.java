@@ -12,7 +12,7 @@ import com.wisdom.iwcs.domain.task.dto.WbTaskDetailDTO;
 import com.wisdom.iwcs.mapper.task.WbTaskDetailMapper;
 import com.wisdom.iwcs.mapstruct.task.WbTaskDetailMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
-import com.wisdom.iwcs.service.task.IWbTaskDetailService;
+import com.wisdom.iwcs.service.task.intf.IWbTaskDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

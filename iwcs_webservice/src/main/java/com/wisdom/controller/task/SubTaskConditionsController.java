@@ -6,7 +6,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.SubTaskConditionsDTO;
 import com.wisdom.iwcs.mapstruct.task.SubTaskConditionsMapStruct;
-import com.wisdom.iwcs.service.task.ISubTaskConditionsService;
+import com.wisdom.iwcs.service.task.intf.ISubTaskConditionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

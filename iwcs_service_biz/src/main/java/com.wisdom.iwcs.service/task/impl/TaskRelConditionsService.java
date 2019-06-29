@@ -13,7 +13,7 @@ import com.wisdom.iwcs.domain.task.dto.TaskRelConditionsDTO;
 import com.wisdom.iwcs.mapper.task.TaskRelConditionsMapper;
 import com.wisdom.iwcs.mapstruct.task.TaskRelConditionsMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
-import com.wisdom.iwcs.service.task.ITaskRelConditionsService;
+import com.wisdom.iwcs.service.task.intf.ITaskRelConditionsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

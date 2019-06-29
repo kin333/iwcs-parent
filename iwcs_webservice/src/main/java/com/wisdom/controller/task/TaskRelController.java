@@ -7,7 +7,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
-import com.wisdom.iwcs.service.task.TaskRelService;
+import com.wisdom.iwcs.service.task.impl.TaskRelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
