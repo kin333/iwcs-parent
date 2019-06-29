@@ -31,6 +31,18 @@ public class BaseMapBerth {
      * y坐标
      */
     private String cooy;
+    /**
+     * 锁定状态：0:未锁定，1：已锁定
+     */
+    private Integer inLock;
+    /**
+     * 货架号
+     */
+    private String podCode;
+    /**
+     * 锁定源
+     */
+    private String lockSource;
 
     /**
      * 有效标记，0有效，1无效
@@ -273,5 +285,29 @@ public class BaseMapBerth {
      */
     public void setLastModifiedTime(Date lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
+    }
+
+    public Integer getInLock() {
+        return inLock;
+    }
+
+    public void setInLock(Integer inLock) {
+        this.inLock = inLock;
+    }
+
+    public String getPodCode() {
+        return podCode;
+    }
+
+    public void setPodCode(String podCode) {
+        this.podCode = podCode;
+    }
+
+    public String getLockSource() {
+        return lockSource;
+    }
+
+    public void setLockSource(String lockSource) {
+        this.lockSource = lockSource;
     }
 }

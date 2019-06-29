@@ -3,16 +3,21 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.SubTaskConditions;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
+import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
+import com.wisdom.iwcs.service.task.conditonHandler.AbstractConditionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -228,5 +233,26 @@ public class SubTaskService {
         mGridReturnData.setPageInfo(pageInfoFinal);
 
         return mGridReturnData;
+    }
+
+    /**
+     * 执行子任务前置条件检查并锁定/修改相关数据
+     *
+     * @return
+     */
+    public boolean preConditionsCheckAndExec(SubTaskInfo subTaskInfo) {
+        List<SubTaskConditions> preTaskRelConditionsList = subTaskInfo.getPreTaskRelConditionsList();
+        preTaskRelConditionsList.stream().forEach(c -> {
+            String conditonHandleName = c.getConditonHandler();
+            AbstractConditionHandler conditonHandler = (AbstractConditionHandler) AppContext.getBean(conditonHandleName);
+            boolean met = conditonHandler.handlleConditions(c);
+            if (!met) {
+                //抛出异常
+                throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
+            }
+        });
+        return true;
+
+
     }
 }

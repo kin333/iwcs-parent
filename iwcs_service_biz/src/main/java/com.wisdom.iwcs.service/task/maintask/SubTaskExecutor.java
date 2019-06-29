@@ -1,6 +1,6 @@
 package com.wisdom.iwcs.service.task.maintask;
 
-import com.wisdom.iwcs.domain.task.TaskRelConditions;
+import com.wisdom.iwcs.domain.task.SubTaskConditions;
 import com.wisdom.iwcs.domain.task.dto.MainTaskWithSubTaskInfos;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
@@ -21,8 +21,8 @@ public class SubTaskExecutor implements Runnable {
     @Override
     public void run() {
         logger.info("子任务{}执行器线程被启动", subtask.getSubTaskNum());
-        List<TaskRelConditions> preTaskRelConditionsList = subtask.getPreTaskRelConditionsList();
-        List<TaskRelConditions> afterTaskRelConditionsList = subtask.getAfterTaskRelConditionsList();
+        List<SubTaskConditions> preTaskRelConditionsList = subtask.getPreTaskRelConditionsList();
+        List<SubTaskConditions> afterTaskRelConditionsList = subtask.getAfterTaskRelConditionsList();
         while (true) {
             logger.info("开始检查主任务{}开始执行下一步子任务{}，检查条件", subtask.getMainTaskNum(), subtask.getSubTaskNum());
             //已结束的任务自动结束该任务并上报主任务线程
@@ -31,7 +31,7 @@ public class SubTaskExecutor implements Runnable {
                 break;
             } else {
                 // 检查并执行未完成的前置条件
-//                preTaskRelConditionsList.stream().forEach(c);
+                preTaskRelConditionsList.stream().forEach(c -> c.getConditonTriger());
 
 
             }

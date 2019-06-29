@@ -207,6 +207,44 @@ public class SubTask {
     @Column(name = "task_status")
     private String taskStatus;
 
+
+    @Column(name = "map_code")
+    private String mapCode;
+    /**
+     * 货架号
+     */
+    @Column(name = "pod_code")
+    private String podCode;
+    /**
+     * 货架方向
+     */
+    @Column(name = "pod_dir")
+    private String podDir;
+    /**
+     * 任务起始码
+     */
+    @Column(name = "start_bercode")
+    private String startBercode;
+
+    @Column(name = "start_x")
+    private double start_x;
+
+    @Column(name = "start_y")
+    private double start_y;
+
+    /**
+     * 任务终点码
+     */
+    @Column(name = "end_bercode")
+    private String endBercode;
+
+    @Column(name = "end_x")
+    private double end_x;
+
+    @Column(name = "end_y")
+    private double end_y;
+
+
     /**
      * 获取id
      *
@@ -807,5 +845,77 @@ public class SubTask {
 
     public void setTaskStatus(String taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public String getMapCode() {
+        return mapCode;
+    }
+
+    public void setMapCode(String mapCode) {
+        this.mapCode = mapCode;
+    }
+
+    public String getPodCode() {
+        return podCode;
+    }
+
+    public void setPodCode(String podCode) {
+        this.podCode = podCode;
+    }
+
+    public String getPodDir() {
+        return podDir;
+    }
+
+    public void setPodDir(String podDir) {
+        this.podDir = podDir;
+    }
+
+    public String getStartBercode() {
+        return startBercode;
+    }
+
+    public void setStartBercode(String startBercode) {
+        this.startBercode = startBercode;
+    }
+
+    public double getStart_x() {
+        return start_x;
+    }
+
+    public void setStart_x(double start_x) {
+        this.start_x = start_x;
+    }
+
+    public double getStart_y() {
+        return start_y;
+    }
+
+    public void setStart_y(double start_y) {
+        this.start_y = start_y;
+    }
+
+    public String getEndBercode() {
+        return endBercode;
+    }
+
+    public void setEndBercode(String endBercode) {
+        this.endBercode = endBercode;
+    }
+
+    public double getEnd_x() {
+        return end_x;
+    }
+
+    public void setEnd_x(double end_x) {
+        this.end_x = end_x;
+    }
+
+    public double getEnd_y() {
+        return end_y;
+    }
+
+    public void setEnd_y(double end_y) {
+        this.end_y = end_y;
     }
 }

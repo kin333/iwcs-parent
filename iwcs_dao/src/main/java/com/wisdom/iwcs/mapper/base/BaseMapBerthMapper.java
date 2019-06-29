@@ -29,4 +29,12 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     int deleteByMapCode(String mapCode);
+
+    /**
+     * 根据元素编号查询
+     *
+     * @param mapCode
+     * @return
+     */
+    BaseMapBerth selectOneByBercode(String bercode);
 }

@@ -17,4 +17,11 @@
     <changeSet author="cecilia" id="201906251328-1">
         <modifyDataType tableName="base_map_berth" columnName="berth_type_value" newDataType="varchar(5)"/>
     </changeSet>
+    <changeSet author="ted" id="201906281725-1">
+        <addColumn tableName="base_map_berth">
+            <column name="in_lock" remarks="地码锁定中。0：未锁定，1.已锁定" type="INT"/>
+            <column name="lock_source" remarks="锁定源标志" type="varchar(64)"/>
+            <column name="pod_code" remarks="货架编号" type="varchar(64)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

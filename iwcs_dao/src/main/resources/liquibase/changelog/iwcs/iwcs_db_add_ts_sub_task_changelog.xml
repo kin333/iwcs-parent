@@ -46,4 +46,19 @@
             <column name="task_status" remarks="任务状态" type="VARCHAR(32)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201906281922-1" author="ted">
+        <addColumn tableName="ts_sub_task">
+            <column name="map_code" remarks="地图编码" type="VARCHAR(32)"/>
+            <column name="pod_code" remarks="货架号" type="VARCHAR(32)"/>
+            <column name="pod_dir" remarks="货架方向" type="VARCHAR(32)"/>
+            <column name="start_bercode" remarks="起始地码" type="VARCHAR(32)"/>
+            <column name="start_x" remarks="起始X" type="DECIMAL(13, 3)"/>
+            <column name="start_y" remarks="起始Y" type="DECIMAL(13, 3)"/>
+            <column name="end_bercode" remarks="终点地码" type="VARCHAR(32)"/>
+            <column name="end_x" remarks="终点X" type="DECIMAL(13, 3)"/>
+            <column name="end_y" remarks="终点Y" type="DECIMAL(13, 3)"/>
+
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

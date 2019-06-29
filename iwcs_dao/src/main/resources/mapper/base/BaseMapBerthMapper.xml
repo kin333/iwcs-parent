@@ -17,6 +17,9 @@
         <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
         <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
         <result column="berth_type_value" jdbcType="VARCHAR" property="berthTypeValue"/>
+        <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
+        <result column="lock_source" jdbcType="VARCHAR" property="lockSource"/>
+        <result column="in_lock" jdbcType="INTEGER" property="inLock"/>
 
     </resultMap>
     <sql id="Base_Column_List">
@@ -24,7 +27,7 @@
           WARNING - @mbg.generated
         -->
         id, map_code, ber_code, coox, cooy, valid_flag, delete_flag, created_by, created_time,
-        last_modified_by, last_modified_time,berth_type_value
+        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select
@@ -41,6 +44,11 @@
             and created_time &lt;= #{endTime,jdbcType=BIGINT}
         </if>
         order by last_modified_time desc
+    </select>
+    <select id="selectOneByBercode" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth">
+        select
+        <include refid="Base_Column_List"/>
+        from base_map_berth where ber_code = #{bercode,jdbcType=varchar}
     </select>
 
     <delete id="deleteByMapCode">

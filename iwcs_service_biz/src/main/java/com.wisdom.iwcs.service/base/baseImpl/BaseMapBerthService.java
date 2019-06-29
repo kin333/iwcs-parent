@@ -236,4 +236,25 @@ public class BaseMapBerthService implements IBaseMapBerthService {
 
         return mGridReturnData;
     }
+
+    /**
+     * 锁定地图资源
+     *
+     * @param berCode
+     * @param podcode
+     * @return
+     */
+    public boolean lockMapBerth(String berCode, String podcode) {
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
+        Integer inLock = baseMapBerth.getInLock();
+        if (inLock == 0) {
+            baseMapBerth.setInLock(1);
+            baseMapBerth.setLastModifiedTime(new Date());
+            baseMapBerth.setPodCode(podcode);
+            //TODO 锁资源添加乐观锁机制
+            baseMapBerthMapper.updateByPrimaryKey(baseMapBerth);
+            return true;
+        }
+        return false;
+    }
 }
