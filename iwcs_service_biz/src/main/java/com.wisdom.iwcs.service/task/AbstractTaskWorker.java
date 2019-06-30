@@ -1,27 +1,20 @@
 package com.wisdom.iwcs.service.task;
 
-import com.wisdom.iwcs.service.task.subtask.intf.CondIntf;
+import com.wisdom.iwcs.service.task.conditions.ConditionBase;
 import com.wisdom.iwcs.service.task.subtask.intf.WcsObservable;
-import com.wisdom.iwcs.service.task.subtask.intf.WcsObserver;
+import com.wisdom.iwcs.service.task.subtask.intf.IWcsObserver;
+import lombok.Data;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
-public abstract class AbstractTaskWorker implements Runnable, WcsObserver {
+@Data
+public abstract class AbstractTaskWorker implements Runnable, IWcsObserver {
     protected AtomicBoolean waitLock = new AtomicBoolean(false);
     protected WcsObservable observable;
-    private String topic;
+    private String topicTag;
     private int taskStatus;
-    private List<CondIntf> conditions = new LinkedList<CondIntf>();
-
-
-    public int getTaskStatus() { return taskStatus; }
-    public void setTaskStatus(int taskStatus) { this.taskStatus = taskStatus; }
-
-    @Override
-    public String getTopic(){ return topic;}
 
     public AbstractTaskWorker(WcsObservable observable){
         this.observable = observable;

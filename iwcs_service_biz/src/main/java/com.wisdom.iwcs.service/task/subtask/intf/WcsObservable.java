@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class WcsObservable{
     private static Logger logger = LoggerFactory.getLogger(WcsObservable.class);
-    private Map<String, Set<WcsObserver>> listeners = new ConcurrentHashMap<String, Set<WcsObserver>>();
+    private Map<String, Set<IWcsObserver>> listeners = new ConcurrentHashMap<String, Set<IWcsObserver>>();
 
     public WcsObservable(){
     }
@@ -27,14 +27,14 @@ public class WcsObservable{
     /**
      * Add listners
      */
-    public synchronized void addListener(WcsObserver o){
+    public synchronized void addListener(IWcsObserver o){
         if (null == o){
             throw new NullPointerException("Can not add a null Observer");
         }
 
         String topic = o.getTopic();
         if (! listeners.containsKey(topic)){
-            Set<WcsObserver> listnerSet = new HashSet<WcsObserver>();
+            Set<IWcsObserver> listnerSet = new HashSet<IWcsObserver>();
             listnerSet.add(o);
             listeners.put(topic, listnerSet);
         } else {
@@ -46,7 +46,7 @@ public class WcsObservable{
      * Remove an observer from the listener list.
      * @param o
      */
-    public synchronized void removeListener(WcsObserver o){
+    public synchronized void removeListener(IWcsObserver o){
         if (null == o){
             return;
         }
@@ -67,8 +67,8 @@ public class WcsObservable{
             logger.warn("There is no listeners for topic: {}, ignore", topic);
             return;
         }
-        Set<WcsObserver> observers = listeners.get(topic);
-        Iterator<WcsObserver> iter = observers.iterator();
+        Set<IWcsObserver> observers = listeners.get(topic);
+        Iterator<IWcsObserver> iter = observers.iterator();
         while (((Iterator) iter).hasNext()){
             iter.next().onMessage(this, arg);
         }
