@@ -1,4 +1,5 @@
-package com.wisdom.iwcs.service.task.maintask;
+package com.wisdom.iwcs.service.task.scheduler;
+
 
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.task.SubTask;
@@ -7,17 +8,13 @@ import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.service.task.intf.IMainTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- * 主任务下发器，负责待下发的主任务的下发执行
- */
-@Service
-public class MainTaskDispatcher {
-    private final Logger logger = LoggerFactory.getLogger(MainTaskDispatcher.class);
+public class TaskScheduler {
+
+    private final Logger logger = LoggerFactory.getLogger(TaskScheduler.class);
 
     public IMainTaskService mainTaskService;
 
@@ -48,4 +45,20 @@ public class MainTaskDispatcher {
 
     }
 
+    public static  void main(String[] args){
+//        WcsObservable waitThread = new MainTask();
+//        ((MainTask) waitThread).start();
+//
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        waitThread.notifyMe();
+
+    }
+
 }
+
+

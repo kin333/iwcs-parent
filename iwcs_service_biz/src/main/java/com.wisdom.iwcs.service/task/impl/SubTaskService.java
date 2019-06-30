@@ -17,7 +17,7 @@ import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
-import com.wisdom.iwcs.service.task.conditonHandler.AbstractConditionHandler;
+import com.wisdom.iwcs.service.task.conditions.conditonHandler.AbstractConditionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

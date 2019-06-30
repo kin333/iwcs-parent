@@ -1,4 +1,4 @@
-package com.wisdom.iwcs.service.task.conditonHandler;
+package com.wisdom.iwcs.service.task.conditions.conditonHandler;
 
 import com.wisdom.iwcs.domain.task.SubTaskConditions;
 
