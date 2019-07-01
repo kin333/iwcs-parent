@@ -260,4 +260,7 @@
             <column name="user_id" remarks="用户id" type="INT"/>
         </createTable>
     </changeSet>
+    <changeSet id="201907012230_s_role_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/201907012230_s_role.sql"/>
+    </changeSet>
 </databaseChangeLog>
