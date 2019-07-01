@@ -1,5 +1,5 @@
 package com.wisdom.iwcs.service.task.intf;
 
-public interface IRunable {
+public interface ITaskRunable {
     public boolean isRunable();
 }

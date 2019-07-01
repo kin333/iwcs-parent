@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.maintask;
 
 
+import com.rabbitmq.client.Channel;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
@@ -8,8 +9,8 @@ import com.wisdom.iwcs.service.task.subtask.impl.SubTaskWorker;
 import com.wisdom.iwcs.service.task.subtask.intf.WcsObservable;
 
 public class MainTaskWorker extends AbstractTaskWorker {
-    public MainTaskWorker(WcsObservable observable, MainTask mainTask) {
-        super(observable);
+    public MainTaskWorker(Channel channel, MainTask mainTask) {
+        super(channel);
         this.mainTask = mainTask;
     }
 
@@ -56,10 +57,10 @@ public class MainTaskWorker extends AbstractTaskWorker {
     }
 
 
-    @Override
-    public void onMessage(WcsObservable o, Object arg) {
-
-    }
+//    @Override
+//    public void onMessage(WcsObservable o, Object arg) {
+//
+//    }
     /**
      * 获取下一个子任务
      *

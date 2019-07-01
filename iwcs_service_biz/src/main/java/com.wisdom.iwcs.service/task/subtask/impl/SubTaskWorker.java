@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.subtask.impl;
 
 
+import com.rabbitmq.client.Channel;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.conditions.ConditionBase;
@@ -18,8 +19,8 @@ public class SubTaskWorker extends AbstractTaskWorker {
     private SubTask subTask;
     private List<ConditionBase> conditionList = new ArrayList<ConditionBase>();
 
-    public SubTaskWorker(WcsObservable observable, AbstractTaskWorker mainTask, SubTask subTask) {
-        super(observable);
+    public SubTaskWorker(Channel channel, AbstractTaskWorker mainTask, SubTask subTask) {
+        super(channel);
         this.mainTask = mainTask;
         this.subTask = subTask;
     }
@@ -71,8 +72,8 @@ public class SubTaskWorker extends AbstractTaskWorker {
     }
 
 
-    @Override
-    public void onMessage(WcsObservable o, Object arg) {
-
-    }
+//    @Override
+//    public void onMessage(WcsObservable o, Object arg) {
+//
+//    }
 }

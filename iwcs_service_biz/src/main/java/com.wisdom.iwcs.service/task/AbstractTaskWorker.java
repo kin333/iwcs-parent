@@ -1,38 +1,24 @@
 package com.wisdom.iwcs.service.task;
 
-import com.wisdom.iwcs.service.task.conditions.ConditionBase;
+import com.rabbitmq.client.Channel;
 import com.wisdom.iwcs.service.task.subtask.intf.WcsObservable;
-import com.wisdom.iwcs.service.task.subtask.intf.IWcsObserver;
+import com.wisdom.iwcs.service.task.event.WcsConsumer;
 import lombok.Data;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Data
-public abstract class AbstractTaskWorker implements Runnable, IWcsObserver {
+public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable {
     protected AtomicBoolean waitLock = new AtomicBoolean(false);
     protected WcsObservable observable;
     private String topicTag;
     private int taskStatus;
 
-    public AbstractTaskWorker(WcsObservable observable){
+    public AbstractTaskWorker(Channel channel){
+        super(channel);
         this.observable = observable;
     }
 
-    /**
-     * Register to receive messages from a topic.
-     */
-    public void register(){
-        observable.addListener(this);
-    }
-
-    /**
-     * Register to receive messages from a topic.
-     */
-    public void unRegister(){
-        observable.removeListener(this);
-    }
 
     public abstract void preConditions();
     public abstract void postConditions();
