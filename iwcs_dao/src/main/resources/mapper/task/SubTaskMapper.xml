@@ -65,5 +65,12 @@
     </if>
     order by last_modified_time desc
   </select>
+    <select id="selectByMainTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ts_sub_task
+        where main_task_num = #{mainTaskNum,jdbcType= VARCHAR}
+        order by sub_task_seq ASC
+    </select>
 
 </mapper>

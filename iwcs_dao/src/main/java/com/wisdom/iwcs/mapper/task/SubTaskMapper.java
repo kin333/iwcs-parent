@@ -1,13 +1,12 @@
 package com.wisdom.iwcs.mapper.task;
 
 
-import java.util.List;
-import java.util.Map;
-
-import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.SubTask;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Generator
@@ -22,4 +21,6 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return list
      */
     List<SubTask> selectPage(Map map);
+
+    List<SubTask> selectByMainTaskNum(String mainTaskNum);
 }

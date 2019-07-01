@@ -2,17 +2,17 @@ package com.wisdom.iwcs.service.task.maintask;
 
 
 import com.rabbitmq.client.Channel;
+import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.subtask.impl.SubTaskWorker;
-import com.wisdom.iwcs.service.task.subtask.intf.WcsObservable;
-
-import java.util.Comparator;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MainTaskWorker extends AbstractTaskWorker {
+    private final Logger logger = LoggerFactory.getLogger(MainTaskWorker.class);
+
     public MainTaskWorker(Channel channel, MainTask mainTask) {
         super(channel);
         this.mainTask = mainTask;
@@ -42,6 +42,11 @@ public class MainTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void process() {
+        logger.info("主任务{}执行器线程被启动", mainTask.getMainTaskNum());
+        logger.info("开始");
+        Object mainTaskService = AppContext.getBean("mainTaskService");
+
+
 //        logger.info("主任务{}执行器线程被启动", mainTaskWithSubTaskInfos.getMainTaskNum());
 //        List<SubTaskInfo> subTaskList = mainTaskWithSubTaskInfos.getSubTaskInfos();
 //        //按照执行顺序正向排序

@@ -10,6 +10,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
+import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskConditions;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
@@ -24,23 +25,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class SubTaskService {
     private final Logger logger = LoggerFactory.getLogger(SubTaskService.class);
 
-    private final SubTaskMapper SubTaskMapper;
+    private final SubTaskMapper subTaskMapper;
 
-    private final SubTaskMapStruct SubTaskMapStruct;
+    private final SubTaskMapStruct subTaskMapStruct;
 
     @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
-        this.SubTaskMapStruct = SubTaskMapStruct;
-        this.SubTaskMapper = SubTaskMapper;
+        this.subTaskMapStruct = SubTaskMapStruct;
+        this.subTaskMapper = SubTaskMapper;
     }
 
     /**
@@ -52,11 +55,11 @@ public class SubTaskService {
      * @return int
      */
     public int insert(SubTaskDTO record) {
-        SubTask SubTask = SubTaskMapStruct.toEntity(record);
+        SubTask SubTask = subTaskMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 
-        int num = SubTaskMapper.insert(SubTask);
+        int num = subTaskMapper.insert(SubTask);
         Preconditions.checkArgument(num > 0, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -71,11 +74,11 @@ public class SubTaskService {
      * @return int
      */
     public int insertBatch(List<SubTaskDTO> records) {
-        List<SubTask> recordList = SubTaskMapStruct.toEntity(records);
+        List<SubTask> recordList = subTaskMapStruct.toEntity(records);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 
-        int num = SubTaskMapper.insertList(recordList);
+        int num = subTaskMapper.insertList(recordList);
         Preconditions.checkArgument(num == recordList.size(), ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -91,10 +94,10 @@ public class SubTaskService {
      */
     public SubTaskDTO selectByPrimaryKey(Integer id) {
 
-        SubTask SubTask = SubTaskMapper.selectByPrimaryKey(id);
+        SubTask SubTask = subTaskMapper.selectByPrimaryKey(id);
         Preconditions.checkNotNull(SubTask, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
 
-        return SubTaskMapStruct.toDto(SubTask);
+        return subTaskMapStruct.toDto(SubTask);
     }
 
     /**
@@ -106,10 +109,10 @@ public class SubTaskService {
      * @return {@link List<SubTaskDTO> }
      */
     public List<SubTaskDTO> selectSelective(SubTaskDTO record) {
-        SubTask SubTask = SubTaskMapStruct.toEntity(record);
+        SubTask SubTask = subTaskMapStruct.toEntity(record);
 
-        List<SubTask> SubTaskList = SubTaskMapper.select(SubTask);
-        return SubTaskMapStruct.toDto(SubTaskList);
+        List<SubTask> SubTaskList = subTaskMapper.select(SubTask);
+        return subTaskMapStruct.toDto(SubTaskList);
     }
 
     /**
@@ -121,11 +124,11 @@ public class SubTaskService {
      * @return int
      */
     public int updateByPrimaryKey(SubTaskDTO record) {
-        SubTask SubTask = SubTaskMapStruct.toEntity(record);
+        SubTask SubTask = subTaskMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 
-        int num = SubTaskMapper.updateByPrimaryKey(SubTask);
+        int num = subTaskMapper.updateByPrimaryKey(SubTask);
         Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -141,11 +144,11 @@ public class SubTaskService {
      * @return int
      */
     public int updateByPrimaryKeySelective(SubTaskDTO record) {
-        SubTask SubTask = SubTaskMapStruct.toEntity(record);
+        SubTask SubTask = subTaskMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 
-        int num = SubTaskMapper.updateByPrimaryKeySelective(SubTask);
+        int num = subTaskMapper.updateByPrimaryKeySelective(SubTask);
         Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -160,7 +163,7 @@ public class SubTaskService {
      * @return int
      */
     public int deleteByPrimaryKey(Integer id) {
-        int num = SubTaskMapper.deleteByPrimaryKey(id);
+        int num = subTaskMapper.deleteByPrimaryKey(id);
         Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -175,7 +178,7 @@ public class SubTaskService {
      * @return int
      */
 //    public int deleteLogicByPrimaryKey(Integer id) {
-//        return SubTaskMapper.deleteLogicByPrimaryKey(id);
+//        return subTaskMapper.deleteLogicByPrimaryKey(id);
 //    }
 
     /**
@@ -187,7 +190,7 @@ public class SubTaskService {
      * @return int
      */
     public int deleteMore(List<String> ids){
-        return SubTaskMapper.deleteByIds(String.join(",", ids));
+        return subTaskMapper.deleteByIds(String.join(",", ids));
     }
 
     /**
@@ -199,7 +202,7 @@ public class SubTaskService {
      * @return int
      */
 //    public int deleteMoreLogic(List<String> ids){
-//        return SubTaskMapper.deleteLogicByIds(String.join(",", ids));
+//        return subTaskMapper.deleteLogicByIds(String.join(",", ids));
 //    }
 
     /**
@@ -225,10 +228,10 @@ public class SubTaskService {
         String sortMyBatisByString = gridPageRequest.getSortMybatisString();
         PageHelper.startPage(gridPageRequest.getPageNum(), gridPageRequest.getPageSize(), sortMyBatisByString);
 
-        List<SubTask> list = SubTaskMapper.selectPage(map);
+        List<SubTask> list = subTaskMapper.selectPage(map);
 
         PageInfo<SubTask> pageInfo = new PageInfo<>(list);
-        PageInfo<SubTaskDTO> pageInfoFinal = new PageInfo<>(SubTaskMapStruct.toDto(list));
+        PageInfo<SubTaskDTO> pageInfoFinal = new PageInfo<>(subTaskMapStruct.toDto(list));
         pageInfoFinal.setTotal(pageInfo.getTotal());
         mGridReturnData.setPageInfo(pageInfoFinal);
 
@@ -252,7 +255,15 @@ public class SubTaskService {
             }
         });
         return true;
-
-
     }
+
+
+    public SubTask getNextSubtask(MainTask mainTask) {
+        List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTask.getMainTaskNum());
+        subTasks = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).collect(Collectors.toList());
+
+        return subTasks.get(0);
+    }
+
+
 }
