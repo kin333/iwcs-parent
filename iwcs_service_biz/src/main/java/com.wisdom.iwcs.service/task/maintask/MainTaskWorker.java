@@ -4,9 +4,13 @@ package com.wisdom.iwcs.service.task.maintask;
 import com.rabbitmq.client.Channel;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.subtask.impl.SubTaskWorker;
 import com.wisdom.iwcs.service.task.subtask.intf.WcsObservable;
+
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class MainTaskWorker extends AbstractTaskWorker {
     public MainTaskWorker(Channel channel, MainTask mainTask) {
