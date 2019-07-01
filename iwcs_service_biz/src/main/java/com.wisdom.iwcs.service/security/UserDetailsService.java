@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
@@ -72,12 +73,12 @@ public class UserDetailsService implements org.springframework.security.core.use
             }
             //TODO: 特殊角色(不需要授权即可拥有全部权限的角色,会造成硬编码，需要注意)
 
-//            Set<String> userAuthorities = sUserService.getAuthoritiesByUserIdAndCompanyId(user.getId(),companyId);
+            Set<String> userAuthorities = sUserService.getAuthoritiesByUserIdAndCompanyId(user.getId(),"1");
 
-//            List<GrantedAuthority> grantedAuthorities  = userAuthorities.stream()
-//                    .map(authorityName -> new SimpleGrantedAuthority(authorityName))
-//                    .collect(toList());
-            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+            List<GrantedAuthority> grantedAuthorities  = userAuthorities.stream()
+                    .map(authorityName -> new SimpleGrantedAuthority(authorityName))
+                    .collect(toList());
+//            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
             //XXX:添加默认角色，防止出现未设置任何角色情况下,出现A granted authority textual representation is required错误
             grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_DEFAULT"));
 //            user.setAuthorities(null);

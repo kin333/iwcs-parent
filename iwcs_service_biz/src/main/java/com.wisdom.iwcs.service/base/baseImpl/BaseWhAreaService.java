@@ -2,15 +2,17 @@ package com.wisdom.iwcs.service.base.baseImpl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wisdom.iwcs.common.utils.DeleteFlagEnum;
-import com.wisdom.iwcs.common.utils.GridFilterInfo;
-import com.wisdom.iwcs.common.utils.GridPageRequest;
-import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseWhArea;
 import com.wisdom.iwcs.domain.base.dto.BaseWhAreaDTO;
+import com.wisdom.iwcs.domain.system.SUser;
+import com.wisdom.iwcs.domain.system.SUserWhArea;
+import com.wisdom.iwcs.domain.system.dto.LoginDTO;
 import com.wisdom.iwcs.mapper.base.BaseWhAreaMapper;
+import com.wisdom.iwcs.mapper.system.SUserMapper;
 import com.wisdom.iwcs.mapstruct.base.BaseWhAreaMapStruct;
 import com.wisdom.iwcs.service.base.IBaseWhAreaService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -20,10 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -33,6 +32,9 @@ public class BaseWhAreaService implements IBaseWhAreaService {
     private final BaseWhAreaMapper baseWhAreaMapper;
 
     private final BaseWhAreaMapStruct baseWhAreaMapStruct;
+
+    @Autowired
+    private SUserMapper sUserMapper;
 
     @Autowired
     public BaseWhAreaService(BaseWhAreaMapStruct baseWhAreaMapStruct, BaseWhAreaMapper baseWhAreaMapper) {
@@ -235,5 +237,24 @@ public class BaseWhAreaService implements IBaseWhAreaService {
         mGridReturnData.setPageInfo(pageInfoFinal);
 
         return mGridReturnData;
+    }
+
+    @Override
+    public Result checkWhAreaAndUser(LoginDTO loginDTO) {
+        //先判断库区是否存在
+        BaseWhArea baseWhArea= baseWhAreaMapper.selectByAreaCodeAndDeleteFlag(loginDTO.getAreaCode(),DeleteFlagEnum.NOT_DELETED.getStatus());
+        Preconditions.checkBusinessError(baseWhArea == null,"库区不存在");
+
+        //判断用户是否存在
+        Optional<SUser> userFromDatabase = Optional.ofNullable(sUserMapper.findOneByUserNameAndStatus(loginDTO.getUsername(), "1"));
+        Preconditions.checkBusinessError(!userFromDatabase.isPresent(),"该用户不存在");
+        SUser sUser = userFromDatabase.get();
+        Preconditions.checkBusinessError(sUser == null,"该用户不存在");
+
+        //判断该库存是否存在该用户
+        SUserWhArea sUserWhArea = baseWhAreaMapper.selectAreaUser(loginDTO.getAreaCode(),sUser.getId());
+        Preconditions.checkBusinessError(sUserWhArea == null,"库区("+baseWhArea.getAreaName()+")不存在该用户");
+
+        return new Result();
     }
 }

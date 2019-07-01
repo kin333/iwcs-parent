@@ -3,6 +3,8 @@ package com.wisdom.iwcs.mapper.base;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.base.BaseWhArea;
+import com.wisdom.iwcs.domain.system.SUserWhArea;
+import com.wisdom.iwcs.domain.system.dto.LoginDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -33,4 +35,7 @@ public interface BaseWhAreaMapper extends DeleteLogicMapper<BaseWhArea>, MyMappe
      * @return
      */
     BaseWhArea selectByAreaCodeAndDeleteFlag(@Param("areaCode") String requestAreaCode, @Param("deleteFlag") Integer deleteFlag);
+
+    SUserWhArea selectAreaUser(@Param("areaCode") String areaCode, @Param("userId") Integer userId);
+
 }

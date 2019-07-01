@@ -17,6 +17,14 @@
         <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
         <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
     </resultMap>
+    <resultMap id="SUserWhAreaResultMap" type="com.wisdom.iwcs.domain.system.SUserWhArea">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+    </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
@@ -48,6 +56,11 @@
         <include refid="Base_Column_List"/>
         from base_wh_area
         where area_code = #{areaCode} and delete_flag = #{deleteFlag}
+    </select>
+    <select id="selectAreaUser" resultType="com.wisdom.iwcs.domain.system.SUserWhArea" resultMap="SUserWhAreaResultMap">
+        select id , user_id ,area_code
+        from s_user_wh_area
+        where area_code = #{areaCode} and user_id = #{userId}
     </select>
 
 </mapper>

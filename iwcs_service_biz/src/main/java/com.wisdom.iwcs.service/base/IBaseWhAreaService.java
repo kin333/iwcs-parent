@@ -2,7 +2,9 @@ package com.wisdom.iwcs.service.base;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.dto.BaseWhAreaDTO;
+import com.wisdom.iwcs.domain.system.dto.LoginDTO;
 
 import java.util.List;
 
@@ -32,4 +34,6 @@ public interface IBaseWhAreaService {
     int deleteMoreLogic(List<String> ids);
 
     GridReturnData<BaseWhAreaDTO> selectPage(GridPageRequest gridPageRequest);
+
+    Result checkWhAreaAndUser(LoginDTO loginDTO);
 }

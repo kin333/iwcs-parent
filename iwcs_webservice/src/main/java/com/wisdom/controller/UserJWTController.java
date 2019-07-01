@@ -1,6 +1,9 @@
 package com.wisdom.controller;
 
+import com.google.common.base.Strings;
 import com.wisdom.iwcs.domain.system.dto.LoginDTO;
+import com.wisdom.iwcs.service.base.IBaseWhAreaService;
+import com.wisdom.iwcs.service.base.baseImpl.BaseWhAreaService;
 import com.wisdom.iwcs.service.security.TokenUser;
 import com.wisdom.iwcs.service.security.jwt.JWTConfigurer;
 import com.wisdom.iwcs.service.security.jwt.TokenProvider;
@@ -35,12 +38,19 @@ public class UserJWTController {
 
     @Autowired
     private TokenUtil tokenUtil;
+    @Autowired
+    private IBaseWhAreaService iBaseWhAreaService;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> authorize(@Valid @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDTO.getUsername() + "," + loginDTO.getAreaCode(), loginDTO.getPassword());
+
+        //如果选择了库区，判断是否存在库区是否存在用户
+        if(!Strings.isNullOrEmpty(loginDTO.getAreaCode())){
+            iBaseWhAreaService.checkWhAreaAndUser(loginDTO);
+        }
 
         try {
             Authentication authentication = this.authenticationManager.authenticate(authenticationToken);

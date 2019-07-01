@@ -21,7 +21,6 @@ public class LoginDTO {
 
     private String companyId;
 
-    @NotNull(message = "请选择库区")
     private String areaCode;
 
     private Boolean rememberMe;
