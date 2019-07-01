@@ -1,5 +1,7 @@
 package com.wisdom.test;
 
+import com.rabbitmq.client.*;
+import com.wisdom.config.RabbitConfig;
 import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.commonDto.fliterConOptions.LayerConTypeEnum;
 import com.wisdom.iwcs.commonDto.fliterCondition.PodFliterCondition;
@@ -21,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 @RestController
 @RequestMapping("api/test/podCal")
 public class PodCalTestController {
+
     @Resource
     private IPodCal podCal;
 
@@ -36,8 +39,4 @@ public class PodCalTestController {
         System.out.println(layerConTypeEnum);
     }
 
-    @GetMapping("/testRabbitMQ")
-    public void testRabbitMQ() throws IOException, TimeoutException {
-        RabbitMQUtil.getConnection();
-    }
 }

@@ -1,11 +1,10 @@
 package com.wisdom.iwcs.common.utils;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.*;
 import com.wisdom.base.context.ApplicationProperties;
+import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -92,6 +91,14 @@ public class RabbitMQUtil {
         return connection.createChannel();
     }
 
+    /**
+     * 合并创建连接和创建消息信道
+     */
+    public static Channel createChannelDefault() throws IOException, TimeoutException {
+        Connection connection = getConnection();
+        return connection.createChannel();
+    }
+
 
     /**
      * 在某个队列上注册消费者
@@ -105,8 +112,7 @@ public class RabbitMQUtil {
         if (topic == null ||channel == null || consumer == null) {
             throw new NullPointerException("startConsume()的参数不能为空!");
         }
-        String consumerTag = channel.basicConsume(topic, consumer);
-        return consumerTag;
+        return channel.basicConsume(topic, consumer);
     }
 
     /**
@@ -188,4 +194,51 @@ public class RabbitMQUtil {
             channel.basicCancel(consumerTag);
         }
     }
+
+    /**
+     * 绑定交换机和队列,并绑定一个routing_key
+     * @param queue 队列名
+     * @param exchange 交换机名
+     * @return
+     */
+    public static AMQP.Queue.BindOk bindExchage(Channel channel, String queue, String exchange, String routingKey)
+            throws IOException {
+        return channel.queueBind(queue, exchange,routingKey);
+    }
+
+    /**
+     * 解绑交换机和队列
+     * @param queue 队列名
+     * @param exchange 交换机名
+     * @return
+     */
+    public static AMQP.Queue.UnbindOk unbindExchage(Channel channel, String queue, String exchange, String routingKey)
+            throws IOException {
+        return channel.queueUnbind(queue, exchange,routingKey);
+    }
+
+    /**
+     * 删除指定队列 -- 直接删除
+     */
+    public static AMQP.Queue.DeleteOk deleteQueue(Channel channel, String queue)
+            throws IOException {
+        return channel.queueDelete(queue);
+    }
+
+    /**
+     * 删除指定交换机-- 直接删除
+     */
+    public static AMQP.Exchange.DeleteOk deleteExchange(Channel channel, String exchange)
+            throws IOException {
+        return channel.exchangeDelete(exchange);
+    }
+
+    /**
+     * 清空指定队列
+     */
+    public static AMQP.Queue.PurgeOk clearQueue(Channel channel, String queue) throws IOException {
+        return channel.queuePurge(queue);
+    }
+
+
 }
