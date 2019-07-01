@@ -8,16 +8,20 @@ import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.service.task.intf.IMainTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
-public class TaskScheduler {
-
+@Component
+public class TaskScheduler implements  Runnable{
     private final Logger logger = LoggerFactory.getLogger(TaskScheduler.class);
-
     public IMainTaskService mainTaskService;
 
+    public TaskScheduler(){
+        Thread t = new Thread(this);
+        t.start();
+    }
     /**
      * 完成一次主任务下发检测及下发
      */
@@ -59,6 +63,10 @@ public class TaskScheduler {
 
     }
 
+    @Override
+    public void run() {
+        // 检查主任务列表，拿到所有可以执行的主任务列表，判断主任务是否可以执行，以主任务当前的子任务是否可以执行为标准
+    }
 }
 
 

@@ -12,10 +12,19 @@ import org.slf4j.LoggerFactory;
 
 public class MainTaskWorker extends AbstractTaskWorker {
     private final Logger logger = LoggerFactory.getLogger(MainTaskWorker.class);
+    private SubTaskWorker subTaskWorker;
 
     public MainTaskWorker(Channel channel, MainTask mainTask) {
         super(channel);
         this.mainTask = mainTask;
+    }
+
+    SubTask getNextSubTask(){
+        return null;
+    }
+
+    public void onSubTaskDone(){
+        // 切换下一个子任务，如果没有子任务，则该主任务标记为完成，已下发，，，，
     }
 
     @Override
@@ -46,6 +55,9 @@ public class MainTaskWorker extends AbstractTaskWorker {
         logger.info("开始");
         Object mainTaskService = AppContext.getBean("mainTaskService");
 
+        // 1. 从数据库获取下一个subTask，生成一个subtaskworker
+
+        // 2. 判断subtask是否可以执行，是否条件满足
 
 //        logger.info("主任务{}执行器线程被启动", mainTaskWithSubTaskInfos.getMainTaskNum());
 //        List<SubTaskInfo> subTaskList = mainTaskWithSubTaskInfos.getSubTaskInfos();

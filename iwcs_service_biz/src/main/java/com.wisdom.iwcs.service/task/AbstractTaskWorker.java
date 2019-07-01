@@ -10,15 +10,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Data
 public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable {
     protected AtomicBoolean waitLock = new AtomicBoolean(false);
-    protected WcsObservable observable;
     private String topicTag;
     private int taskStatus;
 
     public AbstractTaskWorker(Channel channel){
         super(channel);
-        this.observable = observable;
     }
-
 
     public abstract void preConditions();
     public abstract void postConditions();
@@ -39,6 +36,7 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
         /**
          * Some post works after the task finished.
          */
+        postConditions();
 
     }
 
