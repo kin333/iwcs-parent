@@ -244,6 +244,11 @@ public class SubTask {
     @Column(name = "end_y")
     private double end_y;
 
+    /**
+     * 结束信息，记录
+     */
+    @Column(name = "end_remark")
+    private String endRemark;
 
     /**
      * 获取id
@@ -917,5 +922,13 @@ public class SubTask {
 
     public void setEnd_y(double end_y) {
         this.end_y = end_y;
+    }
+
+    public String getEndRemark() {
+        return endRemark;
+    }
+
+    public void setEndRemark(String endRemark) {
+        this.endRemark = endRemark;
     }
 }

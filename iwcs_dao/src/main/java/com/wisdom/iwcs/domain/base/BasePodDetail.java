@@ -137,6 +137,24 @@ public class BasePodDetail {
     private Date lastModifiedTime;
 
     /**
+     * 是否有锁,1是，0否
+     */
+    @Column(name = "in_lock")
+    private Integer inLock;
+
+    /**
+     * 锁的来源
+     */
+    @Column(name = "lock_source")
+    private String lockSource;
+
+    /**
+     * 货架是否有货，,0为否，1为是
+     */
+    @Column(name = "in_stock")
+    private Integer inStock;
+
+    /**
      * 获取自增主键
      *
      * @return id - 自增主键
@@ -531,5 +549,29 @@ public class BasePodDetail {
      */
     public void setLastModifiedTime(Date lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
+    }
+
+    public Integer getInLock() {
+        return inLock;
+    }
+
+    public void setInLock(Integer inLock) {
+        this.inLock = inLock;
+    }
+
+    public String getLockSource() {
+        return lockSource;
+    }
+
+    public void setLockSource(String lockSource) {
+        this.lockSource = lockSource;
+    }
+
+    public Integer getInStock() {
+        return inStock;
+    }
+
+    public void setInStock(Integer inStock) {
+        this.inStock = inStock;
     }
 }

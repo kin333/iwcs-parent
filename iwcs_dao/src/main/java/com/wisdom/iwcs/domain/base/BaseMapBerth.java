@@ -79,11 +79,36 @@ public class BaseMapBerth {
      */
     @Column(name = "last_modified_time")
     private Date lastModifiedTime;
+
     /**
      * 地码类型,对应字典表
      */
     @Column(name = "berth_type_value")
     private String berthTypeValue;
+
+    /**
+     * 库区编码
+     */
+    @Column(name = "area_code")
+    private String areaCode;
+
+    /**
+     * 点位业务类型
+     */
+    @Column(name = "biz_type")
+    private String bizType;
+
+    /**
+     * 关联产线点编号
+     */
+    @Column(name = "relation_piont_code")
+    private String relationPiontCode;
+
+    /**
+     * 点位编号
+     */
+    @Column(name = "point_alias")
+    private String pointAlias;
 
     public String getBerthTypeValue() {
         return berthTypeValue;
@@ -309,5 +334,37 @@ public class BaseMapBerth {
 
     public void setLockSource(String lockSource) {
         this.lockSource = lockSource;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getBizType() {
+        return bizType;
+    }
+
+    public void setBizType(String bizType) {
+        this.bizType = bizType;
+    }
+
+    public String getRelationPiontCode() {
+        return relationPiontCode;
+    }
+
+    public void setRelationPiontCode(String relationPiontCode) {
+        this.relationPiontCode = relationPiontCode;
+    }
+
+    public String getPointAlias() {
+        return pointAlias;
+    }
+
+    public void setPointAlias(String pointAlias) {
+        this.pointAlias = pointAlias;
     }
 }

@@ -20,6 +20,10 @@
         <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
         <result column="lock_source" jdbcType="VARCHAR" property="lockSource"/>
         <result column="in_lock" jdbcType="INTEGER" property="inLock"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="biz_type" jdbcType="VARCHAR" property="bizType"/>
+        <result column="relation_piont_code" jdbcType="VARCHAR" property="relationPiontCode"/>
+        <result column="point_alias" jdbcType="VARCHAR" property="pointAlias"/>
 
     </resultMap>
     <sql id="Base_Column_List">
@@ -27,7 +31,7 @@
           WARNING - @mbg.generated
         -->
         id, map_code, ber_code, coox, cooy, valid_flag, delete_flag, created_by, created_time,
-        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock
+        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,relation_piont_code,point_alias
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select

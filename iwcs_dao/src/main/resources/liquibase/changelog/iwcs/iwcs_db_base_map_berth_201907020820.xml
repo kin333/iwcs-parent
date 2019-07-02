@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="george" id="201907020820-01">
+        <addColumn tableName="base_map_berth">
+            <column name="area_code" remarks="库区编码" type="VARCHAR(16)"/>
+            <column name="biz_type" remarks="点位业务类型（如产线自动工作点、校验点等）" type="VARCHAR(16)"/>
+            <column name="relation_piont_code" remarks="关联产线点编号" type="VARCHAR(16)"/>
+            <column name="point_alias" remarks="点位编号" type="VARCHAR(16)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

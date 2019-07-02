@@ -33,6 +33,19 @@ public class BaseMapBerthDTO {
     private String cooy;
 
     /**
+     * 锁定状态：0:未锁定，1：已锁定
+     */
+    private Integer inLock;
+    /**
+     * 货架号
+     */
+    private String podCode;
+    /**
+     * 锁定源
+     */
+    private String lockSource;
+
+    /**
      * 有效标记，0有效，1无效
      */
     @Column(name = "valid_flag")
@@ -73,6 +86,30 @@ public class BaseMapBerthDTO {
      */
     @Column(name = "berth_type_value")
     private String berthTypeValue;
+
+    /**
+     * 库区编码
+     */
+    @Column(name = "area_code")
+    private String areaCode;
+
+    /**
+     * 点位业务类型
+     */
+    @Column(name = "biz_type")
+    private String bizType;
+
+    /**
+     * 关联产线点编号
+     */
+    @Column(name = "relation_piont_code")
+    private String relationPiontCode;
+
+    /**
+     * 点位编号
+     */
+    @Column(name = "point_alias")
+    private String pointAlias;
 
     public String getBerthTypeValue() {
         return berthTypeValue;
@@ -273,5 +310,61 @@ public class BaseMapBerthDTO {
      */
     public void setLastModifiedTime(Date lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
+    }
+
+    public Integer getInLock() {
+        return inLock;
+    }
+
+    public void setInLock(Integer inLock) {
+        this.inLock = inLock;
+    }
+
+    public String getPodCode() {
+        return podCode;
+    }
+
+    public void setPodCode(String podCode) {
+        this.podCode = podCode;
+    }
+
+    public String getLockSource() {
+        return lockSource;
+    }
+
+    public void setLockSource(String lockSource) {
+        this.lockSource = lockSource;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getBizType() {
+        return bizType;
+    }
+
+    public void setBizType(String bizType) {
+        this.bizType = bizType;
+    }
+
+    public String getRelationPiontCode() {
+        return relationPiontCode;
+    }
+
+    public void setRelationPiontCode(String relationPiontCode) {
+        this.relationPiontCode = relationPiontCode;
+    }
+
+    public String getPointAlias() {
+        return pointAlias;
+    }
+
+    public void setPointAlias(String pointAlias) {
+        this.pointAlias = pointAlias;
     }
 }

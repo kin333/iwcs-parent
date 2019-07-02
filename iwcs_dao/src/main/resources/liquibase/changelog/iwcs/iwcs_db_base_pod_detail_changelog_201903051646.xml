@@ -23,4 +23,12 @@
         <dropColumn tableName="base_pod_detail" columnName="e_bin_cnt"/>
         <dropColumn tableName="base_pod_detail" columnName="stk_stat"/>
     </changeSet>
+
+    <changeSet author="george.bian" id="201907020820-01">
+        <addColumn tableName="base_pod_detail">
+            <column defaultValue="0" name="in_lock" remarks="是否有锁,1是，0否" type="INT"></column>
+            <column name="lock_source" remarks="锁的来源" type="VARCHAR(32)"></column>
+            <column defaultValue="0" name="in_stock" remarks="货架是否有货，,0为否，1为是"  type="INT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -27,6 +27,9 @@
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
         <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
         <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
+        <result column="in_lock" jdbcType="INTEGER" property="inLock"/>
+        <result column="lock_source" jdbcType="VARCHAR" property="lockSource"/>
+        <result column="in_stock" jdbcType="INTEGER" property="inStock"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
@@ -35,7 +38,7 @@
         id, pod_code, ber_code, last_bercode_update_time, area_code, map_code, stg_type_code,
         stg_code, coox, cooy, lock_stat, pod_prop1, pod_prop2,
         pod_prop3, pod_prop4, pod_prop5, valid_flag, delete_flag, created_by, created_time,
-        last_modified_by, last_modified_time
+        last_modified_by, last_modified_time,in_lock,lock_source,in_stock
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select
