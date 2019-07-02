@@ -7,7 +7,7 @@ import com.wisdom.iwcs.domain.system.SUserWhArea;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserWhAreaMapper extends DeleteLogicMapper<SUserWhArea>, MyMapperAndIds<SUserWhArea> {
+public interface UserWhAreaMapper extends  MyMapperAndIds<SUserWhArea> {
 
     int deleteByUserId(Integer userId);
 

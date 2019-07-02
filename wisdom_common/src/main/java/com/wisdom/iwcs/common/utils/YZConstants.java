@@ -133,4 +133,7 @@ public class YZConstants {
 
     }
 
+    //系统内置角色
+    public static final Integer SYS_ACCOUNT = 1;
+
 }

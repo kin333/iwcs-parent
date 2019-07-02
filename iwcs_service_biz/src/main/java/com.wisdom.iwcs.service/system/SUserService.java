@@ -2,10 +2,7 @@ package com.wisdom.iwcs.service.system;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wisdom.iwcs.common.utils.GridFilterInfo;
-import com.wisdom.iwcs.common.utils.GridReturnData;
-import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.common.utils.UserCompanyDutyEnum;
+import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -327,7 +324,7 @@ public class SUserService {
 
         for (Integer userId:ids) {
             SUser user = sUserMapper.selectByPrimaryKey(userId);
-            Preconditions.checkBusinessError(user.getIsSysAccount().equals("1"),user.getUserName()+"为系统内置账号，不可删除");
+            Preconditions.checkBusinessError(user.getIsSysAccount().equals(YZConstants.SYS_ACCOUNT),user.getUserName()+"为系统内置账号，不可删除");
         }
         return new Result(sUserMapper.deleteByIds(ids));
     }
