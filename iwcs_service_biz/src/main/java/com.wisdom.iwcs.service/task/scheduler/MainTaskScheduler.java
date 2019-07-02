@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class TaskScheduler implements  Runnable{
-    private final Logger logger = LoggerFactory.getLogger(TaskScheduler.class);
+public class MainTaskScheduler implements Runnable {
+    private final Logger logger = LoggerFactory.getLogger(MainTaskScheduler.class);
     public IMainTaskService mainTaskService;
 
-    public TaskScheduler(){
+    public MainTaskScheduler() {
         Thread t = new Thread(this);
         t.start();
     }

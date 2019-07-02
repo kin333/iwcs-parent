@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * 产线工作台空闲处理类
  */
 @Service
-public class PlWbAvaliableConHandler extends AbstractConditionHandler {
+public class PlWbAvaliableConHandler implements IConditionHandler {
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
@@ -25,12 +25,17 @@ public class PlWbAvaliableConHandler extends AbstractConditionHandler {
 
 
     @Override
-    public boolean handlleConditions(SubTaskConditions subTaskConditions) {
+    public boolean handlleCondition(SubTaskConditions subTaskConditions) {
         Long subTaskId = subTaskConditions.getId();
         SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
         boolean lockSuc = baseMapBerthService.lockMapBerth(subTask.getEndBercode(), null);
         subTaskConditions.setConditionMetStatus("1");
         subTaskConditionsMapper.updateByPrimaryKeySelective(subTaskConditions);
         return lockSuc;
+    }
+
+    @Override
+    public boolean rollbackCondition(SubTaskConditions subTaskConditions) {
+        return false;
     }
 }

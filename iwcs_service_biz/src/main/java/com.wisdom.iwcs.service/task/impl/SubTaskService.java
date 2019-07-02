@@ -18,7 +18,7 @@ import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
-import com.wisdom.iwcs.service.task.conditions.conditonHandler.AbstractConditionHandler;
+import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,8 +247,8 @@ public class SubTaskService {
         List<SubTaskConditions> preTaskRelConditionsList = subTaskInfo.getPreTaskRelConditionsList();
         preTaskRelConditionsList.stream().forEach(c -> {
             String conditonHandleName = c.getConditonHandler();
-            AbstractConditionHandler conditonHandler = (AbstractConditionHandler) AppContext.getBean(conditonHandleName);
-            boolean met = conditonHandler.handlleConditions(c);
+            IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
+            boolean met = conditonHandler.handlleCondition(c);
             if (!met) {
                 //抛出异常
                 throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
