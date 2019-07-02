@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class MainTaskScheduler implements Runnable {
-    private final Logger logger = LoggerFactory.getLogger(MainTaskScheduler.class);
+public class WcsTaskScheduler implements Runnable {
+    private final Logger logger = LoggerFactory.getLogger(WcsTaskScheduler.class);
     public IMainTaskService mainTaskService;
 
-    public MainTaskScheduler() {
+    public WcsTaskScheduler() {
         Thread t = new Thread(this);
         t.start();
     }
@@ -45,8 +45,6 @@ public class MainTaskScheduler implements Runnable {
             }
 
         });
-
-
     }
 
     public static  void main(String[] args){
