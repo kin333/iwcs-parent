@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="han (generated)" id="1562069197231-2">
+        <createTable tableName="ts_task_rel_condition" remarks="任务模板配置关系表">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="templ_code" remarks="任务模板编号" type="VARCHAR(255)"/>
+            <column name="main_task_type_code" remarks="主任务类型编号" type="VARCHAR(255)"/>
+            <column name="sub_task_type_code" remarks="子任务编号" type="VARCHAR(32)"/>
+            <column name="conditon_handler" remarks="条件处理器" type="VARCHAR(32)"/>
+            <column name="create_date" remarks="创建时间" type="datetime"/>
+            <column name="point_access" remarks="如：固定点、线路、呼叫路径、关联点、主叫号、策略配置、电梯等待位、关联区域" type="VARCHAR(255)"/>
+            <column name="date_chg" remarks="更新时间" type="VARCHAR(64)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column name="conditon_triger" remarks="前置条件:pre，后置条件:after" type="VARCHAR(32)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
