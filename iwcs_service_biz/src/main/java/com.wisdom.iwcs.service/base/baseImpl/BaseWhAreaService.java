@@ -257,4 +257,9 @@ public class BaseWhAreaService implements IBaseWhAreaService {
 
         return new Result();
     }
+
+    @Override
+    public List<BaseWhAreaDTO> selectWhAreaList() {
+        return baseWhAreaMapStruct.toDto(baseWhAreaMapper.selectWhAreaList());
+    }
 }

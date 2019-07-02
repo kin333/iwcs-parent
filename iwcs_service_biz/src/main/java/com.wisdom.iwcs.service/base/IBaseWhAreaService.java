@@ -36,4 +36,7 @@ public interface IBaseWhAreaService {
     GridReturnData<BaseWhAreaDTO> selectPage(GridPageRequest gridPageRequest);
 
     Result checkWhAreaAndUser(LoginDTO loginDTO);
+
+    List<BaseWhAreaDTO> selectWhAreaList();
+
 }

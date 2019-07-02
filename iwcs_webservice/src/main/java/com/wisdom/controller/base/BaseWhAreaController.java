@@ -102,4 +102,14 @@ public class BaseWhAreaController {
 
         return new Result();
     }
+
+    /**
+     * 拉取库区列表
+     * @return
+     */
+    @GetMapping(value = "/selectWhAreaList")
+    public Result selectWhAreaList() {
+        List<BaseWhAreaDTO> baseWhAreaDTOList = IBaseWhAreaService.selectWhAreaList();
+        return new Result(baseWhAreaDTOList);
+    }
 }

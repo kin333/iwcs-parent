@@ -99,7 +99,6 @@ public class BaseWbController {
     @PutMapping
     public Result updateByPrimaryKey(@RequestBody BaseWbDTO baseWbDTO) {
         IBaseWbService.updateByPrimaryKey(baseWbDTO);
-
         return new Result();
     }
 }
