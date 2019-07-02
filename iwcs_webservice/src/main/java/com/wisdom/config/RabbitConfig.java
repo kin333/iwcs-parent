@@ -1,6 +1,14 @@
 package com.wisdom.config;
 
+import com.wisdom.base.context.ApplicationProperties;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +18,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
+    @Autowired
+    ApplicationProperties applicationProperties;
+
     public static final String EXCHANGE_A = "iwcs_exchange_A";
+    public static final String QUEUE_A = "iwcs_queue_A";
 
 
     /**
@@ -26,5 +38,51 @@ public class RabbitConfig {
         return new TopicExchange(EXCHANGE_A, durable, autoDelete);
     }
 
-}
+    /**
+     * 声明一个队列
+     * @return
+     */
+    @Bean
+    public Queue queue() {
+        // 是否持久化
+        boolean durable = true;
+        // 仅创建者可以使用的私有队列，断开后自动删除
+        boolean exclusive = false;
+        // 当所有消费客户端连接断开后，是否自动删除队列
+        boolean autoDelete = false;
+        return new Queue(QUEUE_A, durable, exclusive, autoDelete);
+    }
 
+
+    @Bean
+    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(QUEUE_A);
+        return container;
+    }
+
+    /** 以下代码用于初始化时的地址信息配置 2 */
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(new Jackson2JsonMessageConverter());
+        return template;
+    }
+
+    /** 以下代码用于初始化时的地址信息配置 1 */
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory =
+                new CachingConnectionFactory(applicationProperties.getRabbitmq().getHost(),
+                                            applicationProperties.getRabbitmq().getPort());
+        connectionFactory.setUsername(applicationProperties.getRabbitmq().getUsername());
+        connectionFactory.setPassword(applicationProperties.getRabbitmq().getPassword());
+        connectionFactory.setVirtualHost(applicationProperties.getRabbitmq().getVirtualHost());
+        connectionFactory.setPublisherConfirms(true);
+        return connectionFactory;
+    }
+
+
+}

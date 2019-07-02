@@ -18,8 +18,9 @@ import java.util.concurrent.TimeoutException;
  * RabbitMQ工具类
  *
  * 提示: 在获取消息通道之后
- *          如果需要创建消息队列,可使用 channel.queueDeclare(queue, true, false, false, null);
- *          如果需要将队列绑定到交换器中,可使用 channel.queueBind(queue, exchange, routingKey);
+ *          如果需要创建交换机,可使用 channel.exchangeDeclare（exchange_name，"topic"）;
+ *          如果需要创建消息队列,可使用 channel.queueDeclare(queue_name, true, false, false, null);
+ *          如果需要将队列绑定到交换器中,可使用 channel.queueBind(queue_name, exchange_name, routingKey);
  *
  */
 @Component
