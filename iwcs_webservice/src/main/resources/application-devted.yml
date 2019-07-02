@@ -122,8 +122,8 @@ application:
   rabbitmq:
     host: 192.168.102.138
     port: 5672
-    username: guest
-    password: guest
+    username: tony
+    password: tony
     virtualHost: /
 
 
