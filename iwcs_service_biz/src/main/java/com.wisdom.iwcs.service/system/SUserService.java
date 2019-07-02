@@ -69,7 +69,7 @@ public class SUserService {
     public Result getCurrentUserInfo() {
 
         Integer currentUserId = SecurityUtils.getCurrentUserId();
-        Integer currentCompanyId = SecurityUtils.getCurrentCompanyId();
+
         SUser user = sUserMapper.selectByPrimaryKey(currentUserId);
 
         if (user == null) {
@@ -79,30 +79,16 @@ public class SUserService {
         currentUserInfo.setId(user.getId());
         currentUserInfo.setUserName(user.getUserName());
         currentUserInfo.setRealName(user.getRealName());
-        currentUserInfo.setCurrentCompanyId(currentCompanyId);
 
         currentUserInfo.setEmail(user.getEmail());
         currentUserInfo.setMobile(user.getMobile());
 
-        Depart company = departMapper.getDepartmentById(currentCompanyId);
-        currentUserInfo.setCurrentCompanyName(company.getDepartname());
 
         currentUserInfo.setSuperAdmin(SecurityUtils.isSuperAdmin());
         //获取权限
         Set<String> authorities = getAuthoritiesByUserIdAndCompanyId(user.getId(), String.valueOf(SecurityUtils.getCurrentCompanyId()));
         currentUserInfo.setAuthorities(authorities);
-        //部门信息
-        // 有可能未设置所属部门,该用户在现在登录的分公司没有任何归属部门
-        try {
-            Depart department = userDataAuthService.getUserDepartment(currentUserId, currentCompanyId);
-            if (department != null) {
-                currentUserInfo.setDepartmentId(department.getId());
-                currentUserInfo.setDepartmentName(department.getDepartname());
-            }
 
-        } catch (Exception e) {
-
-        }
 
         return new Result(currentUserInfo);
     }

@@ -79,6 +79,7 @@ public class TokenProvider {
                 .claim(TOKEN_USER_KEY, json)
                 .claim(TOKEN_USER_ID_KEY, tokenUser.getUserId())
                 .claim(CURRENT_AREA_CODE, tokenUser.getAreaCode())
+                .claim(CURRENT_COMPANY_ID, tokenUser.getCurrentCompanyId())
                 .claim(SUPER_ADMIN, tokenUser.getSuperAdmin())
                 .claim(EMPLOYEE_ID, tokenUser.getEmployeeId())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
@@ -106,9 +107,9 @@ public class TokenProvider {
         TokenUser principal = new TokenUser(claims.getSubject(), "", authorities);
         principal.setUser(GsonUtil.getJSON(json, SUser.class));
         principal.setUserId((Integer) (claims.get(TOKEN_USER_ID_KEY)));
-//        if(claims.get(CURRENT_COMPANY_ID)!=null){
-//            principal.setCurrentCompanyId((Integer)(claims.get(CURRENT_COMPANY_ID)));
-//        }
+        if(claims.get(CURRENT_COMPANY_ID)!=null){
+            principal.setCurrentCompanyId((Integer)(claims.get(CURRENT_COMPANY_ID)));
+        }
         if (claims.get(CURRENT_AREA_CODE) != null) {
             principal.setAreaCode((String) (claims.get(CURRENT_AREA_CODE)));
         }

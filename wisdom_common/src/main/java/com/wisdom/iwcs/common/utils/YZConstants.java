@@ -135,5 +135,6 @@ public class YZConstants {
 
     //系统内置角色
     public static final Integer SYS_ACCOUNT = 1;
-
+    //默认公司id
+    public static final Integer DEFALUT_COMPANY_ID = 1;
 }

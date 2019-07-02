@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.security;
 
 import com.google.common.base.Splitter;
+import com.wisdom.iwcs.common.utils.YZConstants;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.system.Role;
@@ -73,7 +74,7 @@ public class UserDetailsService implements org.springframework.security.core.use
             }
             //TODO: 特殊角色(不需要授权即可拥有全部权限的角色,会造成硬编码，需要注意)
 
-            Set<String> userAuthorities = sUserService.getAuthoritiesByUserIdAndCompanyId(user.getId(),"1");
+            Set<String> userAuthorities = sUserService.getAuthoritiesByUserIdAndCompanyId(user.getId(),String.valueOf(YZConstants.DEFALUT_COMPANY_ID));
 
             List<GrantedAuthority> grantedAuthorities  = userAuthorities.stream()
                     .map(authorityName -> new SimpleGrantedAuthority(authorityName))
@@ -99,7 +100,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
 
             //设置当前登录公司信息
-//            tokenUser.setCurrentCompanyId(Integer.parseInt(companyId));
+            tokenUser.setCurrentCompanyId(YZConstants.DEFALUT_COMPANY_ID);
             tokenUser.setAreaCode(areaCode);
             return tokenUser;
         }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseName
