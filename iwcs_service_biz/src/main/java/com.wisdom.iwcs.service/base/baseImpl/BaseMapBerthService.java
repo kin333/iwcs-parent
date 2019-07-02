@@ -244,17 +244,34 @@ public class BaseMapBerthService implements IBaseMapBerthService {
      * @param podcode
      * @return
      */
-    public boolean lockMapBerth(String berCode, String podcode) {
+    public boolean lockMapBerth(String berCode, String podcode, String lockSource) {
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
         Integer inLock = baseMapBerth.getInLock();
         if (inLock == 0) {
             baseMapBerth.setInLock(1);
             baseMapBerth.setLastModifiedTime(new Date());
             baseMapBerth.setPodCode(podcode);
+            baseMapBerth.setLockSource(lockSource);
             //TODO 锁资源添加乐观锁机制
             baseMapBerthMapper.updateByPrimaryKey(baseMapBerth);
             return true;
         }
+        return false;
+    }
+
+    /**
+     * 解锁地图资源
+     *
+     * @param berCode
+     * @param podcode
+     * @return
+     */
+    public boolean unlockMapBerth(String berCode, String podcode, String lockSource) {
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
+        baseMapBerth.setInLock(0);
+        baseMapBerth.setPodCode(null);
+        baseMapBerth.setLockSource(null);
+        baseMapBerthMapper.updateByPrimaryKey(baseMapBerth);
         return false;
     }
 }
