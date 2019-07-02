@@ -21,6 +21,8 @@ public class UserDTO extends SUser {
 
     private Integer companyId;
 
+    private List<String> areaList;
+
     public List<Integer> getRoleList() {
         return roleList;
     }
@@ -67,5 +69,13 @@ public class UserDTO extends SUser {
 
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
+    }
+
+    public List<String> getAreaList() {
+        return areaList;
+    }
+
+    public void setAreaList(List<String> areaList) {
+        this.areaList = areaList;
     }
 }

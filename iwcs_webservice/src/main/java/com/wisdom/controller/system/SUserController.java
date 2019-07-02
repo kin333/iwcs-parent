@@ -43,7 +43,7 @@ public class SUserController {
     }
 
     /**
-     * 增加
+     * 创建账号
      *
      * @param record
      * @return
@@ -65,7 +65,7 @@ public class SUserController {
     }
 
     /**
-     * 修改
+     * 修改账号
      *
      * @param record
      * @return

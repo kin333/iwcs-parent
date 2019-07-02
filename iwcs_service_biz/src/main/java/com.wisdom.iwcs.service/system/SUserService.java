@@ -62,6 +62,8 @@ public class SUserService {
     private UserCompanySettingsMapper userCompanySettingsMapper;
     @Autowired
     private UserDataAuthService userDataAuthService;
+    @Autowired
+    private UserWhAreaMapper userWhAreaMapper;
 
 
     /**
@@ -131,6 +133,22 @@ public class SUserService {
     }
 
     /**
+     * 设置用户所在库区
+     **/
+    private void setUserAreas(List<String> areaList, Integer userId) {
+        if (areaList != null && areaList.size() > 0) {
+            List<SUserWhArea> userAreas = new ArrayList<>();
+            areaList.forEach(whAreaCode -> {
+                SUserWhArea sUserWhArea = new SUserWhArea();
+                sUserWhArea.setUserId(userId);
+                sUserWhArea.setAreaCode(whAreaCode);
+                userAreas.add(sUserWhArea);
+            });
+            userWhAreaMapper.insertList(userAreas);
+        }
+    }
+
+    /**
      * 设置所属部门
      */
     public void setUserCompanyDepartment(UserDTO userDTO, Integer currentCompanyId) {
@@ -151,17 +169,27 @@ public class SUserService {
     }
 
     /**
-     * 设置角色
+     * 更新用户角色
      */
-    public void setCompanyRole(List<Integer> roleIds, Integer userId, Integer companyId) {
+    public void updateUserRole(List<Integer> roleIds, Integer userId) {
         //删除账号公司下的原角色
-        userRoleMapper.deleteUserCompanyRole(userId, companyId);
+        userRoleMapper.deleteByUserId(userId);
         // 添加角色
         setUserRoles(roleIds, userId);
     }
 
     /**
-     * 添加一个账号
+     * 更新用户所在库区
+     */
+    public void updateUserWhArea(List<String> areaList, Integer userId) {
+        //删除账号公司下的原角色
+        userWhAreaMapper.deleteByUserId(userId);
+        // 添加角色
+        setUserAreas(areaList, userId);
+    }
+
+    /**
+     * 创建账号
      */
     public Result insertSelective(UserDTO record) {
         Integer userId = SecurityUtils.getCurrentUserId();
@@ -179,22 +207,13 @@ public class SUserService {
 
         int returnNum = sUserMapper.insertSelective(record);
 
-        Integer currentCompanyId = SecurityUtils.getCurrentCompanyId();
-        //超级管理员可以指定公司
-        if (record.getCompanyId() != null && SecurityUtils.isSuperAdmin()) {
-            currentCompanyId = record.getCompanyId();
-        }
-        // 部门
-        setUserCompanyDepartment(record, currentCompanyId);
 
         // 角色
         this.setUserRoles(record.getRoleList(), record.getId());
 
-        // 用户职责
-        if (record.getDutyList() != null && record.getDutyList().size() > 0) {
-            List<String> userDutyList = record.getDutyList();
-            setUserCompanyDuty(userDutyList, currentCompanyId, record.getId());
-        }
+        // 库区
+        this.setUserAreas(record.getAreaList(), record.getId());
+
 
         return new Result(returnNum);
     }
@@ -265,22 +284,13 @@ public class SUserService {
         record.setLastModifiedTime(new Date());
         int returnNum = sUserMapper.updateByPrimaryKeySelective(record);
 
-        Integer currentCompanyId = SecurityUtils.getCurrentCompanyId();
-        // 超级管理员可以指定公司
-        if (record.getCompanyId() != null && SecurityUtils.isSuperAdmin()) {
-            currentCompanyId = record.getCompanyId();
-        }
-        setUserCompanyDepartment(record, currentCompanyId);
+        //更新用户角色
+        updateUserRole(record.getRoleList(), record.getId());
 
-        setCompanyRole(record.getRoleList(), record.getId(), currentCompanyId);
+        //更新用户所在库区
+        updateUserWhArea(record.getAreaList(),record.getId());
 
-        userCompanySettingsMapper.deleteByUserIdAndCompanyId(record.getId(), currentCompanyId);
 
-        //用户职责
-        if (record.getDutyList() != null && record.getDutyList().size() > 0) {
-            List<String> userDutyList = record.getDutyList();
-            setUserCompanyDuty(userDutyList, currentCompanyId, record.getId());
-        }
         return new Result(returnNum);
     }
 
@@ -314,6 +324,11 @@ public class SUserService {
     }
 
     public Result deleteByIds(List<Integer> ids) {
+
+        for (Integer userId:ids) {
+            SUser user = sUserMapper.selectByPrimaryKey(userId);
+            Preconditions.checkBusinessError(user.getIsSysAccount().equals("1"),user.getUserName()+"为系统内置账号，不可删除");
+        }
         return new Result(sUserMapper.deleteByIds(ids));
     }
 

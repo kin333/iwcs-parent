@@ -1,11 +1,18 @@
 package com.wisdom.iwcs.domain.system;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+
 public class SUserWhArea {
 
+    @Id
     private Integer id;
-    private Integer userId;
-    private String areaCode;
 
+    @Column(name = "user_id")
+    private Integer userId;
+
+    @Column(name = "area_code")
+    private String areaCode;
 
     public Integer getId() {
         return id;
