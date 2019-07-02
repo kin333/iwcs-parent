@@ -8,9 +8,9 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
-import com.wisdom.iwcs.domain.task.TaskRelConditions;
-import com.wisdom.iwcs.domain.task.dto.TaskRelConditionsDTO;
-import com.wisdom.iwcs.mapper.task.TaskRelConditionsMapper;
+import com.wisdom.iwcs.domain.task.TaskRelCondition;
+import com.wisdom.iwcs.domain.task.dto.TaskRelConditionDTO;
+import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
 import com.wisdom.iwcs.mapstruct.task.TaskRelConditionsMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.ITaskRelConditionsService;
@@ -26,40 +26,40 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class TaskRelConditionsService implements ITaskRelConditionsService {
+public class TaskRelConditionService implements ITaskRelConditionsService {
 
-    private final Logger logger = LoggerFactory.getLogger(TaskRelConditionsService.class);
+    private final Logger logger = LoggerFactory.getLogger(TaskRelConditionService.class);
 
-    private final TaskRelConditionsMapper taskRelConditionsMapper;
+    private final TaskRelConditionMapper taskRelConditionMapper;
 
     private final TaskRelConditionsMapStruct taskRelConditionsMapStruct;
 
     @Autowired
-    public TaskRelConditionsService(TaskRelConditionsMapStruct taskRelConditionsMapStruct, TaskRelConditionsMapper taskRelConditionsMapper) {
+    public TaskRelConditionService(TaskRelConditionsMapStruct taskRelConditionsMapStruct, TaskRelConditionMapper taskRelConditionMapper) {
         this.taskRelConditionsMapStruct = taskRelConditionsMapStruct;
-        this.taskRelConditionsMapper = taskRelConditionsMapper;
+        this.taskRelConditionMapper = taskRelConditionMapper;
     }
 
     /**
      * 写入记录
      *
      *
-     * @param record {@link TaskRelConditionsDTO }
+     * @param record {@link TaskRelConditionDTO }
      *
      * @return int
      */
     @Override
-    public int insert(TaskRelConditionsDTO record) {
-        TaskRelConditions tsTaskRelConditions = taskRelConditionsMapStruct.toEntity(record);
+    public int insert(TaskRelConditionDTO record) {
+        TaskRelCondition tsTaskRelCondition = taskRelConditionsMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
-//        tsTaskRelConditions.setDeleteFlag(DeleteFlagEnum.NOT_DELETED.getStatus());
-//        tsTaskRelConditions.setCreatedTime(new Date());
-//        tsTaskRelConditions.setCreatedBy(userId);
-//        tsTaskRelConditions.setLastModifiedBy(userId);
-//        tsTaskRelConditions.setLastModifiedTime(new Date());
+//        tsTaskRelCondition.setDeleteFlag(DeleteFlagEnum.NOT_DELETED.getStatus());
+//        tsTaskRelCondition.setCreatedTime(new Date());
+//        tsTaskRelCondition.setCreatedBy(userId);
+//        tsTaskRelCondition.setLastModifiedBy(userId);
+//        tsTaskRelCondition.setLastModifiedTime(new Date());
 
-        int num = taskRelConditionsMapper.insert(tsTaskRelConditions);
+        int num = taskRelConditionMapper.insert(tsTaskRelCondition);
         Preconditions.checkArgument(num > 0, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -69,13 +69,13 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
      * 批量写入记录
      *
      *
-     * @param records {@link List<TaskRelConditionsDTO> }
+     * @param records {@link List< TaskRelConditionDTO > }
      *
      * @return int
      */
     @Override
-    public int insertBatch(List<TaskRelConditionsDTO> records) {
-        List<TaskRelConditions> recordList = taskRelConditionsMapStruct.toEntity(records);
+    public int insertBatch(List<TaskRelConditionDTO> records) {
+        List<TaskRelCondition> recordList = taskRelConditionsMapStruct.toEntity(records);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 //        recordList.forEach(record -> {
@@ -86,7 +86,7 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
 //            record.setLastModifiedTime(new Date());
 //        });
 
-        int num = taskRelConditionsMapper.insertList(recordList);
+        int num = taskRelConditionMapper.insertList(recordList);
         Preconditions.checkArgument(num == recordList.size(), ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -98,50 +98,50 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
      *
      * @param id {@link Integer }
      *
-     * @return {@link TaskRelConditionsDTO }
+     * @return {@link TaskRelConditionDTO }
      */
     @Override
-    public TaskRelConditionsDTO selectByPrimaryKey(Integer id) {
+    public TaskRelConditionDTO selectByPrimaryKey(Integer id) {
 
-        TaskRelConditions tsTaskRelConditions = taskRelConditionsMapper.selectByPrimaryKey(id);
-        Preconditions.checkNotNull(tsTaskRelConditions, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
+        TaskRelCondition tsTaskRelCondition = taskRelConditionMapper.selectByPrimaryKey(id);
+        Preconditions.checkNotNull(tsTaskRelCondition, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
 
-        return taskRelConditionsMapStruct.toDto(tsTaskRelConditions);
+        return taskRelConditionsMapStruct.toDto(tsTaskRelCondition);
     }
 
     /**
      * 根据字段选择性查询
      *
      *
-     * @param record {@link TaskRelConditionsDTO }
+     * @param record {@link TaskRelConditionDTO }
      *
-     * @return {@link List<TaskRelConditionsDTO> }
+     * @return {@link List< TaskRelConditionDTO > }
      */
     @Override
-    public List<TaskRelConditionsDTO> selectSelective(TaskRelConditionsDTO record) {
-        TaskRelConditions tsTaskRelConditions = taskRelConditionsMapStruct.toEntity(record);
+    public List<TaskRelConditionDTO> selectSelective(TaskRelConditionDTO record) {
+        TaskRelCondition tsTaskRelCondition = taskRelConditionsMapStruct.toEntity(record);
 
-        List<TaskRelConditions> tsTaskRelConditionsList = taskRelConditionsMapper.select(tsTaskRelConditions);
-        return taskRelConditionsMapStruct.toDto(tsTaskRelConditionsList);
+        List<TaskRelCondition> tsTaskRelConditionList = taskRelConditionMapper.select(tsTaskRelCondition);
+        return taskRelConditionsMapStruct.toDto(tsTaskRelConditionList);
     }
 
     /**
      * 根据主键更新
      *
      *
-     * @param record {@link TaskRelConditionsDTO }
+     * @param record {@link TaskRelConditionDTO }
      *
      * @return int
      */
     @Override
-    public int updateByPrimaryKey(TaskRelConditionsDTO record) {
-        TaskRelConditions tsTaskRelConditions = taskRelConditionsMapStruct.toEntity(record);
+    public int updateByPrimaryKey(TaskRelConditionDTO record) {
+        TaskRelCondition tsTaskRelCondition = taskRelConditionsMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
-//        tsTaskRelConditions.setLastModifiedBy(userId);
-//        tsTaskRelConditions.setLastModifiedTime(new Date());
+//        tsTaskRelCondition.setLastModifiedBy(userId);
+//        tsTaskRelCondition.setLastModifiedTime(new Date());
 
-        int num = taskRelConditionsMapper.updateByPrimaryKey(tsTaskRelConditions);
+        int num = taskRelConditionMapper.updateByPrimaryKey(tsTaskRelCondition);
         Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -152,19 +152,19 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
      * 根据主键选择性更新
      *
      *
-     * @param record {@link TaskRelConditionsDTO }
+     * @param record {@link TaskRelConditionDTO }
      *
      * @return int
      */
     @Override
-    public int updateByPrimaryKeySelective(TaskRelConditionsDTO record) {
-        TaskRelConditions tsTaskRelConditions = taskRelConditionsMapStruct.toEntity(record);
+    public int updateByPrimaryKeySelective(TaskRelConditionDTO record) {
+        TaskRelCondition tsTaskRelCondition = taskRelConditionsMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
-//        tsTaskRelConditions.setLastModifiedBy(userId);
-//        tsTaskRelConditions.setLastModifiedTime(new Date());
+//        tsTaskRelCondition.setLastModifiedBy(userId);
+//        tsTaskRelCondition.setLastModifiedTime(new Date());
 
-        int num = taskRelConditionsMapper.updateByPrimaryKeySelective(tsTaskRelConditions);
+        int num = taskRelConditionMapper.updateByPrimaryKeySelective(tsTaskRelCondition);
         Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -180,7 +180,7 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
      */
     @Override
     public int deleteByPrimaryKey(Integer id) {
-        int num = taskRelConditionsMapper.deleteByPrimaryKey(id);
+        int num = taskRelConditionMapper.deleteByPrimaryKey(id);
         Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -195,7 +195,7 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
      * @return int
      */
 //    public int deleteLogicByPrimaryKey(Integer id) {
-//        return taskRelConditionsMapper.deleteLogicByPrimaryKey(id);
+//        return taskRelConditionMapper.deleteLogicByPrimaryKey(id);
 //    }
 
     /**
@@ -208,7 +208,7 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
      */
     @Override
     public int deleteMore(List<String> ids){
-        return taskRelConditionsMapper.deleteByIds(String.join(",", ids));
+        return taskRelConditionMapper.deleteByIds(String.join(",", ids));
     }
 
     /**
@@ -220,7 +220,7 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
      * @return int
      */
 //    public int deleteMoreLogic(List<String> ids){
-//        return taskRelConditionsMapper.deleteLogicByIds(String.join(",", ids));
+//        return taskRelConditionMapper.deleteLogicByIds(String.join(",", ids));
 //    }
 
     /**
@@ -229,11 +229,11 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
      *
      * @param gridPageRequest {@link GridPageRequest }
      *
-     * @return {@link GridReturnData<TaskRelConditionsDTO> }
+     * @return {@link GridReturnData< TaskRelConditionDTO > }
      */
     @Override
-    public GridReturnData<TaskRelConditionsDTO> selectPage(GridPageRequest gridPageRequest){
-        GridReturnData<TaskRelConditionsDTO> mGridReturnData = new GridReturnData<>();
+    public GridReturnData<TaskRelConditionDTO> selectPage(GridPageRequest gridPageRequest){
+        GridReturnData<TaskRelConditionDTO> mGridReturnData = new GridReturnData<>();
         List<GridFilterInfo> filterList = gridPageRequest.getFilterList();
         Map<String, Object> map = new HashMap<>(2);
         filterList.forEach(gridFilterInfo -> {
@@ -247,10 +247,10 @@ public class TaskRelConditionsService implements ITaskRelConditionsService {
         String sortMyBatisByString = gridPageRequest.getSortMybatisString();
         PageHelper.startPage(gridPageRequest.getPageNum(), gridPageRequest.getPageSize(), sortMyBatisByString);
 
-        List<TaskRelConditions> list = taskRelConditionsMapper.selectPage(map);
+        List<TaskRelCondition> list = taskRelConditionMapper.selectPage(map);
 
-        PageInfo<TaskRelConditions> pageInfo = new PageInfo<>(list);
-        PageInfo<TaskRelConditionsDTO> pageInfoFinal = new PageInfo<>(taskRelConditionsMapStruct.toDto(list));
+        PageInfo<TaskRelCondition> pageInfo = new PageInfo<>(list);
+        PageInfo<TaskRelConditionDTO> pageInfoFinal = new PageInfo<>(taskRelConditionsMapStruct.toDto(list));
         pageInfoFinal.setTotal(pageInfo.getTotal());
         mGridReturnData.setPageInfo(pageInfoFinal);
 

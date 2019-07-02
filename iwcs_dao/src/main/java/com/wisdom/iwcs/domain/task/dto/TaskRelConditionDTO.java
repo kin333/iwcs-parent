@@ -3,16 +3,29 @@ package com.wisdom.iwcs.domain.task.dto;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "ts_sub_task_conditions")
-public class SubTaskConditionsDTO {
+@Table(name = "ts_task_rel_conditions")
+public class TaskRelConditionDTO {
+
     @Id
     private Long id;
 
     /**
+     * 任务模板编号
+     */
+    @Column(name = "templ_code")
+    private String templCode;
+
+    /**
+     * 主任务类型编号
+     */
+    @Column(name = "main_task_type_code")
+    private String mainTaskTypeCode;
+
+    /**
      * 子任务编号
      */
-    @Column(name = "sub_task_num")
-    private String subTaskNum;
+    @Column(name = "sub_task_type_code")
+    private String subTaskTypeCode;
 
     /**
      * 条件处理器
@@ -27,7 +40,7 @@ public class SubTaskConditionsDTO {
     private Date createDate;
 
     /**
-     *如：固定点、线路、呼叫路径、关联点、主叫号、策略配置、电梯等待位、关联区域
+     * 如：固定点、线路、呼叫路径、关联点、主叫号、策略配置、电梯等待位、关联区域
      */
     @Column(name = "point_access")
     private String pointAccess;
@@ -37,12 +50,6 @@ public class SubTaskConditionsDTO {
      */
     @Column(name = "date_chg")
     private String dateChg;
-
-    /**
-     * 条件状态：0-不符合,1已符合
-     */
-    @Column(name = "condition_met_status")
-    private String conditionMetStatus;
 
     /**
      * 备注
@@ -55,20 +62,34 @@ public class SubTaskConditionsDTO {
     @Column(name = "conditon_triger")
     private String conditonTriger;
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getSubTaskNum() {
-        return subTaskNum;
+    public String getTemplCode() {
+        return templCode;
     }
 
-    public void setSubTaskNum(String subTaskNum) {
-        this.subTaskNum = subTaskNum == null ? null : subTaskNum.trim();
+    public void setTemplCode(String templCode) {
+        this.templCode = templCode == null ? null : templCode.trim();
+    }
+
+    public String getMainTaskTypeCode() {
+        return mainTaskTypeCode;
+    }
+
+    public void setMainTaskTypeCode(String mainTaskTypeCode) {
+        this.mainTaskTypeCode = mainTaskTypeCode == null ? null : mainTaskTypeCode.trim();
+    }
+
+    public String getSubTaskTypeCode() {
+        return subTaskTypeCode;
+    }
+
+    public void setSubTaskTypeCode(String subTaskTypeCode) {
+        this.subTaskTypeCode = subTaskTypeCode == null ? null : subTaskTypeCode.trim();
     }
 
     public String getConditonHandler() {
@@ -101,14 +122,6 @@ public class SubTaskConditionsDTO {
 
     public void setDateChg(String dateChg) {
         this.dateChg = dateChg == null ? null : dateChg.trim();
-    }
-
-    public String getConditionMetStatus() {
-        return conditionMetStatus;
-    }
-
-    public void setConditionMetStatus(String conditionMetStatus) {
-        this.conditionMetStatus = conditionMetStatus == null ? null : conditionMetStatus.trim();
     }
 
     public String getRemark() {

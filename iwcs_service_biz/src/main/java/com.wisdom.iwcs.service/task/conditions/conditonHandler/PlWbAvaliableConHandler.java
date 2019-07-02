@@ -1,9 +1,9 @@
 package com.wisdom.iwcs.service.task.conditions.conditonHandler;
 
 import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.domain.task.SubTaskConditions;
+import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
-import com.wisdom.iwcs.mapper.task.SubTaskConditionsMapper;
+import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.base.baseImpl.BaseMapBerthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +21,21 @@ public class PlWbAvaliableConHandler implements IConditionHandler {
     @Autowired
     private BaseMapBerthService baseMapBerthService;
     @Autowired
-    private SubTaskConditionsMapper subTaskConditionsMapper;
+    private SubTaskConditionMapper subTaskConditionsMapper;
 
 
     @Override
-    public boolean handlleCondition(SubTaskConditions subTaskConditions) {
-        Long subTaskId = subTaskConditions.getId();
+    public boolean handlleCondition(SubTaskCondition subTaskCondition) {
+        Long subTaskId = subTaskCondition.getId();
         SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
         boolean lockSuc = baseMapBerthService.lockMapBerth(subTask.getEndBercode(), null);
-        subTaskConditions.setConditionMetStatus("1");
-        subTaskConditionsMapper.updateByPrimaryKeySelective(subTaskConditions);
+        subTaskCondition.setConditionMetStatus("1");
+        subTaskConditionsMapper.updateByPrimaryKeySelective(subTaskCondition);
         return lockSuc;
     }
 
     @Override
-    public boolean rollbackCondition(SubTaskConditions subTaskConditions) {
+    public boolean rollbackCondition(SubTaskCondition subTaskCondition) {
         return false;
     }
 }

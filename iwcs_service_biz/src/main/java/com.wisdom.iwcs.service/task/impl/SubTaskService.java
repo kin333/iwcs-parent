@@ -12,7 +12,7 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.domain.task.SubTaskConditions;
+import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
@@ -244,7 +244,7 @@ public class SubTaskService {
      * @return
      */
     public boolean preConditionsCheckAndExec(SubTaskInfo subTaskInfo) {
-        List<SubTaskConditions> preTaskRelConditionsList = subTaskInfo.getPreTaskRelConditionsList();
+        List<SubTaskCondition> preTaskRelConditionsList = subTaskInfo.getPreTaskRelConditionsList();
         preTaskRelConditionsList.stream().forEach(c -> {
             String conditonHandleName = c.getConditonHandler();
             IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);

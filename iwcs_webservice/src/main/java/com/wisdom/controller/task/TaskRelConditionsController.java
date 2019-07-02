@@ -5,7 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.domain.task.dto.TaskRelConditionsDTO;
+import com.wisdom.iwcs.domain.task.dto.TaskRelConditionDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelConditionsMapStruct;
 import com.wisdom.iwcs.service.task.intf.ITaskRelConditionsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,13 +61,13 @@ public class TaskRelConditionsController {
      * 新增记录
      *
      *
-     * @param tsTaskRelConditionsDTO {@link TaskRelConditionsDTO }
+     * @param tsTaskRelConditionDTO {@link TaskRelConditionDTO }
      *
      * @return {@link Result }
      */
     @PostMapping
-    public Result insert(@RequestBody TaskRelConditionsDTO tsTaskRelConditionsDTO) {
-        ITaskRelConditionsService.insert(tsTaskRelConditionsDTO);
+    public Result insert(@RequestBody TaskRelConditionDTO tsTaskRelConditionDTO) {
+        ITaskRelConditionsService.insert(tsTaskRelConditionDTO);
 
         return new Result();
     }
@@ -82,9 +82,9 @@ public class TaskRelConditionsController {
      */
     @GetMapping(value = "/{id}")
     public Result selectByPrimaryKey(@PathVariable Integer id) {
-        TaskRelConditionsDTO tsTaskRelConditionsDTO = ITaskRelConditionsService.selectByPrimaryKey(id);
+        TaskRelConditionDTO tsTaskRelConditionDTO = ITaskRelConditionsService.selectByPrimaryKey(id);
 
-        return new Result(tsTaskRelConditionsDTO);
+        return new Result(tsTaskRelConditionDTO);
     }
 
     /**
@@ -97,7 +97,7 @@ public class TaskRelConditionsController {
      */
     @PostMapping(value = "/page")
     public Result selectPage(@RequestBody GridPageRequest gridPageRequest) {
-        GridReturnData<TaskRelConditionsDTO> records = ITaskRelConditionsService.selectPage(gridPageRequest);
+        GridReturnData<TaskRelConditionDTO> records = ITaskRelConditionsService.selectPage(gridPageRequest);
 
         return new Result(records);
     }
@@ -106,13 +106,13 @@ public class TaskRelConditionsController {
      * 更新记录
      *
      *
-     * @param tsTaskRelConditionsDTO {@link TaskRelConditionsDTO }
+     * @param tsTaskRelConditionDTO {@link TaskRelConditionDTO }
      *
      * @return {@link Result }
      */
     @PutMapping
-    public Result updateByPrimaryKey(@RequestBody TaskRelConditionsDTO tsTaskRelConditionsDTO) {
-        ITaskRelConditionsService.updateByPrimaryKey(tsTaskRelConditionsDTO);
+    public Result updateByPrimaryKey(@RequestBody TaskRelConditionDTO tsTaskRelConditionDTO) {
+        ITaskRelConditionsService.updateByPrimaryKey(tsTaskRelConditionDTO);
 
         return new Result();
     }

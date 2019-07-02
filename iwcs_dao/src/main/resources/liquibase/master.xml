@@ -111,4 +111,6 @@
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_main_task_changelog.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_main_task_type_changelog.xml" relativeToChangelogFile="false"/>
 
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_map_berth_201907020820.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_ts_sub_task_201907020820.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

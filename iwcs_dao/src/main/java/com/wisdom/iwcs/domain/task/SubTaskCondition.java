@@ -3,28 +3,16 @@ package com.wisdom.iwcs.domain.task;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "ts_task_rel_conditions")
-public class TaskRelConditions {
+@Table(name = "ts_sub_task_conditions")
+public class SubTaskCondition {
     @Id
     private Long id;
 
     /**
-     * 任务模板编号
-     */
-    @Column(name = "templ_code")
-    private String templCode;
-
-    /**
-     * 主任务类型编号
-     */
-    @Column(name = "main_task_type_code")
-    private String mainTaskTypeCode;
-
-    /**
      * 子任务编号
      */
-    @Column(name = "sub_task_type_code")
-    private String subTaskTypeCode;
+    @Column(name = "sub_task_num")
+    private String subTaskNum;
 
     /**
      * 条件处理器
@@ -51,44 +39,37 @@ public class TaskRelConditions {
     private String dateChg;
 
     /**
+     *条件状态：0-不符合,1已符合
+     */
+    @Column(name = "condition_met_status")
+    private String conditionMetStatus;
+
+    /**
      * 备注
      */
     private String remark;
 
     /**
-     * 前置条件:pre，后置条件:after
+     * 前置条件:pre，后置条件:afte
      */
     @Column(name = "conditon_triger")
     private String conditonTriger;
 
-    public Long getId() { return id; }
+
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getTemplCode() {
-        return templCode;
+    public String getSubTaskNum() {
+        return subTaskNum;
     }
 
-    public void setTemplCode(String templCode) {
-        this.templCode = templCode == null ? null : templCode.trim();
-    }
-
-    public String getMainTaskTypeCode() {
-        return mainTaskTypeCode;
-    }
-
-    public void setMainTaskTypeCode(String mainTaskTypeCode) {
-        this.mainTaskTypeCode = mainTaskTypeCode == null ? null : mainTaskTypeCode.trim();
-    }
-
-    public String getSubTaskTypeCode() {
-        return subTaskTypeCode;
-    }
-
-    public void setSubTaskTypeCode(String subTaskTypeCode) {
-        this.subTaskTypeCode = subTaskTypeCode == null ? null : subTaskTypeCode.trim();
+    public void setSubTaskNum(String subTaskNum) {
+        this.subTaskNum = subTaskNum == null ? null : subTaskNum.trim();
     }
 
     public String getConditonHandler() {
@@ -121,6 +102,14 @@ public class TaskRelConditions {
 
     public void setDateChg(String dateChg) {
         this.dateChg = dateChg == null ? null : dateChg.trim();
+    }
+
+    public String getConditionMetStatus() {
+        return conditionMetStatus;
+    }
+
+    public void setConditionMetStatus(String conditionMetStatus) {
+        this.conditionMetStatus = conditionMetStatus == null ? null : conditionMetStatus.trim();
     }
 
     public String getRemark() {

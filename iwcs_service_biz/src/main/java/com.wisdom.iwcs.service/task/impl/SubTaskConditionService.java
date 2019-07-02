@@ -7,10 +7,10 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
-import com.wisdom.iwcs.domain.task.SubTaskConditions;
-import com.wisdom.iwcs.domain.task.dto.SubTaskConditionsDTO;
-import com.wisdom.iwcs.mapper.task.SubTaskConditionsMapper;
-import com.wisdom.iwcs.mapstruct.task.SubTaskConditionsMapStruct;
+import com.wisdom.iwcs.domain.task.SubTaskCondition;
+import com.wisdom.iwcs.domain.task.dto.SubTaskConditionDTO;
+import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
+import com.wisdom.iwcs.mapstruct.task.SubTaskConditionMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.ISubTaskConditionsService;
 import org.slf4j.Logger;
@@ -25,40 +25,40 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class SubTaskConditionsService implements ISubTaskConditionsService {
+public class SubTaskConditionService implements ISubTaskConditionsService {
 
-    private final Logger logger = LoggerFactory.getLogger(SubTaskConditionsService.class);
+    private final Logger logger = LoggerFactory.getLogger(SubTaskConditionService.class);
 
-    private final SubTaskConditionsMapper subTaskConditionsMapper;
+    private final SubTaskConditionMapper subTaskConditionMapper;
 
-    private final SubTaskConditionsMapStruct subTaskConditionsMapStruct;
+    private final SubTaskConditionMapStruct subTaskConditionMapStruct;
 
     @Autowired
-    public SubTaskConditionsService(SubTaskConditionsMapStruct subTaskConditionsMapStruct, SubTaskConditionsMapper subTaskConditionsMapper) {
-        this.subTaskConditionsMapper = subTaskConditionsMapper;
-        this.subTaskConditionsMapStruct = subTaskConditionsMapStruct;
+    public SubTaskConditionService(SubTaskConditionMapStruct subTaskConditionMapStruct, SubTaskConditionMapper subTaskConditionMapper) {
+        this.subTaskConditionMapper = subTaskConditionMapper;
+        this.subTaskConditionMapStruct = subTaskConditionMapStruct;
     }
 
     /**
      * 写入记录
      *
      *
-     * @param record {@link SubTaskConditionsDTO }
+     * @param record {@link SubTaskConditionDTO }
      *
      * @return int
      */
     @Override
-    public int insert(SubTaskConditionsDTO record) {
-        SubTaskConditions tsSubTaskConditions = subTaskConditionsMapStruct.toEntity(record);
+    public int insert(SubTaskConditionDTO record) {
+        SubTaskCondition tsSubTaskCondition = subTaskConditionMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
-//        tsSubTaskConditions.setDeleteFlag(DeleteFlagEnum.NOT_DELETED.getStatus());
-//        tsSubTaskConditions.setCreatedTime(new Date());
-//        tsSubTaskConditions.setCreatedBy(userId);
-//        tsSubTaskConditions.setLastModifiedBy(userId);
-//        tsSubTaskConditions.setLastModifiedTime(new Date());
+//        tsSubTaskCondition.setDeleteFlag(DeleteFlagEnum.NOT_DELETED.getStatus());
+//        tsSubTaskCondition.setCreatedTime(new Date());
+//        tsSubTaskCondition.setCreatedBy(userId);
+//        tsSubTaskCondition.setLastModifiedBy(userId);
+//        tsSubTaskCondition.setLastModifiedTime(new Date());
 
-        int num = subTaskConditionsMapper.insert(tsSubTaskConditions);
+        int num = subTaskConditionMapper.insert(tsSubTaskCondition);
         Preconditions.checkArgument(num > 0, ApplicationErrorEnum.COMMON_FAIL);
         return num;
     }
@@ -67,13 +67,13 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
      * 批量写入记录
      *
      *
-     * @param records {@link List<SubTaskConditionsDTO> }
+     * @param records {@link List< SubTaskConditionDTO > }
      *
      * @return int
      */
     @Override
-    public int insertBatch(List<SubTaskConditionsDTO> records) {
-        List<SubTaskConditions> recordList = subTaskConditionsMapStruct.toEntity(records);
+    public int insertBatch(List<SubTaskConditionDTO> records) {
+        List<SubTaskCondition> recordList = subTaskConditionMapStruct.toEntity(records);
 
         Integer userId = SecurityUtils.getCurrentUserId();
 //        recordList.forEach(record -> {
@@ -84,7 +84,7 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
 //            record.setLastModifiedTime(new Date());
 //        });
 
-        int num = subTaskConditionsMapper.insertList(recordList);
+        int num = subTaskConditionMapper.insertList(recordList);
         Preconditions.checkArgument(num == recordList.size(), ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -96,50 +96,50 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
      *
      * @param id {@link Integer }
      *
-     * @return {@link SubTaskConditionsDTO }
+     * @return {@link SubTaskConditionDTO }
      */
     @Override
-    public SubTaskConditionsDTO selectByPrimaryKey(Integer id) {
+    public SubTaskConditionDTO selectByPrimaryKey(Integer id) {
 
-        SubTaskConditions tsSubTaskConditions = subTaskConditionsMapper.selectByPrimaryKey(id);
-        Preconditions.checkNotNull(tsSubTaskConditions, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
+        SubTaskCondition tsSubTaskCondition = subTaskConditionMapper.selectByPrimaryKey(id);
+        Preconditions.checkNotNull(tsSubTaskCondition, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
 
-        return subTaskConditionsMapStruct.toDto(tsSubTaskConditions);
+        return subTaskConditionMapStruct.toDto(tsSubTaskCondition);
     }
 
     /**
      * 根据字段选择性查询
      *
      *
-     * @param record {@link SubTaskConditionsDTO }
+     * @param record {@link SubTaskConditionDTO }
      *
-     * @return {@link List<SubTaskConditionsDTO> }
+     * @return {@link List< SubTaskConditionDTO > }
      */
     @Override
-    public List<SubTaskConditionsDTO> selectSelective(SubTaskConditionsDTO record) {
-        SubTaskConditions tsSubTaskConditions = subTaskConditionsMapStruct.toEntity(record);
+    public List<SubTaskConditionDTO> selectSelective(SubTaskConditionDTO record) {
+        SubTaskCondition tsSubTaskCondition = subTaskConditionMapStruct.toEntity(record);
 
-        List<SubTaskConditions> tsSubTaskConditionsList = subTaskConditionsMapper.select(tsSubTaskConditions);
-        return subTaskConditionsMapStruct.toDto(tsSubTaskConditionsList);
+        List<SubTaskCondition> tsSubTaskConditionList = subTaskConditionMapper.select(tsSubTaskCondition);
+        return subTaskConditionMapStruct.toDto(tsSubTaskConditionList);
     }
 
     /**
      * 根据主键更新
      *
      *
-     * @param record {@link SubTaskConditionsDTO }
+     * @param record {@link SubTaskConditionDTO }
      *
      * @return int
      */
     @Override
-    public int updateByPrimaryKey(SubTaskConditionsDTO record) {
-        SubTaskConditions tsSubTaskConditions = subTaskConditionsMapStruct.toEntity(record);
+    public int updateByPrimaryKey(SubTaskConditionDTO record) {
+        SubTaskCondition tsSubTaskCondition = subTaskConditionMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
-//        tsSubTaskConditions.setLastModifiedBy(userId);
-//        tsSubTaskConditions.setLastModifiedTime(new Date());
+//        tsSubTaskCondition.setLastModifiedBy(userId);
+//        tsSubTaskCondition.setLastModifiedTime(new Date());
 
-        int num = subTaskConditionsMapper.updateByPrimaryKey(tsSubTaskConditions);
+        int num = subTaskConditionMapper.updateByPrimaryKey(tsSubTaskCondition);
         Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -150,19 +150,19 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
      * 根据主键选择性更新
      *
      *
-     * @param record {@link SubTaskConditionsDTO }
+     * @param record {@link SubTaskConditionDTO }
      *
      * @return int
      */
     @Override
-    public int updateByPrimaryKeySelective(SubTaskConditionsDTO record) {
-        SubTaskConditions tsSubTaskConditions = subTaskConditionsMapStruct.toEntity(record);
+    public int updateByPrimaryKeySelective(SubTaskConditionDTO record) {
+        SubTaskCondition tsSubTaskCondition = subTaskConditionMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
-//        tsSubTaskConditions.setLastModifiedBy(userId);
-//        tsSubTaskConditions.setLastModifiedTime(new Date());
+//        tsSubTaskCondition.setLastModifiedBy(userId);
+//        tsSubTaskCondition.setLastModifiedTime(new Date());
 
-        int num = subTaskConditionsMapper.updateByPrimaryKeySelective(tsSubTaskConditions);
+        int num = subTaskConditionMapper.updateByPrimaryKeySelective(tsSubTaskCondition);
         Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -178,7 +178,7 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
      */
     @Override
     public int deleteByPrimaryKey(Integer id) {
-        int num = subTaskConditionsMapper.deleteByPrimaryKey(id);
+        int num = subTaskConditionMapper.deleteByPrimaryKey(id);
         Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
@@ -193,7 +193,7 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
      * @return int
      */
 //    public int deleteLogicByPrimaryKey(Integer id) {
-//        return subTaskConditionsMapper.deleteLogicByPrimaryKey(id);
+//        return subTaskConditionMapper.deleteLogicByPrimaryKey(id);
 //    }
 
     /**
@@ -206,7 +206,7 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
      */
     @Override
     public int deleteMore(List<String> ids){
-        return subTaskConditionsMapper.deleteByIds(String.join(",", ids));
+        return subTaskConditionMapper.deleteByIds(String.join(",", ids));
     }
 
     /**
@@ -218,7 +218,7 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
      * @return int
      */
 //    public int deleteMoreLogic(List<String> ids){
-//        return subTaskConditionsMapper.deleteLogicByIds(String.join(",", ids));
+//        return subTaskConditionMapper.deleteLogicByIds(String.join(",", ids));
 //    }
 
     /**
@@ -227,11 +227,11 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
      *
      * @param gridPageRequest {@link GridPageRequest }
      *
-     * @return {@link GridReturnData<SubTaskConditionsDTO> }
+     * @return {@link GridReturnData< SubTaskConditionDTO > }
      */
     @Override
-    public GridReturnData<SubTaskConditionsDTO> selectPage(GridPageRequest gridPageRequest){
-        GridReturnData<SubTaskConditionsDTO> mGridReturnData = new GridReturnData<>();
+    public GridReturnData<SubTaskConditionDTO> selectPage(GridPageRequest gridPageRequest){
+        GridReturnData<SubTaskConditionDTO> mGridReturnData = new GridReturnData<>();
         List<GridFilterInfo> filterList = gridPageRequest.getFilterList();
         Map<String, Object> map = new HashMap<>(2);
         filterList.forEach(gridFilterInfo -> {
@@ -245,10 +245,10 @@ public class SubTaskConditionsService implements ISubTaskConditionsService {
         String sortMyBatisByString = gridPageRequest.getSortMybatisString();
         PageHelper.startPage(gridPageRequest.getPageNum(), gridPageRequest.getPageSize(), sortMyBatisByString);
 
-        List<SubTaskConditions> list = subTaskConditionsMapper.selectPage(map);
+        List<SubTaskCondition> list = subTaskConditionMapper.selectPage(map);
 
-        PageInfo<SubTaskConditions> pageInfo = new PageInfo<>(list);
-        PageInfo<SubTaskConditionsDTO> pageInfoFinal = new PageInfo<>(subTaskConditionsMapStruct.toDto(list));
+        PageInfo<SubTaskCondition> pageInfo = new PageInfo<>(list);
+        PageInfo<SubTaskConditionDTO> pageInfoFinal = new PageInfo<>(subTaskConditionMapStruct.toDto(list));
         pageInfoFinal.setTotal(pageInfo.getTotal());
         mGridReturnData.setPageInfo(pageInfoFinal);
 

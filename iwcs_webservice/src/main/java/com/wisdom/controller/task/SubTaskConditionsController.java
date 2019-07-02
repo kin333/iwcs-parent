@@ -4,8 +4,8 @@ package com.wisdom.controller.task;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.domain.task.dto.SubTaskConditionsDTO;
-import com.wisdom.iwcs.mapstruct.task.SubTaskConditionsMapStruct;
+import com.wisdom.iwcs.domain.task.dto.SubTaskConditionDTO;
+import com.wisdom.iwcs.mapstruct.task.SubTaskConditionMapStruct;
 import com.wisdom.iwcs.service.task.intf.ISubTaskConditionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class SubTaskConditionsController {
     @Autowired
     ISubTaskConditionsService ISubTaskConditionsService;
     @Autowired
-    SubTaskConditionsMapStruct subTaskConditionsMapStruct;
+    SubTaskConditionMapStruct subTaskConditionMapStruct;
 
     /**
      * 根据主键ID删除
@@ -56,13 +56,13 @@ public class SubTaskConditionsController {
      * 新增记录
      *
      *
-     * @param tsSubTaskConditionsDTO {@link SubTaskConditionsDTO }
+     * @param tsSubTaskConditionDTO {@link SubTaskConditionDTO }
      *
      * @return {@link Result }
      */
     @PostMapping
-    public Result insert(@RequestBody SubTaskConditionsDTO tsSubTaskConditionsDTO) {
-        ISubTaskConditionsService.insert(tsSubTaskConditionsDTO);
+    public Result insert(@RequestBody SubTaskConditionDTO tsSubTaskConditionDTO) {
+        ISubTaskConditionsService.insert(tsSubTaskConditionDTO);
 
         return new Result();
     }
@@ -77,9 +77,9 @@ public class SubTaskConditionsController {
      */
     @GetMapping(value = "/{id}")
     public Result selectByPrimaryKey(@PathVariable Integer id) {
-        SubTaskConditionsDTO tsSubTaskConditionsDTO = ISubTaskConditionsService.selectByPrimaryKey(id);
+        SubTaskConditionDTO tsSubTaskConditionDTO = ISubTaskConditionsService.selectByPrimaryKey(id);
 
-        return new Result(tsSubTaskConditionsDTO);
+        return new Result(tsSubTaskConditionDTO);
     }
 
     /**
@@ -92,7 +92,7 @@ public class SubTaskConditionsController {
      */
     @PostMapping(value = "/page")
     public Result selectPage(@RequestBody GridPageRequest gridPageRequest) {
-        GridReturnData<SubTaskConditionsDTO> records = ISubTaskConditionsService.selectPage(gridPageRequest);
+        GridReturnData<SubTaskConditionDTO> records = ISubTaskConditionsService.selectPage(gridPageRequest);
 
         return new Result(records);
     }
@@ -101,13 +101,13 @@ public class SubTaskConditionsController {
      * 更新记录
      *
      *
-     * @param tsSubTaskConditionsDTO {@link SubTaskConditionsDTO }
+     * @param tsSubTaskConditionDTO {@link SubTaskConditionDTO }
      *
      * @return {@link Result }
      */
     @PutMapping
-    public Result updateByPrimaryKey(@RequestBody SubTaskConditionsDTO tsSubTaskConditionsDTO) {
-        ISubTaskConditionsService.updateByPrimaryKey(tsSubTaskConditionsDTO);
+    public Result updateByPrimaryKey(@RequestBody SubTaskConditionDTO tsSubTaskConditionDTO) {
+        ISubTaskConditionsService.updateByPrimaryKey(tsSubTaskConditionDTO);
 
         return new Result();
     }

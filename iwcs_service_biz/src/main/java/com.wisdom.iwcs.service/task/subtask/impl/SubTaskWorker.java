@@ -78,8 +78,8 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
 
 
-//        List<SubTaskConditions> preTaskRelConditionsList = ;
-//        List<SubTaskConditions> afterTaskRelConditionsList = subtask.getAfterTaskRelConditionsList();
+//        List<SubTaskCondition> preTaskRelConditionsList = ;
+//        List<SubTaskCondition> afterTaskRelConditionsList = subtask.getAfterTaskRelConditionsList();
 //        while (true) {
 //            logger.info("开始检查主任务{}开始执行下一步子任务{}，检查条件", subtask.getMainTaskNum(), subtask.getSubTaskNum());
 //            //已结束的任务自动结束该任务并上报主任务线程
