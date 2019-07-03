@@ -81,5 +81,14 @@
         where sub_task_num = #{subTaskNum}
         LIMIT 1
     </select>
+  <update id="updateSendStatus">
+    update ts_sub_task
+    <set>
+        <if test="status != null and status != ''">
+          send_status = #{status}
+        </if>
+    </set>
+    where sub_task_num = #{subTaskNum}
+  </update>
 
 </mapper>

@@ -3,6 +3,7 @@ package com.wisdom.iwcs.mapper.task;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.SubTask;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +31,10 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return
      */
     SubTask selectBySubTaskNum(String subTaskNum);
+
+    /**
+     * 根据子任务编号更改下发状态
+     * @param subTaskNum
+     */
+    void updateSendStatus(@Param("subTaskNum") String subTaskNum,@Param("status") String status);
 }

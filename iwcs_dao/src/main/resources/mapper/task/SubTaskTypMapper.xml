@@ -14,13 +14,14 @@
     <result column="task_typ" jdbcType="VARCHAR" property="taskTyp" />
     <result column="sub_task_mes_send" jdbcType="VARCHAR" property="subTaskMesSend" />
     <result column="worker_type" jdbcType="VARCHAR" property="workerType" />
+    <result column="worker_url" jdbcType="VARCHAR" property="workerUrl" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
     -->
     id, sub_task_typ_code, sub_task_typ_name, create_date, remark, is_default, task_typ, 
-    sub_task_mes_send, worker_type
+    sub_task_mes_send, worker_type, worker_url
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task_typ

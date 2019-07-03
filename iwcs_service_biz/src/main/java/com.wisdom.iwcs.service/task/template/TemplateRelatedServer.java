@@ -34,7 +34,7 @@ public class TemplateRelatedServer {
      */
     private final String OP = "OP";
     /**
-     * 选填项
+     * 必填项
      */
     private final String NC = "NC";
     /**

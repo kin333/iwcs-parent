@@ -2,12 +2,23 @@ package com.wisdom.test;
 
 import com.rabbitmq.client.*;
 import com.wisdom.config.RabbitConfig;
+import com.wisdom.iwcs.common.utils.InterfaceLogConstants;
+import com.wisdom.iwcs.common.utils.NetWorkUtil;
 import com.wisdom.iwcs.common.utils.RabbitMQUtil;
+import com.wisdom.iwcs.common.utils.constant.SendStatus;
+import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.SubTaskTyp;
+import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
+import com.wisdom.iwcs.service.base.ICommonService;
+import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -115,4 +126,48 @@ public class RabbitMQTest {
         AMQP.Queue.UnbindOk unbindOk = RabbitMQUtil.unbindExchage(channel, QUEUE, EXCHANGE, ROUTING_KEY);
         System.out.println(unbindOk);
     }
+    @Autowired
+    SubTaskMapper subTaskMapper;
+    @Autowired
+    TemplateRelatedServer templateRelatedServer;
+    @Autowired
+    SubTaskTypMapper subTaskTypMapper;
+    @Autowired
+    ICommonService iCommonService;
+    @GetMapping("/testProcess")
+    public void testProcess() {
+//        String subTaskNum = "TMP10001";
+//
+//        // 1. 从数据库获取子任务单
+//        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
+//        String jsonStr = "";
+//        try {
+//            jsonStr = templateRelatedServer.templateIntoInfo(subTaskNum);
+//        } catch (InvocationTargetException | IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+//
+//        // 2. 根据subtask的值，完善下发的信息，并下发命令
+//        SubTaskTyp subTaskTyp = subTaskTypMapper.selectByTypeCode(subTask.getSubTaskTyp());
+//        if (InterfaceLogConstants.SrcClientCode.SRC_HIK.equals(subTaskTyp.getWorkerType())) {
+//            //如果执行者类型是海康,则调用海康的接口
+//            String resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
+//            iCommonService.handleHikResponseAndThrowException(resultBody);
+//        }
+//        subTaskMapper.updateSendStatus(subTaskNum, SendStatus.SEND.getCode());
+
+        String url = "http://192.168.102.99:80/rcs/services/rest/hikTpsService/endAllTasks";
+        String jsonStr = "{\n" +
+                "\"reqCode\":\"123sd1fa5sdf\",\n" +
+                "\"reqTime\":\"2019-07-03 18:44:10\",\n" +
+                "\"clientCode\":\"INSPUR\",\n" +
+                "\"tokenCode\":\"09bd3456991fe1cf2e185de92fa5aab5\",\n" +
+                "\"taskCode\":\"\",\n" +
+                "\"wbCode\":\"083250AB118550\"\n" +
+                "}";
+        String resultBody = NetWorkUtil.transferContinueTask(jsonStr, url);
+        iCommonService.handleHikResponseAndThrowException(resultBody);
+    }
+
 }
+

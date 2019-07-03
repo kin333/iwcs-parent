@@ -17,4 +17,10 @@
             <column name="worker_type" remarks="执行者类型" type="VARCHAR(256)"/>
         </createTable>
     </changeSet>
+    
+    <changeSet id="201907031701" author="han">
+        <addColumn tableName="ts_sub_task_typ">
+            <column name="worker_url" remarks="执行目标的url" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

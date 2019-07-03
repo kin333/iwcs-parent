@@ -56,6 +56,20 @@ public class SubTaskTypDTO {
     private String workerType;
 
     /**
+     * 执行目标的url
+     */
+    @Column(name = "worker_url")
+    private String workerUrl;
+
+    public String getWorkerUrl() {
+        return workerUrl;
+    }
+
+    public void setWorkerUrl(String workerUrl) {
+        this.workerUrl = workerUrl;
+    }
+
+    /**
      * @return id
      */
     public Long getId() {
