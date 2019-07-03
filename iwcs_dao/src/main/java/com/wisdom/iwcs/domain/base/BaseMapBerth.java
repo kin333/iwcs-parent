@@ -117,6 +117,9 @@ public class BaseMapBerth {
     @Column(name = "ber_group")
     private String berGroup;
 
+    @Column(name = "version")
+    private Integer version;
+
     public String getBerthTypeValue() {
         return berthTypeValue;
     }
@@ -362,5 +365,13 @@ public class BaseMapBerth {
 
     public void setBerGroup(String berGroup) {
         this.berGroup = berGroup;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

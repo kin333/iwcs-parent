@@ -25,19 +25,20 @@
         <result column="relation_piont_code" jdbcType="VARCHAR" property="relationPiontCode"/>
         <result column="point_alias" jdbcType="VARCHAR" property="pointAlias"/>
         <result column="ber_group" jdbcType="VARCHAR" property="berGroup"/>
-
+        <result column="version" jdbcType="INTEGER" property="version"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, map_code, ber_code, coox, cooy, valid_flag, delete_flag, created_by, created_time,
-        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,relation_piont_code,point_alias,ber_group
+        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,relation_piont_code,point_alias,ber_group,version
     </sql>
     <update id="lockMapBerth">
         update base_map_berth
         <set>
             in_lock = 1,
+            version = ifnull(version,0) + 1,
             <if test="lockSource != null and lockSource != ''">
                 lock_source = #{lockSource},
             </if>
@@ -45,7 +46,12 @@
                 pod_code = #{podCode},
             </if>
         </set>
-        where map_code = #{mapCode} and ber_code = #{berCode}
+        where map_code = #{mapCode}
+        and ber_code = #{berCode}
+        <if test="version != null and version != ''">
+            and version = #{version}
+        </if>
+
     </update>
     <update id="unlockMapBerth">
         update base_map_berth
@@ -102,6 +108,15 @@
         and (pod_code = '' or pod_code is null)
         and map_code = #{mapCode}
         and biz_type = #{bizType}
+    </select>
+    <select id="selectBerData" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_map_berth
+        where 1=1
+        and delete_flag = 0
+        and map_code = #{mapCode}
+        and ber_code = #{berCode}
     </select>
 
     <delete id="deleteByMapCode">

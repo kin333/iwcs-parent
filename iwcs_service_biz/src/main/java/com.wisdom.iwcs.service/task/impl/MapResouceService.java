@@ -105,26 +105,37 @@ public class MapResouceService implements IMapResouceService {
         if (validateResult.getReturnCode() != 200){
             return validateResult;
         }
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(baseMapBerthDTO);
         //锁住选中的点位
-        baseMapBerthMapper.lockMapBerth(baseMapBerthDTO);
+        baseMapBerthDTO.setVersion(baseMapBerth.getVersion());
+        int count = baseMapBerthMapper.lockMapBerth(baseMapBerthDTO);
+        if(count < 1) {
+            return new Result(400,"该储位在进行其他操作中，请稍后执行");
+        }
         return new Result();
     }
 
     /**
      * 解锁选中的点位
-     * @param baseMapBerth
+     * @param baseMapBerthDTO
      * @return
      */
     @Override
-    public Result unlockMapBerth(BaseMapBerthDTO baseMapBerth) {
+    public Result unlockMapBerth(BaseMapBerthDTO baseMapBerthDTO) {
 
-        Result validateResult = validateParams(baseMapBerth);
+        Result validateResult = validateParams(baseMapBerthDTO);
         if (validateResult.getReturnCode() != 200){
             return validateResult;
         }
+        //乐观锁版本检测
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(baseMapBerthDTO);
+        baseMapBerthDTO.setVersion(baseMapBerth.getVersion());
         //解锁选中的点位
-        baseMapBerthMapper.unlockMapBerth(baseMapBerth);
-        return null;
+        int count = baseMapBerthMapper.unlockMapBerth(baseMapBerthDTO);
+        if(count < 1) {
+            return new Result(400,"该储位在进行其他操作中，请稍后执行");
+        }
+        return new Result();
     }
 
     /**
@@ -157,7 +168,10 @@ public class MapResouceService implements IMapResouceService {
 
             //锁住选中的储位
             baseMapBerthDTO.setBerCode(selectBaseMapBerth.getBerCode());
-            baseMapBerthMapper.lockMapBerth(baseMapBerthDTO);
+            Result lockResult = lockMapBerth(baseMapBerthDTO);
+            if(lockResult.getReturnCode() != 200) {
+                return lockResult;
+            }
 
             //加入返回列表中
             selectBaseMapBerth.setPodCode(baseMapBerthDTO.getPodCode());

@@ -1,6 +1,7 @@
 package com.wisdom.controller;
 
 import com.google.common.base.Strings;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.system.dto.LoginDTO;
 import com.wisdom.iwcs.service.base.IBaseWhAreaService;
 import com.wisdom.iwcs.service.base.baseImpl.BaseWhAreaService;
@@ -66,7 +67,7 @@ public class UserJWTController {
             user.setUserId(String.valueOf(tokenUser.getUserId()));
             String socketToken = tokenUtil.createToken(user, rememberMe);
 
-            return ResponseEntity.ok(new JWTToken(jwt, socketToken));
+            return ResponseEntity.ok(new Result(new JWTToken(jwt, socketToken)));
         } catch (AuthenticationException exception) {
             exception.printStackTrace();
 //        	return new ResponseEntity<>("{\"name\":\"wang\"}", HttpStatus.UNAUTHORIZED);

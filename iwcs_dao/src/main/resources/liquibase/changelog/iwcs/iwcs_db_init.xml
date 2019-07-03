@@ -916,4 +916,9 @@
         <modifyDataType tableName="base_map_berth" columnName="coox" newDataType="DECIMAL(10, 3)"/>
         <modifyDataType tableName="base_map_berth" columnName="cooy" newDataType="DECIMAL(10, 3)"/>
     </changeSet>
+    <changeSet id="201907031929-1" author="yang">
+        <addColumn tableName="base_map_berth">
+            <column defaultValueNumeric="0" name="version" remarks="版本" type="INT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

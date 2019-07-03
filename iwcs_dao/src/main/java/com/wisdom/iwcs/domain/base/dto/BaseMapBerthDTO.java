@@ -118,6 +118,9 @@ public class BaseMapBerthDTO {
     @Column(name = "ber_group")
     private String berGroup;
 
+    @Column(name = "version")
+    private Integer version;
+
     public String getBerthTypeValue() {
         return berthTypeValue;
     }
@@ -361,5 +364,13 @@ public class BaseMapBerthDTO {
 
     public void setBerGroup(String berGroup) {
         this.berGroup = berGroup;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }
