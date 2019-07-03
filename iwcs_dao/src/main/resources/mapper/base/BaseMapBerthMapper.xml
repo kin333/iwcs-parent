@@ -8,8 +8,8 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="map_code" jdbcType="VARCHAR" property="mapCode"/>
         <result column="ber_code" jdbcType="VARCHAR" property="berCode"/>
-        <result column="coox" jdbcType="VARCHAR" property="coox"/>
-        <result column="cooy" jdbcType="VARCHAR" property="cooy"/>
+        <result column="coox" jdbcType="DECIMAL" property="coox"/>
+        <result column="cooy" jdbcType="DECIMAL" property="cooy"/>
         <result column="valid_flag" jdbcType="INTEGER" property="validFlag"/>
         <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
         <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
@@ -24,6 +24,7 @@
         <result column="biz_type" jdbcType="VARCHAR" property="bizType"/>
         <result column="relation_piont_code" jdbcType="VARCHAR" property="relationPiontCode"/>
         <result column="point_alias" jdbcType="VARCHAR" property="pointAlias"/>
+        <result column="ber_group" jdbcType="VARCHAR" property="berGroup"/>
 
     </resultMap>
     <sql id="Base_Column_List">
@@ -31,7 +32,7 @@
           WARNING - @mbg.generated
         -->
         id, map_code, ber_code, coox, cooy, valid_flag, delete_flag, created_by, created_time,
-        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,relation_piont_code,point_alias
+        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,relation_piont_code,point_alias,ber_group
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select
@@ -53,6 +54,19 @@
         select
         <include refid="Base_Column_List"/>
         from base_map_berth where ber_code = #{bercode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectEmptyPointOfInspectionArea" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_map_berth
+        where 1=1
+        and delete_flag = '0'
+        and biz_type = 'CHECK_TYPE'
+        and berth_type_value = '02'
+        and in_lock = 0
+        and (pod_code = '' or pod_code is null)
+        and map_code = #{mapCode}
+
     </select>
 
     <delete id="deleteByMapCode">

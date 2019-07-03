@@ -3,6 +3,7 @@ package com.wisdom.iwcs.domain.base.dto;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Table(name = "base_map_berth")
@@ -25,12 +26,12 @@ public class BaseMapBerthDTO {
     /**
      * x坐标
      */
-    private String coox;
+    private BigDecimal coox;
 
     /**
      * y坐标
      */
-    private String cooy;
+    private BigDecimal cooy;
 
     /**
      * 锁定状态：0:未锁定，1：已锁定
@@ -111,6 +112,12 @@ public class BaseMapBerthDTO {
     @Column(name = "point_alias")
     private String pointAlias;
 
+    /**
+     * 点位组
+     */
+    @Column(name = "ber_group")
+    private String berGroup;
+
     public String getBerthTypeValue() {
         return berthTypeValue;
     }
@@ -168,40 +175,20 @@ public class BaseMapBerthDTO {
         this.berCode = berCode == null ? null : berCode.trim();
     }
 
-    /**
-     * 获取x坐标
-     *
-     * @return coox - x坐标
-     */
-    public String getCoox() {
-        return coox;
-    }
-
-    /**
-     * 设置x坐标
-     *
-     * @param coox x坐标
-     */
-    public void setCoox(String coox) {
-        this.coox = coox == null ? null : coox.trim();
-    }
-
-    /**
-     * 获取y坐标
-     *
-     * @return cooy - y坐标
-     */
-    public String getCooy() {
+    public BigDecimal getCooy() {
         return cooy;
     }
 
-    /**
-     * 设置y坐标
-     *
-     * @param cooy y坐标
-     */
-    public void setCooy(String cooy) {
-        this.cooy = cooy == null ? null : cooy.trim();
+    public void setCooy(BigDecimal cooy) {
+        this.cooy = cooy;
+    }
+
+    public BigDecimal getCoox() {
+        return coox;
+    }
+
+    public void setCoox(BigDecimal coox) {
+        this.coox = coox;
     }
 
     /**
@@ -366,5 +353,13 @@ public class BaseMapBerthDTO {
 
     public void setPointAlias(String pointAlias) {
         this.pointAlias = pointAlias;
+    }
+
+    public String getBerGroup() {
+        return berGroup;
+    }
+
+    public void setBerGroup(String berGroup) {
+        this.berGroup = berGroup;
     }
 }

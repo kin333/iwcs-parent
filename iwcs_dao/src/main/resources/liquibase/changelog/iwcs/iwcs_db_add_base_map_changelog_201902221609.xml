@@ -24,4 +24,5 @@
             <column name="pod_code" remarks="货架编号" type="varchar(64)"/>
         </addColumn>
     </changeSet>
+
 </databaseChangeLog>

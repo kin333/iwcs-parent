@@ -907,4 +907,13 @@
             <column name="outstock_time" type="datetime" remarks="出库时间"/>
         </addColumn>
     </changeSet>
+    <changeSet id="201907031829" author="yang">
+        <addColumn tableName="base_map_berth">
+            <column name="ber_group" remarks="点位组" type="VARCHAR(16)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="yang" id="201907011328-1">
+        <modifyDataType tableName="base_map_berth" columnName="coox" newDataType="DECIMAL(10, 3)"/>
+        <modifyDataType tableName="base_map_berth" columnName="cooy" newDataType="DECIMAL(10, 3)"/>
+    </changeSet>
 </databaseChangeLog>

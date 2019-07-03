@@ -3,9 +3,11 @@ package com.wisdom.controller.base;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseWhAreaDTO;
 import com.wisdom.iwcs.mapstruct.base.BaseWhAreaMapStruct;
 import com.wisdom.iwcs.service.base.IBaseWhAreaService;
+import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,8 @@ public class BaseWhAreaController {
     IBaseWhAreaService IBaseWhAreaService;
     @Autowired
     BaseWhAreaMapStruct baseWhAreaMapStruct;
+    @Autowired
+    IMapResouceService iMapResouceService;
 
     /**
      * 根据主键ID删除
@@ -110,6 +114,10 @@ public class BaseWhAreaController {
     @GetMapping(value = "/selectWhAreaList")
     public Result selectWhAreaList() {
         List<BaseWhAreaDTO> baseWhAreaDTOList = IBaseWhAreaService.selectWhAreaList();
+//        BaseMapBerth baseMapBerth = new BaseMapBerth();
+//        baseMapBerth.setMapCode("16947A1827511LW");
+//        iMapResouceService.caculateInspectionAreaEmptyPoint(baseMapBerth);
+
         return new Result(baseWhAreaDTOList);
     }
 }

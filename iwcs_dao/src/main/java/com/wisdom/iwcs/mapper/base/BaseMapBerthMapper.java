@@ -37,4 +37,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     BaseMapBerth selectOneByBercode(String bercode);
+
+    List<BaseMapBerth> selectEmptyPointOfInspectionArea(BaseMapBerth baseMapBerth);
+
 }
