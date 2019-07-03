@@ -10,11 +10,11 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
-import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
+import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -39,6 +39,8 @@ public class SubTaskService {
     private final SubTaskMapper subTaskMapper;
 
     private final SubTaskMapStruct subTaskMapStruct;
+    @Autowired
+    private SubTaskConditionMapper subTaskConditionMapper;
 
     @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
@@ -257,9 +259,29 @@ public class SubTaskService {
         return true;
     }
 
+    /**
+     * 执行子任务前置条件检查并锁定/修改相关数据
+     *
+     * @return
+     */
+    public boolean preConditionsCheckAndExec(SubTask subTask) {
+//        String triggerType = "pre";
+//        List<SubTaskCondition> preTaskRelConditionsList =  subTaskConditionMapper.selectByTaskNumAndTrigerType(subtaskNum,triggerType);
+//        preTaskRelConditionsList.stream().forEach(c -> {
+//            String conditonHandleName = c.getConditonHandler();
+//            IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
+//            boolean met = conditonHandler.handlleCondition(c);
+//            if (!met) {
+//                //抛出异常
+//                throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
+//            }
+//        });
+        return true;
+    }
 
-    public SubTask getNextSubtask(MainTask mainTask) {
-        List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTask.getMainTaskNum());
+
+    public SubTask getCurrentPendingSubtask(String mainTaskNum) {
+        List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
         subTasks = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).collect(Collectors.toList());
 
         return subTasks.get(0);

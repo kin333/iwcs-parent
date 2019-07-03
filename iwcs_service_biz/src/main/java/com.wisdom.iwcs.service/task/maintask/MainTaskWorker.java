@@ -6,6 +6,8 @@ import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
+import com.wisdom.iwcs.service.task.impl.SubTaskService;
+import com.wisdom.iwcs.service.task.intf.IMainTaskService;
 import com.wisdom.iwcs.service.task.subtask.impl.SubTaskWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,9 @@ public class MainTaskWorker extends AbstractTaskWorker {
     }
 
     public void onSubTaskDone(){
-        // 切换下一个子任务，如果没有子任务，则该主任务标记为完成，已下发，，，，
+        // 切换下一个子任务，如果没有子任务，则该主任务标记为完成，已下发
+
+
     }
 
     @Override
@@ -53,7 +57,41 @@ public class MainTaskWorker extends AbstractTaskWorker {
     public void process() {
         logger.info("主任务{}执行器线程被启动", mainTask.getMainTaskNum());
         logger.info("开始");
-        Object mainTaskService = AppContext.getBean("mainTaskService");
+        boolean hasUnEndSubtask = true;
+        while (hasUnEndSubtask) {
+            //若已创建子任务worker，等待
+            if (subTaskWorker != null) {
+                try {
+                    this.wait(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+            } else {
+                SubTask currentPendingSubtask = getCurrentPendingSubtask();
+                if (currentPendingSubtask == null) {
+                    logger.info("主任务{}不包含未结束子任务，主任务自动结束", mainTask.getMainTaskNum());
+                    hasUnEndSubtask = false;
+                    break;
+                } else {
+                    logger.info("检测到主任务{}包含有未结束子任务单{}，开始启动子任务执行线程开始执行", mainTask.getMainTaskNum(), currentPendingSubtask.getSubTaskNum());
+                    //TODO channel 待赋值
+                    logger.debug("启动子任务worker");
+                    SubTaskWorker subTaskWorker = new SubTaskWorker(null, this, currentPendingSubtask);
+
+                    logger.info("子任务单{}启动子任务worker线程", currentPendingSubtask.getSubTaskNum());
+                    Thread subTaskWorkerThread = new Thread(subTaskWorker);
+                    subTaskWorkerThread.setName("subtaskWorker-" + currentPendingSubtask.getSubTaskNum());
+                    subTaskWorkerThread.start();
+                    //将当前已启动的subtaskWork注入主任务对象
+                    this.subTaskWorker = subTaskWorker;
+                    //TODO 注册子任务事件监听
+                    logger.debug("注册当前子任务监听事件");
+                }
+
+            }
+
+        }
 
         // 1. 从数据库获取下一个subTask，生成一个subtaskworker
 
@@ -78,28 +116,20 @@ public class MainTaskWorker extends AbstractTaskWorker {
     }
 
 
-//    @Override
-//    public void onMessage(WcsObservable o, Object arg) {
-//
-//    }
+
     /**
-     * 获取下一个子任务
+     * 获取当前待执行子任务（当前正在执行或）
      *
      * @return
      */
-    private SubTask getNextPendingSubtask() {
-//        List<SubTaskInfo> subTaskInfos = mainTaskWithSubTaskInfos.getSubTaskInfos();
-//        if (indexOfCurSubTask == -1) {
-//            return subTaskInfos.get(0);
-//        } else if (indexOfCurSubTask == subTaskInfos.size() - 1) {
-//            return null;
-//        } else {
-//            indexOfCurSubTask = indexOfCurSubTask + 1;
-//            return subTaskInfos.get(indexOfCurSubTask);
-//        }
+    private SubTask getCurrentPendingSubtask() {
 
-        return null;
+        IMainTaskService mainTaskService = (IMainTaskService) AppContext.getBean("mainTaskService");
+        SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
+        SubTask nextSubtask = subTaskService.getCurrentPendingSubtask(mainTask.getMainTaskNum());
+        return nextSubtask;
     }
+
 
     /**
      * MainTask, Include all its sub-tasks and sub task conditions.

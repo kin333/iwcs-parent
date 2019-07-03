@@ -2,11 +2,13 @@ package com.wisdom.iwcs.service.task.subtask.impl;
 
 
 import com.rabbitmq.client.Channel;
+import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.conditions.ConditionBase;
+import com.wisdom.iwcs.service.task.impl.SubTaskService;
+import com.wisdom.iwcs.service.task.intf.IMainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
-import com.wisdom.iwcs.service.task.subtask.intf.WcsObservable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +30,12 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     public boolean isRunnable(){
         // 1. 判断内存中记录的N个条件是否都已经满足，如果满足，直接返回OK
-
+        IMainTaskService mainTaskService = (IMainTaskService) AppContext.getBean("mainTaskService");
+        SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
+        subTaskService.preConditionsCheckAndExec(subTask);
 
         // 2. 判断是否有资源能满足条件，如果满足则直接锁定。
-        //    满足的条件该锁定资源需要锁定，并记录锁定状态及谁锁定了该资源, in_lock and lock_source
+        // 满足的条件该锁定资源需要锁定，并记录锁定状态及谁锁定了该资源, in_lock and lock_source
 
         return true;
     }
