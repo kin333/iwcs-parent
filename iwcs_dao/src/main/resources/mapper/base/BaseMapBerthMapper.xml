@@ -107,4 +107,9 @@
     <delete id="deleteByMapCode">
     DELETE FROM base_map_berth WHERE map_code = #{mapCode}
   </delete>
+    <select id="selectAlltorageByMapCode" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth">
+        select
+        <include refid="Base_Column_List"/>
+        from base_map_berth where map_code = #{mapCode,jdbcType=VARCHAR}
+    </select>
 </mapper>
