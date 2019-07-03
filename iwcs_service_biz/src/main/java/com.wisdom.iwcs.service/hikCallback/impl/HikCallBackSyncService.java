@@ -642,8 +642,8 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
                     mapContent.getPointInfo().stream().forEach(pointInfoDto -> {
                         BaseMapBerth baseMapBerth = new BaseMapBerth();
                         baseMapBerth.setMapCode(data.getMapCode());
-                        baseMapBerth.setCoox(pointInfoDto.getXpos());
-                        baseMapBerth.setCooy(pointInfoDto.getYpos());
+                        baseMapBerth.setCoox(BigDecimal.valueOf(Double.valueOf(pointInfoDto.getXpos())));
+                        baseMapBerth.setCooy(BigDecimal.valueOf(Double.valueOf(pointInfoDto.getYpos())));
                         String coox = pointInfoDto.getXpos().replace("", "");
                         String cooy = pointInfoDto.getYpos().replace("", "");
                         String berCode = coox + mapContent.getMapQRCode() + cooy;
@@ -666,5 +666,7 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
         });
         return new HikSyncResponse();
     }
+
+
 
 }
