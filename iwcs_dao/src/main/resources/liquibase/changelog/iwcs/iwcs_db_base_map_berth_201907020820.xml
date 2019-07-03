@@ -11,4 +11,11 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="george" id="201907032320-01">
+        <addColumn tableName="base_map_berth">
+            <column name="operate_area_code" remarks="作业区域(如老化区、检验区)" type="VARCHAR(100)"/>
+            <column name="biz_second_area_code" remarks="业务次级区域(如老化区下的自动区、手动区)" type="VARCHAR(100)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

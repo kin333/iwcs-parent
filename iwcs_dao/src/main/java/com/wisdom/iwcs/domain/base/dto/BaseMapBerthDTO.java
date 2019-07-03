@@ -118,6 +118,18 @@ public class BaseMapBerthDTO {
     @Column(name = "ber_group")
     private String berGroup;
 
+    /**
+     * 作业区域(如老化区、检验区)
+     */
+    @Column(name = "operate_area_code")
+    private String operateAreaCode;
+
+    /**
+     * 业务次级区域(如老化区下的自动区、手动区)
+     */
+    @Column(name = "biz_second_area_code")
+    private String bizSecondAreaCode;
+
     @Column(name = "version")
     private Integer version;
 
@@ -372,5 +384,21 @@ public class BaseMapBerthDTO {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public String getOperateAreaCode() {
+        return operateAreaCode;
+    }
+
+    public void setOperateAreaCode(String operateAreaCode) {
+        this.operateAreaCode = operateAreaCode;
+    }
+
+    public String getBizSecondAreaCode() {
+        return bizSecondAreaCode;
+    }
+
+    public void setBizSecondAreaCode(String bizSecondAreaCode) {
+        this.bizSecondAreaCode = bizSecondAreaCode;
     }
 }
