@@ -4,6 +4,8 @@ package com.wisdom.iwcs.service.task.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
+import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
@@ -265,17 +267,43 @@ public class SubTaskService {
      * @return
      */
     public boolean preConditionsCheckAndExec(SubTask subTask) {
-//        String triggerType = "pre";
-//        List<SubTaskCondition> preTaskRelConditionsList =  subTaskConditionMapper.selectByTaskNumAndTrigerType(subtaskNum,triggerType);
-//        preTaskRelConditionsList.stream().forEach(c -> {
-//            String conditonHandleName = c.getConditonHandler();
-//            IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
-//            boolean met = conditonHandler.handlleCondition(c);
-//            if (!met) {
-//                //抛出异常
-//                throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
-//            }
-//        });
+        List<SubTaskCondition> preTaskRelConditionsList =
+                subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.PRE_CONDITION.getCode());
+        preTaskRelConditionsList.stream().forEach(c -> {
+            //如果条件状态为不符合,则执行子任务前置条件检查操作
+            if (ConditionMetStatus.IN_CONFORMITY.getCode().equals(c.getConditionMetStatus())) {
+                String conditonHandleName = c.getConditonHandler();
+                IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
+                boolean met = conditonHandler.handlleCondition(c);
+                if (!met) {
+                    //抛出异常
+                    throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
+                }
+            }
+        });
+        return true;
+    }
+
+    /**
+     * 回滚执行的子任务前置条件并还原相关数据的操作
+     * @param subTask
+     * @return
+     */
+    public boolean preConditionsRallback(SubTask subTask) {
+        List<SubTaskCondition> preTaskRelConditionsList =
+                subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.PRE_CONDITION.getCode());
+        preTaskRelConditionsList.forEach(c -> {
+            //如果条件状态为符合,则执行子任务前置条件回滚操作
+            if (ConditionMetStatus.CONFORMITY.getCode().equals(c.getConditionMetStatus())) {
+                String conditonHandleName = c.getConditonHandler();
+                IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
+                boolean met = conditonHandler.rollbackCondition(c);
+                if (!met) {
+                    //抛出异常
+                    throw new TaskConditionException(-1, "子任务前置条件回滚失败", c.getSubTaskNum(), conditonHandleName);
+                }
+            }
+        });
         return true;
     }
 

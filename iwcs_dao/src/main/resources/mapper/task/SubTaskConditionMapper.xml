@@ -38,4 +38,10 @@
         order by last_modified_time desc
     </select>
 
+    <select id="selectByTaskNumAndTrigerType" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_sub_task_condition
+        where sub_task_num = #{subTaskNum}
+        and conditon_triger = #{conditonTriger}
+    </select>
+
 </mapper>
