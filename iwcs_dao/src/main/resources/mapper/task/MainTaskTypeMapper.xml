@@ -40,4 +40,8 @@
     </if>
     order by last_modified_time desc
   </select>
+    <select id="selectByMainTaskTypeCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_main_task_type
+        where main_task_type_code = #{mainTaskTypeCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

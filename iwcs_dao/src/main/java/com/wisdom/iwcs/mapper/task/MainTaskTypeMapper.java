@@ -20,4 +20,6 @@ public interface MainTaskTypeMapper extends MyMapperAndIds<MainTaskType> {
      * @return list
      */
     List<MainTaskType> selectPage(Map map);
+
+    MainTaskType selectByMainTaskTypeCode(String mainTaskTypeCode);
 }

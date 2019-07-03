@@ -22,4 +22,6 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
      * @return list
      */
     List<TaskRel> selectPage(Map map);
+
+    List<TaskRel> selectByMainTaskType(String mainTaskTypeCode);
 }

@@ -46,4 +46,9 @@
         LIMIT 1
     </select>
 
+    <select id="selectByMainTaskTypeCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_task_rel_conditions
+        where main_task_type_code = = #{mainTaskTypeCode,jdbcType=VARCHAR} and
+        sub_task_type_code = #{subTaskTypeCode}
+    </select>
 </mapper>
