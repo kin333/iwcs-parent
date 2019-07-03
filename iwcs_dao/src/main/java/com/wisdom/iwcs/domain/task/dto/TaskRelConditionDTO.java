@@ -3,7 +3,7 @@ package com.wisdom.iwcs.domain.task.dto;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "ts_task_rel_conditions")
+@Table(name = "ts_task_rel_condition")
 public class TaskRelConditionDTO {
 
     @Id
@@ -61,6 +61,34 @@ public class TaskRelConditionDTO {
      */
     @Column(name = "conditon_triger")
     private String conditonTriger;
+
+    /**
+     * 订阅事件
+     */
+    @Column(name = "subscribe_event")
+    private String subscribeEvent;
+
+    /**
+     * 执行顺序
+     */
+    @Column(name = "sub_task_seq")
+    private Integer subTaskSeq;
+
+    public Integer getSubTaskSeq() {
+        return subTaskSeq;
+    }
+
+    public void setSubTaskSeq(Integer subTaskSeq) {
+        this.subTaskSeq = subTaskSeq;
+    }
+
+    public String getSubscribeEvent() {
+        return subscribeEvent;
+    }
+
+    public void setSubscribeEvent(String subscribeEvent) {
+        this.subscribeEvent = subscribeEvent;
+    }
 
     public Long getId() { return id; }
 

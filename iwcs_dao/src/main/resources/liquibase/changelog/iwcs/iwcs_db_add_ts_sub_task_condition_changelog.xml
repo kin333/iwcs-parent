@@ -19,4 +19,10 @@
             <column name="conditon_triger" remarks="前置条件:pre，后置条件:after" type="VARCHAR(0)"/>
         </createTable>
     </changeSet>
+    
+    <changeSet id="201907031334-1" author="han">
+        <addColumn tableName="ts_sub_task_condition">
+            <column name="subscribe_event" remarks="订阅事件" type="VARCHAR(200)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -8,7 +8,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="main_task_num" jdbcType="VARCHAR" property="mainTaskNum" />
     <result column="main_task_type_code" jdbcType="VARCHAR" property="mainTaskTypeCode" />
-    <result column="task_status" jdbcType="INTEGER" property="taskStatus" />
+    <result column="task_status" jdbcType="VARCHAR" property="taskStatus" />
     <result column="date_chg" jdbcType="TIMESTAMP" property="dateChg" />
     <result column="main_task_seq" jdbcType="INTEGER" property="mainTaskSeq" />
     <result column="group_id" jdbcType="VARCHAR" property="groupId" />

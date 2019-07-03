@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wisdom.iwcs.mapper.task.SubTaskConditionsMapper">
+<mapper namespace="com.wisdom.iwcs.mapper.task.SubTaskConditionMapper">
     <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.SubTaskCondition">
         <!--
           WARNING - @mbg.generated
@@ -14,16 +14,17 @@
         <result column="condition_met_status" jdbcType="VARCHAR" property="conditionMetStatus" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="conditon_triger" jdbcType="VARCHAR" property="conditonTriger" />
+        <result column="subscribe_event" jdbcType="VARCHAR" property="subscribeEvent" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, sub_task_num, conditon_handler, create_date, point_access, date_chg, condition_met_status,
-        remark, conditon_triger
+        remark, conditon_triger, subscribe_event
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List" /> from ts_sub_task_conditions
+        select <include refid="Base_Column_List" /> from ts_sub_task_condition
         where 1=1
         <if test="searchKey != null and searchKey != ''">
             and 1=1

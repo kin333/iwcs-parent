@@ -15,16 +15,18 @@
         <result column="date_chg" jdbcType="VARCHAR" property="dateChg" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="conditon_triger" jdbcType="VARCHAR" property="conditonTriger" />
+        <result column="subscribe_event" jdbcType="VARCHAR" property="subscribeEvent" />
+        <result column="sub_task_seq" jdbcType="INTEGER" property="subTaskSeq" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, templ_code, main_task_type_code, sub_task_type_code, conditon_handler, create_date,
-        point_access, date_chg, remark, conditon_triger
+        point_access, date_chg, remark, conditon_triger, subscribe_event, sub_task_seq
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List" /> from ts_task_rel_conditions
+        select <include refid="Base_Column_List" /> from ts_task_rel_condition
         where 1=1
         <if test="searchKey != null and searchKey != ''">
             and 1=1
@@ -39,7 +41,7 @@
     </select>
 
     <select id="selectBySubCode" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List" /> from ts_task_rel_conditions
+        select <include refid="Base_Column_List" /> from ts_task_rel_condition
         where sub_task_type_code = #{subTaskTypeCode}
         LIMIT 1
     </select>

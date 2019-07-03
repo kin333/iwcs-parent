@@ -3,7 +3,7 @@ package com.wisdom.iwcs.domain.task.dto;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "ts_sub_task_conditions")
+@Table(name = "ts_sub_task_condition")
 public class SubTaskConditionDTO {
     @Id
     private Long id;
@@ -54,6 +54,20 @@ public class SubTaskConditionDTO {
      */
     @Column(name = "conditon_triger")
     private String conditonTriger;
+
+    /**
+     * 订阅事件
+     */
+    @Column(name = "subscribe_event")
+    private String subscribeEvent;
+
+    public String getSubscribeEvent() {
+        return subscribeEvent;
+    }
+
+    public void setSubscribeEvent(String subscribeEvent) {
+        this.subscribeEvent = subscribeEvent;
+    }
 
     public Long getId() {
         return id;

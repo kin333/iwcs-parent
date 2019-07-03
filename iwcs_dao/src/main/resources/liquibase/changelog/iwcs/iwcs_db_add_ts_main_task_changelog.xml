@@ -27,4 +27,8 @@
             <column name="main_task_num"/>
         </createIndex>
     </changeSet>
+    
+    <changeSet id="201907031420" author="han">
+        <modifyDataType tableName="ts_main_task" columnName="task_status" newDataType="VARCHAR(12)"/>
+    </changeSet>
 </databaseChangeLog>

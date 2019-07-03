@@ -24,7 +24,7 @@ public class MainTask {
      * 任务状态
      */
     @Column(name = "task_status")
-    private Integer taskStatus;
+    private String taskStatus;
 
     /**
      * 状态变更时间
@@ -132,7 +132,7 @@ public class MainTask {
      *
      * @return task_status - 任务状态
      */
-    public Integer getTaskStatus() {
+    public String getTaskStatus() {
         return taskStatus;
     }
 
@@ -141,7 +141,7 @@ public class MainTask {
      *
      * @param taskStatus 任务状态
      */
-    public void setTaskStatus(Integer taskStatus) {
+    public void setTaskStatus(String taskStatus) {
         this.taskStatus = taskStatus;
     }
 
