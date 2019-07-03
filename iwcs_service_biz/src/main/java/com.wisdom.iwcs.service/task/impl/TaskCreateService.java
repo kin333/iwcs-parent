@@ -54,8 +54,11 @@ public class TaskCreateService implements ITaskCreateService {
                 iPlAutoWbCallPodService.plAutoWbCallPod(plAutoWbCallPodRequest);
                 break;
             case PLBUFSUPPLY:
+
                 break;
             case PLTOAGING:
+                break;
+            case AGINGTOQUAINSP:
                 break;
             default:
                 logger.error("wrong task Code:{}",taskTypeCode);

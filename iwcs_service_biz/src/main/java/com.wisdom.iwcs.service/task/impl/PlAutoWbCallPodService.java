@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
@@ -48,8 +49,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
     public Result plAutoWbCallPod(PlAutoWbCallPodRequest plAutoWbCallPodRequest){
         //创建主任务
         MainTask mainTaskCreate = new MainTask();
-        //TODO
-        String mainTaskNum = UUID.randomUUID().toString().replace("-", "");
+        String mainTaskNum = CodeBuilder.codeBuilder("M");
         mainTaskCreate.setMainTaskNum(mainTaskNum);
         mainTaskCreate.setCreateDate(new Date());
         mainTaskCreate.setMainTaskTypeCode(plAutoWbCallPodRequest.getTaskTypeCode());
@@ -61,8 +61,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
         //创建子任务
         for (TaskRel taskRel:taskRelList){
             SubTask subTask = new SubTask();
-            //TODO
-            String subTaskNum = UUID.randomUUID().toString().replace("-", "");
+            String subTaskNum = CodeBuilder.codeBuilder("S");
             subTask.setSubTaskNum(subTaskNum);
             subTask.setMainTaskNum(mainTaskNum);
             subTask.setSubTaskTyp(taskRel.getSubTaskTypeCode());

@@ -5,6 +5,16 @@ package com.wisdom.iwcs.common.utils.idUtils;
  */
 public class CodeBuilder {
 
+    public static String codeBuilder(String taskType){
+        String code = "";
+        if ("M".equals(taskType)){
+            code = mainCodeBuilder();
+        }else {
+            code = subCodeBuilder();
+        }
+        return code;
+    }
+
     /**
      * 主任务编号生成器
      */
