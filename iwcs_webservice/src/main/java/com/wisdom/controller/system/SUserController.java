@@ -133,9 +133,9 @@ public class SUserController {
         return userService.removeUsersToDepartment(usersToDepartmentDTO);
     }
 
-    @GetMapping(value = "/belongInfo/{userId}/{companyId}")
-    public Result getUserInfoInCompany(@PathVariable Integer userId, @PathVariable Integer companyId) {
-        return userService.getUserInfoInCompany(userId, companyId);
+    @GetMapping(value = "/belongInfo/{userId}")
+    public Result getUserInfoInCompany(@PathVariable Integer userId) {
+        return userService.getUserInfoInCompany(userId);
     }
 
     @GetMapping(value = "/removeUserFromCompany/{userId}/{companyId}")
@@ -204,5 +204,9 @@ public class SUserController {
     public Result modifyMyInfo(@RequestBody SUser sUser) {
 
         return userService.modifyMyInfo(sUser);
+    }
+    @PutMapping(value = "/reset_password")
+    public Result resetPassword(@RequestBody List<Integer> userIdList) {
+        return userService.resetUsersPassword(userIdList);
     }
 }

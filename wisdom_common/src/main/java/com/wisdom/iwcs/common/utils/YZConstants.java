@@ -137,4 +137,6 @@ public class YZConstants {
     public static final Integer SYS_ACCOUNT = 1;
     //默认公司id
     public static final Integer DEFALUT_COMPANY_ID = 1;
+
+    public static final String DEFAULT_PASSWORD = "123456";
 }

@@ -186,7 +186,8 @@ public class SUserService {
         record.setLastModifiedBy(userId);
         record.setLastModifiedTime(new Date());
         record.setDeleteFlag(0);
-        record.setPassword(GetMD5Code(record.getPassword()));
+
+        record.setPassword(GetMD5Code(YZConstants.DEFAULT_PASSWORD));
 
         int returnNum = sUserMapper.insertSelective(record);
 
@@ -581,42 +582,45 @@ public class SUserService {
     /**
      * 获取用户在指定公司下的信息
      */
-    public Result getUserInfoInCompany(Integer userId, Integer companyId) {
+    public Result getUserInfoInCompany(Integer userId) {
 
-        Integer currentCompanyId = companyId;
         //指定公司下角色
-        List<UserRole> userRoles = userRoleMapper.getCompanyUserRole(userId, companyId);
+        List<UserRole> userRoles = userRoleMapper.selectByUserId(userId);
         List<Integer> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(toList());
 
+        List<SUserWhArea> sUserWhAreaList = userWhAreaMapper.selectUserWhAreaByUserId(userId);
+        List<String> areaCodeList = sUserWhAreaList.stream().map(SUserWhArea::getAreaCode).collect(toList());
+
         //所属部门
-        DepartUser departUser = departMapper.selectByUserBelongDepartment(userId, companyId);
+//        DepartUser departUser = departMapper.selectByUserBelongDepartment(userId, companyId);
         UserDTO userDTO = new UserDTO();
         userDTO.setId(userId);
         userDTO.setRoleList(roleIds);
-        if (departUser != null) {
-            userDTO.setDepartmentId(departUser.getDepartId());
-            userDTO.setSelectAll(departUser.getSelectAll());
-        }
-        UserCompanySettings userCompanySettings = userCompanySettingsMapper.getByUserIdAndCompanyId(userId, companyId);
-        if (userCompanySettings != null) {
-            List<String> userDutyList = new ArrayList<>();
-            if (userCompanySettings.getIsBusiness().equals(1)) {
-                userDutyList.add(UserCompanyDutyEnum.BUSINESS.getCode());
-            }
-            if (userCompanySettings.getIsDocument().equals(1)) {
-                userDutyList.add(UserCompanyDutyEnum.DOCUMENT.getCode());
-            }
-            if (userCompanySettings.getIsSales().equals(1)) {
-                userDutyList.add(UserCompanyDutyEnum.SALES.getCode());
-            }
-            if (userCompanySettings.getIsOperation().equals(1)) {
-                userDutyList.add(UserCompanyDutyEnum.OPERATION.getCode());
-            }
-            if (userCompanySettings.getIsService().equals(1)) {
-                userDutyList.add(UserCompanyDutyEnum.SERVICE.getCode());
-            }
-            userDTO.setDutyList(userDutyList);
-        }
+        userDTO.setAreaList(areaCodeList);
+//        if (departUser != null) {
+//            userDTO.setDepartmentId(departUser.getDepartId());
+//            userDTO.setSelectAll(departUser.getSelectAll());
+//        }
+//        UserCompanySettings userCompanySettings = userCompanySettingsMapper.getByUserIdAndCompanyId(userId, companyId);
+//        if (userCompanySettings != null) {
+//            List<String> userDutyList = new ArrayList<>();
+//            if (userCompanySettings.getIsBusiness().equals(1)) {
+//                userDutyList.add(UserCompanyDutyEnum.BUSINESS.getCode());
+//            }
+//            if (userCompanySettings.getIsDocument().equals(1)) {
+//                userDutyList.add(UserCompanyDutyEnum.DOCUMENT.getCode());
+//            }
+//            if (userCompanySettings.getIsSales().equals(1)) {
+//                userDutyList.add(UserCompanyDutyEnum.SALES.getCode());
+//            }
+//            if (userCompanySettings.getIsOperation().equals(1)) {
+//                userDutyList.add(UserCompanyDutyEnum.OPERATION.getCode());
+//            }
+//            if (userCompanySettings.getIsService().equals(1)) {
+//                userDutyList.add(UserCompanyDutyEnum.SERVICE.getCode());
+//            }
+//            userDTO.setDutyList(userDutyList);
+//        }
         return new Result(userDTO);
     }
 
@@ -787,5 +791,20 @@ public class SUserService {
         sUserMapper.updateByPrimaryKeySelective(modifyUser);
 
         return new Result();
+    }
+    public Result resetUsersPassword(List<Integer> userIdList) {
+        userIdList.forEach(this::resetPassword);
+        return new Result();
+    }
+
+
+    /**
+     * 重置账号密码
+     *
+     * @param userId 账号id
+     */
+    public void resetPassword(Integer userId) {
+
+        sUserMapper.updateUserPassword(userId, GetMD5Code(YZConstants.DEFAULT_PASSWORD));
     }
 }

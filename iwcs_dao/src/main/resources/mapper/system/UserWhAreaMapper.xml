@@ -12,4 +12,7 @@
     <delete id="deleteByUserId">
        delete from s_user_wh_area where user_id= #{userId,jdbcType=INTEGER}
     </delete>
+    <select id="selectUserWhAreaByUserId" resultType="com.wisdom.iwcs.domain.system.SUserWhArea" resultMap="BaseResultMap">
+        select id, area_code, user_id from s_user_wh_area where user_id = #{userId}
+    </select>
 </mapper>
