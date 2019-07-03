@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 模本注入信息类
+ * 发送消息体注入信息类
  * @author han
  */
 @Service

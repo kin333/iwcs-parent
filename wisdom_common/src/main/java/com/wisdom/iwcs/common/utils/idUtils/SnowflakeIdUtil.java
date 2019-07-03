@@ -1,8 +1,10 @@
 package com.wisdom.iwcs.common.utils.idUtils;
 
 public class SnowflakeIdUtil {
-    /** 开始时间戳 (2015-01-01) */
-    private final long twepoch = 1420041600000L;
+
+    private static SnowflakeIdUtil snowflakeIdUtil;
+    /** 开始时间戳 (2018-01-01) */
+    private final long twepoch = 1514736000000L;
 
     /** 机器id所占的位数 */
     private final long workerIdBits = 0L;
@@ -47,7 +49,16 @@ public class SnowflakeIdUtil {
     /**
      * 构造函数
      */
-    public SnowflakeIdUtil() {
+    private SnowflakeIdUtil() {
+    }
+
+    //=======================使用单例设计模式==========================================
+
+    public static SnowflakeIdUtil newInstance() {
+        if (snowflakeIdUtil == null) {
+            snowflakeIdUtil = new SnowflakeIdUtil();
+        }
+        return snowflakeIdUtil;
     }
 
     // ==============================Methods==========================================
@@ -93,7 +104,7 @@ public class SnowflakeIdUtil {
      * @param lastTimestamp 上次生成ID的时间戳
      * @return 当前时间戳
      */
-    protected long tilNextMillis(long lastTimestamp) {
+    private long tilNextMillis(long lastTimestamp) {
         long timestamp = timeGen();
         while (timestamp <= lastTimestamp) {
             timestamp = timeGen();
@@ -105,7 +116,7 @@ public class SnowflakeIdUtil {
      * 返回以毫秒为单位的当前时间
      * @return 当前时间(毫秒)
      */
-    protected long timeGen() {
+    private long timeGen() {
         return System.currentTimeMillis();
     }
 
