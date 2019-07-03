@@ -47,4 +47,5 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
 
     List<BaseMapBerth> selectEmptyStorage(BaseMapBerthDTO baseMapBerth);
 
+    List<BaseMapBerth> selectAlltorageByMapCode(String mapCode);
 }

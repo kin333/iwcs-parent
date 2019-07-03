@@ -274,4 +274,15 @@ public class BaseMapBerthService implements IBaseMapBerthService {
         baseMapBerthMapper.updateByPrimaryKey(baseMapBerth);
         return false;
     }
+
+    /**
+     * 根据地图编号查询全部储位
+     * @param baseMapBerthDTO
+     * @return
+     */
+    @Override
+    public List<BaseMapBerth> selectAlltorageInfo(BaseMapBerthDTO baseMapBerthDTO){
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectAlltorageByMapCode(baseMapBerthDTO.getMapCode());
+        return baseMapBerthList;
+    }
 }

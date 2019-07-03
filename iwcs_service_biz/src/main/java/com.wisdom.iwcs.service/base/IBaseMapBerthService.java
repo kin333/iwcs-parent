@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.base;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 
 import java.util.List;
@@ -32,4 +33,6 @@ public interface IBaseMapBerthService {
     int deleteMoreLogic(List<String> ids);
 
     GridReturnData<BaseMapBerthDTO> selectPage(GridPageRequest gridPageRequest);
+
+    List<BaseMapBerth> selectAlltorageInfo(BaseMapBerthDTO record);
 }

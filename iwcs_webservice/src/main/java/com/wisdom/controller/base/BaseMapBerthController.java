@@ -3,6 +3,7 @@ package com.wisdom.controller.base;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
@@ -101,5 +102,16 @@ public class BaseMapBerthController {
         IBaseMapBerthService.updateByPrimaryKey(baseMapBerthDTO);
 
         return new Result();
+    }
+
+    /**
+     *  提供PDA查询储位信息
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/getAlltorageInfo")
+    public Result selectAlltorageInfo(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
+        List<BaseMapBerth> baseMapBerths = IBaseMapBerthService.selectAlltorageInfo(baseMapBerthDTO);
+        return new Result(baseMapBerths);
     }
 }

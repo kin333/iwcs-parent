@@ -100,6 +100,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTaskCondition.setCreateDate(new Date());
             subTaskCondition.setSubTaskNum(subTaskNum);
             subTaskCondition.setSubscribeEvent(taskRelConditionList.getSubscribeEvent());
+            subTaskConditionMapper.insertSelective(subTaskCondition);
         }
         return new Result();
     }
