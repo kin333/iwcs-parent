@@ -19,4 +19,9 @@ public interface TaskRelConditionMapper extends MyMapperAndIds<TaskRelCondition>
      * @return list
      */
     List<TaskRelCondition> selectPage(Map map);
+
+    /**
+     * 根据子任务编号查询
+     */
+    TaskRelCondition selectBySubCode(String subTaskTypeCode);
 }

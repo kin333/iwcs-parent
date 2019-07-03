@@ -22,4 +22,11 @@ public interface SubTaskTypMapper extends  MyMapperAndIds<SubTaskTyp> {
      * @return list
      */
     List<SubTaskTyp> selectPage(Map map);
+
+    /**
+     * 根据子任务类型编号查询
+     * @param subTaskTypCode
+     * @return
+     */
+    SubTaskTyp selectByTypeCode(String subTaskTypCode);
 }

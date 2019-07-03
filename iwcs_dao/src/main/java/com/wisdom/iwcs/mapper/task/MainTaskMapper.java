@@ -21,4 +21,9 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
      * @return list
      */
     List<MainTask> selectPage(Map map);
+
+    /**
+     * 根据主任务编号查询
+     */
+    MainTask selectByMainTaskNum(String mainTaskNum);
 }

@@ -36,4 +36,10 @@
     </if>
     order by last_modified_time desc
   </select>
+
+  <select id="selectByTypeCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from ts_sub_task_typ
+    where sub_task_typ_code = #{subTaskTypCode}
+    LIMIT 1
+  </select>
 </mapper>

@@ -74,4 +74,12 @@
         order by sub_task_seq ASC
     </select>
 
+    <select id="selectBySubTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ts_sub_task
+        where sub_task_num = #{subTaskNum}
+        LIMIT 1
+    </select>
+
 </mapper>

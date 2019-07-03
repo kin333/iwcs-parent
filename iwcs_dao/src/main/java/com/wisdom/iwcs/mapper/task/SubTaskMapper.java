@@ -23,4 +23,11 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
     List<SubTask> selectPage(Map map);
 
     List<SubTask> selectByMainTaskNum(String mainTaskNum);
+
+    /**
+     * 根据子任务编号查询数据
+     * @param subTaskNum
+     * @return
+     */
+    SubTask selectBySubTaskNum(String subTaskNum);
 }

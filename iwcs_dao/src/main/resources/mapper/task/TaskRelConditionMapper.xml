@@ -38,4 +38,10 @@
         order by last_modified_time desc
     </select>
 
+    <select id="selectBySubCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_task_rel_conditions
+        where sub_task_type_code = #{subTaskTypeCode}
+        LIMIT 1
+    </select>
+
 </mapper>
