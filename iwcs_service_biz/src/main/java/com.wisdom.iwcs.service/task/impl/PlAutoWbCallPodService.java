@@ -14,9 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
-import static com.wisdom.iwcs.common.utils.TaskConstants.taskStatus.NOT_ISSUED;
+import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
+import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
+
 
 /**
  * 工作台点位呼叫空货架
@@ -54,7 +55,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
         mainTaskCreate.setCreateDate(new Date());
         mainTaskCreate.setMainTaskTypeCode(plAutoWbCallPodRequest.getTaskTypeCode());
         mainTaskCreate.setPriority(plAutoWbCallPodRequest.getPriority());
-        mainTaskCreate.setTaskStatus(NOT_ISSUED);
+        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
         mainTaskMapper.insertSelective(mainTaskCreate);
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(plAutoWbCallPodRequest.getTaskTypeCode());
@@ -74,8 +75,8 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTask.setThirdInvokeType(taskRel.getThirdInvokeType());
             subTask.setThirdStartMethod(taskRel.getThirdStartMethod());
             subTask.setThirdEndMethod(taskRel.getThirdEndMethod());
-            subTask.setSendStatus(NOT_ISSUED);
-            subTask.setTaskStatus(NOT_ISSUED);
+            subTask.setSendStatus(SUB_NOT_ISSUED);
+            subTask.setTaskStatus(SUB_NOT_ISSUED);
             subTask.setPodCode(plAutoWbCallPodRequest.getPodCode());
             subTask.setStartBercode(plAutoWbCallPodRequest.getStartBercode());
             subTask.setEndBercode(plAutoWbCallPodRequest.getWbCode());

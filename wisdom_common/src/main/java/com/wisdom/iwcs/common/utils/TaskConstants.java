@@ -19,20 +19,38 @@ public class TaskConstants {
     }
 
     /**
-     * 任务状态值
+     * 主任务状态值
      */
-    public static final class taskStatus {
+    public static final class mainTaskStatus {
         /**
          * 任务初始化，未下发
          */
-        public final static String  NOT_ISSUED = "0";
+        public final static String  MAIN_NOT_ISSUED = "0";
         /**
-         * 任务已下发
+         * 任务正在执行
          */
-        public final static String  ISSUED= "1";
+        public final static String  MAIN_ISSUED= "1";
         /**
          * 任务完成
          */
-        public final static String FINISHED = "9";
+        public final static String MAIN_FINISHED = "9";
+    }
+
+    /**
+     * 次任务状态值
+     */
+    public static final class subTaskStatus {
+        /**
+         * 任务初始化，未下发
+         */
+        public final static String  SUB_NOT_ISSUED = "0";
+        /**
+         * 任务正在执行
+         */
+        public final static String  SUB_ISSUED= "1";
+        /**
+         * 任务完成
+         */
+        public final static String SUB_FINISHED = "9";
     }
 }
