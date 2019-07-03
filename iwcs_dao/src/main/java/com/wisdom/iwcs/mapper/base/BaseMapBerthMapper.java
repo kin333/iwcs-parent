@@ -3,6 +3,7 @@ package com.wisdom.iwcs.mapper.base;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,6 +39,12 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      */
     BaseMapBerth selectOneByBercode(String bercode);
 
-    List<BaseMapBerth> selectEmptyPointOfInspectionArea(BaseMapBerth baseMapBerth);
+    List<BaseMapBerth> selectEmptyStorageOfInspectionArea(BaseMapBerthDTO  baseMapBerthDTO);
+
+    int lockMapBerth(BaseMapBerthDTO baseMapBerth);
+
+    int unlockMapBerth(BaseMapBerthDTO baseMapBerth);
+
+    List<BaseMapBerth> selectEmptyStorage(BaseMapBerthDTO baseMapBerth);
 
 }

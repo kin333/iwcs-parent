@@ -4,6 +4,7 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.BaseWhAreaDTO;
 import com.wisdom.iwcs.mapstruct.base.BaseWhAreaMapStruct;
 import com.wisdom.iwcs.service.base.IBaseWhAreaService;
@@ -114,10 +115,13 @@ public class BaseWhAreaController {
     @GetMapping(value = "/selectWhAreaList")
     public Result selectWhAreaList() {
         List<BaseWhAreaDTO> baseWhAreaDTOList = IBaseWhAreaService.selectWhAreaList();
-//        BaseMapBerth baseMapBerth = new BaseMapBerth();
-//        baseMapBerth.setMapCode("16947A1827511LW");
-//        iMapResouceService.caculateInspectionAreaEmptyPoint(baseMapBerth);
-
         return new Result(baseWhAreaDTOList);
     }
+
+    @PostMapping(value = "/test")
+    public Result lockEmptyStorageByBizTypeList(@RequestBody List<BaseMapBerthDTO> baseMapBerthDTOList) {
+        return iMapResouceService.lockEmptyStorageByBizTypeList(baseMapBerthDTOList);
+    }
+
+
 }

@@ -34,6 +34,24 @@
         id, map_code, ber_code, coox, cooy, valid_flag, delete_flag, created_by, created_time,
         last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,relation_piont_code,point_alias,ber_group
     </sql>
+    <update id="lockMapBerth">
+        update base_map_berth
+        <set>
+            in_lock = 1,
+            <if test="lockSource != null and lockSource != ''">
+                lock_source = #{lockSource},
+            </if>
+            <if test="podCode != null and podCode != ''">
+                pod_code = #{podCode},
+            </if>
+        </set>
+        where map_code = #{mapCode} and ber_code = #{berCode}
+    </update>
+    <update id="unlockMapBerth">
+        update base_map_berth
+        set in_lock = 0,pod_code = '',lock_source = ''
+        where map_code = #{mapCode} and ber_code = #{berCode}
+    </update>
     <select id="selectPage" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -55,18 +73,35 @@
         <include refid="Base_Column_List"/>
         from base_map_berth where ber_code = #{bercode,jdbcType=VARCHAR}
     </select>
-    <select id="selectEmptyPointOfInspectionArea" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
+    <select id="selectEmptyStorageOfInspectionArea" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from base_map_berth
         where 1=1
-        and delete_flag = '0'
-        and biz_type = 'CHECK_TYPE'
-        and berth_type_value = '02'
-        and in_lock = 0
+        and delete_flag = 0
+        and (in_lock = 0 or in_lock is null )
         and (pod_code = '' or pod_code is null)
+        and ber_group != ''
+        and ber_group is not null
+        <if test="bizType != null and bizType != ''">
+            and biz_type = #{bizType}
+        </if>
+        <if test="berthTypeValue != null and berthTypeValue != ''">
+            and berth_type_value = #{berthTypeValue}
+        </if>
         and map_code = #{mapCode}
 
+    </select>
+    <select id="selectEmptyStorage" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_map_berth
+        where 1=1
+        and (in_lock = 0 or in_lock is null )
+        and delete_flag = 0
+        and (pod_code = '' or pod_code is null)
+        and map_code = #{mapCode}
+        and biz_type = #{bizType}
     </select>
 
     <delete id="deleteByMapCode">

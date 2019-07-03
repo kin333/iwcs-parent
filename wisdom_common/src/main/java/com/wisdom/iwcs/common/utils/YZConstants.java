@@ -139,4 +139,7 @@ public class YZConstants {
     public static final Integer DEFALUT_COMPANY_ID = 1;
 
     public static final String DEFAULT_PASSWORD = "123456";
+
+    public static final Integer UNLOCK = 0;
+    public static final Integer LOCK = 1;
 }
