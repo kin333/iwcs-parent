@@ -5,8 +5,11 @@ import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.YZConstants;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
+import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,18 +28,20 @@ public class MapResouceService implements IMapResouceService {
 
     /**
      *
-     * @param baseMapBerthDTO
+     * @param lockMapBerthCondition
      * @return
      */
     @Override
-    public Result caculateInspectionAreaEmptyPoint(BaseMapBerthDTO baseMapBerthDTO) {
-        if(Strings.isNullOrEmpty(baseMapBerthDTO.getMapCode())) {
+    public Result caculateInspectionAreaEmptyPoint(LockMapBerthCondition lockMapBerthCondition) {
+        if(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
             return new Result(400,"缺少地图编码");
         }
         //获取检验点空货架
-        baseMapBerthDTO.setBizType("");
-        baseMapBerthDTO.setBerthTypeValue("");
-        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(baseMapBerthDTO);
+        lockMapBerthCondition.setBizType("");
+        lockMapBerthCondition.setBerthTypeValue("");
+        lockMapBerthCondition.setBizSecondAreaCode("");
+        lockMapBerthCondition.setOperateAreaCode("");
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
         if(baseMapBerthList.size() <= 0){
             return new Result(400,"检验点暂无空位置");
         }
@@ -96,42 +101,44 @@ public class MapResouceService implements IMapResouceService {
 
     /**
      * 锁住选中的点位
-     * @param baseMapBerthDTO
+     * @param lockStorageDto
      * @return
      */
     @Override
-    public Result lockMapBerth(BaseMapBerthDTO baseMapBerthDTO) {
-        Result validateResult = validateParams(baseMapBerthDTO);
+    public Result lockMapBerth(LockStorageDto lockStorageDto) {
+        Result validateResult = validateLockParams(lockStorageDto);
         if (validateResult.getReturnCode() != 200){
             return validateResult;
         }
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(baseMapBerthDTO);
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(lockStorageDto);
         //锁住选中的点位
-        baseMapBerthDTO.setVersion(baseMapBerth.getVersion());
-        int count = baseMapBerthMapper.lockMapBerth(baseMapBerthDTO);
+        lockStorageDto.setVersion(baseMapBerth.getVersion());
+        int count = baseMapBerthMapper.lockMapBerth(lockStorageDto);
         if(count < 1) {
             return new Result(400,"该储位在进行其他操作中，请稍后执行");
         }
         return new Result();
     }
 
+
+
     /**
      * 解锁选中的点位
-     * @param baseMapBerthDTO
+     * @param lockStorageDto
      * @return
      */
     @Override
-    public Result unlockMapBerth(BaseMapBerthDTO baseMapBerthDTO) {
+    public Result unlockMapBerth(LockStorageDto lockStorageDto) {
 
-        Result validateResult = validateParams(baseMapBerthDTO);
+        Result validateResult = validateLockParams(lockStorageDto);
         if (validateResult.getReturnCode() != 200){
             return validateResult;
         }
         //乐观锁版本检测
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(baseMapBerthDTO);
-        baseMapBerthDTO.setVersion(baseMapBerth.getVersion());
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(lockStorageDto);
+        lockStorageDto.setVersion(baseMapBerth.getVersion());
         //解锁选中的点位
-        int count = baseMapBerthMapper.unlockMapBerth(baseMapBerthDTO);
+        int count = baseMapBerthMapper.unlockMapBerth(lockStorageDto);
         if(count < 1) {
             return new Result(400,"该储位在进行其他操作中，请稍后执行");
         }
@@ -144,41 +151,42 @@ public class MapResouceService implements IMapResouceService {
      * @return
      */
     @Override
-    public Result lockEmptyStorageByBizTypeList(List<BaseMapBerthDTO> baseMapBerthList) {
-        List<BaseMapBerth> lockStorageList = new ArrayList<>();
-        for (BaseMapBerthDTO baseMapBerthDTO:baseMapBerthList) {
+    public Result lockEmptyStorageByBizTypeList(List<LockMapBerthCondition> baseMapBerthList) {
 
+        LockMapBerthCondition selectLockMapBerthCondition = new LockMapBerthCondition();
+        BaseMapBerth selectBaseMapBerth = new BaseMapBerth();
+
+        for (LockMapBerthCondition lockMapBerthCondition:baseMapBerthList) {
             //校验参数是否缺失
-            if(Strings.isNullOrEmpty(baseMapBerthDTO.getMapCode())) {
+            if(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
                 return new Result(400,"缺少地图编码");
             }
-            if(Strings.isNullOrEmpty(baseMapBerthDTO.getBizType())) {
-                return new Result(400,"缺少区域类型");
+            if(Strings.isNullOrEmpty(lockMapBerthCondition.getBerthTypeValue())) {
+                return new Result(400,"缺少berthTypeValue");
             }
-            if(Strings.isNullOrEmpty(baseMapBerthDTO.getLockSource())) {
+            if(Strings.isNullOrEmpty(lockMapBerthCondition.getLockSource())) {
                 return new Result(400,"缺少锁定源");
             }
 
-            //根据区域筛选出来空储物列表
-            List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(baseMapBerthDTO);
-            if(selectBaseMapBerths.size() == 0) {
-                return new Result(400,baseMapBerthDTO.getBizType()+"无空储位");
+            //根据传入的条件找到符合储位
+            List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            if(selectBaseMapBerths.size() >= 0) {
+                selectLockMapBerthCondition = lockMapBerthCondition;
+                selectBaseMapBerth = selectBaseMapBerths.get(0);
+                break;
             }
-            BaseMapBerth selectBaseMapBerth = selectBaseMapBerths.get(0);
-
-            //锁住选中的储位
-            baseMapBerthDTO.setBerCode(selectBaseMapBerth.getBerCode());
-            Result lockResult = lockMapBerth(baseMapBerthDTO);
-            if(lockResult.getReturnCode() != 200) {
-                return lockResult;
-            }
-
-            //加入返回列表中
-            selectBaseMapBerth.setPodCode(baseMapBerthDTO.getPodCode());
-            selectBaseMapBerth.setLockSource(baseMapBerthDTO.getLockSource());
-            lockStorageList.add(selectBaseMapBerth);
         }
-        return new Result(lockStorageList);
+        //锁住选中的储位
+        LockStorageDto lockStorageDto = new LockStorageDto();
+        lockStorageDto.setMapCode(selectBaseMapBerth.getMapCode());
+        lockStorageDto.setBerCode(selectBaseMapBerth.getBerCode());
+        lockStorageDto.setPodCode(selectLockMapBerthCondition.getPodCode());
+        lockStorageDto.setLockSource(selectLockMapBerthCondition.getLockSource());
+        Result lockResult = lockMapBerth(lockStorageDto);
+        if(lockResult.getReturnCode() != 200) {
+            return lockResult;
+        }
+        return new Result(selectBaseMapBerth);
     }
 
     /**
@@ -187,19 +195,31 @@ public class MapResouceService implements IMapResouceService {
      * @return
      */
     public Result validateParams(BaseMapBerthDTO baseMapBerth) {
-        if(Strings.isNullOrEmpty(baseMapBerth.getMapCode())) {
+        return getResult(baseMapBerth.getMapCode(), baseMapBerth.getBerCode(), baseMapBerth.getLockSource());
+    }
+
+    /**
+     * 锁定储位的参数校验
+     * @param lockStorageDto
+     * @return
+     */
+    private Result validateLockParams(LockStorageDto lockStorageDto) {
+        return getResult(lockStorageDto.getMapCode(), lockStorageDto.getBerCode(), lockStorageDto.getLockSource());
+    }
+
+
+    private Result getResult(String mapCode, String berCode, String lockSource) {
+        if(Strings.isNullOrEmpty(mapCode)) {
             return new Result(400,"缺少地图编码");
         }
-        if(Strings.isNullOrEmpty(baseMapBerth.getBerCode())) {
+        if(Strings.isNullOrEmpty(berCode)) {
             return new Result(400,"缺少点位代码");
         }
-        if(Strings.isNullOrEmpty(baseMapBerth.getLockSource())) {
+        if(Strings.isNullOrEmpty(lockSource)) {
             return new Result(400,"缺少锁定源");
         }
         return new Result();
     }
-
-
 
 
 }

@@ -4,6 +4,8 @@ import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
+import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,18 +41,18 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      */
     BaseMapBerth selectOneByBercode(String bercode);
 
-    List<BaseMapBerth> selectEmptyStorageOfInspectionArea(BaseMapBerthDTO  baseMapBerthDTO);
+    List<BaseMapBerth> selectEmptyStorageOfInspectionArea(LockMapBerthCondition  lockMapBerthCondition);
 
-    int lockMapBerth(BaseMapBerthDTO baseMapBerth);
+    int lockMapBerth(LockStorageDto lockStorageDto);
 
-    int unlockMapBerth(BaseMapBerthDTO baseMapBerth);
+    int unlockMapBerth(LockStorageDto lockStorageDto);
 
-    List<BaseMapBerth> selectEmptyStorage(BaseMapBerthDTO baseMapBerth);
+    List<BaseMapBerth> selectEmptyStorage(LockMapBerthCondition lockMapBerthCondition);
 
 
     List<BaseMapBerth> selectAlltorageByMapCode(String mapCode);
 
-    BaseMapBerth selectBerData(BaseMapBerthDTO baseMapBerthDTO);
+    BaseMapBerth selectBerData(LockStorageDto lockStorageDto);
 
 
 }

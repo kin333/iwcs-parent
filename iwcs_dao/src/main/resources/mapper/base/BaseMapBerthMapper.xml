@@ -91,14 +91,19 @@
         and (pod_code = '' or pod_code is null)
         and ber_group != ''
         and ber_group is not null
+        and map_code = #{mapCode}
         <if test="bizType != null and bizType != ''">
             and biz_type = #{bizType}
         </if>
         <if test="berthTypeValue != null and berthTypeValue != ''">
             and berth_type_value = #{berthTypeValue}
         </if>
-        and map_code = #{mapCode}
-
+        <if test="bizSecondAreaCode != null and bizSecondAreaCode != ''">
+            and biz_second_area_code = #{bizSecondAreaCode}
+        </if>
+        <if test="operateAreaCode != null and operateAreaCode != ''">
+            and operate_area_code = #{operateAreaCode}
+        </if>
     </select>
     <select id="selectEmptyStorage" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
         select
@@ -109,7 +114,18 @@
         and delete_flag = 0
         and (pod_code = '' or pod_code is null)
         and map_code = #{mapCode}
-        and biz_type = #{bizType}
+        <if test="bizType != null and bizType != ''">
+            and biz_type = #{bizType}
+        </if>
+        <if test="bizSecondAreaCode != null and bizSecondAreaCode != ''">
+            and biz_second_area_code = #{bizSecondAreaCode}
+        </if>
+        <if test="operateAreaCode != null and operateAreaCode != ''">
+            and operate_area_code = #{operateAreaCode}
+        </if>
+        <if test="berthTypeValue != null and berthTypeValue != ''">
+            and berth_type_value = #{berthTypeValue}
+        </if>
     </select>
     <select id="selectBerData" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
         select

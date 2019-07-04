@@ -6,6 +6,7 @@ import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.BaseWhAreaDTO;
+import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.mapstruct.base.BaseWhAreaMapStruct;
 import com.wisdom.iwcs.service.base.IBaseWhAreaService;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
@@ -119,7 +120,7 @@ public class BaseWhAreaController {
     }
 
     @PostMapping(value = "/test")
-    public Result lockEmptyStorageByBizTypeList(@RequestBody List<BaseMapBerthDTO> baseMapBerthDTOList) {
+    public Result lockEmptyStorageByBizTypeList(@RequestBody List<LockMapBerthCondition> baseMapBerthDTOList) {
         return iMapResouceService.lockEmptyStorageByBizTypeList(baseMapBerthDTOList);
     }
 
