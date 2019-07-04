@@ -18,19 +18,14 @@ public class PlAutoWbCallPodRequest {
     private String wbCode;
 
     /**
-     * 货架号
-     */
-    private String podCode;
-
-    /**
-     * 起始点
-     */
-    private String startBercode;
-
-    /**
      * 任务优先级
      */
     private Integer priority;
+
+    /**
+     * 库区
+     */
+    private String areaCode;
 
     public String getTaskTypeCode() {
         return taskTypeCode;
@@ -48,27 +43,19 @@ public class PlAutoWbCallPodRequest {
         this.wbCode = wbCode;
     }
 
-    public String getPodCode() {
-        return podCode;
-    }
-
-    public void setPodCode(String podCode) {
-        this.podCode = podCode;
-    }
-
-    public String getStartBercode() {
-        return startBercode;
-    }
-
-    public void setStartBercode(String startBercode) {
-        this.startBercode = startBercode;
-    }
-
     public Integer getPriority() {
         return priority;
     }
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 }

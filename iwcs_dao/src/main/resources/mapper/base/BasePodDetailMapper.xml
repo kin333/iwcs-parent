@@ -83,6 +83,12 @@
         select
         <include refid="Base_Column_List"/>
         from base_pod_detail
+        where pod_code = #{podCode} and valid_flag = 0 and delete_flag = 0
+    </select>
+    <select id="selectPodByPodCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_detail
         where pod_code = #{podCode} and valid_flag = #{validFlag} and delete_flag = #{deleteFlag}
     </select>
     <update id="updatePodTaskLockByPodCodesAndLockStat">

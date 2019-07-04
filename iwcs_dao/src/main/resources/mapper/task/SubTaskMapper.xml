@@ -40,7 +40,8 @@
     <result column="priority" jdbcType="INTEGER" property="priority" />
     <result column="task_status" jdbcType="VARCHAR" property="taskStatus"/>
     <result column="end_remark" jdbcType="VARCHAR" property="endRemark"/>
-      <result column="worker_task_code" jdbcType="VARCHAR" property="workerTaskCode"/>
+    <result column="worker_task_code" jdbcType="VARCHAR" property="workerTaskCode"/>
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
 
   </resultMap>
   <sql id="Base_Column_List">
@@ -51,7 +52,7 @@
     group_flag, task_group_code, create_date, task_msg, send_status, remark, need_confirm, 
     need_inform, need_trigger, trigger_type, condition_handler, third_invoke_type, third_type, 
     app_code, third_url, third_start_method, third_end_method, point_access, sequence,
-    cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec, priority,task_status,end_remark,worker_task_code
+    cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec, priority,task_status,end_remark,worker_task_code,area_code
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task

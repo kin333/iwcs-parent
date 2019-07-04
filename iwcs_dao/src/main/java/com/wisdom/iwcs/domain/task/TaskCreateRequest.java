@@ -18,9 +18,14 @@ public class TaskCreateRequest {
     private String wbCode;
 
     /**
-     * 区域编码
+     * 作业区域(如老化区、检验区)
      */
-    private String areaCode;
+    private String operateAreaCode;
+
+    /**
+     * 业务次级区域(如老化区下的自动区、手动区)
+     */
+    private String  bizSecondAreaCode;
 
     /**
      * 自动区/手动区
@@ -63,12 +68,20 @@ public class TaskCreateRequest {
         this.wbCode = wbCode;
     }
 
-    public String getAreaCode() {
-        return areaCode;
+    public String getOperateAreaCode() {
+        return operateAreaCode;
     }
 
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
+    public void setOperateAreaCode(String operateAreaCode) {
+        this.operateAreaCode = operateAreaCode;
+    }
+
+    public String getBizSecondAreaCode() {
+        return bizSecondAreaCode;
+    }
+
+    public void setBizSecondAreaCode(String bizSecondAreaCode) {
+        this.bizSecondAreaCode = bizSecondAreaCode;
     }
 
     public String getWorkAreaCode() {

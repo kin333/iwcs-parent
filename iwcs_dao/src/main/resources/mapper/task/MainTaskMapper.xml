@@ -18,13 +18,14 @@
     <result column="priority" jdbcType="INTEGER" property="priority" />
     <result column="task_group_code" jdbcType="VARCHAR" property="taskGroupCode" />
     <result column="exector_num" jdbcType="VARCHAR" property="exectorNum" />
+      <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
     -->
     id, main_task_num, main_task_type_code, task_status, date_chg, main_task_seq, group_id, 
-    sequence, create_date, remark, priority, task_group_code, exector_num
+    sequence, create_date, remark, priority, task_group_code, exector_num, area_code
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_main_task

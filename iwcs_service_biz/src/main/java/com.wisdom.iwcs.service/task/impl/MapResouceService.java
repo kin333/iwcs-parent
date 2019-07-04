@@ -3,8 +3,8 @@ package com.wisdom.iwcs.service.task.impl;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.common.utils.YZConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.*;
@@ -12,15 +12,12 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,22 +35,20 @@ public class MapResouceService implements IMapResouceService {
      * @return
      */
     @Override
-    public Result caculateInspectionAreaEmptyPoint(LockMapBerthCondition lockMapBerthCondition) {
-        if(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
-            return new Result(400,"缺少地图编码");
-        }
+    public BaseMapBerth caculateInspectionAreaEmptyPoint(LockMapBerthCondition lockMapBerthCondition) {
+
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode()), "缺少地图编码");
         //获取检验点空货架
         lockMapBerthCondition.setBizType("");
         lockMapBerthCondition.setBerthTypeValue("");
         lockMapBerthCondition.setBizSecondAreaCode("");
         lockMapBerthCondition.setOperateAreaCode("");
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
-        if(baseMapBerthList.size() <= 0){
-            return new Result(400,"检验点暂无空位置");
-        }
+        Preconditions.checkBusinessError(baseMapBerthList.size() <= 0, "检验点暂无空位置");
+
         //根据获取空位置计算最优位置
         BaseMapBerth emptyPoit=calculatingOptimalLocation(baseMapBerthList);
-        return new Result(emptyPoit);
+        return emptyPoit;
     }
 
     /**
