@@ -78,6 +78,12 @@ public class MainTask {
     private String exectorNum;
 
     /**
+     * 库区编号
+     */
+    @Column(name = "area_code")
+    private String areaCode;
+
+    /**
      * @return id
      */
     public Long getId() {
@@ -305,5 +311,13 @@ public class MainTask {
      */
     public void setExectorNum(String exectorNum) {
         this.exectorNum = exectorNum == null ? null : exectorNum.trim();
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 }

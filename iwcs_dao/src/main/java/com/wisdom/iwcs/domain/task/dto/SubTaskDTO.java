@@ -256,6 +256,12 @@ public class SubTaskDTO {
     private String workerTaskCode;
 
     /**
+     * 库区编号
+     */
+    @Column(name = "area_code")
+    private String areaCode;
+
+    /**
      * 获取id
      *
      * @return id - id
@@ -943,5 +949,13 @@ public class SubTaskDTO {
 
     public void setWorkerTaskCode(String workerTaskCode) {
         this.workerTaskCode = workerTaskCode;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 }
