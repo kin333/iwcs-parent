@@ -1,16 +1,20 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.google.common.base.Strings;
+import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.YZConstants;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
-import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
-import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.dto.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +29,8 @@ public class MapResouceService implements IMapResouceService {
 
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    BasePodDetailMapper basePodDetailMapper;
 
     /**
      *
@@ -146,6 +152,67 @@ public class MapResouceService implements IMapResouceService {
     }
 
     /**
+     * 锁定选中货架
+     * @param lockSource 锁定源
+     */
+    public void lockPod(Integer id, String lockSource) {
+        if (id == null || id <= 0) {
+            throw new BusinessException("id不能为空且必须为正数");
+        }
+        if (StringUtils.isEmpty(lockSource)) {
+            throw new BusinessException("锁定源不能为空");
+        }
+        basePodDetailMapper.lockPod(id, lockSource);
+    }
+
+    /**
+     * 获取区域的有货或无货的货架并锁定
+     * @param lockPodConditions 获取条件
+     * @return
+     */
+    public Result lockPodByCondition(List<LockPodCondition> lockPodConditions) {
+        BasePodDetail needLockPod = null;
+        LockPodCondition tmpLockPodCondition = null;
+        for (LockPodCondition lockPodCondition : lockPodConditions) {
+            //校验参数是否缺失
+            Result result = this.checkBaseLockCondition(lockPodCondition);
+            if (result.getReturnCode() != HttpStatus.OK.value()) {
+                return result;
+            }
+            if(Strings.isNullOrEmpty(lockPodCondition.getInStock())) {
+                return new Result(400,"缺少货架是否有货");
+            }
+            //查找符合条件的货架
+            List<BasePodDetail> basePodDetails = basePodDetailMapper.selectByLockPodConfigtion(lockPodCondition);
+            if (basePodDetails != null && basePodDetails.size() > 0) {
+                //当前无选择策略,当查到多个符合条件的货架后,直接获取第一个
+                needLockPod = basePodDetails.get(0);
+                tmpLockPodCondition = lockPodCondition;
+                break;
+            }
+        }
+        if (needLockPod == null) {
+            throw new BusinessException("找不到符合要求的货架");
+        }
+        //锁定货架操作
+        lockPod(needLockPod.getId(), tmpLockPodCondition.getLockSource());
+        //返回被锁定的货架信息
+        needLockPod.setLockSource(tmpLockPodCondition.getLockSource());
+        needLockPod.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.LOCK.getCode()));
+        return new Result(needLockPod);
+    }
+
+    public Result checkBaseLockCondition(BaseLockCondition baseLockCondition) {
+        if(Strings.isNullOrEmpty(baseLockCondition.getMapCode())) {
+            return new Result(400,"缺少地图编码");
+        }
+        if(Strings.isNullOrEmpty(baseLockCondition.getLockSource())) {
+            return new Result(400,"缺少锁定源");
+        }
+        return new Result();
+    }
+
+    /**
      * 获取区域的空闲储位并锁定
      * @param baseMapBerthList
      * @return
@@ -158,14 +225,12 @@ public class MapResouceService implements IMapResouceService {
 
         for (LockMapBerthCondition lockMapBerthCondition:baseMapBerthList) {
             //校验参数是否缺失
-            if(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
-                return new Result(400,"缺少地图编码");
+            Result result = this.checkBaseLockCondition(lockMapBerthCondition);
+            if (result.getReturnCode() != HttpStatus.OK.value()) {
+                return result;
             }
             if(Strings.isNullOrEmpty(lockMapBerthCondition.getBerthTypeValue())) {
                 return new Result(400,"缺少berthTypeValue");
-            }
-            if(Strings.isNullOrEmpty(lockMapBerthCondition.getLockSource())) {
-                return new Result(400,"缺少锁定源");
             }
 
             //根据传入的条件找到符合储位

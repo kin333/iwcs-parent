@@ -40,6 +40,15 @@
         pod_prop3, pod_prop4, pod_prop5, valid_flag, delete_flag, created_by, created_time,
         last_modified_by, last_modified_time,in_lock,lock_source,in_stock
     </sql>
+    <sql id="Table_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        bpd.id, bpd.pod_code, bpd.ber_code, bpd.last_bercode_update_time, bpd.area_code, bpd.map_code, bpd.stg_type_code,
+        bpd.stg_code, bpd.coox, bpd.cooy, bpd.lock_stat, bpd.pod_prop1, bpd.pod_prop2,
+        bpd.pod_prop3, bpd.pod_prop4, bpd.pod_prop5, bpd.valid_flag, bpd.delete_flag, bpd.created_by, bpd.created_time,
+        bpd.last_modified_by, bpd.last_modified_time, bpd.in_lock, bpd.lock_source, bpd.in_stock
+    </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -220,4 +229,36 @@
         </if>
 
     </select>
+
+    <select id="selectByLockPodConfigtion" resultMap="BaseResultMap">
+        select <include refid="Table_Column_List"/> from base_pod_detail bpd
+        LEFT JOIN base_map_berth bmb ON bpd.ber_code = bmb.ber_code
+        where bpd.delete_flag = 0
+        and bpd.in_lock != 1
+        <if test="mapCode != null and mapCode != ''">
+            and bpd.map_code = #{mapCode}
+        </if>
+        <if test="bizType != null and bizType != ''">
+            and bmb.biz_type = #{bizType}
+        </if>
+        <if test="bizSecondAreaCode != null and bizSecondAreaCode != ''">
+            and bmb.biz_second_area_code = #{bizSecondAreaCode}
+        </if>
+        <if test="operateAreaCode != null and operateAreaCode != ''">
+            and bmb.operate_area_code = #{operateAreaCode}
+        </if>
+        <if test="inStock != null and inStock != ''">
+            and bpd.in_stock = #{inStock}
+        </if>
+    </select>
+
+    <update id="lockPod">
+        update base_pod_detail
+        <set>
+            in_lock = 1,
+            lock_source = #{lockSource}
+        </set>
+        where id = #{id}
+    </update>
+
 </mapper>
