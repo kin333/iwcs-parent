@@ -6,7 +6,7 @@ import javax.persistence.Column;
  * 锁定货架条件类
  * @author han
  */
-public class LockPodCondition extends BaseLockCondition {
+public class LockPodCondition extends BaseLockCondition implements Cloneable{
 
     /**
      * 货架是否有货

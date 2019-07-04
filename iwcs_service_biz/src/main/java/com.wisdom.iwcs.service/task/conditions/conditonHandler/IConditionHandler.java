@@ -7,7 +7,7 @@ import com.wisdom.iwcs.domain.task.SubTaskCondition;
  */
 public interface IConditionHandler {
 
-    public abstract boolean handlleCondition(SubTaskCondition subTaskCondition);
+    public abstract boolean handleCondition(SubTaskCondition subTaskCondition);
 
     public abstract boolean rollbackCondition(SubTaskCondition subTaskCondition);
 }

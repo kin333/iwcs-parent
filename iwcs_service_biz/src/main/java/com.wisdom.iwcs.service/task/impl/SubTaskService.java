@@ -252,7 +252,7 @@ public class SubTaskService {
         preTaskRelConditionsList.stream().forEach(c -> {
             String conditonHandleName = c.getConditonHandler();
             IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
-            boolean met = conditonHandler.handlleCondition(c);
+            boolean met = conditonHandler.handleCondition(c);
             if (!met) {
                 //抛出异常
                 throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
@@ -274,7 +274,7 @@ public class SubTaskService {
             if (ConditionMetStatus.IN_CONFORMITY.getCode().equals(c.getConditionMetStatus())) {
                 String conditonHandleName = c.getConditonHandler();
                 IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
-                boolean met = conditonHandler.handlleCondition(c);
+                boolean met = conditonHandler.handleCondition(c);
                 if (!met) {
                     //抛出异常
                     throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);

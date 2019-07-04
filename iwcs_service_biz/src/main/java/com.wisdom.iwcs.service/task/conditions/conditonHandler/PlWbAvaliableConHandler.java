@@ -26,7 +26,7 @@ public class PlWbAvaliableConHandler implements IConditionHandler {
 
 
     @Override
-    public boolean handlleCondition(SubTaskCondition subTaskCondition) {
+    public boolean handleCondition(SubTaskCondition subTaskCondition) {
         Long subTaskId = subTaskCondition.getId();
         SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
         boolean lockSuc = baseMapBerthService.lockMapBerth(subTask.getEndBercode(), null, subTask.getSubTaskNum());

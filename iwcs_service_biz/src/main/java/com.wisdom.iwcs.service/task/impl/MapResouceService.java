@@ -150,15 +150,32 @@ public class MapResouceService implements IMapResouceService {
      * 锁定选中货架
      * @param lockSource 锁定源
      */
-    public void lockPod(Integer id, String lockSource) {
+    public boolean lockPod(Integer id, String lockSource) {
         if (id == null || id <= 0) {
             throw new BusinessException("id不能为空且必须为正数");
         }
         if (StringUtils.isEmpty(lockSource)) {
             throw new BusinessException("锁定源不能为空");
         }
-        basePodDetailMapper.lockPod(id, lockSource);
+        int changeRow = basePodDetailMapper.lockPod(id, lockSource);
+        if (changeRow > 0) {
+            return true;
+        }
+        return false;
     }
+
+    /**
+     * 根据子任务编号解锁货架
+     * @param subTaskName
+     */
+    public boolean unlockPod(String subTaskName) {
+        int changeRow = basePodDetailMapper.unlockPod(subTaskName);
+        if (changeRow > 0) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * 获取区域的有货或无货的货架并锁定

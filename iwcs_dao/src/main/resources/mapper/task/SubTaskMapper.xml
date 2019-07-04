@@ -92,5 +92,12 @@
     </set>
     where sub_task_num = #{subTaskNum}
   </update>
+  <update id="updatePodCodeBySubTaskCode">
+    update ts_sub_task
+    <set>
+          pod_code = #{podCode}
+    </set>
+    where sub_task_num = #{subTaskNum}
+  </update>
 
 </mapper>

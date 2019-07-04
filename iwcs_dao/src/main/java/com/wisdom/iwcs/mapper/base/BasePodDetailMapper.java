@@ -122,4 +122,10 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      * @return
      */
     BasePodDetail selectPodByPodCode(String podCode);
+    /**
+     * 根据子任务编号解锁货架
+     * @param subTaskName
+     * @return
+     */
+    int unlockPod(String subTaskName);
 }

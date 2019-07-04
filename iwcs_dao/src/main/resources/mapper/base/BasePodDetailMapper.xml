@@ -266,5 +266,13 @@
         </set>
         where id = #{id}
     </update>
+    <update id="unlockPod">
+        update base_pod_detail
+        <set>
+            in_lock = 0,
+            lock_source = ''
+        </set>
+        where lock_source = #{subTaskName}
+    </update>
 
 </mapper>
