@@ -72,4 +72,10 @@
             <column name="area_code" remarks="库区编号" type="VARCHAR(32)"/>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="201907042048" author="han">
+        <addColumn tableName="ts_sub_task">
+            <column name="sub_task_biz_prop" remarks="子任务单业务属性" type="VARCHAR(20)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

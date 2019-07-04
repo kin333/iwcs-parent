@@ -2,6 +2,7 @@ package com.wisdom.iwcs.mapper.task;
 
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.SubTask;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -44,4 +45,12 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return
      */
     int updatePodCodeBySubTaskCode(@Param("subTaskNum") String subTaskNum,@Param("podCode") String podCode);
+
+    /**
+     * 根据子任务编号更新终点地码和位置
+     * @param subTaskNum
+     * @param baseMapBerth
+     * @return
+     */
+    int updateEndCodeBySubTaskCode(@Param("subTaskNum") String subTaskNum,@Param("baseMapBerth") BaseMapBerth baseMapBerth);
 }

@@ -263,6 +263,20 @@ public class SubTask {
     private String areaCode;
 
     /**
+     * 子任务单业务属性
+     */
+    @Column(name = "sub_task_biz_prop")
+    private String subTaskBizProp;
+
+    public String getSubTaskBizProp() {
+        return subTaskBizProp;
+    }
+
+    public void setSubTaskBizProp(String subTaskBizProp) {
+        this.subTaskBizProp = subTaskBizProp;
+    }
+
+    /**
      * 获取id
      *
      * @return id - id

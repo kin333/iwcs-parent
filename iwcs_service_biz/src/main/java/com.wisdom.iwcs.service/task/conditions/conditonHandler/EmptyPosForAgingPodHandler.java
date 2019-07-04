@@ -12,14 +12,14 @@ import com.wisdom.iwcs.service.task.impl.MapResouceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * 缓存区补充空货架前置条件--锁定缓存区的一个空储位
- * @author  han
+ * 产线工作点去老化区前置条件---目标区域有空储位并锁定一个(自动区模式优先放置自动取,手动模式优先放置手动区)
+ * @author han
  */
-public class CacheEmptyPodLockHandler implements IConditionHandler{
-
+public class EmptyPosForAgingPodHandler implements IConditionHandler{
     @Autowired
     MapResouceService mapResouceService;
     @Autowired
@@ -30,12 +30,30 @@ public class CacheEmptyPodLockHandler implements IConditionHandler{
         Long subTaskId = subTaskCondition.getId();
         SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
 
-        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
-        lockMapBerthCondition.setMapCode(subTask.getMapCode());
-        lockMapBerthCondition.setOperateAreaCode(InspurBizConstants.BizTypeConstants.LINECACHEAREA);
-        lockMapBerthCondition.setLockSource(subTask.getSubTaskNum());
+        List<LockMapBerthCondition> conditionList = new ArrayList<>();
+        //自动区条件
+        LockMapBerthCondition lockConditionAuto = new LockMapBerthCondition();
+        lockConditionAuto.setMapCode(subTask.getMapCode());
+        lockConditionAuto.setOperateAreaCode(InspurBizConstants.BizTypeConstants.AGINGAREAAUTO);
+        lockConditionAuto.setLockSource(subTask.getSubTaskNum());
+        //手动区条件
+        LockMapBerthCondition lockConditionManual = new LockMapBerthCondition();
+        lockConditionManual.setMapCode(subTask.getMapCode());
+        lockConditionManual.setOperateAreaCode(InspurBizConstants.BizTypeConstants.AGINGAREAMANUAL);
+        lockConditionManual.setLockSource(subTask.getSubTaskNum());
+
+        if (InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST.equals(subTask.getSubTaskBizProp())) {
+            //自动区优先
+            conditionList.add(lockConditionAuto);
+            conditionList.add(lockConditionManual);
+        } else {
+            //手动区优先
+            conditionList.add(lockConditionManual);
+            conditionList.add(lockConditionAuto);
+        }
+
         //锁定该任务点
-        Result result = mapResouceService.lockEmptyStorageByBizTypeList(Arrays.asList(lockMapBerthCondition));
+        Result result = mapResouceService.lockEmptyStorageByBizTypeList(conditionList);
         if (result.getReturnCode() != HttpStatus.OK.value()) {
             return false;
         }

@@ -81,4 +81,20 @@ public class InspurBizConstants {
          */
         public final static String LINEAREAMANUALPOINT = "lineAreaManualPoint";
     }
+
+    /**
+     * 老化区优先策略
+     */
+    public static final class AgingAreaPriorityProp {
+        /**
+         * 自动区优先
+         */
+        public final static String AUTO_FIRST = "autoAgingPosFirst ";
+        /**
+         * 自动区优先
+         */
+        public final static String MANUAL_FIRST = "manualAgingPosFirst ";
+
+
+    }
 }
