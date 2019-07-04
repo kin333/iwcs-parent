@@ -250,6 +250,12 @@ public class SubTaskDTO {
     private String endRemark;
 
     /**
+     * 执行任务id
+     */
+    @Column(name = "worker_task_code")
+    private String workerTaskCode;
+
+    /**
      * 获取id
      *
      * @return id - id
@@ -929,5 +935,13 @@ public class SubTaskDTO {
 
     public void setEndRemark(String endRemark) {
         this.endRemark = endRemark;
+    }
+
+    public String getWorkerTaskCode() {
+        return workerTaskCode;
+    }
+
+    public void setWorkerTaskCode(String workerTaskCode) {
+        this.workerTaskCode = workerTaskCode;
     }
 }

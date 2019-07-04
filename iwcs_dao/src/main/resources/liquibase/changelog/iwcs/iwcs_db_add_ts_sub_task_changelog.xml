@@ -61,4 +61,10 @@
 
         </addColumn>
     </changeSet>
+
+    <changeSet author="ted" id="1561102935905-2">
+        <addColumn tableName="ts_sub_task">
+            <column name="worker_task_code" remarks="执行任务id" type="VARCHAR(32)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
