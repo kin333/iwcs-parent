@@ -37,5 +37,11 @@ public interface IMainTaskService {
      */
     boolean subtaskPreConditionMetCheck(SubTask firstSubTask);
 
-
+    /**
+     * 尝试结束主任务：检查主任务是否符合结束状态，符合则更新任务单状态
+     *
+     * @param mainTaskNum
+     * @return
+     */
+    boolean endMainTask(String mainTaskNum);
 }

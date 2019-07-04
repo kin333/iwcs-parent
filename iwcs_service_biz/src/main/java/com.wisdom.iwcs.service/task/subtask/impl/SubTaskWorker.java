@@ -11,7 +11,6 @@ import com.wisdom.iwcs.domain.task.SubTaskTyp;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
-import com.wisdom.iwcs.service.base.baseImpl.CommonService;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.conditions.ConditionBase;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
@@ -20,7 +19,6 @@ import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.ActuatorMetricWriter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -114,8 +112,11 @@ public class SubTaskWorker extends AbstractTaskWorker {
         subTaskMapper.updateSendStatus(subTaskNum, SendStatus.SEND.getCode());
     }
 
+    public SubTask getSubTask() {
+        return subTask;
+    }
 
-//    @Override
+    //    @Override
 //    public void onMessage(WcsObservable o, Object arg) {
 //
 //    }

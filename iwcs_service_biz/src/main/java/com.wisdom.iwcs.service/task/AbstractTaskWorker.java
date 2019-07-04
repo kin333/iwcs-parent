@@ -1,7 +1,6 @@
 package com.wisdom.iwcs.service.task;
 
 import com.rabbitmq.client.Channel;
-import com.wisdom.iwcs.service.task.subtask.intf.WcsObservable;
 import com.wisdom.iwcs.service.task.event.WcsConsumer;
 import lombok.Data;
 
@@ -37,6 +36,7 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
          * Some post works after the task finished.
          */
         postConditions();
+
 
     }
 

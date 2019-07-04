@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.MainTask;
@@ -250,6 +251,31 @@ public class MainTaskService implements IMainTaskService {
 
     @Override
     public boolean subtaskPreConditionMetCheck(SubTask firstSubTask) {
+        return false;
+    }
+
+    @Override
+    public boolean endMainTask(String mainTaskNum) {
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
+        if (mainTask == null) {
+            logger.error("无效的主任务编号：{}", mainTaskNum);
+            return false;
+        } else {
+            String taskStatus = mainTask.getTaskStatus();
+            logger.debug("尝试结束主任务{}，当前主任务执行状态为{}", mainTask.getMainTaskNum(), taskStatus);
+            if ((TaskConstants.mainTaskStatus.MAIN_FINISHED.equals(taskStatus))) {
+                logger.warn("主任务状态异常{}，尝试结束前发现其状态为已结束", mainTask.getMainTaskNum(), taskStatus);
+                return true;
+            }
+            if (TaskConstants.mainTaskStatus.MAIN_ISSUED.equals(taskStatus)) {
+                MainTask mainTaskTmp = new MainTask();
+                mainTaskTmp.setId(mainTask.getId());
+                mainTaskTmp.setTaskStatus(TaskConstants.mainTaskStatus.MAIN_FINISHED);
+                mainTaskMapper.updateByPrimaryKeySelective(mainTaskTmp);
+                return true;
+            }
+
+        }
         return false;
     }
 
