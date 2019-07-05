@@ -285,4 +285,14 @@ public class BaseMapBerthService implements IBaseMapBerthService {
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectAlltorageByMapCode(baseMapBerthDTO.getMapCode());
         return baseMapBerthList;
     }
+
+    /**
+     * 根据berCode修改点位的特定字段
+     * @param baseMapBerthDTO
+     * @return
+     */
+    @Override
+    public int updateByBerCode(BaseMapBerthDTO baseMapBerthDTO) {
+        return baseMapBerthMapper.updateListByBerCode(baseMapBerthDTO);
+    }
 }

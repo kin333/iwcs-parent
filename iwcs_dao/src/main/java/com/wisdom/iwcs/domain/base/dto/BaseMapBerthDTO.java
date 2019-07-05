@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "base_map_berth")
 public class BaseMapBerthDTO {
@@ -132,6 +133,19 @@ public class BaseMapBerthDTO {
 
     @Column(name = "version")
     private Integer version;
+
+    /**
+     * 需要更新的点位列表
+     */
+    private List<String> berCodeList;
+
+    public List<String> getBerCodeList() {
+        return berCodeList;
+    }
+
+    public void setBerCodeList(List<String> berCodeList) {
+        this.berCodeList = berCodeList;
+    }
 
     public String getBerthTypeValue() {
         return berthTypeValue;

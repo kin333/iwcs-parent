@@ -80,4 +80,10 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     int deleteByBerCodeListAndMapCode(@Param("berCodeList") List<String> berCodeList, @Param("mapCode") String mapCode);
 
 
+    /**
+     * 通过berCode更新特定的字段
+     * @param baseMapBerthDTO
+     * @return
+     */
+    int updateListByBerCode(BaseMapBerthDTO baseMapBerthDTO);
 }

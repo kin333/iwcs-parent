@@ -114,4 +114,13 @@ public class BaseMapBerthController {
         List<BaseMapBerth> baseMapBerths = IBaseMapBerthService.selectAlltorageInfo(baseMapBerthDTO);
         return new Result(baseMapBerths);
     }
+
+    @PostMapping("/updateByBerCode")
+    public Result updateByBerCode(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
+        IBaseMapBerthService.updateByBerCode(baseMapBerthDTO);
+
+        return new Result();
+
+    }
+
 }
