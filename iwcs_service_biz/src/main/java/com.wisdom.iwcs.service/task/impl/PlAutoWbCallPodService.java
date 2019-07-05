@@ -7,6 +7,7 @@ import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.task.intf.IPlAutoWbCallPodService;
+import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
     private TaskRelConditionMapper taskRelConditionMapper;
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    private ITaskCreateService iTaskCreateService;
 
     /**
      *  呼叫空货架
@@ -82,6 +85,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTask.setNeedTrigger(taskRel.getNeedTrigger());
             subTask.setNeedConfirm(taskRel.getNeedConfirm());
             subTask.setNeedInform(taskRel.getNeedInform());
+            subTask.setSubTaskSeq(taskRel.getSubTaskSeq());
             //通过地图坐标查询坐标
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plAutoWbCallPodRequest.getTargetPoint());
             subTask.setEnd_x(endBercode.getCoox().doubleValue());
@@ -94,17 +98,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTaskMapper.insertSelective(subTask);
 
             //添加子任务条件
-            //通过主任务编号和子任务编号查询
-            List<TaskRelCondition> taskRelConditionList = taskRelConditionMapper.selectByMainTaskTypeCodeAndSubCode(taskRel.getMainTaskTypeCode(),taskRel.getSubTaskTypeCode());
-            for (TaskRelCondition taskRelCondition: taskRelConditionList){
-                SubTaskCondition subTaskCondition = new SubTaskCondition();
-                subTaskCondition.setCreateDate(new Date());
-                subTaskCondition.setSubTaskNum(subTaskNum);
-                subTaskCondition.setConditonHandler(taskRelCondition.getConditonHandler());
-                subTaskCondition.setSubscribeEvent(taskRelCondition.getSubscribeEvent());
-                subTaskCondition.setConditonTriger(taskRelCondition.getConditonTriger());
-                subTaskConditionMapper.insertSelective(subTaskCondition);
-            }
+            iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
         }
         return new Result();
     }

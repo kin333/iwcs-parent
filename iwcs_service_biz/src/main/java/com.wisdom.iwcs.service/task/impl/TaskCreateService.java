@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -69,6 +70,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @return
      */
     @Override
+    @Transient
     public Result creatTask(TaskCreateRequest taskCreateRequest){
 
         //校验参数
@@ -120,11 +122,14 @@ public class TaskCreateService implements ITaskCreateService {
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getPointAlias());
         Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
 
+        //校验目标点位和用户登录的点位是否在同一楼层
+        //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
+
         PlAutoWbCallPodRequest plAutoWbCallPodRequest = new PlAutoWbCallPodRequest();
         plAutoWbCallPodRequest.setPriority(taskCreateRequest.getPriority());
         plAutoWbCallPodRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         plAutoWbCallPodRequest.setTargetPoint(baseMapBerth.getBerCode());
-        plAutoWbCallPodRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
+        plAutoWbCallPodRequest.setAreaCode(baseMapBerth.getAreaCode());
         iPlAutoWbCallPodService.plAutoWbCallPod(plAutoWbCallPodRequest);
         return new Result();
     }
@@ -140,11 +145,14 @@ public class TaskCreateService implements ITaskCreateService {
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getPointAlias());
         Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
 
+        //校验目标点位和用户登录的点位是否在同一楼层
+        //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
+
         PlBufSupplyRequest plBufSupplyRequest = new PlBufSupplyRequest();
         plBufSupplyRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         plBufSupplyRequest.setPriority(taskCreateRequest.getPriority());
         plBufSupplyRequest.setTargetPoint(baseMapBerth.getBerCode());
-        plBufSupplyRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
+        plBufSupplyRequest.setAreaCode(baseMapBerth.getAreaCode());
         iPlBufSupplyService.plBufSupply(plBufSupplyRequest);
         return new Result();
     }

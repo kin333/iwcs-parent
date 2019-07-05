@@ -76,6 +76,7 @@ public class PlToAgingService implements IPlToAgingService {
             subTaskCreate.setNeedTrigger(taskRel.getNeedTrigger());
             subTaskCreate.setNeedConfirm(taskRel.getNeedConfirm());
             subTaskCreate.setNeedInform(taskRel.getNeedInform());
+            subTaskCreate.setSubTaskSeq(taskRel.getSubTaskSeq());
 
             subTaskCreate.setPodCode(plToAgingRequest.getPodCode());
             subTaskCreate.setWorkerTaskCode(subTaskNum);

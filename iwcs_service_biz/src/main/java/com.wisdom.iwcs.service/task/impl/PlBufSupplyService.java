@@ -79,6 +79,10 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
             subTaskCreate.setThirdEndMethod(taskRel.getThirdEndMethod());
             subTaskCreate.setSendStatus(SUB_NOT_ISSUED);
             subTaskCreate.setTaskStatus(SUB_NOT_ISSUED);
+            subTaskCreate.setNeedTrigger(taskRel.getNeedTrigger());
+            subTaskCreate.setNeedConfirm(taskRel.getNeedConfirm());
+            subTaskCreate.setNeedInform(taskRel.getNeedInform());
+            subTaskCreate.setSubTaskSeq(taskRel.getSubTaskSeq());
             //TODO
 
             subTaskCreate.setNeedTrigger(taskRel.getNeedTrigger());

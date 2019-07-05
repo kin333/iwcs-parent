@@ -78,6 +78,7 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
             subTaskCreate.setNeedTrigger(taskRel.getNeedTrigger());
             subTaskCreate.setNeedConfirm(taskRel.getNeedConfirm());
             subTaskCreate.setNeedInform(taskRel.getNeedInform());
+            subTaskCreate.setSubTaskSeq(taskRel.getSubTaskSeq());
 
             subTaskCreate.setPodCode(agingToQuaInspRequest.getPodCode());
             subTaskCreate.setWorkerTaskCode(subTaskNum);
