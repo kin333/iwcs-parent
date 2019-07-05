@@ -20,4 +20,8 @@
             <column defaultValueNumeric="1" name="delete_flag" remarks="删除标记 0为删除 1为正常" type="INT"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="201907051144" author="han">
+        <sqlFile path="liquibase/init_insert/s_dictionary.sql"/>
+    </changeSet>
 </databaseChangeLog>

@@ -4,6 +4,7 @@ package com.wisdom.iwcs.service.task.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
@@ -14,6 +15,7 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
+import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
@@ -21,6 +23,7 @@ import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -316,4 +319,16 @@ public class SubTaskService {
     }
 
 
+    public Result setPriority(SubTaskDTO subTaskDTO) {
+        String subTaskNum = subTaskDTO.getSubTaskNum();
+        Integer priority = subTaskDTO.getPriority();
+        if (StringUtils.isEmpty(subTaskNum) || priority == null || priority < 0 ) {
+            return new Result(400, "缺少参数(子任务单号或优先级)");
+        }
+        int changeRow = subTaskMapper.updatePriority(subTaskNum, priority);
+        if (changeRow <= 0) {
+            return new Result(400, "优先级未修改");
+        }
+        return new Result();
+    }
 }

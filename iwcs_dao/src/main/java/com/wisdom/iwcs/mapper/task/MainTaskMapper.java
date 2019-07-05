@@ -3,6 +3,7 @@ package com.wisdom.iwcs.mapper.task;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.MainTask;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +31,12 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
      * 根据任务状态查询主任务列表
      */
     List<MainTask> selectByTaskStatus(String taskStatus);
+
+    /**
+     * 根据主任务单号设置优先级
+     * @param mainTaskNum
+     * @param priority
+     * @return
+     */
+    int updatePriority(@Param("mainTaskNum") String mainTaskNum,@Param("priority") Integer priority);
 }

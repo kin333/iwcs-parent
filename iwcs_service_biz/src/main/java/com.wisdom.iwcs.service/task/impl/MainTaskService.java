@@ -3,10 +3,7 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wisdom.iwcs.common.utils.GridFilterInfo;
-import com.wisdom.iwcs.common.utils.GridPageRequest;
-import com.wisdom.iwcs.common.utils.GridReturnData;
-import com.wisdom.iwcs.common.utils.TaskConstants;
+import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.MainTask;
@@ -16,6 +13,7 @@ import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.IMainTaskService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -279,4 +277,16 @@ public class MainTaskService implements IMainTaskService {
     }
 
 
+    public Result setPriority(MainTaskDTO mainTask) {
+        String mainTaskNum = mainTask.getMainTaskNum();
+        Integer priority = mainTask.getPriority();
+        if (StringUtils.isEmpty(mainTaskNum) || priority == null || priority < 0 ) {
+            return new Result(400, "缺少参数(主任务单号或优先级)");
+        }
+        int changeRow = mainTaskMapper.updatePriority(mainTaskNum, priority);
+        if (changeRow <= 0) {
+            return new Result(400, "优先级未修改");
+        }
+        return new Result();
+    }
 }

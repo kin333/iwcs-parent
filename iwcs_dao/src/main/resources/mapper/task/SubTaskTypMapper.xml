@@ -35,7 +35,6 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
-    order by last_modified_time desc
   </select>
 
   <select id="selectByTypeCode" resultMap="BaseResultMap">

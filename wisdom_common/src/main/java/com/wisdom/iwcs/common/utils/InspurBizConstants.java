@@ -91,7 +91,7 @@ public class InspurBizConstants {
          */
         public final static String AUTO_FIRST = "autoAgingPosFirst ";
         /**
-         * 自动区优先
+         * 手动区优先
          */
         public final static String MANUAL_FIRST = "manualAgingPosFirst ";
 

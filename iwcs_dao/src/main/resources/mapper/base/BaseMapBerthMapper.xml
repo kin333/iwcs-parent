@@ -60,6 +60,7 @@
         set in_lock = 0,pod_code = '',lock_source = ''
         where map_code = #{mapCode} and ber_code = #{berCode}
     </update>
+
     <select id="selectPage" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -74,8 +75,39 @@
         <if test="endTime != null">
             and created_time &lt;= #{endTime,jdbcType=BIGINT}
         </if>
+        <if test="mapCode != null and mapCode != ''">
+            and map_code = #{mapCode}
+        </if>
+        <if test="berCode != null and berCode != ''">
+            and ber_code = #{berCode}
+        </if>
+        <if test="inLock != null">
+            and in_lock = #{inLock}
+        </if>
+        <if test="lockSource != null and lockSource != ''">
+            and lock_source = #{lockSource}
+        </if>
+        <if test="podCode != null and podCode != ''">
+            and pod_code = #{podCode}
+        </if>
+        <if test="areaCode != null and areaCode != ''">
+            and area_code = #{areaCode}
+        </if>
+        <if test="bizType != null and bizType != ''">
+            and biz_type = #{bizType}
+        </if>
+        <if test="pointAlias != null and pointAlias != ''">
+            and point_alias = #{pointAlias}
+        </if>
+        <if test="operateAreaCode != null and operateAreaCode != ''">
+            and operate_area_code = #{operateAreaCode}
+        </if>
+        <if test="bizSecondAreaCode != null and bizSecondAreaCode != ''">
+            and biz_second_area_code = #{bizSecondAreaCode}
+        </if>
         order by last_modified_time desc
     </select>
+
     <select id="selectOneByBercode" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth">
         select
         <include refid="Base_Column_List"/>

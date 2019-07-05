@@ -39,7 +39,19 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
-    order by last_modified_time desc
+    <if test="mainTaskNum != null and mainTaskNum != ''">
+      and main_task_num = #{mainTaskNum}
+    </if>
+    <if test="mainTaskTypeCode != null and mainTaskTypeCode != ''">
+      and main_task_type_code = #{mainTaskTypeCode}
+    </if>
+    <if test="taskStatus != null and taskStatus != ''">
+      and task_status = #{taskStatus}
+    </if>
+    <if test="areaCode != null and areaCode != ''">
+      and area_code = #{areaCode}
+    </if>
+
   </select>
 
   <select id="selectByMainTaskNum" resultMap="BaseResultMap">
@@ -53,4 +65,13 @@
         from ts_main_task
         where task_status = #{taskStatus}
     </select>
+
+
+  <update id="updatePriority">
+    update ts_main_task
+    <set>
+      priority = #{priority}
+    </set>
+    where main_task_num = #{mainTaskNum}
+  </update>
 </mapper>

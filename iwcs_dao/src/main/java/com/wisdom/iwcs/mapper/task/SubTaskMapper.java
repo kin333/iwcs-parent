@@ -53,4 +53,12 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return
      */
     int updateEndCodeBySubTaskCode(@Param("subTaskNum") String subTaskNum,@Param("baseMapBerth") BaseMapBerth baseMapBerth);
+
+    /**
+     * 根据主任务单号设置优先级
+     * @param subTaskNum
+     * @param priority
+     * @return
+     */
+    int updatePriority(@Param("subTaskNum")String subTaskNum,@Param("priority") Integer priority);
 }

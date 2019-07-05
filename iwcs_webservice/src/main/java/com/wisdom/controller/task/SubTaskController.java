@@ -5,6 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
@@ -117,4 +118,15 @@ public class SubTaskController {
 
         return new Result();
     }
+
+    /**
+     * 设置子任务优先级
+     * @param subTaskDTO
+     * @return
+     */
+    @PostMapping("/setPriority")
+    public Result setPriority(@RequestBody SubTaskDTO subTaskDTO) {
+        return SubTaskService.setPriority(subTaskDTO);
+    }
+
 }

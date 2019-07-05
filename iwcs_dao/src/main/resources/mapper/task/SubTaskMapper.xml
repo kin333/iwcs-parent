@@ -68,7 +68,44 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
-    order by last_modified_time desc
+    <if test="subTaskNum != null and subTaskNum != ''">
+      and sub_task_num = #{subTaskNum}
+    </if>
+    <if test="subTaskTyp != null and subTaskTyp != ''">
+      and sub_task_typ = #{subTaskTyp}
+    </if>
+    <if test="mainTaskNum != null and mainTaskNum != ''">
+      and main_task_num = #{mainTaskNum}
+    </if>
+    <if test="mainTaskType != null and mainTaskType != ''">
+      and main_task_type = #{mainTaskType}
+    </if>
+
+    <if test="sendStatus != null and sendStatus != ''">
+      and send_status = #{sendStatus}
+    </if>
+    <if test="taskStatus != null and taskStatus != ''">
+      and task_status = #{taskStatus}
+    </if>
+    <if test="mapCode != null and mapCode != ''">
+      and map_code = #{mapCode}
+    </if>
+    <if test="podCode != null and podCode != ''">
+      and pod_code = #{podCode}
+    </if>
+    <if test="startBercode != null and startBercode != ''">
+      and start_bercode = #{startBercode}
+    </if>
+    <if test="endBercode != null and endBercode != ''">
+      and end_bercode = #{endBercode}
+    </if>
+
+    <if test="areaCode != null and areaCode != ''">
+      and area_code = #{areaCode}
+    </if>
+    <if test="subTaskBizProp != null and subTaskBizProp != ''">
+      and sub_task_biz_prop = #{subTaskBizProp}
+    </if>
   </select>
     <select id="selectByMainTaskNum" resultMap="BaseResultMap">
         select
@@ -107,6 +144,15 @@
       end_bercode = #{baseMapBerth.berCode},
       end_x = #{baseMapBerth.coox},
       end_y = #{baseMapBerth.cooy}
+    </set>
+    where sub_task_num = #{subTaskNum}
+  </update>
+
+
+  <update id="updatePriority">
+    update ts_sub_task
+    <set>
+      priority = #{priority}
     </set>
     where sub_task_num = #{subTaskNum}
   </update>

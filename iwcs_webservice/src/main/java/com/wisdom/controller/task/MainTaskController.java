@@ -6,8 +6,10 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
+import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +28,8 @@ public class MainTaskController {
     MainTaskService mainTaskService;
     @Autowired
     MainTaskMapStruct mainTaskMapStruct;
+    @Autowired
+    MainTaskMapper mainTaskMapper;
 
     /**
      * 根据主键ID删除
@@ -115,5 +119,15 @@ public class MainTaskController {
         mainTaskService.updateByPrimaryKey(mainTaskDTO);
 
         return new Result();
+    }
+
+    /**
+     * 设置主任务优先级
+     * @param mainTask
+     * @return
+     */
+    @PostMapping("/setPriority")
+    public Result setPriority(@RequestBody MainTaskDTO mainTask) {
+        return mainTaskService.setPriority(mainTask);
     }
 }
