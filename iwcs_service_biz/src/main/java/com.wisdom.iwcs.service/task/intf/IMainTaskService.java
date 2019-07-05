@@ -2,9 +2,9 @@ package com.wisdom.iwcs.service.task.intf;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
-import com.wisdom.iwcs.domain.task.dto.MainTaskWithSubTaskInfos;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public interface IMainTaskService {
 
     GridReturnData<MainTaskDTO> selectPage(GridPageRequest gridPageRequest);
 
-    public List<MainTaskWithSubTaskInfos> getAllUnDispatchedTask();
+    public List<MainTask> getAllUnDispatchedTask();
 
     /**
      * 检查一个子任务前置条件是否满足

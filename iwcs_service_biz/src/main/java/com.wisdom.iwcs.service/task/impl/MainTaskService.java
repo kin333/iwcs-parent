@@ -12,7 +12,6 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
-import com.wisdom.iwcs.domain.task.dto.MainTaskWithSubTaskInfos;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -244,9 +243,9 @@ public class MainTaskService implements IMainTaskService {
     }
 
     @Override
-    public List<MainTaskWithSubTaskInfos> getAllUnDispatchedTask() {
-        //查询状态为未执行的主任务
-        return null;
+    public List<MainTask> getAllUnDispatchedTask() {
+        List<MainTask> mainTasks = mainTaskMapper.selectByTaskStatus(TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED);
+        return mainTasks;
     }
 
     @Override

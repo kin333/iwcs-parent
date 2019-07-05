@@ -47,4 +47,10 @@
     where main_task_num = #{mainTaskNum}
     LIMIT 1
   </select>
+    <select id="selectByTaskStatus" resultType="com.wisdom.iwcs.domain.task.MainTask">
+        select
+        <include refid="Base_Column_List"/>
+        from ts_main_task
+        where task_status = #{taskStatus}
+    </select>
 </mapper>

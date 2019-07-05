@@ -1,13 +1,12 @@
 package com.wisdom.iwcs.mapper.task;
 
 
-import java.util.List;
-import java.util.Map;
-
-import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.MainTask;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Generator
@@ -26,4 +25,9 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
      * 根据主任务编号查询
      */
     MainTask selectByMainTaskNum(String mainTaskNum);
+
+    /**
+     * 根据任务状态查询主任务列表
+     */
+    List<MainTask> selectByTaskStatus(String taskStatus);
 }
