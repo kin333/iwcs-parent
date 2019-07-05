@@ -34,10 +34,10 @@
       and 1=1
     </if>
     <if test="startTime != null">
-      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+      and create_date &gt;= #{startTime,jdbcType=BIGINT}
     </if>
     <if test="endTime != null">
-      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+      and create_date &lt;= #{endTime,jdbcType=BIGINT}
     </if>
     <if test="mainTaskNum != null and mainTaskNum != ''">
       and main_task_num = #{mainTaskNum}
