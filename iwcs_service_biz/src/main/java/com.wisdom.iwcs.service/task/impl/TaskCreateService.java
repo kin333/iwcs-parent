@@ -97,6 +97,7 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public Result plAutoWbCallPodFunction(TaskCreateRequest taskCreateRequest){
         logger.info("工作台点位呼叫空货架:{}",JSON.toJSONString(taskCreateRequest));
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getWbCode()), "请填写工作台点位坐标");
         PlAutoWbCallPodRequest plAutoWbCallPodRequest = new PlAutoWbCallPodRequest();
         plAutoWbCallPodRequest.setPriority(taskCreateRequest.getPriority());
         plAutoWbCallPodRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
@@ -112,11 +113,12 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public Result plBufSupplyFunction(TaskCreateRequest taskCreateRequest){
         logger.info("补充产线空货架缓存区:{}",JSON.toJSONString(taskCreateRequest));
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPoint()), "请填写目标点位");
         PlBufSupplyRequest plBufSupplyRequest = new PlBufSupplyRequest();
         plBufSupplyRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         plBufSupplyRequest.setPriority(taskCreateRequest.getPriority());
-        plBufSupplyRequest.setPodCode(taskCreateRequest.getPodCode());
-        plBufSupplyRequest.setOperateAreaCode(taskCreateRequest.getOperateAreaCode());
+        plBufSupplyRequest.setTargetPoint(taskCreateRequest.getTargetPoint());
+        plBufSupplyRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
         iPlBufSupplyService.plBufSupply(plBufSupplyRequest);
         return new Result();
     }

@@ -23,19 +23,16 @@ public class PlBufSupplyRequest {
     private Integer priority;
 
     /**
-     * 作业区域(如老化区、检验区)
+     * 目标点
      */
-    private String operateAreaCode;
+    private String targetPoint;
+
+    /**
+     * 库区
+     */
+    private String areaCode;
 
     //TODO 扩展
-
-    public String getOperateAreaCode() {
-        return operateAreaCode;
-    }
-
-    public void setOperateAreaCode(String operateAreaCode) {
-        this.operateAreaCode = operateAreaCode;
-    }
 
     public String getPodCode() {
         return podCode;
@@ -59,5 +56,21 @@ public class PlBufSupplyRequest {
 
     public void setTaskTypeCode(String taskTypeCode) {
         this.taskTypeCode = taskTypeCode;
+    }
+
+    public String getTargetPoint() {
+        return targetPoint;
+    }
+
+    public void setTargetPoint(String targetPoint) {
+        this.targetPoint = targetPoint;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 }

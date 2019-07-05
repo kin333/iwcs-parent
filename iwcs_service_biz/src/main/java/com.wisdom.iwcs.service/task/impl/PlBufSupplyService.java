@@ -54,45 +54,42 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
         mainTaskCreate.setMainTaskTypeCode(plBufSupplyRequest.getTaskTypeCode());
         mainTaskCreate.setPriority(plBufSupplyRequest.getPriority());
         mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());
         mainTaskMapper.insertSelective(mainTaskCreate);
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(plBufSupplyRequest.getTaskTypeCode());
         for (TaskRel taskRel:taskRelList){
             //创建子任务
-            SubTask subTask = new SubTask();
+            SubTask subTaskCreate = new SubTask();
             String subTaskNum = CodeBuilder.codeBuilder("S");
-            subTask.setSubTaskNum(subTaskNum);
-            subTask.setMainTaskNum(mainTaskNum);
-            subTask.setSubTaskTyp(taskRel.getSubTaskTypeCode());
-            subTask.setCreateDate(new Date());
-            subTask.setMainTaskSeq(taskRel.getSubTaskSeq());
-            subTask.setMainTaskType(taskRel.getMainTaskTypeCode());
-            subTask.setThirdType(taskRel.getThirdType());
-            subTask.setAppCode(taskRel.getAppCode());
-            subTask.setThirdUrl(taskRel.getThirdUrl());
-            subTask.setThirdInvokeType(taskRel.getThirdInvokeType());
-            subTask.setThirdStartMethod(taskRel.getThirdStartMethod());
-            subTask.setThirdEndMethod(taskRel.getThirdEndMethod());
-            subTask.setSendStatus(SUB_NOT_ISSUED);
-            subTask.setTaskStatus(SUB_NOT_ISSUED);
+            subTaskCreate.setSubTaskNum(subTaskNum);
+            subTaskCreate.setMainTaskNum(mainTaskNum);
+            subTaskCreate.setSubTaskTyp(taskRel.getSubTaskTypeCode());
+            subTaskCreate.setCreateDate(new Date());
+            subTaskCreate.setMainTaskSeq(taskRel.getSubTaskSeq());
+            subTaskCreate.setMainTaskType(taskRel.getMainTaskTypeCode());
+            subTaskCreate.setThirdType(taskRel.getThirdType());
+            subTaskCreate.setAppCode(taskRel.getAppCode());
+            subTaskCreate.setThirdUrl(taskRel.getThirdUrl());
+            subTaskCreate.setThirdInvokeType(taskRel.getThirdInvokeType());
+            subTaskCreate.setThirdStartMethod(taskRel.getThirdStartMethod());
+            subTaskCreate.setThirdEndMethod(taskRel.getThirdEndMethod());
+            subTaskCreate.setSendStatus(SUB_NOT_ISSUED);
+            subTaskCreate.setTaskStatus(SUB_NOT_ISSUED);
             //TODO
-//            subTask.setPodCode(plAutoWbCallPodRequest.getPodCode());
-//            subTask.setStartBercode(plAutoWbCallPodRequest.getStartBercode());
-//            subTask.setEndBercode(plAutoWbCallPodRequest.getWbCode());
 
-            subTask.setNeedTrigger(taskRel.getNeedTrigger());
-            subTask.setNeedConfirm(taskRel.getNeedConfirm());
-            subTask.setNeedInform(taskRel.getNeedInform());
+            subTaskCreate.setNeedTrigger(taskRel.getNeedTrigger());
+            subTaskCreate.setNeedConfirm(taskRel.getNeedConfirm());
+            subTaskCreate.setNeedInform(taskRel.getNeedInform());
 
             //计算目标通过地图坐标查询坐标
-            // TODO 内存搂
-//            BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(plAutoWbCallPodRequest.getStartBercode());
-//            subTask.setStart_x(startBercode.getCoox().doubleValue());
-//            subTask.setStart_y(startBercode.getCooy().doubleValue());
-//            BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plAutoWbCallPodRequest.getWbCode());
-//            subTask.setEnd_x(endBercode.getCoox().doubleValue());
-//            subTask.setEnd_y(endBercode.getCooy().doubleValue());
-            subTaskMapper.insertSelective(subTask);
+            BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plBufSupplyRequest.getTargetPoint());
+            subTaskCreate.setEnd_x(endBercode.getCoox().doubleValue());
+            subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
+            subTaskCreate.setEndBercode(plBufSupplyRequest.getTargetPoint());
+            subTaskCreate.setMapCode(endBercode.getMapCode());
+            subTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());
+            subTaskMapper.insertSelective(subTaskCreate);
 
             //通过主任务编号和子任务编号查询
             TaskRelCondition taskRelConditionList = taskRelConditionMapper.selectByMainTaskTypeCodeAndSubCode(taskRel.getMainTaskTypeCode(),taskRel.getSubTaskTypeCode());

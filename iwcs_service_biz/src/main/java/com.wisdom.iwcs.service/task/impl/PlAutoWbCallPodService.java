@@ -56,6 +56,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
         mainTaskCreate.setMainTaskTypeCode(plAutoWbCallPodRequest.getTaskTypeCode());
         mainTaskCreate.setPriority(plAutoWbCallPodRequest.getPriority());
         mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskCreate.setAreaCode(plAutoWbCallPodRequest.getAreaCode());
         mainTaskMapper.insertSelective(mainTaskCreate);
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(plAutoWbCallPodRequest.getTaskTypeCode());

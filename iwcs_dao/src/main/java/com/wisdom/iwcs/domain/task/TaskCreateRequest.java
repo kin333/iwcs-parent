@@ -8,7 +8,7 @@ package com.wisdom.iwcs.domain.task;
 public class TaskCreateRequest {
 
     /**
-     * 任务类型编号
+     * 任务类型编号 必填
      */
     private String taskTypeCode;
 
@@ -33,9 +33,9 @@ public class TaskCreateRequest {
     private String workAreaCode;
 
     /**
-     * 目标储位点位编号
+     * 目标点位
      */
-    private String targetStorageCode;
+    private String targetPoint;
 
     /**
      * 货架号
@@ -48,7 +48,7 @@ public class TaskCreateRequest {
     private String startBercode;
 
     /**
-     * 任务优先级
+     * 任务优先级 不填
      */
     private Integer priority;
 
@@ -92,12 +92,12 @@ public class TaskCreateRequest {
         this.workAreaCode = workAreaCode;
     }
 
-    public String getTargetStorageCode() {
-        return targetStorageCode;
+    public String getTargetPoint() {
+        return targetPoint;
     }
 
-    public void setTargetStorageCode(String targetStorageCode) {
-        this.targetStorageCode = targetStorageCode;
+    public void setTargetPoint(String targetPoint) {
+        this.targetPoint = targetPoint;
     }
 
     public String getPodCode() {
