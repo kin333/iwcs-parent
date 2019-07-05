@@ -145,4 +145,25 @@
         <include refid="Base_Column_List"/>
         from base_map_berth where map_code = #{mapCode,jdbcType=VARCHAR}
     </select>
+
+    <select id="selectBerthCodeByMapCode" resultMap="BaseResultMap">
+       select <include refid="Base_Column_List"/> from base_map_berth WHERE map_code = #{mapCode}
+    </select>
+
+    <update id="updateList">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update base_map_berth
+            <set>
+                berth_type_value = #{item.berthTypeValue},last_modified_time = NOW()
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteByBerCodeListAndMapCode">
+        delete from base_map_berth where map_code = #{mapCode} and ber_code in
+        <foreach collection="berCodeList" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

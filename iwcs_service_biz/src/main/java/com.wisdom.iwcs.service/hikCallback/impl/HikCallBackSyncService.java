@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.DeleteFlagEnum.DELETED;
 import static com.wisdom.iwcs.common.utils.DeleteFlagEnum.NOT_DELETED;
@@ -619,47 +620,75 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
     private HikSyncResponse syncMapData(SyncNotifyRequestDto requestDto) {
         requestDto.getData().stream().forEach(data -> {
             BaseMap existsMapInfo = baseMapMapper.selectByMapCodeAndDeleteFlag(data.getMapCode(), NOT_DELETED.getStatus());
-            if (existsMapInfo != null) {
-                baseMapMapper.deleteByMapCode(data.getMapCode());
-                baseMapBerthMapper.deleteByMapCode(data.getMapCode());
-            }
-
             if (isHikDataSyncMergeOpt(data)) {
-
-                BaseMap baseMap = new BaseMap();
-                baseMap.setMapCode(data.getMapCode());
-                baseMap.setMapName(data.getMapName());
-                baseMap.setRowCount(Integer.parseInt(data.getRowCount()));
-                baseMap.setColCount(Integer.parseInt(data.getColCount()));
-                baseMap.setWidth(Integer.parseInt(data.getWidth()));
-                baseMap.setHeight(Integer.parseInt(data.getHeight()));
-                baseMap.setMapType(data.getTypeCode());
-                baseMap.setGroundTypeCode(data.getGroundTypeCode());
-                baseMapMapper.insertSelective(baseMap);
+                if (existsMapInfo == null){
+                    BaseMap baseMap = new BaseMap();
+                    baseMap.setMapCode(data.getMapCode());
+                    baseMap.setMapName(data.getMapName());
+                    baseMap.setRowCount(Integer.parseInt(data.getRowCount()));
+                    baseMap.setColCount(Integer.parseInt(data.getColCount()));
+                    baseMap.setWidth(Integer.parseInt(data.getWidth()));
+                    baseMap.setHeight(Integer.parseInt(data.getHeight()));
+                    baseMap.setMapType(data.getTypeCode());
+                    baseMap.setGroundTypeCode(data.getGroundTypeCode());
+                    logger.info("baseMapInsertSelective");
+                    baseMapMapper.insertSelective(baseMap);
+                }
+                //对比需要解析的地码列表和已知的地码列表
                 try {
                     MapConfigDto mapContent = XmlToBeanUtils.xmlToBean(data.getMapContent(), MapConfigDto.class);
                     List<BaseMapBerth> insertBaseMapBerthList = new ArrayList<>();
+                    List<String> requestBerCodeList = packageBercode(mapContent.getPointInfo(), mapContent.getMapQRCode()).stream().distinct().collect(Collectors.toList());
+                    List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectBerthCodeByMapCode(data.getMapCode());
+                    List<String> existsBerCodeList = baseMapBerthList.stream().map(BaseMapBerth :: getBerCode).collect(Collectors.toList());
+                    //请求列表有、数据库无，新增
+                    List<String> newBerCodeList = returnDifferenceList(requestBerCodeList,existsBerCodeList);
+                    //请求列表无、数据库有、删除
+                    List<String> deleteBerCodeList = returnDifferenceList(existsBerCodeList,requestBerCodeList);
+                    //请求列表有、数据库有、更新
+                    List<String> updateBerCodeList = returnRetainList(requestBerCodeList,existsBerCodeList);
+                     List<BaseMapBerth> updateBaseMapBerthList = baseMapBerthList.stream().filter(b -> requestBerCodeList.contains(b.getBerCode())).collect(Collectors.toList());
+
                     mapContent.getPointInfo().stream().forEach(pointInfoDto -> {
-                        BaseMapBerth baseMapBerth = new BaseMapBerth();
-                        baseMapBerth.setMapCode(data.getMapCode());
-                        baseMapBerth.setCoox(BigDecimal.valueOf(Double.valueOf(pointInfoDto.getXpos())));
-                        baseMapBerth.setCooy(BigDecimal.valueOf(Double.valueOf(pointInfoDto.getYpos())));
-                        String coox = pointInfoDto.getXpos().replace("", "");
-                        String cooy = pointInfoDto.getYpos().replace("", "");
+                        String coox = pointInfoDto.getXpos().replace(".", "");
+                        String cooy = pointInfoDto.getYpos().replace(".", "");
                         String berCode = coox + mapContent.getMapQRCode() + cooy;
-                        baseMapBerth.setBerCode(berCode);
-                        baseMapBerth.setBerthTypeValue(pointInfoDto.getValue());
-                        baseMapBerth.setValidFlag(VALID.getStatus());
-                        baseMapBerth.setDeleteFlag(NOT_DELETED.getStatus());
-                        baseMapBerth.setCreatedTime(new Date());
-                        insertBaseMapBerthList.add(baseMapBerth);
+                        if (newBerCodeList.contains(berCode)){
+                            //组装新增数据
+                            BaseMapBerth baseMapBerth = new BaseMapBerth();
+                            baseMapBerth.setMapCode(data.getMapCode());
+                            baseMapBerth.setCoox(BigDecimal.valueOf(Double.valueOf(pointInfoDto.getXpos())));
+                            baseMapBerth.setCooy(BigDecimal.valueOf(Double.valueOf(pointInfoDto.getYpos())));
+                            baseMapBerth.setBerCode(berCode);
+                            baseMapBerth.setBerthTypeValue(pointInfoDto.getValue());
+                            baseMapBerth.setValidFlag(VALID.getStatus());
+                            baseMapBerth.setDeleteFlag(NOT_DELETED.getStatus());
+                            baseMapBerth.setCreatedTime(new Date());
+                            insertBaseMapBerthList.add(baseMapBerth);
+                        }
+                        if (updateBerCodeList.contains(berCode)){
+                            //更新地码value
+                            BaseMapBerth updateBaseMapBerth = updateBaseMapBerthList.stream().filter(u -> u.getBerCode().equals(berCode)).findAny().get();
+                            updateBaseMapBerth.setBerthTypeValue(pointInfoDto.getValue());
+                            updateBaseMapBerth.setLastModifiedTime(new Date());
+                        }
+
                     });
                     if (insertBaseMapBerthList.size() != 0) {
                         baseMapBerthMapper.insertList(insertBaseMapBerthList);
                     }
+                    if (updateBaseMapBerthList.size() != 0){
+                        baseMapBerthMapper.updateList(updateBaseMapBerthList);
+                    }
+                    if (deleteBerCodeList.size() != 0){
+                        baseMapBerthMapper.deleteByBerCodeListAndMapCode(deleteBerCodeList,data.getMapCode());
+                    }
                 } catch (JAXBException e) {
                     logger.info("mapContent convert JAXBException,{}", e.getMessage());
                 }
+            }else if (isHikDataSyncDelOpt(data)){
+                baseMapMapper.deleteByMapCode(data.getMapCode());
+                baseMapBerthMapper.deleteByMapCode(data.getMapCode());
             }
 
 
@@ -667,6 +696,54 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
         return new HikSyncResponse();
     }
 
+    /**
+     * 求A和B的差集：A-B
+     * @param ListA
+     * @param ListB
+     * @return
+     */
+    private List<String> returnDifferenceList(List<String> ListA,List<String> ListB){
+        //被减数
+        List<String> subtractedList = new ArrayList<>(ListA);
+        //减数
+        List<String> subtractionList = new ArrayList<>(ListB);
+        subtractedList.removeAll(subtractionList);
+        return subtractedList;
+    }
+
+    /**
+     * 求A和B的交集
+     * @param ListA
+     * @param ListB
+     * @return
+     */
+    private List<String> returnRetainList(List<String> ListA,List<String> ListB){
+        //被减数
+        List<String> calculationListA = new ArrayList<>(ListA);
+        //减数
+        List<String> calculationListB = new ArrayList<>(ListB);
+        calculationListA.retainAll(calculationListB);
+        return calculationListA;
+    }
+
+    /**
+     * 返回地码坐标
+     * @param pointInfoDtoList
+     * @param mapQRCode
+     * @return
+     */
+    private List<String> packageBercode(List<PointInfoDto> pointInfoDtoList,String mapQRCode){
+        List<String> bercodeList = new ArrayList<>();
+        pointInfoDtoList.stream().forEach(pointInfoDto -> {
+            String coox = pointInfoDto.getXpos().replace(".", "");
+            String cooy = pointInfoDto.getYpos().replace(".", "");
+            String bercode = coox + mapQRCode + cooy;
+            bercodeList.add(bercode);
+            logger.info("bercode,{}",bercode);
+        });
+
+        return bercodeList;
+    }
 
 
 }

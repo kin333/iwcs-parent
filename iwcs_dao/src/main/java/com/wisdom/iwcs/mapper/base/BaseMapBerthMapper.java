@@ -6,6 +6,7 @@ import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -53,6 +54,28 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     List<BaseMapBerth> selectAlltorageByMapCode(String mapCode);
 
     BaseMapBerth selectBerData(LockStorageDto lockStorageDto);
+
+    /**
+     * 根据地图编号获取地码列表
+     * @param mapCode
+     * @return
+     */
+    List<BaseMapBerth> selectBerthCodeByMapCode(String mapCode);
+
+    /**
+     * 批量更新
+     * @param baseMapBerthList
+     * @return
+     */
+    int updateList(List<BaseMapBerth> baseMapBerthList);
+
+    /**
+     * 批量删除
+     * @param berCodeList
+     * @param mapCode
+     * @return
+     */
+    int deleteByBerCodeListAndMapCode(@Param("berCodeList") List<String> berCodeList, @Param("mapCode") String mapCode);
 
 
 }
