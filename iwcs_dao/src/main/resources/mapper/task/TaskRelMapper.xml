@@ -54,6 +54,6 @@
   </select>
     <select id="selectByMainTaskType" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from ts_task_rel
-        where main_task_type_code = = #{mainTaskTypeCode,jdbcType=VARCHAR}
+      where main_task_type_code = #{mainTaskTypeCode,jdbcType=VARCHAR}
     </select>
 </mapper>
