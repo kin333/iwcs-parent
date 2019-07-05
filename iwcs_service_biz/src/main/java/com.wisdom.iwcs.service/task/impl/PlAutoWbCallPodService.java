@@ -93,15 +93,18 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTask.setAreaCode(plAutoWbCallPodRequest.getAreaCode());
             subTaskMapper.insertSelective(subTask);
 
-            //通过主任务编号和子任务编号查询
-            TaskRelCondition taskRelConditionList = taskRelConditionMapper.selectByMainTaskTypeCodeAndSubCode(taskRel.getMainTaskTypeCode(),taskRel.getSubTaskTypeCode());
-
             //添加子任务条件
-            SubTaskCondition subTaskCondition = new SubTaskCondition();
-            subTaskCondition.setCreateDate(new Date());
-            subTaskCondition.setSubTaskNum(subTaskNum);
-            subTaskCondition.setSubscribeEvent(taskRelConditionList.getSubscribeEvent());
-            subTaskConditionMapper.insertSelective(subTaskCondition);
+            //通过主任务编号和子任务编号查询
+            List<TaskRelCondition> taskRelConditionList = taskRelConditionMapper.selectByMainTaskTypeCodeAndSubCode(taskRel.getMainTaskTypeCode(),taskRel.getSubTaskTypeCode());
+            for (TaskRelCondition taskRelCondition: taskRelConditionList){
+                SubTaskCondition subTaskCondition = new SubTaskCondition();
+                subTaskCondition.setCreateDate(new Date());
+                subTaskCondition.setSubTaskNum(subTaskNum);
+                subTaskCondition.setConditonHandler(taskRelCondition.getConditonHandler());
+                subTaskCondition.setSubscribeEvent(taskRelCondition.getSubscribeEvent());
+                subTaskCondition.setConditonTriger(taskRelCondition.getConditonTriger());
+                subTaskConditionMapper.insertSelective(subTaskCondition);
+            }
         }
         return new Result();
     }

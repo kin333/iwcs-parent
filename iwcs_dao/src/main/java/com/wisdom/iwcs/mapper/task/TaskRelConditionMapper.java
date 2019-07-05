@@ -24,7 +24,7 @@ public interface TaskRelConditionMapper extends MyMapperAndIds<TaskRelCondition>
     /**
      * 根据主任务和子任务编号查询
      */
-    TaskRelCondition selectByMainTaskTypeCodeAndSubCode(@Param("mainTaskTypeCode") String mainTaskTypeCode,@Param("subTaskTypeCode") String subTaskTypeCode);
+    List<TaskRelCondition> selectByMainTaskTypeCodeAndSubCode(@Param("mainTaskTypeCode") String mainTaskTypeCode,@Param("subTaskTypeCode") String subTaskTypeCode);
 
     /**
      * 根据子任务编号查询
