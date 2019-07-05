@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 
 /**
- * 缓存区补充空货架前置条件--锁定缓存区的一个空储位
- * @author  han
+ * 检查并锁定空闲缓存点
+ * @author han
  */
-public class CacheEmptyPodLockHandler implements IConditionHandler{
+public class LockElevatorEmptyCacheHandler implements IConditionHandler{
 
     @Autowired
     BaseLockEmptyMapService baseLockEmptyMapService;
@@ -20,7 +20,7 @@ public class CacheEmptyPodLockHandler implements IConditionHandler{
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
         AreaCondition areaCondition = new AreaCondition();
         //查找电梯缓存区的空点位
-        areaCondition.setArea(InspurBizConstants.BizTypeConstants.LINECACHEAREA);
+        areaCondition.setArea(InspurBizConstants.BizTypeConstants.ELEVATORCACHEAREA);
 
         return baseLockEmptyMapService.handleConditionService(subTaskCondition, Arrays.asList(areaCondition));
     }

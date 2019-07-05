@@ -4,7 +4,6 @@ import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
-import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
@@ -24,6 +23,8 @@ public class EmptyPosForAgingPodHandler implements IConditionHandler{
     MapResouceService mapResouceService;
     @Autowired
     SubTaskMapper subTaskMapper;
+    @Autowired
+    BaseLockEmptyMapService baseLockEmptyMapService;
 
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
@@ -66,16 +67,6 @@ public class EmptyPosForAgingPodHandler implements IConditionHandler{
 
     @Override
     public boolean rollbackCondition(SubTaskCondition subTaskCondition) {
-        //还原子任务单中的货架号
-        subTaskMapper.updateEndCodeBySubTaskCode(subTaskCondition.getSubTaskNum(), new BaseMapBerth());
-        //还原地图数据的锁定信息
-        Long subTaskId = subTaskCondition.getId();
-        SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
-        LockStorageDto lockStorageDto = new LockStorageDto();
-        lockStorageDto.setMapCode(subTask.getMapCode());
-        lockStorageDto.setBerCode(subTask.getEndBercode());
-        lockStorageDto.setLockSource("null");
-        Result result = mapResouceService.unlockMapBerth(lockStorageDto);
-        return result.getReturnCode() ==  HttpStatus.OK.value();
+        return baseLockEmptyMapService.rollbackConditionService(subTaskCondition);
     }
 }

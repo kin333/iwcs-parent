@@ -118,4 +118,15 @@ public class InspurBizConstants {
 
 
     }
+
+    public static final class InStock {
+        /**
+         * 无货
+         */
+        public final static String NO_GOODS = "0";
+        /**
+         * 有货
+         */
+        public final static String HAVE_GOODS = "1";
+    }
 }
