@@ -7,6 +7,7 @@ import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.task.intf.IAgingToQuaInspService;
+import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
     private TaskRelConditionMapper taskRelConditionMapper;
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    private ITaskCreateService iTaskCreateService;
 
     @Override
     public Result agingToQuaInsp(AgingToQuaInspRequest agingToQuaInspRequest){
@@ -95,15 +98,8 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
             subTaskCreate.setAreaCode(agingToQuaInspRequest.getAreaCode());
             subTaskMapper.insertSelective(subTaskCreate);
 
-            //通过主任务编号和子任务编号查询
-            TaskRelCondition taskRelConditionList = taskRelConditionMapper.selectByMainTaskTypeCodeAndSubCode(taskRel.getMainTaskTypeCode(),taskRel.getSubTaskTypeCode());
-
             //添加子任务条件
-            SubTaskCondition subTaskCondition = new SubTaskCondition();
-            subTaskCondition.setCreateDate(new Date());
-            subTaskCondition.setSubTaskNum(subTaskNum);
-            subTaskCondition.setSubscribeEvent(taskRelConditionList.getSubscribeEvent());
-            subTaskConditionMapper.insertSelective(subTaskCondition);
+            iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
         }
         return new Result();
     }

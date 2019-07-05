@@ -14,6 +14,9 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.base.BasePodMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
+import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
+import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
+import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.*;
 import org.slf4j.Logger;
@@ -21,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.MANUAL_FIRST;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.*;
@@ -49,7 +55,13 @@ public class TaskCreateService implements ITaskCreateService {
     @Autowired
     private IAgingToQuaInspService iAgingToQuaInspService;
     @Autowired
-    private IPlToAgingService iPlToAgingService;
+    IPlToAgingService iPlToAgingService;
+    @Autowired
+    private ICommonService iCommonService;
+    @Autowired
+    private SubTaskConditionMapper subTaskConditionMapper;
+    @Autowired
+    private TaskRelConditionMapper taskRelConditionMapper;
 
     /**
      * 创建任务
@@ -104,10 +116,9 @@ public class TaskCreateService implements ITaskCreateService {
     public Result plAutoWbCallPodFunction(TaskCreateRequest taskCreateRequest){
         logger.info("工作台点位呼叫空货架:{}",JSON.toJSONString(taskCreateRequest));
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getPointAlias()), "请填写点位编号");
-
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getPointAlias());
-        Preconditions.checkBusinessError(baseMapBerth == null, "请填写点位编号");
+        Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
 
         PlAutoWbCallPodRequest plAutoWbCallPodRequest = new PlAutoWbCallPodRequest();
         plAutoWbCallPodRequest.setPriority(taskCreateRequest.getPriority());
@@ -125,10 +136,14 @@ public class TaskCreateService implements ITaskCreateService {
     public Result plBufSupplyFunction(TaskCreateRequest taskCreateRequest){
         logger.info("补充产线空货架缓存区:{}",JSON.toJSONString(taskCreateRequest));
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPoint()), "请填写目标点位");
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getPointAlias());
+        Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
+
         PlBufSupplyRequest plBufSupplyRequest = new PlBufSupplyRequest();
         plBufSupplyRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         plBufSupplyRequest.setPriority(taskCreateRequest.getPriority());
-        plBufSupplyRequest.setTargetPoint(taskCreateRequest.getTargetPoint());
+        plBufSupplyRequest.setTargetPoint(baseMapBerth.getBerCode());
         plBufSupplyRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
         iPlBufSupplyService.plBufSupply(plBufSupplyRequest);
         return new Result();
@@ -141,7 +156,11 @@ public class TaskCreateService implements ITaskCreateService {
     public Result plToAgingFunction(TaskCreateRequest taskCreateRequest){
         logger.info("产线去老化区搬运:{}",JSON.toJSONString(taskCreateRequest));
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getPodCode()) && Strings.isNullOrEmpty(taskCreateRequest.getStartBercode()), "货架号或起始点坐标不能为空");
+        //校验是否传自动还是手动，手动必选目标点
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getSubTaskBizProp()), "请选择自动还是手动");
+        if (MANUAL_FIRST.equals(taskCreateRequest.getSubTaskBizProp())){
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPoint()), "手动模式请选择目标点位");
+        }
         if (!Strings.isNullOrEmpty(taskCreateRequest.getPodCode())){
             //货架不为空，查询所在点位
         }
@@ -150,9 +169,10 @@ public class TaskCreateService implements ITaskCreateService {
             //如果货架为空，查询创建失败
         }
 
+        //ICommonService.checkPodPointAgreement();
         //更改货架空满状态
 
-        //校验是否传自动还是手动，手动必选目标点
+
         //目标点有货架，创建失败, 无货架、无任务，上锁
 
         //创建任务
@@ -163,7 +183,11 @@ public class TaskCreateService implements ITaskCreateService {
 //        plToAgingRequest.setPodCode();
 //        plToAgingRequest.setStartPoint();
         if (MANUAL_FIRST.equals(taskCreateRequest.getSubTaskBizProp())){
-            plToAgingRequest.setTargetPoint(taskCreateRequest.getTargetPoint());
+            //查询点位坐标
+            BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getPointAlias());
+            Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
+
+            plToAgingRequest.setTargetPoint(baseMapBerth.getBerCode());
         }
         plToAgingRequest.setSubTaskBizProp(taskCreateRequest.getSubTaskBizProp());
         iPlToAgingService.agingToQuaInsp(plToAgingRequest);
@@ -210,6 +234,26 @@ public class TaskCreateService implements ITaskCreateService {
         iAgingToQuaInspService.agingToQuaInsp(agingToQuaInspRequest);
 
         return new Result();
+    }
+
+    /**
+     * 添加子任务条件
+     * @param
+     * @return
+     */
+    @Override
+    public void subTaskConditionCommonAdd(String mainTaskTypeCode, String subTaskTypeCode, String subTaskNum){
+        //通过主任务编号和子任务编号查询
+        List<TaskRelCondition> taskRelConditionList = taskRelConditionMapper.selectByMainTaskTypeCodeAndSubCode(mainTaskTypeCode,subTaskTypeCode);
+        for (TaskRelCondition taskRelCondition: taskRelConditionList){
+            SubTaskCondition subTaskCondition = new SubTaskCondition();
+            subTaskCondition.setCreateDate(new Date());
+            subTaskCondition.setSubTaskNum(subTaskNum);
+            subTaskCondition.setConditonHandler(taskRelCondition.getConditonHandler());
+            subTaskCondition.setSubscribeEvent(taskRelCondition.getSubscribeEvent());
+            subTaskCondition.setConditonTriger(taskRelCondition.getConditonTriger());
+            subTaskConditionMapper.insertSelective(subTaskCondition);
+        }
     }
 
 }

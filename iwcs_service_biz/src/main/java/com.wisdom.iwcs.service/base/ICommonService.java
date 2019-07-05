@@ -118,4 +118,11 @@ public interface ICommonService {
      * @return beyondBizBatchMaxNum
      */
     Boolean checkWbBizMaxCallNum(String wbCode, String bizType, Integer callNum);
+
+    /**
+     * 校验货架表坐标和地图表货架是否一致
+     * @param podCode
+     * @return podPointAgreement
+     */
+    Boolean checkPodPointAgreement(String podCode);
 }

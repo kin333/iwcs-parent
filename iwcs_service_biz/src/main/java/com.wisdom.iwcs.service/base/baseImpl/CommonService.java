@@ -62,6 +62,8 @@ public class CommonService implements ICommonService {
     private BasePodLayerStkMapper basePodLayerStkMapper;
     @Autowired
     private BaseWbBizConfigMapper baseWbBizConfigMapper;
+    @Autowired
+    private BaseMapBerthMapper baseMapBerthMapper;
 
     /**
      * 入库、出库确认时是否传入工作台
@@ -324,6 +326,24 @@ public class CommonService implements ICommonService {
             beyondBizBatchMaxNum = true;
         }
         return beyondBizBatchMaxNum;
+    }
+
+    /**
+     * 校验货架表坐标和地图表货架是否一致
+     * @param podCode
+     * @return podPointAgreement
+     */
+    @Override
+    public Boolean checkPodPointAgreement(String podCode){
+        boolean podPointAgreement = false;
+        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(basePodDetail.getBerCode()), "查询货架：" + podCode + "坐标信息为空");
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
+        Preconditions.checkBusinessError(basePodDetail == null, "货架：" + podCode + "货架表中记录的坐标" + basePodDetail.getBerCode() + "在地图信息表中未查找到");
+        if (podCode.equals(baseMapBerth.getPodCode())) {
+            podPointAgreement = true;
+        }
+        return podPointAgreement;
     }
 }
 
