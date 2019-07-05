@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.task.impl;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePod;
@@ -30,6 +31,9 @@ import java.util.Date;
 import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.MANUAL_FIRST;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPCACHEAREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPWORKAREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.*;
 
 /**
@@ -163,39 +167,58 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public Result plToAgingFunction(TaskCreateRequest taskCreateRequest){
         logger.info("产线去老化区搬运:{}",JSON.toJSONString(taskCreateRequest));
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getPodCode()) && Strings.isNullOrEmpty(taskCreateRequest.getStartBercode()), "货架号或起始点坐标不能为空");
+        String podCode = taskCreateRequest.getPodCode();
+        String startBercode = taskCreateRequest.getStartBercode();
+
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startBercode), "货架号或起始点坐标不能为空");
         //校验是否传自动还是手动，手动必选目标点
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getSubTaskBizProp()), "请选择自动还是手动");
         if (MANUAL_FIRST.equals(taskCreateRequest.getSubTaskBizProp())){
-            Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPoint()), "手动模式请选择目标点位");
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(startBercode), "手动模式请选择目标点位");
         }
-        if (!Strings.isNullOrEmpty(taskCreateRequest.getPodCode())){
+        if (!Strings.isNullOrEmpty(podCode)){
             //货架不为空，查询所在点位
+            BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+            startBercode = basePodDetail.getBerCode();
         }
-        if (!Strings.isNullOrEmpty(taskCreateRequest.getStartBercode())){
+        if (!Strings.isNullOrEmpty(startBercode)){
             //起点不为空，查询点位正在执行任务的货架
             //如果货架为空，查询创建失败
+            BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(startBercode);
+            podCode = startBaseMapBerth.getPodCode();
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "未查找到货架，任务创建失败！");
         }
+        //当前货架所在楼层，对比用户登录楼层权限,如果不在一个楼层创建失败
+        //String userAreaCode = SecurityUtils.getCurrentAreaCode();
+        //Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
-        //ICommonService.checkPodPointAgreement();
+        //校验货架点位是否正确
+        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+
         //更改货架空满状态
-
-
-        //目标点有货架，创建失败, 无货架、无任务，上锁
+        basePodDetailMapper.updatePodInStock(podCode,NOT_EMPTY_POD);
 
         //创建任务
         PlToAgingRequest plToAgingRequest = new PlToAgingRequest();
         plToAgingRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
         plToAgingRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         plToAgingRequest.setPriority(taskCreateRequest.getPriority());
-//        plToAgingRequest.setPodCode();
-//        plToAgingRequest.setStartPoint();
-        if (MANUAL_FIRST.equals(taskCreateRequest.getSubTaskBizProp())){
-            //查询点位坐标
-            BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getPointAlias());
-            Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
+        plToAgingRequest.setPodCode(podCode);
+        plToAgingRequest.setStartPoint(startBercode);
 
-            plToAgingRequest.setTargetPoint(baseMapBerth.getBerCode());
+        //手动选择目标点
+        if (MANUAL_FIRST.equals(taskCreateRequest.getSubTaskBizProp())){
+            //查询点位坐标，并上锁
+            BaseMapBerth endBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getPointAlias());
+            Preconditions.checkBusinessError(endBaseMapBerth == null, "目标点位信息为空");
+            //加锁
+            LockStorageDto lockStorageDto = new LockStorageDto();
+            lockStorageDto.setMapCode(endBaseMapBerth.getMapCode());
+            lockStorageDto.setBerCode(endBaseMapBerth.getBerCode());
+            lockStorageDto.setVersion(endBaseMapBerth.getVersion());
+            baseMapBerthMapper.lockMapBerth(lockStorageDto);
+            plToAgingRequest.setTargetPoint(endBaseMapBerth.getBerCode());
         }
         plToAgingRequest.setSubTaskBizProp(taskCreateRequest.getSubTaskBizProp());
         iPlToAgingService.agingToQuaInsp(plToAgingRequest);
@@ -210,35 +233,50 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public Result agingToQuaInspFunction(TaskCreateRequest taskCreateRequest){
         logger.info("自动老化区前往检验点:{}",JSON.toJSONString(taskCreateRequest));
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getPodCode()), "货架号不能为空");
+        String podCode = taskCreateRequest.getPodCode();
+        String targetPoint = "";
+
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
         //根据货架号查询起始点
-        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(taskCreateRequest.getPodCode());
+        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+
+        //校验货架点位是否正确
+        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
         String userAreaCode = SecurityUtils.getCurrentAreaCode();
         Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //获取目标空闲点位，如果没有空闲点，任务创建失败
         //检验区先检验缓存区是否有空闲点，后获工作点是否有空闲
-        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
-//        lockMapBerthCondition.setBerthTypeValue();
-        BaseMapBerth baseMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(lockMapBerthCondition);
-//        if (baseMapBerth != null){
-//
-//        }else if (){
-//
-//        }else {
-//
-//        }
-//        //锁定目标点
 
+        LockMapBerthCondition cachelockMapBerthCondition = new LockMapBerthCondition();
+        cachelockMapBerthCondition.setBizType(QUAINSPCACHEAREA);
+        cachelockMapBerthCondition.setMapCode(basePodDetail.getMapCode());
+        BaseMapBerth cacheLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(cachelockMapBerthCondition);
+        if (cacheLockMapBerth != null){
+            targetPoint = cacheLockMapBerth.getBerCode();
+        }else {
+            LockMapBerthCondition worklockMapBerthCondition = new LockMapBerthCondition();
+            worklockMapBerthCondition.setBizType(QUAINSPWORKAREA);
+            worklockMapBerthCondition.setMapCode(basePodDetail.getMapCode());
+            BaseMapBerth workLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(worklockMapBerthCondition);
+            if (workLockMapBerth != null){
+                targetPoint = workLockMapBerth.getBerCode();
+            }else{
+                throw new BusinessException("创建任务失败，检验区没有空闲点位！");
+            }
+        }
+        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
         //创建任务
         AgingToQuaInspRequest agingToQuaInspRequest = new AgingToQuaInspRequest();
         agingToQuaInspRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
-        agingToQuaInspRequest.setPodCode(taskCreateRequest.getPodCode());
         agingToQuaInspRequest.setPriority(taskCreateRequest.getPriority());
+        agingToQuaInspRequest.setPodCode(podCode);
         agingToQuaInspRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
-//        agingToQuaInspRequest.setStartPoint();
-//        agingToQuaInspRequest.setTargetPoint();
+        agingToQuaInspRequest.setStartPoint(basePodDetail.getBerCode());
+        agingToQuaInspRequest.setTargetPoint(targetPoint);
         iAgingToQuaInspService.agingToQuaInsp(agingToQuaInspRequest);
 
         return new Result();

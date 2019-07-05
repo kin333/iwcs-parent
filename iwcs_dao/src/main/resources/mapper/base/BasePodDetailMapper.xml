@@ -89,7 +89,7 @@
         select
         <include refid="Base_Column_List"/>
         from base_pod_detail
-        where pod_code = #{podCode} and valid_flag = #{validFlag} and delete_flag = #{deleteFlag}
+        where pod_code = #{podCode} and in_lock = 0 and valid_flag = #{validFlag} and delete_flag = #{deleteFlag}
     </select>
     <update id="updatePodTaskLockByPodCodesAndLockStat">
         UPDATE base_pod_detail SET lock_stat = lock_stat|#{lockStat} WHERE pod_code IN
@@ -273,6 +273,13 @@
             lock_source = ''
         </set>
         where lock_source = #{subTaskName}
+    </update>
+    <update id="updatePodInStock">
+        update base_pod_detail
+        <set>
+            in_lock = 1
+        </set>
+        where pod_code = #{podCode}
     </update>
 
 </mapper>

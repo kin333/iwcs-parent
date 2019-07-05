@@ -10,10 +10,10 @@ public class LockMapBerthCondition extends BaseLockCondition {
     private String podCode;
 
     /**
-     * 地码类型,对应字典表
+     * 点位业务类型（如产线自动工作点、校验点等）
      */
-    @Column(name = "berth_type_value")
-    private String berthTypeValue;
+    @Column(name = "biz_type")
+    private String bizType;
 
     public String getPodCode() {
         return podCode;
@@ -23,11 +23,13 @@ public class LockMapBerthCondition extends BaseLockCondition {
         this.podCode = podCode;
     }
 
-    public String getBerthTypeValue() {
-        return berthTypeValue;
+    @Override
+    public String getBizType() {
+        return bizType;
     }
 
-    public void setBerthTypeValue(String berthTypeValue) {
-        this.berthTypeValue = berthTypeValue;
+    @Override
+    public void setBizType(String bizType) {
+        this.bizType = bizType;
     }
 }

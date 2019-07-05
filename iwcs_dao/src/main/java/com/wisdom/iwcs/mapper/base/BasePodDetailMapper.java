@@ -128,4 +128,7 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      * @return
      */
     int unlockPod(String subTaskName);
+
+    //更新货架空满
+    int updatePodInStock(@Param("podCode") String podCode,@Param("InStock") Integer InStock);
 }

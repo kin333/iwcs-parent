@@ -34,43 +34,39 @@ public class MapResouceService implements IMapResouceService {
     BasePodDetailMapper basePodDetailMapper;
 
     /**
-     * 获取检验区工作区点位
+     * 获取检验区工作区点位或缓存区 ,并锁住
      * @param lockMapBerthCondition
      * @return
      */
     @Override
     public BaseMapBerth caculateInspectionWorkAreaEmptyPoint(LockMapBerthCondition lockMapBerthCondition) {
-
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode()), "缺少地图编码");
+
+        BaseMapBerth emptyPoit = new BaseMapBerth();
         //获取检验点空位置
         lockMapBerthCondition.setBizType(QUAINSPWORKAREA);
         lockMapBerthCondition.setOperateAreaCode(QUAINSPAREA);
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
         Preconditions.checkBusinessError(baseMapBerthList.size() <= 0, "检验点暂无空位置");
+        if (QUAINSPWORKAREA.equals(lockMapBerthCondition.getBizType())){
+            //根据获取空位置计算最优位置
+            emptyPoit=calculatingOptimalLocation(baseMapBerthList);
+        }else if (QUAINSPCACHEAREA.equals(lockMapBerthCondition.getBizType())){
+            emptyPoit = baseMapBerthList.get(0);
+        }else{
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(lockMapBerthCondition.getBizType()), "缺少作业区域类型");
+        }
 
-        //根据获取空位置计算最优位置
-        BaseMapBerth emptyPoit=calculatingOptimalLocation(baseMapBerthList);
+        //锁住
+        LockStorageDto lockStorageDto = new LockStorageDto();
+        lockStorageDto.setMapCode(emptyPoit.getMapCode());
+        lockStorageDto.setBerCode(emptyPoit.getBerCode());
+        lockStorageDto.setPodCode(emptyPoit.getPodCode());
+        lockStorageDto.setLockSource(emptyPoit.getLockSource());
+        lockMapBerth(lockStorageDto);
+
         return emptyPoit;
     }
-
-    /**
-     * 获取检验区缓存区点位
-     * @param
-     * @return
-     */
-//    public BaseMapBerth caculateInspectionCacheAreaEmptyPoint(LockMapBerthCondition lockMapBerthCondition) {
-//
-//        Preconditions.checkBusinessError(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode()), "缺少地图编码");
-//        //获取检验点空位置
-//        lockMapBerthCondition.setBizType(QUAINSPCACHEAREA);
-//        lockMapBerthCondition.setOperateAreaCode(QUAINSPAREA);
-//        List<BaseMapBerth> emptyPoit = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
-//        Preconditions.checkBusinessError(baseMapBerthList.size() <= 0, "检验点暂无空位置");
-//
-//        //根据获取空位置计算最优位置
-//        BaseMapBerth emptyPoit=calculatingOptimalLocation(baseMapBerthList);
-//        return emptyPoit;
-//    }
 
     /**
      * 计算最优的点位(优先选择一组全空的点位，然后再比较距离)
@@ -262,7 +258,7 @@ public class MapResouceService implements IMapResouceService {
             if (result.getReturnCode() != HttpStatus.OK.value()) {
                 return result;
             }
-            if(Strings.isNullOrEmpty(lockMapBerthCondition.getBerthTypeValue())) {
+            if(Strings.isNullOrEmpty(lockMapBerthCondition.getBizType())) {
                 return new Result(400,"缺少berthTypeValue");
             }
 
