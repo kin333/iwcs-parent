@@ -15,7 +15,7 @@ public class PlAutoWbCallPodRequest {
     /**
      * 工作点编号
      */
-    private String wbCode;
+    private String targetPoint;
 
     /**
      * 任务优先级
@@ -35,12 +35,12 @@ public class PlAutoWbCallPodRequest {
         this.taskTypeCode = taskTypeCode;
     }
 
-    public String getWbCode() {
-        return wbCode;
+    public String getTargetPoint() {
+        return targetPoint;
     }
 
-    public void setWbCode(String wbCode) {
-        this.wbCode = wbCode;
+    public void setTargetPoint(String targetPoint) {
+        this.targetPoint = targetPoint;
     }
 
     public Integer getPriority() {

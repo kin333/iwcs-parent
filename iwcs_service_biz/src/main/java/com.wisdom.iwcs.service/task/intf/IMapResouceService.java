@@ -19,7 +19,7 @@ public interface IMapResouceService {
      * @param lockMapBerthCondition
      * @return
      */
-    BaseMapBerth caculateInspectionAreaEmptyPoint(LockMapBerthCondition lockMapBerthCondition);
+    BaseMapBerth caculateInspectionWorkAreaEmptyPoint(LockMapBerthCondition lockMapBerthCondition);
 
     /**
      * 锁住空闲点位

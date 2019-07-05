@@ -23,7 +23,25 @@ public class PlToAgingRequest {
     private String taskTypeCode;
 
     //TODO 扩展
+    /**
+     * 库区
+     */
+    private String areaCode;
 
+    /**
+     * 起点
+     */
+    private String startPoint;
+
+    /**
+     * 目标点
+     */
+    private String targetPoint;
+
+    /**
+     * 子任务单业务属性
+     */
+    private String subTaskBizProp;
 
     public String getPodCode() {
         return podCode;
@@ -47,5 +65,37 @@ public class PlToAgingRequest {
 
     public void setTaskTypeCode(String taskTypeCode) {
         this.taskTypeCode = taskTypeCode;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getStartPoint() {
+        return startPoint;
+    }
+
+    public void setStartPoint(String startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public String getTargetPoint() {
+        return targetPoint;
+    }
+
+    public void setTargetPoint(String targetPoint) {
+        this.targetPoint = targetPoint;
+    }
+
+    public String getSubTaskBizProp() {
+        return subTaskBizProp;
+    }
+
+    public void setSubTaskBizProp(String subTaskBizProp) {
+        this.subTaskBizProp = subTaskBizProp;
     }
 }

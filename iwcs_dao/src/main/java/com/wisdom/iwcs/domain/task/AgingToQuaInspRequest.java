@@ -21,6 +21,21 @@ public class AgingToQuaInspRequest {
      */
     private String taskTypeCode;
 
+    /**
+     * 库区
+     */
+    private String areaCode;
+
+    /**
+     * 起点
+     */
+    private String startPoint;
+
+    /**
+     * 目标点
+     */
+    private String targetPoint;
+
     //TODO 扩展
 
     public String getPodCode() {
@@ -45,5 +60,29 @@ public class AgingToQuaInspRequest {
 
     public void setTaskTypeCode(String taskTypeCode) {
         this.taskTypeCode = taskTypeCode;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getStartPoint() {
+        return startPoint;
+    }
+
+    public void setStartPoint(String startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public String getTargetPoint() {
+        return targetPoint;
+    }
+
+    public void setTargetPoint(String targetPoint) {
+        this.targetPoint = targetPoint;
     }
 }

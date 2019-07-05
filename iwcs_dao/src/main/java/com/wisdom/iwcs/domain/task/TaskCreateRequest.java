@@ -15,7 +15,7 @@ public class TaskCreateRequest {
     /**
      * 工作点编号
      */
-    private String wbCode;
+    private String pointAlias;
 
     /**
      * 作业区域(如老化区、检验区)
@@ -28,9 +28,9 @@ public class TaskCreateRequest {
     private String  bizSecondAreaCode;
 
     /**
-     * 自动区/手动区
+     * 子任务单业务属性 老化区 自动区/手动区
      */
-    private String workAreaCode;
+    private String subTaskBizProp;
 
     /**
      * 目标点位
@@ -60,12 +60,12 @@ public class TaskCreateRequest {
         this.taskTypeCode = taskTypeCode;
     }
 
-    public String getWbCode() {
-        return wbCode;
+    public String getPointAlias() {
+        return pointAlias;
     }
 
-    public void setWbCode(String wbCode) {
-        this.wbCode = wbCode;
+    public void setPointAlias(String pointAlias) {
+        this.pointAlias = pointAlias;
     }
 
     public String getOperateAreaCode() {
@@ -84,12 +84,12 @@ public class TaskCreateRequest {
         this.bizSecondAreaCode = bizSecondAreaCode;
     }
 
-    public String getWorkAreaCode() {
-        return workAreaCode;
+    public String getSubTaskBizProp() {
+        return subTaskBizProp;
     }
 
-    public void setWorkAreaCode(String workAreaCode) {
-        this.workAreaCode = workAreaCode;
+    public void setSubTaskBizProp(String subTaskBizProp) {
+        this.subTaskBizProp = subTaskBizProp;
     }
 
     public String getTargetPoint() {

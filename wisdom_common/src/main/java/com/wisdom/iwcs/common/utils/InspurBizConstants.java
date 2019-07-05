@@ -55,6 +55,11 @@ public class InspurBizConstants {
         public final static String QUAINSPCACHEAREA = "quaInspCacheArea";
 
         /**
+         * 检验区工作区
+         */
+        public final static String QUAINSPWORKAREA = "quaInspWorkArea";
+
+        /**
          * 线体缓存区
          */
         public final static String LINECACHEAREA = "lineCacheArea";

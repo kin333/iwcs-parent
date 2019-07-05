@@ -6,6 +6,7 @@ import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.*;
+import com.wisdom.iwcs.service.task.intf.IPlToAgingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +15,17 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.MANUAL_FIRST;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 
 /**
- * 空货架缓存区补充
+ * 线体去老化区
  * @Author george
- * @Date 2019/7/3 21:23
+ * @Date 2019/7/4 09:45
  */
 @Service
-public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPlBufSupplyService {
+public class PlToAgingService implements IPlToAgingService {
     private final Logger logger = LoggerFactory.getLogger(PlBufSupplyService.class);
 
     @Autowired
@@ -39,25 +41,21 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
 
-    /**
-     *  呼叫空货架
-     * @param
-     * @return
-     */
     @Override
-    public Result plBufSupply(PlBufSupplyRequest plBufSupplyRequest){
+    public Result agingToQuaInsp(PlToAgingRequest plToAgingRequest){
+
         //创建主任务
         MainTask mainTaskCreate = new MainTask();
         String mainTaskNum = CodeBuilder.codeBuilder("M");
         mainTaskCreate.setMainTaskNum(mainTaskNum);
         mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setMainTaskTypeCode(plBufSupplyRequest.getTaskTypeCode());
-        mainTaskCreate.setPriority(plBufSupplyRequest.getPriority());
+        mainTaskCreate.setPriority(plToAgingRequest.getPriority());
+        mainTaskCreate.setMainTaskTypeCode(plToAgingRequest.getTaskTypeCode());
+        mainTaskCreate.setAreaCode(plToAgingRequest.getAreaCode());
         mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
-        mainTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());
         mainTaskMapper.insertSelective(mainTaskCreate);
         //查询模板关系表查找子任务
-        List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(plBufSupplyRequest.getTaskTypeCode());
+        List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(plToAgingRequest.getTaskTypeCode());
         for (TaskRel taskRel:taskRelList){
             //创建子任务
             SubTask subTaskCreate = new SubTask();
@@ -69,28 +67,37 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
             subTaskCreate.setMainTaskSeq(taskRel.getSubTaskSeq());
             subTaskCreate.setMainTaskType(taskRel.getMainTaskTypeCode());
             subTaskCreate.setThirdType(taskRel.getThirdType());
-            subTaskCreate.setAppCode(taskRel.getAppCode());
             subTaskCreate.setThirdUrl(taskRel.getThirdUrl());
+            subTaskCreate.setAppCode(taskRel.getAppCode());
             subTaskCreate.setThirdInvokeType(taskRel.getThirdInvokeType());
             subTaskCreate.setThirdStartMethod(taskRel.getThirdStartMethod());
             subTaskCreate.setThirdEndMethod(taskRel.getThirdEndMethod());
             subTaskCreate.setSendStatus(SUB_NOT_ISSUED);
             subTaskCreate.setTaskStatus(SUB_NOT_ISSUED);
-            //TODO
-
             subTaskCreate.setNeedTrigger(taskRel.getNeedTrigger());
             subTaskCreate.setNeedConfirm(taskRel.getNeedConfirm());
             subTaskCreate.setNeedInform(taskRel.getNeedInform());
 
+            subTaskCreate.setPodCode(plToAgingRequest.getPodCode());
             subTaskCreate.setWorkerTaskCode(subTaskNum);
 
-            //计算目标通过地图坐标查询坐标
-            BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plBufSupplyRequest.getTargetPoint());
-            subTaskCreate.setEnd_x(endBercode.getCoox().doubleValue());
-            subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
-            subTaskCreate.setEndBercode(plBufSupplyRequest.getTargetPoint());
-            subTaskCreate.setMapCode(endBercode.getMapCode());
-            subTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());
+            //计算起点通过地图坐标查询坐标
+            BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(plToAgingRequest.getStartPoint());
+            subTaskCreate.setStart_x(startBercode.getCoox().doubleValue());
+            subTaskCreate.setStart_y(startBercode.getCooy().doubleValue());
+
+            if (MANUAL_FIRST.equals(plToAgingRequest.getSubTaskBizProp())){
+                //计算目标通过地图坐标查询坐标
+                BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plToAgingRequest.getTargetPoint());
+                subTaskCreate.setEnd_x(endBercode.getCoox().doubleValue());
+                subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
+                subTaskCreate.setEndBercode(plToAgingRequest.getTargetPoint());
+            }
+
+            subTaskCreate.setStartBercode(plToAgingRequest.getStartPoint());
+            subTaskCreate.setMapCode(startBercode.getMapCode());
+            subTaskCreate.setAreaCode(plToAgingRequest.getAreaCode());
+            subTaskCreate.setSubTaskBizProp(plToAgingRequest.getSubTaskBizProp());
             subTaskMapper.insertSelective(subTaskCreate);
 
             //通过主任务编号和子任务编号查询
@@ -103,6 +110,7 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
             subTaskCondition.setSubscribeEvent(taskRelConditionList.getSubscribeEvent());
             subTaskConditionMapper.insertSelective(subTaskCondition);
         }
+
         return new Result();
     }
 }
