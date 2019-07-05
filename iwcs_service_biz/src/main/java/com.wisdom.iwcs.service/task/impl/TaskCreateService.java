@@ -95,11 +95,15 @@ public class TaskCreateService implements ITaskCreateService {
                 break;
             case PLTOAGING:
                 taskCreateRequest.setPriority(mainTaskType.getPriority());
-                PlToAgingRequest plToAgingRequest = new PlToAgingRequest();
+                plToAgingFunction(taskCreateRequest);
                 break;
             case AGINGTOQUAINSP:
                 taskCreateRequest.setPriority(mainTaskType.getPriority());
-                AgingToQuaInspRequest agingToQuaInspRequest = new AgingToQuaInspRequest();
+                agingToQuaInspFunction(taskCreateRequest);
+                break;
+            case PTOP:
+                taskCreateRequest.setPriority(mainTaskType.getPriority());
+                pTopFunction(taskCreateRequest);
                 break;
             default:
                 logger.error("wrong task type Code:{}",taskTypeCode);
@@ -279,6 +283,15 @@ public class TaskCreateService implements ITaskCreateService {
         agingToQuaInspRequest.setTargetPoint(targetPoint);
         iAgingToQuaInspService.agingToQuaInsp(agingToQuaInspRequest);
 
+        return new Result();
+    }
+
+    /**
+     * 点到点
+     * @param taskCreateRequest
+     * @return
+     */
+    public Result pTopFunction(TaskCreateRequest taskCreateRequest){
         return new Result();
     }
 
