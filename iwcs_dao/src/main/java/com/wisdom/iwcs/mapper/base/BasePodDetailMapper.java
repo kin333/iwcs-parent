@@ -4,6 +4,7 @@ import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.commonDto.fliterCondition.PodFliterCondition;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.domain.base.dto.LockPodCondition;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -107,6 +108,13 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      * @return
      */
     List<BasePodDetail> selectByLockPodConfigtion(LockPodCondition lockPodCondition);
+
+    /**
+     * 根据锁状态 返回货架号
+     * @return
+     */
+
+    List<BasePodDetailDTO> selectByInLock();
 
     /**
      * 根据货架信息的ID锁定货架

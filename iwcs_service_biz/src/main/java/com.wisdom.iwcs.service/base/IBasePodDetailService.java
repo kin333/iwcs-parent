@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.base;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public interface IBasePodDetailService {
     List<BasePodDetailDTO> selectSelective(BasePodDetailDTO record);
 
     List<BasePodDetailDTO> judgeBincodeIfTask(String bincode);
+
+    List<BasePodDetailDTO> selectByInLock();
 
     int updateByPrimaryKey(BasePodDetailDTO record);
 

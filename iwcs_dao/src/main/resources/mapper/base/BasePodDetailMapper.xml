@@ -260,7 +260,10 @@
         </if>
 
     </select>
-
+    <select id="selectByInLock" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/> from base_pod_detail
+        where map_code != '' or map_code != null
+    </select>
     <select id="selectByLockPodConfigtion" resultMap="BaseResultMap">
         select <include refid="Table_Column_List"/> from base_pod_detail bpd
         LEFT JOIN base_map_berth bmb ON bpd.ber_code = bmb.ber_code
@@ -306,5 +309,4 @@
         </set>
         where pod_code = #{podCode}
     </update>
-
 </mapper>

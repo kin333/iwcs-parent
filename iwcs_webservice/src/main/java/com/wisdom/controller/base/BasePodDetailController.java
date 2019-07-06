@@ -3,6 +3,7 @@ package com.wisdom.controller.base;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.mapstruct.base.BasePodDetailMapStruct;
 import com.wisdom.iwcs.service.base.IBasePodDetailService;
@@ -63,7 +64,16 @@ public class BasePodDetailController {
 
         return new Result();
     }
+    /**
+     * 根据锁状态 返回货架号
+     * @return
+     */
+    @GetMapping(value = "/selectByInLock")
+    public Result selectByInLock() {
+        List<BasePodDetailDTO> basePodDetail = IBasePodDetailService.selectByInLock();
 
+        return new Result(basePodDetail);
+    }
     /**
      * 根据主键查询记录
      *

@@ -129,6 +129,12 @@ public class BasePodDetailService implements IBasePodDetailService {
         return selectSelective(basePodDetailDTO);
     }
 
+    @Override
+    public List<BasePodDetailDTO> selectByInLock() {
+        List<BasePodDetailDTO> basePodDetails = basePodDetailMapper.selectByInLock();
+        return basePodDetails;
+    }
+
     /**
      * 根据主键更新
      *
