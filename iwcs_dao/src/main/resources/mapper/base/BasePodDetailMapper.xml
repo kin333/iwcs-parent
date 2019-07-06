@@ -116,6 +116,12 @@
         from base_pod_detail
         where pod_code = #{podCode} and in_lock = 0 and valid_flag = #{validFlag} and delete_flag = #{deleteFlag}
     </select>
+    <select id="selectByPodCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_pod_detail
+        where pod_code = #{podCode} and delete_flag = 0
+    </select>
     <update id="updatePodTaskLockByPodCodesAndLockStat">
         UPDATE base_pod_detail SET lock_stat = lock_stat|#{lockStat} WHERE pod_code IN
         <foreach collection="podCodes" index="index" item="item" open="(" close=")" separator=",">

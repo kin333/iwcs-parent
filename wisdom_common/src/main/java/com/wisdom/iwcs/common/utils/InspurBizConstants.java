@@ -129,4 +129,24 @@ public class InspurBizConstants {
          */
         public final static String HAVE_GOODS = "1";
     }
+
+    /**
+     * 海康回调方法名
+     */
+    public static final class HikCallbackMethod {
+
+        /**
+         * 任务开始
+         */
+        public final static String TASK_START = "taskStart";
+        /**
+         * 走出储位
+         */
+        public final static String TASK_LEAVE_POINT = "taskLeavePoint";
+        /**
+         * 任务完成
+         */
+        public final static String TASK_FINISHED = "taskFinished";
+
+    }
 }

@@ -1,6 +1,9 @@
 package com.wisdom.iwcs.domain.task.dto;
 
+import com.wisdom.iwcs.domain.hikSync.BaseCallbackData;
+
 import javax.persistence.*;
+
 
 @Table(name = "agv_callback")
 public class AgvCallbackDTO {
@@ -82,6 +85,19 @@ public class AgvCallbackDTO {
      * 自定义字段
      */
     private String data;
+
+    /**
+     * 自定义字段的解析类型
+     */
+    private BaseCallbackData dataObject;
+
+    public BaseCallbackData getDataObject() {
+        return dataObject;
+    }
+
+    public void setDataObject(BaseCallbackData dataObject) {
+        this.dataObject = dataObject;
+    }
 
     /**
      * @return id

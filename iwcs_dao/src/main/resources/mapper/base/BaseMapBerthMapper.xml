@@ -108,7 +108,7 @@
         order by last_modified_time desc
     </select>
 
-    <select id="selectOneByBercode" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth">
+    <select id="selectOneByBercode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from base_map_berth where ber_code = #{bercode,jdbcType=VARCHAR}

@@ -27,8 +27,7 @@ public class NetWorkUtil {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         List<String> val = resp.getHeaders().get("Set-Cookie");
-        System.out.println(val);
-        logger.debug("发送成功: {}", url);
+        logger.debug("发送成功: {}, Set-Cookie: {}", url, val);
 
         return resp.getBody();
     }

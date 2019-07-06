@@ -4,6 +4,7 @@ package com.wisdom.iwcs.mapper.task;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -61,4 +62,19 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return
      */
     int updatePriority(@Param("subTaskNum")String subTaskNum,@Param("priority") Integer priority);
+
+    /**
+     * 根据任务编号更新机器人编号
+     * @param taskCode
+     * @param robotCode
+     * @return
+     */
+    int updateRobotCodeByBerCode(@Param("taskCode") String taskCode,@Param("robotCode") String robotCode);
+
+    /**
+     * 通过执行任务号查询子任务
+     * @param taskCode
+     * @return
+     */
+    SubTask selectByTaskCode(String taskCode);
 }
