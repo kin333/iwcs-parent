@@ -113,8 +113,8 @@ application:
     genAgvSchedulingTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/genAgvSchedulingTask
     continueTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/continueTask
     cancelTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/cancelTask
-    tokenCode: dc9293d5bc047d238e0e439fbb5556c5
-    clientCode: IWCS
+    tokenCode: 09bd3456991fe1cf2e185de92fa5aab5
+    clientCode: INSPUR
   outstock:
     noticeOutstockProcess: true
     allowHandOutstockSupplyCall: true

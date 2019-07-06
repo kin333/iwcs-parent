@@ -1,9 +1,11 @@
 package com.wisdom.iwcs.service.task.template;
 
+import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
+import com.wisdom.iwcs.domain.task.dto.AppContexts;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +54,10 @@ public class TemplateRelatedServer {
      * 表示主任务类
      */
     private final String MAIN_TASK = "MainTask";
+    /**
+     * 表示上下文的一些信息
+     */
+    private final String APP_CONTEXTS = "AppContexts";
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -58,6 +67,8 @@ public class TemplateRelatedServer {
     SubTaskTypMapper subTaskTypMapper;
     @Autowired
     TaskRelConditionMapper taskRelConditionMapper;
+    @Autowired
+    ApplicationProperties applicationProperties;
 
     /**
      * 根据子任务编号,把子任务的信息插入到子任务对应的发送消息体中
@@ -96,7 +107,7 @@ public class TemplateRelatedServer {
             if (values == null) {
                 break;
             }
-            if (values.length <= 0) {
+            if (values.length != 3) {
                 throw new BusinessException("子任务" + subTaskNum + "发送消息体格式错误");
             }
             Object param = null;
@@ -104,11 +115,20 @@ public class TemplateRelatedServer {
             String methodName = "get" + values[2].substring(0, 1).toUpperCase() + values[2].substring(1);
             try {
                 if (SUB_TASK.equals(values[1])) {
+                    //向模板中加入子任务信息
                     Method declaredMethod = SubTask.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(subTask);
                 } else if (MAIN_TASK.equals(values[1])) {
+                    //向模板中加入主任务信息
                     Method declaredMethod = MainTask.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(mainTask);
+                } else if (APP_CONTEXTS.equals(values[1])) {
+                    //向模板中加入请求要求数据
+                    AppContexts appContexts = getRequestInfo();
+                    Method declaredMethod = AppContexts.class.getDeclaredMethod(methodName);
+                    param = declaredMethod.invoke(appContexts);
+                } else {
+                    throw new BusinessException("子任务" + subTaskNum + "的任务消息体错误: 无法找到" + values[1] + "的对应类");
                 }
                 if (param == null && NC.equals(values[0])) {
                     throw new BusinessException(values[2] + "是必填项,不能为null");
@@ -158,6 +178,24 @@ public class TemplateRelatedServer {
         if (obj == null) {
             throw new BusinessException("数据不存在:" + errorInfo);
         }
+    }
+
+    /**
+     * 生成请求的一些必填信息
+     * @return
+     */
+    private AppContexts getRequestInfo() {
+        AppContexts appContexts = new AppContexts();
+        String reqCode = UUID.randomUUID().toString().replaceAll("-", "");
+        if (reqCode.length() > 32) {
+            reqCode = reqCode.substring(0, 32);
+        }
+        appContexts.setReqCode(reqCode);
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        appContexts.setReqTime(timeFormat.format(new Date()));
+        appContexts.setClientCode(applicationProperties.getHikParam().getClientCode());
+        appContexts.setTokenCode(applicationProperties.getHikParam().getTokenCode());
+        return appContexts;
     }
 
 }
