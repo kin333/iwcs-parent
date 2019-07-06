@@ -264,7 +264,7 @@
             in_lock = 1,
             lock_source = #{lockSource}
         </set>
-        where id = #{id}
+        where pod_code = #{podCode}
     </update>
     <update id="unlockPod">
         update base_pod_detail

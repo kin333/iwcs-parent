@@ -1,11 +1,11 @@
 package com.wisdom.iwcs.domain.task;
 
 /**
- * 自动老化区前往检验点
+ * 点到点任务
  * @Author george
- * @Date 2019/7/3 21:49 
+ * @Date 2019/7/5 9:22
  */
-public class AgingToQuaInspRequest {
+public class PToPRequest {
 
     /**
      * 货架号

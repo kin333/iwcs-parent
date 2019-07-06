@@ -35,6 +35,11 @@ public interface IMapResouceService {
      */
     Result unlockMapBerth(LockStorageDto lockStorageDto);
 
+    /**
+     * 货架上锁
+     */
+    boolean lockPod(String podCode, String lockSource);
+
 
     Result lockEmptyStorageByBizTypeList(List<LockMapBerthCondition> baseMapBerthList);
 

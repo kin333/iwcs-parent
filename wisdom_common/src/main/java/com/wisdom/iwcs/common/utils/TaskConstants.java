@@ -20,6 +20,17 @@ public class TaskConstants {
     }
 
     /**
+     * 点到点任务子类型
+     */
+    public static final class pTopTaskSubTaskTypeConstants {
+        /**
+         * 初始化入库
+         */
+        public final static String INIT_STORAGE= "init_storage";
+
+    }
+
+    /**
      * 主任务状态值
      */
     public static final class mainTaskStatus {

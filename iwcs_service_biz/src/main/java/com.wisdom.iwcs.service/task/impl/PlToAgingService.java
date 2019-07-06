@@ -6,6 +6,7 @@ import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.*;
+import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import com.wisdom.iwcs.service.task.intf.IPlToAgingService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.slf4j.Logger;
@@ -39,9 +40,11 @@ public class PlToAgingService implements IPlToAgingService {
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     private ITaskCreateService iTaskCreateService;
+    @Autowired
+    private IMapResouceService iMapResouceService;
 
     @Override
-    public Result agingToQuaInsp(PlToAgingRequest plToAgingRequest){
+    public Result plagingToQuaInsp(PlToAgingRequest plToAgingRequest){
 
         //创建主任务
         MainTask mainTaskCreate = new MainTask();
@@ -93,6 +96,9 @@ public class PlToAgingService implements IPlToAgingService {
                 subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
                 subTaskCreate.setEndBercode(plToAgingRequest.getTargetPoint());
             }
+
+            //货架上锁
+            iMapResouceService.lockPod(plToAgingRequest.getPodCode(),subTaskNum);
 
             subTaskCreate.setStartBercode(plToAgingRequest.getStartPoint());
             subTaskCreate.setMapCode(startBercode.getMapCode());

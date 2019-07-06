@@ -171,14 +171,15 @@ public class MapResouceService implements IMapResouceService {
      * 锁定选中货架
      * @param lockSource 锁定源
      */
-    public boolean lockPod(Integer id, String lockSource) {
-        if (id == null || id <= 0) {
-            throw new BusinessException("id不能为空且必须为正数");
+    @Override
+    public boolean lockPod(String podCode, String lockSource) {
+        if (Strings.isNullOrEmpty(podCode)) {
+            throw new BusinessException("货架不能为空");
         }
-        if (StringUtils.isEmpty(lockSource)) {
+        if (Strings.isNullOrEmpty(lockSource)) {
             throw new BusinessException("锁定源不能为空");
         }
-        int changeRow = basePodDetailMapper.lockPod(id, lockSource);
+        int changeRow = basePodDetailMapper.lockPod(podCode, lockSource);
         if (changeRow > 0) {
             return true;
         }
@@ -229,7 +230,7 @@ public class MapResouceService implements IMapResouceService {
         }
         logger.debug("开始锁定货架{},锁定源为{}", needLockPod.getPodCode(), tmpLockPodCondition.getLockSource());
         //锁定货架操作
-        lockPod(needLockPod.getId(), tmpLockPodCondition.getLockSource());
+        lockPod(needLockPod.getPodCode(), tmpLockPodCondition.getLockSource());
         //返回被锁定的货架信息
         needLockPod.setLockSource(tmpLockPodCondition.getLockSource());
         needLockPod.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.LOCK.getCode()));

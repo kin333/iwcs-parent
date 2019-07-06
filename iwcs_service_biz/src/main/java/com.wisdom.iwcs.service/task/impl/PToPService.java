@@ -3,11 +3,16 @@ package com.wisdom.iwcs.service.task.impl;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.MainTask;
+import com.wisdom.iwcs.domain.task.PToPRequest;
+import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
-import com.wisdom.iwcs.mapper.task.*;
-import com.wisdom.iwcs.service.task.intf.IAgingToQuaInspService;
+import com.wisdom.iwcs.mapper.task.MainTaskMapper;
+import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
+import com.wisdom.iwcs.service.task.intf.IPToPService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +22,17 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.MANUAL_FIRST;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 
 /**
- * 任务：老化区前往检验点
+ * 点到点搬运任务
  * @Author george
- * @Date 2019/7/4 9:04
+ * @Date 2019/7/5 10:35
  */
 @Service
-public class AgingToQuaInspService implements IAgingToQuaInspService {
+public class PToPService implements IPToPService {
     private final Logger logger = LoggerFactory.getLogger(PlBufSupplyService.class);
 
     @Autowired
@@ -36,10 +42,6 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
     @Autowired
     private TaskRelMapper taskRelMapper;
     @Autowired
-    private SubTaskConditionMapper subTaskConditionMapper;
-    @Autowired
-    private TaskRelConditionMapper taskRelConditionMapper;
-    @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     private ITaskCreateService iTaskCreateService;
@@ -47,20 +49,21 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
     private IMapResouceService iMapResouceService;
 
     @Override
-    public Result agingToQuaInsp(AgingToQuaInspRequest agingToQuaInspRequest){
+    public Result pTop(PToPRequest pToPRequest){
+
         //创建主任务
         MainTask mainTaskCreate = new MainTask();
         String mainTaskNum = CodeBuilder.codeBuilder("M");
         mainTaskCreate.setMainTaskNum(mainTaskNum);
         mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setMainTaskTypeCode(agingToQuaInspRequest.getTaskTypeCode());
-        mainTaskCreate.setPriority(agingToQuaInspRequest.getPriority());
+        mainTaskCreate.setPriority(pToPRequest.getPriority());
+        mainTaskCreate.setMainTaskTypeCode(pToPRequest.getTaskTypeCode());
+        mainTaskCreate.setAreaCode(pToPRequest.getAreaCode());
         mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
-        mainTaskCreate.setAreaCode(agingToQuaInspRequest.getAreaCode());
         mainTaskMapper.insertSelective(mainTaskCreate);
         //查询模板关系表查找子任务
-        List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(agingToQuaInspRequest.getTaskTypeCode());
-        for (TaskRel taskRel:taskRelList){
+        List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(pToPRequest.getTaskTypeCode());
+        for (TaskRel taskRel:taskRelList) {
             //创建子任务
             SubTask subTaskCreate = new SubTask();
             String subTaskNum = CodeBuilder.codeBuilder("S");
@@ -71,8 +74,8 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
             subTaskCreate.setMainTaskSeq(taskRel.getSubTaskSeq());
             subTaskCreate.setMainTaskType(taskRel.getMainTaskTypeCode());
             subTaskCreate.setThirdType(taskRel.getThirdType());
-            subTaskCreate.setAppCode(taskRel.getAppCode());
             subTaskCreate.setThirdUrl(taskRel.getThirdUrl());
+            subTaskCreate.setAppCode(taskRel.getAppCode());
             subTaskCreate.setThirdInvokeType(taskRel.getThirdInvokeType());
             subTaskCreate.setThirdStartMethod(taskRel.getThirdStartMethod());
             subTaskCreate.setThirdEndMethod(taskRel.getThirdEndMethod());
@@ -83,27 +86,27 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
             subTaskCreate.setNeedInform(taskRel.getNeedInform());
             subTaskCreate.setSubTaskSeq(taskRel.getSubTaskSeq());
 
-            subTaskCreate.setPodCode(agingToQuaInspRequest.getPodCode());
+            subTaskCreate.setPodCode(pToPRequest.getPodCode());
             subTaskCreate.setWorkerTaskCode(subTaskNum);
 
-            //货架上锁
-            iMapResouceService.lockPod(agingToQuaInspRequest.getPodCode(),subTaskNum);
-
-
             //计算起点通过地图坐标查询坐标
-            BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(agingToQuaInspRequest.getStartPoint());
+            BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(pToPRequest.getStartPoint());
             subTaskCreate.setStart_x(startBercode.getCoox().doubleValue());
             subTaskCreate.setStart_y(startBercode.getCooy().doubleValue());
 
             //计算目标通过地图坐标查询坐标
-            BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(agingToQuaInspRequest.getTargetPoint());
+            BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(pToPRequest.getTargetPoint());
             subTaskCreate.setEnd_x(endBercode.getCoox().doubleValue());
             subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
+            subTaskCreate.setEndBercode(pToPRequest.getTargetPoint());
 
-            subTaskCreate.setStartBercode(agingToQuaInspRequest.getStartPoint());
-            subTaskCreate.setEndBercode(agingToQuaInspRequest.getTargetPoint());
-            subTaskCreate.setMapCode(endBercode.getMapCode());
-            subTaskCreate.setAreaCode(agingToQuaInspRequest.getAreaCode());
+
+            //货架上锁
+            iMapResouceService.lockPod(pToPRequest.getPodCode(), subTaskNum);
+
+            subTaskCreate.setStartBercode(pToPRequest.getStartPoint());
+            subTaskCreate.setMapCode(startBercode.getMapCode());
+            subTaskCreate.setAreaCode(pToPRequest.getAreaCode());
             subTaskMapper.insertSelective(subTaskCreate);
 
             //添加子任务条件

@@ -13,11 +13,6 @@ public class TaskCreateRequest {
     private String taskTypeCode;
 
     /**
-     * 工作点编号
-     */
-    private String pointAlias;
-
-    /**
      * 作业区域(如老化区、检验区)
      */
     private String operateAreaCode;
@@ -33,9 +28,9 @@ public class TaskCreateRequest {
     private String subTaskBizProp;
 
     /**
-     * 目标点位
+     * 目标点位编号
      */
-    private String targetPoint;
+    private String targetPointAlias;
 
     /**
      * 货架号
@@ -43,14 +38,19 @@ public class TaskCreateRequest {
     private String podCode;
 
     /**
-     * 起始点
+     * 起始点编号
      */
-    private String startBercode;
+    private String startPointAlias;
 
     /**
      * 任务优先级 不填
      */
     private Integer priority;
+
+    /**
+     * 点到点细分任务类型
+     */
+    private String pTopTaskSubTaskType;
 
     public String getTaskTypeCode() {
         return taskTypeCode;
@@ -58,14 +58,6 @@ public class TaskCreateRequest {
 
     public void setTaskTypeCode(String taskTypeCode) {
         this.taskTypeCode = taskTypeCode;
-    }
-
-    public String getPointAlias() {
-        return pointAlias;
-    }
-
-    public void setPointAlias(String pointAlias) {
-        this.pointAlias = pointAlias;
     }
 
     public String getOperateAreaCode() {
@@ -92,14 +84,6 @@ public class TaskCreateRequest {
         this.subTaskBizProp = subTaskBizProp;
     }
 
-    public String getTargetPoint() {
-        return targetPoint;
-    }
-
-    public void setTargetPoint(String targetPoint) {
-        this.targetPoint = targetPoint;
-    }
-
     public String getPodCode() {
         return podCode;
     }
@@ -108,19 +92,35 @@ public class TaskCreateRequest {
         this.podCode = podCode;
     }
 
-    public String getStartBercode() {
-        return startBercode;
-    }
-
-    public void setStartBercode(String startBercode) {
-        this.startBercode = startBercode;
-    }
-
     public Integer getPriority() {
         return priority;
     }
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public String getTargetPointAlias() {
+        return targetPointAlias;
+    }
+
+    public void setTargetPointAlias(String targetPointAlias) {
+        this.targetPointAlias = targetPointAlias;
+    }
+
+    public String getStartPointAlias() {
+        return startPointAlias;
+    }
+
+    public void setStartPointAlias(String startPointAlias) {
+        this.startPointAlias = startPointAlias;
+    }
+
+    public String getpTopTaskSubTaskType() {
+        return pTopTaskSubTaskType;
+    }
+
+    public void setpTopTaskSubTaskType(String pTopTaskSubTaskType) {
+        this.pTopTaskSubTaskType = pTopTaskSubTaskType;
     }
 }
