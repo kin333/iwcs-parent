@@ -43,6 +43,7 @@
     <result column="worker_task_code" jdbcType="VARCHAR" property="workerTaskCode"/>
     <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
     <result column="sub_task_biz_prop" jdbcType="VARCHAR" property="subTaskBizProp"/>
+    <result column="robot_code" jdbcType="VARCHAR" property="robotCode"/>
 
   </resultMap>
   <sql id="Base_Column_List">
@@ -54,7 +55,7 @@
     need_inform, need_trigger, trigger_type, condition_handler, third_invoke_type, third_type, 
     app_code, third_url, third_start_method, third_end_method, point_access, sequence,
     cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec, priority,task_status,end_remark,
-    worker_task_code,area_code,sub_task_biz_prop
+    worker_task_code,area_code,sub_task_biz_prop, robot_code
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task

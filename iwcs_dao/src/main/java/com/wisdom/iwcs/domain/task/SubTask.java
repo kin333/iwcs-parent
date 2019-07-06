@@ -268,6 +268,20 @@ public class SubTask {
     @Column(name = "sub_task_biz_prop")
     private String subTaskBizProp;
 
+    /**
+     * 执行机器人编号
+     */
+    @Column(name = "robot_code")
+    private String robotCode;
+
+    public String getRobotCode() {
+        return robotCode;
+    }
+
+    public void setRobotCode(String robotCode) {
+        this.robotCode = robotCode;
+    }
+
     public String getSubTaskBizProp() {
         return subTaskBizProp;
     }
