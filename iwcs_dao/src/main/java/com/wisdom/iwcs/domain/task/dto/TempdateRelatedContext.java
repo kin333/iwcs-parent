@@ -5,11 +5,11 @@ import lombok.Setter;
 
 /**
  * iwcs 上下文类
- * @authot han
+ * @author  han
  */
 @Getter
 @Setter
-public class AppContexts {
+public class TempdateRelatedContext {
     /**
      * 请求编号
      */

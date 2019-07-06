@@ -5,12 +5,11 @@ import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
-import com.wisdom.iwcs.domain.task.dto.AppContexts;
+import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
-import com.wisdom.iwcs.service.task.subtask.impl.SubTaskWorker;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +56,7 @@ public class TemplateRelatedServer {
     /**
      * 表示上下文的一些信息
      */
-    private final String APP_CONTEXTS = "AppContexts";
+    private final String TEMP_RELATED_CONTEXT = "TempdateRelatedContext";
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -122,11 +121,11 @@ public class TemplateRelatedServer {
                     //向模板中加入主任务信息
                     Method declaredMethod = MainTask.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(mainTask);
-                } else if (APP_CONTEXTS.equals(values[1])) {
+                } else if (TEMP_RELATED_CONTEXT.equals(values[1])) {
                     //向模板中加入请求要求数据
-                    AppContexts appContexts = getRequestInfo();
-                    Method declaredMethod = AppContexts.class.getDeclaredMethod(methodName);
-                    param = declaredMethod.invoke(appContexts);
+                    TempdateRelatedContext tempdateRelatedContext = getRequestInfo();
+                    Method declaredMethod = TempdateRelatedContext.class.getDeclaredMethod(methodName);
+                    param = declaredMethod.invoke(tempdateRelatedContext);
                 } else {
                     throw new BusinessException("子任务" + subTaskNum + "的任务消息体错误: 无法找到" + values[1] + "的对应类");
                 }
@@ -184,18 +183,18 @@ public class TemplateRelatedServer {
      * 生成请求的一些必填信息
      * @return
      */
-    private AppContexts getRequestInfo() {
-        AppContexts appContexts = new AppContexts();
+    private TempdateRelatedContext getRequestInfo() {
+        TempdateRelatedContext tempdateRelatedContext = new TempdateRelatedContext();
         String reqCode = UUID.randomUUID().toString().replaceAll("-", "");
         if (reqCode.length() > 32) {
             reqCode = reqCode.substring(0, 32);
         }
-        appContexts.setReqCode(reqCode);
+        tempdateRelatedContext.setReqCode(reqCode);
         SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        appContexts.setReqTime(timeFormat.format(new Date()));
-        appContexts.setClientCode(applicationProperties.getHikParam().getClientCode());
-        appContexts.setTokenCode(applicationProperties.getHikParam().getTokenCode());
-        return appContexts;
+        tempdateRelatedContext.setReqTime(timeFormat.format(new Date()));
+        tempdateRelatedContext.setClientCode(applicationProperties.getHikParam().getClientCode());
+        tempdateRelatedContext.setTokenCode(applicationProperties.getHikParam().getTokenCode());
+        return tempdateRelatedContext;
     }
 
 }
