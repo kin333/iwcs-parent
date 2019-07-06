@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="han" id="201907052018">
+        <createTable tableName="agv_callback">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="req_code" remarks="请求编号" type="VARCHAR(32)"/>
+            <column name="req_time" remarks="请求时间戳" type="VARCHAR(20)"/>
+            <column name="client_code" remarks="客户端编号" type="VARCHAR(16)"/>
+            <column name="token_code " remarks="令牌号" type="VARCHAR(64)"/>
+            <column name="interface_name" remarks="agvCallback TCP 协议必传，REST 协议不用传" type="VARCHAR(64)"/>
+            <column name="method" remarks="方法名, 可使用任务类型做为方法名" type="VARCHAR(16)"/>
+            <column name="task_code" remarks="当前任务单号" type="VARCHAR(32)"/>
+            <column name="wb_code" remarks="工作位" type="VARCHAR(32)"/>
+            <column name="pod_code" remarks="货架编号" type="VARCHAR(16)"/>
+            <column name="area_code" remarks="货架所在区域编号" type="VARCHAR(32)"/>
+            <column name="material_lot" remarks="物料批次" type="VARCHAR(32)"/>
+            <column name="current_position_code" remarks="当前位置编号" type="VARCHAR(32)"/>
+            <column name="data" remarks="自定义字段" type="VARCHAR(2000)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

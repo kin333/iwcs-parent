@@ -119,4 +119,5 @@
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_task_rel_condition_changelog.xml" relativeToChangelogFile="false"/>
 
 
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_agv_callback_changelog_20190705.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
