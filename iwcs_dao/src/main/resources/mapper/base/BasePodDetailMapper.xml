@@ -60,6 +60,31 @@
         <if test="startTime != null">
             and created_time &gt;= #{startTime,jdbcType=BIGINT}
         </if>
+        <if test="podCode != null and podCode != ''">
+            and pod_code = #{podCode}
+        </if>
+        <if test="berCode != null and berCode != ''">
+            and ber_code = #{berCode}
+        </if>
+        <if test="areaCode != null and areaCode != ''">
+            and area_code = #{areaCode}
+        </if>
+        <if test="mapCode != null and mapCode != ''">
+            and map_code = #{mapCode}
+        </if>
+        <if test="stgTypeCode != null and stgTypeCode != ''">
+            and stg_type_code = #{stgTypeCode}
+        </if>
+        <if test="inLock != null and inLock != ''">
+            and in_lock = #{inLock}
+        </if>
+        <if test="lockSource != null and lockSource != ''">
+            and lock_source = #{lockSource}
+        </if>
+        <if test="inStock != null and inStock != ''">
+            and in_stock = #{inStock}
+        </if>
+
         <if test="endTime != null">
             and created_time &lt;= #{endTime,jdbcType=BIGINT}
         </if>
