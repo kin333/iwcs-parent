@@ -12,6 +12,8 @@ import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.task.impl.MapResouceService;
 import liquibase.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import java.util.List;
  */
 @Service
 public class BaseLockEmptyPodService {
+    private Logger logger = LoggerFactory.getLogger(BaseLockEmptyPodService.class);
     @Autowired
     MapResouceService mapResouceService;
     @Autowired
@@ -39,9 +42,11 @@ public class BaseLockEmptyPodService {
      * @return
      */
     public boolean handleConditionService(SubTaskCondition subTaskCondition, List<AreaCondition> areaConditions, String inStock) {
+        logger.info("子任务{},开始锁定货架", subTaskCondition.getSubTaskNum());
         Long subTaskId = subTaskCondition.getId();
         SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
 
+        logger.debug("子任务{},开始生成锁定条件", subTaskCondition.getSubTaskNum());
         //添加锁定条件
         List<LockPodCondition> lockPodConditions = new ArrayList<>();
         for (AreaCondition areaCondition : areaConditions) {
@@ -61,9 +66,11 @@ public class BaseLockEmptyPodService {
         //锁定货架
         Result result = mapResouceService.lockPodByCondition(lockPodConditions);
         if (result.getReturnCode() != HttpStatus.OK.value()) {
+            logger.warn("子任务{}锁定空货架失败", subTaskCondition.getSubTaskNum());
             return false;
         }
         BasePodDetail basePodDetail = (BasePodDetail)result.getReturnData();
+        logger.info("子任务{},已锁定空储位,开始同步子任务单信息", subTaskCondition.getSubTaskNum());
         //更新子任务单中的货架号
         subTaskMapper.updatePodCodeBySubTaskCode(subTask.getSubTaskNum(), basePodDetail.getPodCode());
         return true;
@@ -75,9 +82,16 @@ public class BaseLockEmptyPodService {
      * @return
      */
     public boolean rollbackConditionService(SubTaskCondition subTaskCondition) {
+        logger.info("子任务{}回滚开始", subTaskCondition.getSubTaskNum());
         //还原子任务单中的货架号
         subTaskMapper.updatePodCodeBySubTaskCode(subTaskCondition.getSubTaskNum(), "");
         //还原货架状态
-        return mapResouceService.unlockPod(subTaskCondition.getSubTaskNum());
+        boolean result = mapResouceService.unlockPod(subTaskCondition.getSubTaskNum());
+        if (result) {
+            logger.info("子任务{}回滚成功", subTaskCondition.getSubTaskNum());
+        } else {
+            logger.info("子任务{}回滚失败", subTaskCondition.getSubTaskNum());
+        }
+        return result;
     }
 }

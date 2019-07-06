@@ -293,6 +293,10 @@ public class BaseMapBerthService implements IBaseMapBerthService {
      */
     @Override
     public int updateByBerCode(BaseMapBerthDTO baseMapBerthDTO) {
+        if (baseMapBerthDTO.getBizType() == null && baseMapBerthDTO.getPointAlias() == null
+                && baseMapBerthDTO.getOperateAreaCode() == null && baseMapBerthDTO.getBizSecondAreaCode() == null) {
+            return 0;
+        }
         return baseMapBerthMapper.updateListByBerCode(baseMapBerthDTO);
     }
 }

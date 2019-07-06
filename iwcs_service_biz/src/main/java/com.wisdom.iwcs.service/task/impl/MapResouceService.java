@@ -10,8 +10,11 @@ import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.service.task.conditions.conditonHandler.BaseLockEmptyMapService;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeCon
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class MapResouceService implements IMapResouceService {
+    private Logger logger = LoggerFactory.getLogger(BaseLockEmptyMapService.class);
 
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
@@ -223,6 +227,7 @@ public class MapResouceService implements IMapResouceService {
         if (needLockPod == null) {
             throw new BusinessException("找不到符合要求的货架");
         }
+        logger.debug("开始锁定货架{},锁定源为{}", needLockPod.getPodCode(), tmpLockPodCondition.getLockSource());
         //锁定货架操作
         lockPod(needLockPod.getId(), tmpLockPodCondition.getLockSource());
         //返回被锁定的货架信息

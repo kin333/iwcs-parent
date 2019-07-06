@@ -8,7 +8,10 @@ import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
+import com.wisdom.iwcs.service.task.subtask.impl.SubTaskWorker;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,7 @@ import java.util.regex.Pattern;
  */
 @Service
 public class TemplateRelatedServer {
+    private final Logger logger = LoggerFactory.getLogger(TemplateRelatedServer.class);
 
     private Pattern pattern = Pattern.compile(REGIX);
     /**
@@ -66,14 +70,14 @@ public class TemplateRelatedServer {
             throw new BusinessException("tempateIntoInfo()的参数不能为空");
         }
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
-        checkNull(subTask);
+        checkNull(subTask, "子任务不存在:" + subTaskNum);
 
         //2.查询发送消息体
         if (StringUtils.isEmpty(subTask.getSubTaskTyp())) {
             throw new BusinessException("数据异常: 子任务无任务类型");
         }
         SubTaskTyp subTaskTyp = subTaskTypMapper.selectByTypeCode(subTask.getSubTaskTyp());
-        checkNull(subTaskTyp);
+        checkNull(subTaskTyp, "子任务类型不存在:" + subTaskNum);
         String sendTemplate = subTaskTyp.getSubTaskMesSend();
         //仅测试使用
 //        sendTemplate = "{"a": ${OP.SubTask.remark}, "b": ${NC.SubTask.appCode}}";
@@ -84,7 +88,7 @@ public class TemplateRelatedServer {
             throw new BusinessException("数据异常: 子任务无主任务编号");
         }
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
-        checkNull(mainTask);
+        checkNull(mainTask, "子任务无对应主任务:" + subTaskNum);
 
         //4.向发送消息体中插入消息
         while(true) {
@@ -92,8 +96,8 @@ public class TemplateRelatedServer {
             if (values == null) {
                 break;
             }
-            if (values.length != 3) {
-                throw new BusinessException("发送消息体格式错误");
+            if (values.length <= 0) {
+                throw new BusinessException("子任务" + subTaskNum + "发送消息体格式错误");
             }
             Object param = null;
             //拼接get方法名
@@ -110,10 +114,11 @@ public class TemplateRelatedServer {
                     throw new BusinessException(values[2] + "是必填项,不能为null");
                 }
             } catch (NoSuchMethodException e) {
-                throw new BusinessException("模板参数名与真实类字段没有对应");
+                throw new BusinessException("子任务" + subTaskNum + "模板参数名与真实类字段没有对应");
             }
             sendTemplate = replaceTemplateValue(sendTemplate, param);
         }
+        logger.info("子任务{}消息体已生成", subTaskNum);
 
         return sendTemplate;
     }
@@ -149,9 +154,9 @@ public class TemplateRelatedServer {
         }
     }
 
-    private void checkNull(Object obj) {
+    private void checkNull(Object obj, String errorInfo) {
         if (obj == null) {
-            throw new BusinessException("数据不存在");
+            throw new BusinessException("数据不存在:" + errorInfo);
         }
     }
 

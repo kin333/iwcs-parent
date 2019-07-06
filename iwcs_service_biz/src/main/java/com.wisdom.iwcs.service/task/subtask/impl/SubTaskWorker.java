@@ -3,38 +3,21 @@ package com.wisdom.iwcs.service.task.subtask.impl;
 
 import com.rabbitmq.client.Channel;
 import com.wisdom.base.context.AppContext;
-import com.wisdom.iwcs.common.utils.InterfaceLogConstants;
-import com.wisdom.iwcs.common.utils.NetWorkUtil;
-import com.wisdom.iwcs.common.utils.constant.SendStatus;
+import com.wisdom.base.quartz.SpringContextUtils;
 import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.domain.task.SubTaskTyp;
-import com.wisdom.iwcs.mapper.task.SubTaskMapper;
-import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
-import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.conditions.ConditionBase;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
-import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
+import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SubTaskWorker extends AbstractTaskWorker {
     private final Logger logger = LoggerFactory.getLogger(SubTaskWorker.class);
-
-    @Autowired
-    SubTaskMapper subTaskMapper;
-    @Autowired
-    SubTaskTypMapper subTaskTypMapper;
-    @Autowired
-    TemplateRelatedServer templateRelatedServer;
-    @Autowired
-    ICommonService iCommonService;
 
     private MainTaskWorker mainTaskWorker;
     private SubTask subTask;
@@ -89,27 +72,8 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void process() {
-        String subTaskNum = subTask.getSubTaskNum();
-        logger.info("子任务{}开始下发process ", subTaskNum);
-
-        // 1. 从数据库获取子任务单
-        subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
-        String jsonStr = "";
-        try {
-            jsonStr = templateRelatedServer.templateIntoInfo(subTaskNum);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        // 2. 根据subtask的值，完善下发的信息，并下发命令
-        SubTaskTyp subTaskTyp = subTaskTypMapper.selectByTypeCode(subTask.getSubTaskTyp());
-        String resultBody;
-        if (InterfaceLogConstants.SrcClientCode.SRC_HIK.equals(subTaskTyp.getWorkerType())) {
-            //如果执行者类型是海康,则调用海康的接口
-            resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
-            iCommonService.handleHikResponseAndThrowException(resultBody);
-        }
-        subTaskMapper.updateSendStatus(subTaskNum, SendStatus.SEND.getCode());
+        IwcsPublicService iwcsPublicService = (IwcsPublicService) SpringContextUtils.getBean("iwcsPublicService");
+        iwcsPublicService.sendInfoBySubTaskNum(subTask.getSubTaskNum());
     }
 
     public SubTask getSubTask() {
