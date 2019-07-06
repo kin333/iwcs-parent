@@ -187,6 +187,18 @@ public class MapResouceService implements IMapResouceService {
     }
 
     /**
+     * 根据货架号解锁货架
+     * @param subTaskName
+     */
+    public boolean unlockPodByCode(String podCode) {
+        int changeRow = basePodDetailMapper.unlockPodByCode(podCode);
+        if (changeRow > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 根据子任务编号解锁货架
      * @param subTaskName
      */

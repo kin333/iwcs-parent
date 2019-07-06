@@ -315,4 +315,12 @@
         </set>
         where pod_code = #{podCode}
     </update>
+    <update id="unlockPodByCode">
+        update base_pod_detail
+        <set>
+            in_lock = 0,
+            lock_source = ''
+        </set>
+        where pod_code = #{podCode}
+    </update>
 </mapper>
