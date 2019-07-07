@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
@@ -12,6 +13,7 @@ import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
@@ -22,8 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +35,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.Q
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPWORKAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.AGINGREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
+import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.pTopTaskSubTaskTypeConstants.INIT_STORAGE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.*;
 
@@ -45,6 +48,8 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.*;
 public class TaskCreateService implements ITaskCreateService {
     private final Logger logger = LoggerFactory.getLogger(TaskCreateService.class);
 
+    @Autowired
+    private MainTaskMapper mainTaskMapper;
     @Autowired
     private MainTaskTypeMapper mainTaskTypeMapper;
     @Autowired
@@ -78,7 +83,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @return
      */
     @Override
-    @Transient
+    @Transactional
     public Result creatTask(TaskCreateRequest taskCreateRequest){
 
         //校验参数
@@ -131,7 +136,7 @@ public class TaskCreateService implements ITaskCreateService {
      * 任务：工作台点位呼叫空货架
      * taskTypeCode: plAutoWbCallPod
      */
-    public Result plAutoWbCallPodFunction(TaskCreateRequest taskCreateRequest){
+    public void plAutoWbCallPodFunction(TaskCreateRequest taskCreateRequest){
         logger.info("工作台点位呼叫空货架:{}",JSON.toJSONString(taskCreateRequest));
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPointAlias()), "请填写点位编号");
         //查询点位坐标
@@ -148,14 +153,13 @@ public class TaskCreateService implements ITaskCreateService {
         plAutoWbCallPodRequest.setTargetPoint(baseMapBerth.getBerCode());
         plAutoWbCallPodRequest.setAreaCode(baseMapBerth.getAreaCode());
         iPlAutoWbCallPodService.plAutoWbCallPod(plAutoWbCallPodRequest);
-        return new Result();
     }
 
     /**
      * 任务：补充产线空货架缓存区
      * taskTypeCode: plBufSupply
      */
-    public Result plBufSupplyFunction(TaskCreateRequest taskCreateRequest){
+    public void plBufSupplyFunction(TaskCreateRequest taskCreateRequest){
         logger.info("补充产线空货架缓存区:{}",JSON.toJSONString(taskCreateRequest));
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPointAlias()), "请填写目标点位");
         //查询点位坐标
@@ -171,21 +175,20 @@ public class TaskCreateService implements ITaskCreateService {
         plBufSupplyRequest.setTargetPoint(baseMapBerth.getBerCode());
         plBufSupplyRequest.setAreaCode(baseMapBerth.getAreaCode());
         iPlBufSupplyService.plBufSupply(plBufSupplyRequest);
-        return new Result();
     }
 
     /**
      * 任务：产线去老化区搬运
      * taskTypeCode: plToAging
      */
-    public Result plToAgingFunction(TaskCreateRequest taskCreateRequest){
+    public void plToAgingFunction(TaskCreateRequest taskCreateRequest){
         logger.info("产线去老化区搬运:{}",JSON.toJSONString(taskCreateRequest));
         String podCode = taskCreateRequest.getPodCode();
         String startPointAlias = taskCreateRequest.getStartPointAlias();
         String targetPointAlias = taskCreateRequest.getTargetPointAlias();
         String startPoint = "";
 
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) || Strings.isNullOrEmpty(startPointAlias), "货架号或起始点坐标不能为空");
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startPointAlias), "货架号或起始点坐标不能为空");
         //校验是否传自动还是手动，手动必选目标点
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getSubTaskBizProp()), "请选择自动还是手动");
         if (MANUAL_FIRST.equals(taskCreateRequest.getSubTaskBizProp())){
@@ -237,14 +240,14 @@ public class TaskCreateService implements ITaskCreateService {
         }
         plToAgingRequest.setSubTaskBizProp(taskCreateRequest.getSubTaskBizProp());
         iPlToAgingService.plagingToQuaInsp(plToAgingRequest);
-        return new Result();
+
     }
 
     /**
      * 任务：老化区前往检验点
      * taskTypeCode: agingToQuaInsp
      */
-    public Result agingToQuaInspFunction(TaskCreateRequest taskCreateRequest){
+    public void agingToQuaInspFunction(TaskCreateRequest taskCreateRequest){
         logger.info("老化区前往检验点:{}",JSON.toJSONString(taskCreateRequest));
         String podCode = taskCreateRequest.getPodCode();
         String targetPoint = "";
@@ -290,7 +293,6 @@ public class TaskCreateService implements ITaskCreateService {
         agingToQuaInspRequest.setTargetPoint(targetPoint);
         iAgingToQuaInspService.agingToQuaInsp(agingToQuaInspRequest);
 
-        return new Result();
     }
 
     /**
@@ -298,7 +300,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @param taskCreateRequest
      * @return
      */
-    public Result pTopFunction(TaskCreateRequest taskCreateRequest){
+    public void pTopFunction(TaskCreateRequest taskCreateRequest){
         logger.info("点到点:{}",JSON.toJSONString(taskCreateRequest));
         String podCode = taskCreateRequest.getPodCode();
         String startPointAlias = taskCreateRequest.getStartPointAlias();
@@ -345,8 +347,6 @@ public class TaskCreateService implements ITaskCreateService {
         ptopRequest.setStartPoint(startPoint);
         ptopRequest.setTargetPoint(targetPoint);
         ipToPService.pTop(ptopRequest);
-
-        return new Result();
     }
     
     /**
@@ -377,13 +377,44 @@ public class TaskCreateService implements ITaskCreateService {
         quaBufToQuaRequest.setPodCode(podCode);
         quaBufToQuaRequest.setStartPoint(startPoint);
         iQuaBufToQuaService.quaBufToQua(quaBufToQuaRequest);
-
         return new Result();
     }
 
     /**
-     * 添加子任务条件
+     * 添加主任务
      * @param
+     * @return
+     */
+    @Override
+    public String mainTaskCommonAdd(String taskTypeCode, String areaCode, Integer priority){
+        String mainTaskNum = "";
+        //创建主任务
+        MainTask mainTaskCreate = new MainTask();
+        mainTaskNum = CodeBuilder.codeBuilder("M");
+        mainTaskCreate.setMainTaskNum(mainTaskNum);
+        mainTaskCreate.setCreateDate(new Date());
+        mainTaskCreate.setPriority(priority);
+        mainTaskCreate.setMainTaskTypeCode(taskTypeCode);
+        mainTaskCreate.setAreaCode(areaCode);
+        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskMapper.insertSelective(mainTaskCreate);
+
+        return mainTaskNum;
+    }
+
+//    /**
+//     * 添加子任务
+//     * @param
+//     * @return
+//     */
+//    @Override
+//    public String subTaskCommonAdd(String taskTypeCode, String areaCode, Integer priority){
+//
+//    }
+
+    /**
+     * 添加子任务条件
+     * @param mainTaskTypeCode,subTaskTypeCode,subTaskNum
      * @return
      */
     @Override

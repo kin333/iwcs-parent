@@ -49,16 +49,10 @@ public class QuaBufToQuaService implements IQuaBufToQuaService {
 
     @Override
     public Result quaBufToQua(QuaBufToQuaRequest quaBufToQuaRequest){
+
         //创建主任务
-        MainTask mainTaskCreate = new MainTask();
-        String mainTaskNum = CodeBuilder.codeBuilder("M");
-        mainTaskCreate.setMainTaskNum(mainTaskNum);
-        mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setPriority(quaBufToQuaRequest.getPriority());
-        mainTaskCreate.setMainTaskTypeCode(quaBufToQuaRequest.getTaskTypeCode());
-        mainTaskCreate.setAreaCode(quaBufToQuaRequest.getAreaCode());
-        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
-        mainTaskMapper.insertSelective(mainTaskCreate);
+        String mainTaskNum = iTaskCreateService.mainTaskCommonAdd(quaBufToQuaRequest.getTaskTypeCode(), quaBufToQuaRequest.getAreaCode(), quaBufToQuaRequest.getPriority());
+
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(quaBufToQuaRequest.getTaskTypeCode());
         for (TaskRel taskRel:taskRelList) {

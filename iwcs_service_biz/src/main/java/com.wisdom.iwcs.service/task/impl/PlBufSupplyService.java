@@ -49,16 +49,10 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
      */
     @Override
     public Result plBufSupply(PlBufSupplyRequest plBufSupplyRequest){
+
         //创建主任务
-        MainTask mainTaskCreate = new MainTask();
-        String mainTaskNum = CodeBuilder.codeBuilder("M");
-        mainTaskCreate.setMainTaskNum(mainTaskNum);
-        mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setMainTaskTypeCode(plBufSupplyRequest.getTaskTypeCode());
-        mainTaskCreate.setPriority(plBufSupplyRequest.getPriority());
-        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
-        mainTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());
-        mainTaskMapper.insertSelective(mainTaskCreate);
+        String mainTaskNum = iTaskCreateService.mainTaskCommonAdd(plBufSupplyRequest.getTaskTypeCode(), plBufSupplyRequest.getAreaCode(), plBufSupplyRequest.getPriority());
+
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(plBufSupplyRequest.getTaskTypeCode());
         for (TaskRel taskRel:taskRelList){

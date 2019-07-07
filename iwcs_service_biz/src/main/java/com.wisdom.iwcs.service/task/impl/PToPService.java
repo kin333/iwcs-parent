@@ -52,15 +52,8 @@ public class PToPService implements IPToPService {
     public Result pTop(PToPRequest pToPRequest){
 
         //创建主任务
-        MainTask mainTaskCreate = new MainTask();
-        String mainTaskNum = CodeBuilder.codeBuilder("M");
-        mainTaskCreate.setMainTaskNum(mainTaskNum);
-        mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setPriority(pToPRequest.getPriority());
-        mainTaskCreate.setMainTaskTypeCode(pToPRequest.getTaskTypeCode());
-        mainTaskCreate.setAreaCode(pToPRequest.getAreaCode());
-        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
-        mainTaskMapper.insertSelective(mainTaskCreate);
+        String mainTaskNum = iTaskCreateService.mainTaskCommonAdd(pToPRequest.getTaskTypeCode(), pToPRequest.getAreaCode(), pToPRequest.getPriority());
+
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(pToPRequest.getTaskTypeCode());
         for (TaskRel taskRel:taskRelList) {

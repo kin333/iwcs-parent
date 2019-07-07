@@ -28,7 +28,7 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_I
  */
 @Service
 public class PlToAgingService implements IPlToAgingService {
-    private final Logger logger = LoggerFactory.getLogger(PlBufSupplyService.class);
+    private final Logger logger = LoggerFactory.getLogger(PlToAgingService.class);
 
     @Autowired
     private MainTaskMapper mainTaskMapper;
@@ -44,18 +44,11 @@ public class PlToAgingService implements IPlToAgingService {
     private IMapResouceService iMapResouceService;
 
     @Override
-    public Result plagingToQuaInsp(PlToAgingRequest plToAgingRequest){
+    public void plagingToQuaInsp(PlToAgingRequest plToAgingRequest){
 
         //创建主任务
-        MainTask mainTaskCreate = new MainTask();
-        String mainTaskNum = CodeBuilder.codeBuilder("M");
-        mainTaskCreate.setMainTaskNum(mainTaskNum);
-        mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setPriority(plToAgingRequest.getPriority());
-        mainTaskCreate.setMainTaskTypeCode(plToAgingRequest.getTaskTypeCode());
-        mainTaskCreate.setAreaCode(plToAgingRequest.getAreaCode());
-        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
-        mainTaskMapper.insertSelective(mainTaskCreate);
+        String mainTaskNum = iTaskCreateService.mainTaskCommonAdd(plToAgingRequest.getTaskTypeCode(), plToAgingRequest.getAreaCode(), plToAgingRequest.getPriority());
+
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(plToAgingRequest.getTaskTypeCode());
         for (TaskRel taskRel:taskRelList){
@@ -110,7 +103,5 @@ public class PlToAgingService implements IPlToAgingService {
             iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
 
         }
-
-        return new Result();
     }
 }

@@ -51,16 +51,10 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
      */
     @Override
     public Result plAutoWbCallPod(PlAutoWbCallPodRequest plAutoWbCallPodRequest){
+
         //创建主任务
-        MainTask mainTaskCreate = new MainTask();
-        String mainTaskNum = CodeBuilder.codeBuilder("M");
-        mainTaskCreate.setMainTaskNum(mainTaskNum);
-        mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setMainTaskTypeCode(plAutoWbCallPodRequest.getTaskTypeCode());
-        mainTaskCreate.setPriority(plAutoWbCallPodRequest.getPriority());
-        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
-        mainTaskCreate.setAreaCode(plAutoWbCallPodRequest.getAreaCode());
-        mainTaskMapper.insertSelective(mainTaskCreate);
+        String mainTaskNum = iTaskCreateService.mainTaskCommonAdd(plAutoWbCallPodRequest.getTaskTypeCode(), plAutoWbCallPodRequest.getAreaCode(), plAutoWbCallPodRequest.getPriority());
+
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(plAutoWbCallPodRequest.getTaskTypeCode());
         //创建子任务

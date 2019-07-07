@@ -6,5 +6,7 @@ import com.wisdom.iwcs.domain.task.TaskCreateRequest;
 public interface ITaskCreateService {
     Result creatTask(TaskCreateRequest taskCreateRequest);
 
+    String mainTaskCommonAdd(String taskTypeCode, String areaCode, Integer priority);
+
     void subTaskConditionCommonAdd(String mainTaskTypeCode, String subTaskTypeCode, String subTaskNum);
 }

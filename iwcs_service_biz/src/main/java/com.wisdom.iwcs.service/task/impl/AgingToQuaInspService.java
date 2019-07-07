@@ -27,7 +27,7 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_I
  */
 @Service
 public class AgingToQuaInspService implements IAgingToQuaInspService {
-    private final Logger logger = LoggerFactory.getLogger(PlBufSupplyService.class);
+    private final Logger logger = LoggerFactory.getLogger(AgingToQuaInspService.class);
 
     @Autowired
     private MainTaskMapper mainTaskMapper;
@@ -48,16 +48,10 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
 
     @Override
     public Result agingToQuaInsp(AgingToQuaInspRequest agingToQuaInspRequest){
+
         //创建主任务
-        MainTask mainTaskCreate = new MainTask();
-        String mainTaskNum = CodeBuilder.codeBuilder("M");
-        mainTaskCreate.setMainTaskNum(mainTaskNum);
-        mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setMainTaskTypeCode(agingToQuaInspRequest.getTaskTypeCode());
-        mainTaskCreate.setPriority(agingToQuaInspRequest.getPriority());
-        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
-        mainTaskCreate.setAreaCode(agingToQuaInspRequest.getAreaCode());
-        mainTaskMapper.insertSelective(mainTaskCreate);
+        String mainTaskNum = iTaskCreateService.mainTaskCommonAdd(agingToQuaInspRequest.getTaskTypeCode(), agingToQuaInspRequest.getAreaCode(), agingToQuaInspRequest.getPriority());
+
         //查询模板关系表查找子任务
         List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(agingToQuaInspRequest.getTaskTypeCode());
         for (TaskRel taskRel:taskRelList){
