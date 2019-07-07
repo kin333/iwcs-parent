@@ -618,6 +618,16 @@ public class ApplicationProperties {
 
         private String clientCode;
 
+        private String returnMapOrPodUrl;
+
+        public String getReturnMapOrPodUrl() {
+            return returnMapOrPodUrl;
+        }
+
+        public void setReturnMapOrPodUrl(String returnMapOrPodUrl) {
+            this.returnMapOrPodUrl = returnMapOrPodUrl;
+        }
+
         public String getGenAgvSchedulingTaskUrl() {
             return genAgvSchedulingTaskUrl;
         }

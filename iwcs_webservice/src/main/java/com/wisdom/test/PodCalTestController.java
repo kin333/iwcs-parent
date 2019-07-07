@@ -9,6 +9,8 @@ import com.wisdom.iwcs.commonDto.fliterCondition.PodFliterCondition;
 import com.wisdom.iwcs.domain.base.dto.LockPodCondition;
 import com.wisdom.iwcs.service.common.IPodCal;
 import com.wisdom.iwcs.service.task.impl.MapResouceService;
+import com.wisdom.iwcs.service.task.template.IwcsPublicService;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,9 @@ public class PodCalTestController {
 
     @Resource
     private IPodCal podCal;
+
+    @Autowired
+    IwcsPublicService iwcsPublicService;
 
     @PostMapping("/calPodByPodFliter")
     public List<String> calPodByConTest(@RequestBody PodFliterCondition podFliterCondition) {
@@ -61,6 +66,37 @@ public class PodCalTestController {
         lockPodConditions.add(lockPodCondition);
         Result result = mapResouceService.lockPodByCondition(lockPodConditions);
         System.out.println(result.getReturnData());
+    }
+
+    /**
+     * 测试查找货架工具
+     */
+    @GetMapping("/testFindPodCode/{berCode}")
+    public void testFindPodCode(@PathVariable String berCode) {
+        try {
+            List<String> strings = iwcsPublicService.selectPodCodeByBerCode(berCode);
+            for (String string : strings) {
+                System.out.println(string);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+    }
+    /**
+     * 测试查找地码工具
+     */
+    @GetMapping("/testFindBerCode/{podCode}")
+    public void testFindBerCode(@PathVariable String podCode) {
+        try {
+            List<String> strings = iwcsPublicService.selectBerCodeByPodCode(podCode);
+            for (String string : strings) {
+                System.out.println(string);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
     }
 
 }

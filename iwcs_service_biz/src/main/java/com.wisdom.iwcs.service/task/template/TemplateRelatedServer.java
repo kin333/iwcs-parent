@@ -183,7 +183,7 @@ public class TemplateRelatedServer {
      * 生成请求的一些必填信息
      * @return
      */
-    private TempdateRelatedContext getRequestInfo() {
+    public TempdateRelatedContext getRequestInfo() {
         TempdateRelatedContext tempdateRelatedContext = new TempdateRelatedContext();
         String reqCode = UUID.randomUUID().toString().replaceAll("-", "");
         if (reqCode.length() > 32) {
