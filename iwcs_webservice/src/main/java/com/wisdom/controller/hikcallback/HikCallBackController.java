@@ -6,6 +6,7 @@ import com.wisdom.iwcs.service.hikCallback.IHikCallBackGetPodReturnAreaService;
 import com.wisdom.iwcs.service.hikCallback.IHikCallBackNotifyPodArrService;
 import com.wisdom.iwcs.service.hikCallback.IHikCallBackSyncService;
 import com.wisdom.iwcs.service.hikCallback.IHikCallBackTaskNotifyService;
+import com.wisdom.iwcs.service.hikCallback.iwcsHikCallback.HikCallbackIwcsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,8 @@ public class HikCallBackController {
     private IHikCallBackGetPodReturnAreaService IHikCallBackGetPodReturnAreaService;
     @Autowired
     private IHikCallBackNotifyPodArrService IHikCallBackNotifyPodArrService;
+    @Autowired
+    HikCallbackIwcsService hikCallbackIwcsService;
 
     /**
      * 同步海康基础数据
@@ -80,6 +83,15 @@ public class HikCallBackController {
     @SystemInterfaceLog(methodCode = NOTIFY_POD_ARR_CODE, methodName = NOTIFY_POD_ARR_NAME, methodThansfer = SRC_HIK)
     public HikSyncResponse receivePodArriveStorageNotify(@RequestBody NotifyPodArrRequestDTO notifyPodArrRequestDTO) {
         return IHikCallBackNotifyPodArrService.receivePodArriveStorageNotify(notifyPodArrRequestDTO);
+    }
+
+    /**
+     * 小车移动的回调接口
+     * @return
+     */
+    @PostMapping("/iwcs/taskNotify")
+    public HikSyncResponse taskNotify(@RequestBody HikCallBackAgvMove hikCallBackAgvMove) {
+        return hikCallbackIwcsService.taskNotify(hikCallBackAgvMove);
     }
 
 }
