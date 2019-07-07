@@ -53,11 +53,22 @@
             and 1=1
         </if>
         <if test="startTime != null">
-            and created_time &gt;= #{startTime,jdbcType=BIGINT}
+            and receive_time &gt;= #{startTime,jdbcType=BIGINT}
         </if>
         <if test="endTime != null">
-            and created_time &lt;= #{endTime,jdbcType=BIGINT}
+            and receive_time &lt;= #{endTime,jdbcType=BIGINT}
         </if>
-        order by last_modified_time desc
+        <if test="srcClientCode != null and srcClientCode != ''">
+            and src_client_code = #{srcClientCode}
+        </if>
+        <if test="interfaceCode != null and interfaceCode != ''">
+            and interface_code = #{interfaceCode}
+        </if>
+        <if test="sevThreadId != null and sevThreadId != ''">
+            and sev_thread_id = #{sevThreadId}
+        </if>
+        <if test="reqCode != null and reqCode != ''">
+            and req_code = #{reqCode}
+        </if>
     </select>
 </mapper>
