@@ -648,7 +648,6 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
                     //请求列表有、数据库有、更新
                     List<String> updateBerCodeList = returnRetainList(requestBerCodeList,existsBerCodeList);
                      List<BaseMapBerth> updateBaseMapBerthList = baseMapBerthList.stream().filter(b -> requestBerCodeList.contains(b.getBerCode())).collect(Collectors.toList());
-
                     mapContent.getPointInfo().stream().forEach(pointInfoDto -> {
                         String coox = merge(pointInfoDto.getXpos());
                         String cooy = merge(pointInfoDto.getYpos());
@@ -737,8 +736,8 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
     private List<String> packageBercode(List<PointInfoDto> pointInfoDtoList,String mapQRCode){
         List<String> bercodeList = new ArrayList<>();
         pointInfoDtoList.stream().forEach(pointInfoDto -> {
-            String coox = pointInfoDto.getXpos().replace(".", "");
-            String cooy = pointInfoDto.getYpos().replace(".", "");
+            String coox = merge(pointInfoDto.getXpos());
+            String cooy = merge(pointInfoDto.getYpos());
             String bercode = coox + mapQRCode + cooy;
             bercodeList.add(bercode);
             logger.info("bercode,{}",bercode);
