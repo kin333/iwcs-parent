@@ -25,4 +25,7 @@
             <column name="subscribe_event" remarks="订阅事件" type="VARCHAR(200)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="201907071722-1" author="ted">
+        <modifyDataType tableName="ts_sub_task_condition" columnName="conditon_triger" newDataType="VARCHAR(32)"/>
+    </changeSet>
 </databaseChangeLog>
