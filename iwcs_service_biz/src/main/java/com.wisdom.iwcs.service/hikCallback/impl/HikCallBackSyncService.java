@@ -650,8 +650,10 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
                      List<BaseMapBerth> updateBaseMapBerthList = baseMapBerthList.stream().filter(b -> requestBerCodeList.contains(b.getBerCode())).collect(Collectors.toList());
 
                     mapContent.getPointInfo().stream().forEach(pointInfoDto -> {
-                        String coox = pointInfoDto.getXpos().replace(".", "");
-                        String cooy = pointInfoDto.getYpos().replace(".", "");
+                        String coox = merge(pointInfoDto.getXpos());
+                        String cooy = merge(pointInfoDto.getYpos());
+//                        String coox = pointInfoDto.getXpos().replace(".", "");
+//                        String cooy = pointInfoDto.getYpos().replace(".", "");
                         String berCode = coox + mapContent.getMapQRCode() + cooy;
                         if (newBerCodeList.contains(berCode)){
                             //组装新增数据
@@ -743,6 +745,40 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
         });
 
         return bercodeList;
+    }
+
+    private String merge(String num) {
+        String x = "";
+        String[] split = num.split("\\.");
+        x += addAfter(split[0]);
+        if (split.length == 1) {
+            x += "000";
+        } else {
+            x += addBefore(split[1]);
+        }
+        return x;
+    }
+
+
+    private String addAfter(String num) {
+        if (num.length() == 1) {
+            num = "00" + num;
+        } else if (num.length() == 2) {
+            num = "0" + num;
+        } else if (num.length() == 0) {
+            num = "000";
+        }
+        return num;
+    }
+    private String addBefore(String num) {
+        if (num.length() == 1) {
+            num = num + "00";
+        } else if (num.length() == 2) {
+            num = num + "0";
+        } else if (num.length() == 0) {
+            num = "000";
+        }
+        return num;
     }
 
 
