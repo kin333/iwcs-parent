@@ -10,6 +10,7 @@ import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.task.impl.MapResouceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  * 产线工作点去老化区前置条件---目标区域有空储位并锁定一个(自动区模式优先放置自动取,手动模式优先放置手动区)
  * @author han
  */
+@Service
 public class EmptyPosForAgingPodHandler implements IConditionHandler{
     @Autowired
     MapResouceService mapResouceService;

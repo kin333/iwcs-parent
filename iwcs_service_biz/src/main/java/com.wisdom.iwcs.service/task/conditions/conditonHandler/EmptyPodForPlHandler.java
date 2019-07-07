@@ -6,6 +6,7 @@ import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.task.impl.MapResouceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
@@ -14,6 +15,7 @@ import java.util.Arrays;
  * 查找空货架
  * @author han
  */
+@Service
 public class EmptyPodForPlHandler implements IConditionHandler{
     @Autowired
     MapResouceService mapResouceService;

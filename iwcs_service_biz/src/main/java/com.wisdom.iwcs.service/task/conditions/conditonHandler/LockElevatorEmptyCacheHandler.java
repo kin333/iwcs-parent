@@ -4,6 +4,7 @@ import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.domain.task.AreaCondition;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
@@ -11,6 +12,7 @@ import java.util.Arrays;
  * 检查并锁定空闲缓存点
  * @author han
  */
+@Service
 public class LockElevatorEmptyCacheHandler implements IConditionHandler{
 
     @Autowired
