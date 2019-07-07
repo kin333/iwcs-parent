@@ -229,7 +229,7 @@
             <column name="o_bin_cnt" remarks="被占用BINCODE数量" type="INT"/>
             <column name="e_bin_cnt" remarks="空BINCODE数量" type="INT"/>
             <column name="pod_prop1" remarks="货架预留属性，如货主" type="VARCHAR(255)"/>
-            <column name="pod_prop2" remarks="货架预留属性, 货架原先所在楼层" type="VARCHAR(255)"/>
+            <column name="pod_prop2" remarks="货架预留属性" type="VARCHAR(255)"/>
             <column name="pod_prop3" remarks="货架预留属性" type="VARCHAR(255)"/>
             <column name="pod_prop4" remarks="货架预留属性" type="VARCHAR(255)"/>
             <column name="pod_prop5" remarks="货架预留属性" type="VARCHAR(255)"/>
