@@ -64,15 +64,20 @@ public class HikCallbackIwcsService {
     private void taskLeavePoint(HikCallBackAgvMove hikCallBackAgvMove) {
         logger.debug("任务{}已走出储位", hikCallBackAgvMove.getTaskCode());
         //1. 查询子任务信息
-        //使用多个条件查询对应的子任务,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
+        //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
         SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
-        publicCheckSubTask(hikCallBackAgvMove, subTask);
-        if (!SubTaskStatusEnum.Executing.getStatusCode().equals(subTask.getTaskStatus())) {
-            throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+        if (subTask != null) {
+            //subTask == null时说明没有生成任务单,这里认为此次请求为人工调用
+            logger.warn("任务号" + hikCallBackAgvMove.getTaskCode() + "没有匹配的任务");
+            publicCheckSubTask(hikCallBackAgvMove, subTask);
+            if (!SubTaskStatusEnum.Executing.getStatusCode().equals(subTask.getTaskStatus())) {
+                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+            }
         }
 
         //2. 更新地码信息,因为此时使用的是起始点地码,为了代码复用,这里将起始点地码赋值给终点地码
         hikCallBackAgvMove.setMapDataCode(hikCallBackAgvMove.getWbCode());
+        hikCallBackAgvMove.setPodCode("");
         updateMapInfo(hikCallBackAgvMove, subTask);
 
 
@@ -87,25 +92,19 @@ public class HikCallbackIwcsService {
         if (baseMapBerth == null) {
             throw new BusinessException(hikCallBackAgvMove.getMapDataCode() + "此地码的信息不存在");
         }
-        Integer inLock = baseMapBerth.getInLock();
-        if (!subTask.getSubTaskNum().equals(baseMapBerth.getLockSource())) {
+        if (subTask != null && !subTask.getSubTaskNum().equals(baseMapBerth.getLockSource())) {
             throw new BusinessException("地码锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
                     + " 地码编号:" + hikCallBackAgvMove.getMapDataCode());
         }
-        //再确认一下储位是否是加锁状态,如果是,就解锁这个储位
-        if (inLock != null && CompanyFinancialStatusEnum.LOCK.getCode().equals(inLock.toString())) {
-            baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
-            baseMapBerth.setPodCode(hikCallBackAgvMove.getPodCode());
-            baseMapBerth.setLockSource("");
-            //更新储位信息,加货架号,解锁
-            baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
-        }
+        //解锁这个储位
+        baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
+        baseMapBerth.setPodCode(hikCallBackAgvMove.getPodCode());
+        baseMapBerth.setLockSource("");
+        //更新储位信息,加货架号,解锁
+        baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
     }
 
     private void publicCheckSubTask(HikCallBackAgvMove hikCallBackAgvMove, SubTask subTask) {
-        if (subTask == null) {
-            throw new BusinessException("任务号" + hikCallBackAgvMove.getTaskCode() + "没有匹配的任务");
-        }
         if (!hikCallBackAgvMove.getPodCode().equals(subTask.getPodCode())) {
             throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 货架号不匹配");
         }
@@ -121,11 +120,14 @@ public class HikCallbackIwcsService {
     private void taskFinished(HikCallBackAgvMove hikCallBackAgvMove) {
         logger.debug("任务{}已结束", hikCallBackAgvMove.getTaskCode());
         //1. 查询子任务信息
-        //使用多个条件查询对应的子任务,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
+        //当subTask = null 时认为此次调用为人工调用,没有生成任务单
         SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
-        publicCheckSubTask(hikCallBackAgvMove, subTask);
-        if (!SubTaskStatusEnum.Finished.getStatusCode().equals(subTask.getTaskStatus())) {
-            throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+        //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
+        if (subTask != null) {
+            publicCheckSubTask(hikCallBackAgvMove, subTask);
+            if (!SubTaskStatusEnum.Finished.getStatusCode().equals(subTask.getTaskStatus())) {
+                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+            }
         }
 
         //2. 更新地码信息
@@ -136,7 +138,7 @@ public class HikCallbackIwcsService {
         if (basePodDetail == null) {
             throw new BusinessException(hikCallBackAgvMove.getPodCode() + "货架号无对应货架信息");
         }
-        if (!subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
+        if (subTask != null && !subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
             throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
                     + " 货架编号:" + hikCallBackAgvMove.getPodCode());
         }
