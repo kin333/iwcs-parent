@@ -77,4 +77,11 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return
      */
     SubTask selectByTaskCode(String taskCode);
+
+    /**
+     * 根据子任务编号更新货架号和地码
+     * @param subTaskNum
+     * @return
+     */
+    int updatePodAndBerBySubTaskCode(@Param("subTaskNum")String subTaskNum,@Param("podCode") String podCode,@Param("berCode") String berCode);
 }

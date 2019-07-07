@@ -72,7 +72,7 @@ public class BaseLockEmptyPodService {
         BasePodDetail basePodDetail = (BasePodDetail)result.getReturnData();
         logger.info("子任务{},已锁定空储位,开始同步子任务单信息", subTaskCondition.getSubTaskNum());
         //更新子任务单中的货架号
-        subTaskMapper.updatePodCodeBySubTaskCode(subTask.getSubTaskNum(), basePodDetail.getPodCode());
+        subTaskMapper.updatePodAndBerBySubTaskCode(subTask.getSubTaskNum(), basePodDetail.getPodCode(), basePodDetail.getBerCode());
         return true;
     }
 

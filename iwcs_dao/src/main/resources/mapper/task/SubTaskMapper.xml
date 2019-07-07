@@ -175,4 +175,13 @@
     LIMIT 1
   </select>
 
+  <update id="updatePodAndBerBySubTaskCode">
+    update ts_sub_task
+    <set>
+      pod_code = #{podCode},
+      start_bercode = #{berCode}
+    </set>
+    where sub_task_num = #{subTaskNum}
+  </update>
+
 </mapper>
