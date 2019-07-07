@@ -4,18 +4,17 @@ package com.wisdom.iwcs.service.task.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.base.context.AppContext;
-import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
-import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
+import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
-import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
@@ -40,7 +39,7 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Exception.class)
 public class SubTaskService {
     private final Logger logger = LoggerFactory.getLogger(SubTaskService.class);
-
+    @Autowired
     private final SubTaskMapper subTaskMapper;
 
     private final SubTaskMapStruct subTaskMapStruct;

@@ -8,11 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Component
 public class WcsTaskScheduler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(WcsTaskScheduler.class);
+    @Resource
     public IMainTaskService mainTaskService;
 
     public WcsTaskScheduler() {
@@ -31,17 +33,6 @@ public class WcsTaskScheduler implements Runnable {
             MainTaskWorker mainTaskWorker = new MainTaskWorker(null, t);
             Thread thread = new Thread(mainTaskWorker);
             thread.start();
-//            if (subTaskOptional.isPresent()) {
-//                SubTask firstSubTask = subTaskOptional.get();
-//                boolean dispatchable = mainTaskService.subtaskPreConditionMetCheck(firstSubTask);
-//                if (dispatchable) {
-//                    logger.debug("主任务{}满足执行条件，开始下发", t.getMainTaskNum());
-//                } else {
-//                    logger.debug("主任务{}不满足执行条件，跳过本次下发", t.getMainTaskNum());
-//                }
-//            } else {
-//                throw new BusinessException("主任务未生成有效子任务，请检查任务类型配置" + t.getMainTaskTypeCode());
-//            }
 
         });
     }

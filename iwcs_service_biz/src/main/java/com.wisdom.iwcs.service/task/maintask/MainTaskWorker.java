@@ -34,18 +34,7 @@ public class MainTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void preConditions() {
-        while (true){
-            try {
-                synchronized (waitLock){
-                    System.out.println("Main task is going to wait " + waitLock);
-                    waitLock.wait();
-                    System.out.println("End to wait for wait thread " + waitLock);
-                }
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
 
     }
 

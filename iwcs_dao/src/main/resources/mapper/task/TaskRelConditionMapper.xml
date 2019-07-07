@@ -34,7 +34,7 @@
         <if test="startTime != null">
             and created_time &gt;= #{startTime,jdbcType=BIGINT}
         </if>
-        <if test="endTime != null">
+        <if test="endTime != null">``
             and created_time &lt;= #{endTime,jdbcType=BIGINT}
         </if>
         order by last_modified_time desc
@@ -47,7 +47,9 @@
     </select>
 
     <select id="selectByMainTaskTypeCodeAndSubCode" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List" /> from ts_task_rel_conditions
+        select
+        <include refid="Base_Column_List"/>
+        from ts_task_rel_condition
         where main_task_type_code = #{mainTaskTypeCode,jdbcType=VARCHAR} and
         sub_task_type_code = #{subTaskTypeCode}
     </select>
