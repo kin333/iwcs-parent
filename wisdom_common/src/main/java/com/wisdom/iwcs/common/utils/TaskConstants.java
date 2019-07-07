@@ -8,14 +8,33 @@ package com.wisdom.iwcs.common.utils;
 public class TaskConstants {
 
     /**
-     * 任务类型
+     * 主任务类型
      */
     public static final class taskCodeType {
+        /**
+         * 自动工作台点位呼叫空货架
+         */
         public final static String PLAUTOWBCALLPOD = "plAutoWbCallPod";
+        /**
+         * 自动补充产线空货架缓存区
+         */
         public final static String PLBUFSUPPLY = "plBufSupply";
+        /**
+         * 产线去老化区搬运
+         */
         public final static String PLTOAGING = "plToAging";
+        /**
+         * 老化区前往检验点
+         */
         public final static String AGINGTOQUAINSP = "agingToQuaInsp";
+        /**
+         * 点到点
+         */
         public final static String PTOP = "pTop";
+        /**
+         * 自动检验缓冲区去检验点
+         */
+        public final static String QUABUFTOQUA = "quaBufToQua";
         public final static String QUAINSPTOELVBUF = "quaInspToElvBuf";
     }
 

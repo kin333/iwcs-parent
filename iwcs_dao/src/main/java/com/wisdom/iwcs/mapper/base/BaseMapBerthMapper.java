@@ -55,6 +55,11 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
 
     BaseMapBerth selectBerData(LockStorageDto lockStorageDto);
 
+    /**
+     * 根据点位编号查询
+     * @param pointAlias
+     * @return
+     */
     BaseMapBerth selectByPointAlias(String pointAlias);
 
     /**

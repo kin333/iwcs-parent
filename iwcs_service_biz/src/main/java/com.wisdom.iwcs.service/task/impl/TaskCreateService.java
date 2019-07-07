@@ -69,6 +69,8 @@ public class TaskCreateService implements ITaskCreateService {
     private TaskRelConditionMapper taskRelConditionMapper;
     @Autowired
     private IPToPService ipToPService;
+    @Autowired
+    private IQuaBufToQuaService iQuaBufToQuaService;
 
     /**
      * 创建任务
@@ -104,6 +106,10 @@ public class TaskCreateService implements ITaskCreateService {
                 agingToQuaInspFunction(taskCreateRequest);
                 break;
             case PTOP:
+                taskCreateRequest.setPriority(mainTaskType.getPriority());
+                pTopFunction(taskCreateRequest);
+                break;
+            case QUABUFTOQUA:
                 taskCreateRequest.setPriority(mainTaskType.getPriority());
                 pTopFunction(taskCreateRequest);
                 break;
@@ -193,7 +199,7 @@ public class TaskCreateService implements ITaskCreateService {
         if (!Strings.isNullOrEmpty(startPointAlias)){
             //起点不为空，查询点位正在执行任务的货架
             //如果货架为空，查询创建失败
-            BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(startPointAlias);
+            BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
             podCode = startBaseMapBerth.getPodCode();
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "未查找到货架，任务创建失败！");
         }
@@ -302,7 +308,7 @@ public class TaskCreateService implements ITaskCreateService {
 
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
 
-        BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(startPointAlias);
+        BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
         startPoint = startBaseMapBerth.getBerCode();
         //初始化入库
         if (!Strings.isNullOrEmpty(taskCreateRequest.getpTopTaskSubTaskType()) && INIT_STORAGE.equals(taskCreateRequest.getpTopTaskSubTaskType())){
@@ -316,7 +322,7 @@ public class TaskCreateService implements ITaskCreateService {
         }else{
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "目标点不能为空");
             //查询点位是否有任务或有货架，无，上锁
-            BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectOneByBercode(startPointAlias);
+            BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
             //TODO 查询模板，两个点是否允许搬运
             //加锁
             LockStorageDto lockStorageDto = new LockStorageDto();
@@ -339,6 +345,38 @@ public class TaskCreateService implements ITaskCreateService {
         ptopRequest.setStartPoint(startPoint);
         ptopRequest.setTargetPoint(targetPoint);
         ipToPService.pTop(ptopRequest);
+
+        return new Result();
+    }
+    
+    /**
+     * 检验缓冲区去检验点
+     * @param  taskCreateRequest
+     * @return 
+     */
+    public Result quaBufToQuaFunction(TaskCreateRequest taskCreateRequest){
+        logger.info("检验缓冲区去检验点:{}",JSON.toJSONString(taskCreateRequest));
+        String podCode = taskCreateRequest.getPodCode();
+        String startPointAlias = taskCreateRequest.getStartPointAlias();
+        String startPoint = "";
+
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
+
+        //校验货架点位是否正确
+        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+
+        BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+        startPoint = startBaseMapBerth.getBerCode();
+
+        //创建任务
+        QuaBufToQuaRequest quaBufToQuaRequest = new QuaBufToQuaRequest();
+        quaBufToQuaRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
+        quaBufToQuaRequest.setPriority(taskCreateRequest.getPriority());
+        quaBufToQuaRequest.setAreaCode(startBaseMapBerth.getAreaCode());
+        quaBufToQuaRequest.setPodCode(podCode);
+        quaBufToQuaRequest.setStartPoint(startPoint);
+        iQuaBufToQuaService.quaBufToQua(quaBufToQuaRequest);
 
         return new Result();
     }
