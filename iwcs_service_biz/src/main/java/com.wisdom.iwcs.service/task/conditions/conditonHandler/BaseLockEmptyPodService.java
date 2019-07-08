@@ -51,10 +51,9 @@ public class BaseLockEmptyPodService {
             //优先条件
             LockPodCondition lockPodCondition = new LockPodCondition();
             lockPodCondition.setMapCode(subTask.getMapCode());
-            lockPodCondition.setOperateAreaCode(areaCondition.getArea());
             lockPodCondition.setLockSource(subTask.getSubTaskNum());
+            lockPodCondition.setOperateAreaCode(areaCondition.getArea());
             lockPodCondition.setInStock(inStock);
-            lockPodConditions.add(lockPodCondition);
             if (StringUtils.isNotEmpty(areaCondition.getBizSecondArea())) {
                 lockPodCondition.setBizSecondAreaCode(areaCondition.getBizSecondArea());
             }
