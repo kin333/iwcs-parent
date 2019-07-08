@@ -926,4 +926,21 @@
             <column name="version" remarks="版本号" type="INT" defaultValueNumeric="0"/>
         </addColumn>
     </changeSet>
+    <changeSet author="yang" id="20190708153030-1">
+        <createTable tableName="task_operation_log">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="sub_task_num" remarks="子任务编号" type="VARCHAR(64)"/>
+            <column name="operation_status" remarks="操作状态" type="VARCHAR(32)"/>
+            <column name="operation_content" remarks="任务下发带的消息体" type="VARCHAR(2000)"/>
+            <column name="result_flag" remarks="操作结果状态，0成功，1失败" type="VARCHAR(1)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(300)"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
