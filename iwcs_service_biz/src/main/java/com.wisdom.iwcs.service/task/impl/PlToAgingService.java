@@ -89,7 +89,7 @@ public class PlToAgingService implements IPlToAgingService {
                 BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plToAgingRequest.getTargetPoint());
                 subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
                 subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
-                subTaskCreate.setEndBercode(plToAgingRequest.getTargetPoint());
+                subTaskCreate.setEndBercode(endBercode.getBerCode());
             }
 
             //货架上锁

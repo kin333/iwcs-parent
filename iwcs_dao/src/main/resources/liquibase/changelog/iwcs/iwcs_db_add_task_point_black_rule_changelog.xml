@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="george (generated)" id="1562069197231-1">
+        <createTable tableName="ts_task_point_black_rule" remarks="创建搬运任务目标点黑名单">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="start_operate_area" remarks="起始点操作区域（老化区、检验区）" type="VARCHAR(32)"/>
+            <column name="start_biz_type" remarks="起始点业务类型（如产线缓存区，作业区等）" type="VARCHAR(32)"/>
+            <column name="start_biz_second_area" remarks="起始点业务次级区域（如产线作业区工作点、人工点等）" type="VARCHAR(32)"/>
+            <column name="target_operate_area" remarks="目标点操作区域（老化区、检验区）" type="VARCHAR(32)"/>
+            <column name="target_biz_type" remarks="目标点业务类型（如产线缓存区，作业区等）" type="VARCHAR(32)"/>
+            <column name="target_biz_second_area" remarks="目标点业务次级区域（如产线作业区工作点、人工点等）" type="VARCHAR(32)"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

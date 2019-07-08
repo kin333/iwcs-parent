@@ -308,7 +308,11 @@ public class TaskCreateService implements ITaskCreateService {
         String startPoint = "";
         String targetPoint = "";
 
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) || Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
+
+        //校验货架点位是否正确
+        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
 
         BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
         startPoint = startBaseMapBerth.getBerCode();
@@ -318,8 +322,9 @@ public class TaskCreateService implements ITaskCreateService {
             LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
             lockMapBerthCondition.setMapCode(startBaseMapBerth.getMapCode());
             lockMapBerthCondition.setBizType(AGINGREA);
-            Result result = iMapResouceService.lockEmptyStorageByBizTypeList(Arrays.asList(lockMapBerthCondition));
-            BaseMapBerth baseMapBerth = (BaseMapBerth)result.getReturnData();
+            List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            Preconditions.checkBusinessError(baseMapBerthList.size() < 1, "未找到合适的目标点");
+            BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
             targetPoint = baseMapBerth.getBerCode();
         }else{
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "目标点不能为空");
@@ -401,16 +406,6 @@ public class TaskCreateService implements ITaskCreateService {
 
         return mainTaskNum;
     }
-
-//    /**
-//     * 添加子任务
-//     * @param
-//     * @return
-//     */
-//    @Override
-//    public String subTaskCommonAdd(String taskTypeCode, String areaCode, Integer priority){
-//
-//    }
 
     /**
      * 添加子任务条件

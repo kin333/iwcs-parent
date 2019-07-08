@@ -90,7 +90,7 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plBufSupplyRequest.getTargetPoint());
             subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
             subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
-            subTaskCreate.setEndBercode(plBufSupplyRequest.getTargetPoint());
+            subTaskCreate.setEndBercode(endBercode.getBerCode());
             subTaskCreate.setMapCode(endBercode.getMapCode());
             subTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());
             subTaskMapper.insertSelective(subTaskCreate);

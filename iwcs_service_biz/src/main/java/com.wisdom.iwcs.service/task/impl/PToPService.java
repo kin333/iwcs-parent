@@ -88,7 +88,7 @@ public class PToPService implements IPToPService {
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(pToPRequest.getTargetPoint());
             subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
             subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
-            subTaskCreate.setEndBercode(pToPRequest.getTargetPoint());
+            subTaskCreate.setEndBercode(endBercode.getBerCode());
 
 
             //货架上锁

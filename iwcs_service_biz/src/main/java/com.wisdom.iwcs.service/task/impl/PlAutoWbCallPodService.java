@@ -76,7 +76,6 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTask.setThirdEndMethod(taskRel.getThirdEndMethod());
             subTask.setSendStatus(SUB_NOT_ISSUED);
             subTask.setTaskStatus(SUB_NOT_ISSUED);
-            subTask.setEndBercode(plAutoWbCallPodRequest.getTargetPoint());
             subTask.setNeedTrigger(taskRel.getNeedTrigger());
             subTask.setNeedConfirm(taskRel.getNeedConfirm());
             subTask.setNeedInform(taskRel.getNeedInform());
@@ -85,6 +84,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plAutoWbCallPodRequest.getTargetPoint());
             subTask.setEndX(endBercode.getCoox().doubleValue());
             subTask.setEndY(endBercode.getCooy().doubleValue());
+            subTask.setEndBercode(endBercode.getBerCode());
 
             subTask.setWorkerTaskCode(subTaskNum);
 
