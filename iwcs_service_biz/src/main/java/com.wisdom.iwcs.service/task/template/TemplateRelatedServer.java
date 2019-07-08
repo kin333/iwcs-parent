@@ -165,7 +165,7 @@ public class TemplateRelatedServer {
             return null;
         }
         if (param instanceof String) {
-            return data.replaceFirst(REGIX, "\"" + param + "\"");
+            return data.replaceFirst(REGIX, param.toString());
         } else if (param == null) {
             return data.replaceFirst(REGIX, "null");
         } else {

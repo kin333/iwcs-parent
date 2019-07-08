@@ -31,7 +31,7 @@ public class TaskTestController {
 
 
     @GetMapping("/startMainTask")
-    public Result startSubtask(String mainTaskId) {
+    public Result startSubtask(Long mainTaskId) {
         MainTask mainTask = mainTaskMapper.selectByPrimaryKey(mainTaskId);
         if (mainTask != null) {
             MainTaskWorker mainTaskWorker = new MainTaskWorker(null, mainTask);

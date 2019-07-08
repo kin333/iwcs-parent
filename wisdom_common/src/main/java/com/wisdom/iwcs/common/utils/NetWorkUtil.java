@@ -1,6 +1,5 @@
 package com.wisdom.iwcs.common.utils;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -23,7 +22,7 @@ public class NetWorkUtil {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
         HttpEntity<T> requestEntity = new HttpEntity<>(t, httpHeaders);
-
+        logger.info("发送hik，信息体：" + t.toString());
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         List<String> val = resp.getHeaders().get("Set-Cookie");
