@@ -10,6 +10,7 @@ import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.BaseLockEmptyMapService;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,8 @@ public class MapResouceService implements IMapResouceService {
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     BasePodDetailMapper basePodDetailMapper;
+    @Autowired
+    SubTaskMapper subTaskMapper;
 
     /**
      * 获取检验区工作区点位或缓存区 ,并锁住
@@ -65,11 +69,37 @@ public class MapResouceService implements IMapResouceService {
         LockStorageDto lockStorageDto = new LockStorageDto();
         lockStorageDto.setMapCode(emptyPoit.getMapCode());
         lockStorageDto.setBerCode(emptyPoit.getBerCode());
-        lockStorageDto.setPodCode(emptyPoit.getPodCode());
-        lockStorageDto.setLockSource(emptyPoit.getLockSource());
+        lockStorageDto.setPodCode(lockMapBerthCondition.getPodCode());
+        lockStorageDto.setLockSource(lockMapBerthCondition.getLockSource());
         lockMapBerth(lockStorageDto);
 
         return emptyPoit;
+    }
+
+    @Override
+    public Result selectQuaEmptyStorage(LockMapBerthCondition lockMapBerthCondition) {
+        if(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
+            return new Result(400,"缺少地图编码");
+        }
+        BaseMapBerth emptyPoit = new BaseMapBerth();
+        //获取检验点空位置
+        lockMapBerthCondition.setBizType(QUAINSPWORKAREA);
+        lockMapBerthCondition.setOperateAreaCode(QUAINSPAREA);
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
+        if(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
+            return new Result(400,"检验点工作区暂无空位置");
+        }
+        //计算空闲点位
+        emptyPoit=calculatingOptimalLocation(baseMapBerthList);
+
+        //锁住空闲点位
+        LockStorageDto lockStorageDto = new LockStorageDto();
+        lockStorageDto.setMapCode(emptyPoit.getMapCode());
+        lockStorageDto.setBerCode(emptyPoit.getBerCode());
+        lockStorageDto.setPodCode(lockMapBerthCondition.getPodCode());
+        lockStorageDto.setLockSource(lockMapBerthCondition.getLockSource());
+        lockMapBerth(lockStorageDto);
+        return new Result();
     }
 
     /**
@@ -122,7 +152,7 @@ public class MapResouceService implements IMapResouceService {
     }
 
     /**
-     * 锁住选中的点位
+     * 锁住选中的点位并更新子任务单
      * @param lockStorageDto
      * @return
      */
@@ -139,13 +169,20 @@ public class MapResouceService implements IMapResouceService {
         if(count < 1) {
             return new Result(400,"该储位在进行其他操作中，请稍后执行");
         }
+        //更新子任务终点坐标
+        String subTaskNum = lockStorageDto.getLockSource();
+        BaseMapBerth lockMapBerth = new BaseMapBerth();
+        lockMapBerth.setCoox(baseMapBerth.getCoox());
+        lockMapBerth.setCooy(baseMapBerth.getCooy());
+        lockMapBerth.setBerCode(baseMapBerth.getBerCode());
+        subTaskMapper.updateEndCodeBySubTaskCode(subTaskNum,lockMapBerth);
         return new Result();
     }
 
 
 
     /**
-     * 解锁选中的点位
+     * 解锁选中的点位并更新子任务单
      * @param lockStorageDto
      * @return
      */
@@ -164,6 +201,13 @@ public class MapResouceService implements IMapResouceService {
         if(count < 1) {
             return new Result(400,"该储位在进行其他操作中，请稍后执行");
         }
+        //更新子任务终点坐标
+        String subTaskNum = lockStorageDto.getLockSource();
+        BaseMapBerth lockMapBerth = new BaseMapBerth();
+        lockMapBerth.setCoox(BigDecimal.ZERO);
+        lockMapBerth.setCooy(BigDecimal.ZERO);
+        lockMapBerth.setBerCode("");
+        subTaskMapper.updateEndCodeBySubTaskCode(subTaskNum,lockMapBerth);
         return new Result();
     }
 

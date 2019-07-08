@@ -44,5 +44,7 @@ public interface IMapResouceService {
 
     Result lockEmptyStorageByBizTypeList(List<LockMapBerthCondition> baseMapBerthList);
 
+    Result selectQuaEmptyStorage(LockMapBerthCondition lockMapBerthCondition);
+
 
 }
