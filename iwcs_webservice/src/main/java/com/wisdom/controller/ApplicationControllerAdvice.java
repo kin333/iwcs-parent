@@ -26,7 +26,7 @@ public class ApplicationControllerAdvice {
         }
         Result response = new Result();
         response.setReturnCode(400);
-        response.setReturnMsg(re.getErrorMsg());
+        response.setReturnMsg(re.getMsg());
         response.setReturnData(new HashMap<>());
         if (logger.isInfoEnabled()) {
             logger.info("请求返回结果为【{}】", JSONObject.toJSONString(response));

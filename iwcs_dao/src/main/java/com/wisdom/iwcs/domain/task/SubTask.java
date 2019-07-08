@@ -227,10 +227,10 @@ public class SubTask {
     private String startBercode;
 
     @Column(name = "start_x")
-    private double start_x;
+    private double startX;
 
     @Column(name = "start_y")
-    private double start_y;
+    private double startY;
 
     /**
      * 任务终点码
@@ -239,10 +239,10 @@ public class SubTask {
     private String endBercode;
 
     @Column(name = "end_x")
-    private double end_x;
+    private double endX;
 
     @Column(name = "end_y")
-    private double end_y;
+    private double endY;
 
     /**
      * 结束信息，记录
@@ -924,20 +924,20 @@ public class SubTask {
         this.startBercode = startBercode;
     }
 
-    public double getStart_x() {
-        return start_x;
+    public double getStartX() {
+        return startX;
     }
 
-    public void setStart_x(double start_x) {
-        this.start_x = start_x;
+    public void setStartX(double startX) {
+        this.startX = startX;
     }
 
-    public double getStart_y() {
-        return start_y;
+    public double getStartY() {
+        return startY;
     }
 
-    public void setStart_y(double start_y) {
-        this.start_y = start_y;
+    public void setStartY(double startY) {
+        this.startY = startY;
     }
 
     public String getEndBercode() {
@@ -948,20 +948,20 @@ public class SubTask {
         this.endBercode = endBercode;
     }
 
-    public double getEnd_x() {
-        return end_x;
+    public double getEndX() {
+        return endX;
     }
 
-    public void setEnd_x(double end_x) {
-        this.end_x = end_x;
+    public void setEndX(double endX) {
+        this.endX = endX;
     }
 
-    public double getEnd_y() {
-        return end_y;
+    public double getEndY() {
+        return endY;
     }
 
-    public void setEnd_y(double end_y) {
-        this.end_y = end_y;
+    public void setEndY(double endY) {
+        this.endY = endY;
     }
 
     public String getEndRemark() {

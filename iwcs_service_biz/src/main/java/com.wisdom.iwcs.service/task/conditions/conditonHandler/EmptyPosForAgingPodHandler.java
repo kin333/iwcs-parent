@@ -30,8 +30,8 @@ public class EmptyPosForAgingPodHandler implements IConditionHandler{
 
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
-        Long subTaskId = subTaskCondition.getId();
-        SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
+        String subTaskNum = subTaskCondition.getSubTaskNum();
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
 
         List<LockMapBerthCondition> conditionList = new ArrayList<>();
         //自动区条件

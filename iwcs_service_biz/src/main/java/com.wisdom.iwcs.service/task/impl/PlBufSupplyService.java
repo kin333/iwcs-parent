@@ -3,7 +3,9 @@ package com.wisdom.iwcs.service.task.impl;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.PlBufSupplyRequest;
+import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
-import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 
 /**
@@ -87,8 +88,8 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
 
             //计算目标通过地图坐标查询坐标
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plBufSupplyRequest.getTargetPoint());
-            subTaskCreate.setEnd_x(endBercode.getCoox().doubleValue());
-            subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
+            subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
+            subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
             subTaskCreate.setEndBercode(plBufSupplyRequest.getTargetPoint());
             subTaskCreate.setMapCode(endBercode.getMapCode());
             subTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());

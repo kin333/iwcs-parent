@@ -1,11 +1,14 @@
 package com.wisdom.iwcs.service.task.impl;
 
-import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.PlToAgingRequest;
+import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
-import com.wisdom.iwcs.mapper.task.*;
+import com.wisdom.iwcs.mapper.task.MainTaskMapper;
+import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import com.wisdom.iwcs.service.task.intf.IPlToAgingService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
@@ -18,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.MANUAL_FIRST;
-import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 
 /**
@@ -79,14 +81,14 @@ public class PlToAgingService implements IPlToAgingService {
 
             //计算起点通过地图坐标查询坐标
             BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(plToAgingRequest.getStartPoint());
-            subTaskCreate.setStart_x(startBercode.getCoox().doubleValue());
-            subTaskCreate.setStart_y(startBercode.getCooy().doubleValue());
+            subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
+            subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
 
             if (MANUAL_FIRST.equals(plToAgingRequest.getSubTaskBizProp())){
                 //计算目标通过地图坐标查询坐标
                 BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plToAgingRequest.getTargetPoint());
-                subTaskCreate.setEnd_x(endBercode.getCoox().doubleValue());
-                subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
+                subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
+                subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
                 subTaskCreate.setEndBercode(plToAgingRequest.getTargetPoint());
             }
 

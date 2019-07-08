@@ -3,7 +3,9 @@ package com.wisdom.iwcs.service.task.impl;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.AgingToQuaInspRequest;
+import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.task.intf.IAgingToQuaInspService;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
-import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 
 /**
@@ -86,13 +87,13 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
 
             //计算起点通过地图坐标查询坐标
             BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(agingToQuaInspRequest.getStartPoint());
-            subTaskCreate.setStart_x(startBercode.getCoox().doubleValue());
-            subTaskCreate.setStart_y(startBercode.getCooy().doubleValue());
+            subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
+            subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
 
             //计算目标通过地图坐标查询坐标
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(agingToQuaInspRequest.getTargetPoint());
-            subTaskCreate.setEnd_x(endBercode.getCoox().doubleValue());
-            subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
+            subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
+            subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
 
             subTaskCreate.setStartBercode(agingToQuaInspRequest.getStartPoint());
             subTaskCreate.setEndBercode(agingToQuaInspRequest.getTargetPoint());

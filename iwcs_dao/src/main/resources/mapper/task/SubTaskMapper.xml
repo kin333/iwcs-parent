@@ -5,47 +5,101 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="sub_task_num" jdbcType="VARCHAR" property="subTaskNum" />
-    <result column="sub_task_typ" jdbcType="VARCHAR" property="subTaskTyp" />
-    <result column="sub_task_seq" jdbcType="INTEGER" property="subTaskSeq" />
-    <result column="main_task_num" jdbcType="VARCHAR" property="mainTaskNum" />
-    <result column="main_task_seq" jdbcType="INTEGER" property="mainTaskSeq" />
-    <result column="main_task_type" jdbcType="VARCHAR" property="mainTaskType" />
-    <result column="group_flag" jdbcType="VARCHAR" property="groupFlag" />
-    <result column="task_group_code" jdbcType="VARCHAR" property="taskGroupCode" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
-    <result column="task_msg" jdbcType="VARCHAR" property="taskMsg" />
-    <result column="send_status" jdbcType="VARCHAR" property="sendStatus" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="need_confirm" jdbcType="VARCHAR" property="needConfirm" />
-    <result column="need_inform" jdbcType="VARCHAR" property="needInform" />
-    <result column="need_trigger" jdbcType="VARCHAR" property="needTrigger" />
-    <result column="trigger_type" jdbcType="VARCHAR" property="triggerType" />
-    <result column="condition_handler" jdbcType="VARCHAR" property="conditionHandler" />
-    <result column="third_invoke_type" jdbcType="VARCHAR" property="thirdInvokeType" />
-    <result column="third_type" jdbcType="VARCHAR" property="thirdType" />
-    <result column="app_code" jdbcType="VARCHAR" property="appCode" />
-    <result column="third_url" jdbcType="VARCHAR" property="thirdUrl" />
-    <result column="third_start_method" jdbcType="VARCHAR" property="thirdStartMethod" />
-    <result column="third_end_method" jdbcType="VARCHAR" property="thirdEndMethod" />
-    <result column="point_access" jdbcType="VARCHAR" property="pointAccess" />
-    <result column="sequence" jdbcType="INTEGER" property="sequence" />
-    <result column="cancel_flag" jdbcType="INTEGER" property="cancelFlag" />
-    <result column="cancel_id" jdbcType="INTEGER" property="cancelId" />
-    <result column="cancel_type" jdbcType="VARCHAR" property="cancelType" />
-    <result column="date_chg" jdbcType="VARCHAR" property="dateChg" />
-    <result column="group_id" jdbcType="VARCHAR" property="groupId" />
-    <result column="loop_exec" jdbcType="VARCHAR" property="loopExec" />
-    <result column="priority" jdbcType="INTEGER" property="priority" />
-    <result column="task_status" jdbcType="VARCHAR" property="taskStatus"/>
-    <result column="end_remark" jdbcType="VARCHAR" property="endRemark"/>
-    <result column="worker_task_code" jdbcType="VARCHAR" property="workerTaskCode"/>
-    <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
-    <result column="sub_task_biz_prop" jdbcType="VARCHAR" property="subTaskBizProp"/>
-    <result column="robot_code" jdbcType="VARCHAR" property="robotCode"/>
-    <result column="pod_code" jdbcType="VARCHAR" property="podCode"/>
-    <result column="map_code" jdbcType="VARCHAR" property="mapCode"/>
+      <id property="id" jdbcType="BIGINT" column="id"/>
+
+      <result property="subTaskNum" jdbcType="VARCHAR" column="sub_task_num"/>
+
+      <result property="subTaskTyp" jdbcType="VARCHAR" column="sub_task_typ"/>
+
+      <result property="subTaskSeq" jdbcType="INTEGER" column="sub_task_seq"/>
+
+      <result property="mainTaskNum" jdbcType="VARCHAR" column="main_task_num"/>
+
+      <result property="mainTaskSeq" jdbcType="INTEGER" column="main_task_seq"/>
+
+      <result property="mainTaskType" jdbcType="VARCHAR" column="main_task_type"/>
+
+      <result property="groupFlag" jdbcType="VARCHAR" column="group_flag"/>
+
+      <result property="taskGroupCode" jdbcType="VARCHAR" column="task_group_code"/>
+
+      <result property="createDate" jdbcType="TIMESTAMP" column="create_date"/>
+
+      <result property="taskMsg" jdbcType="VARCHAR" column="task_msg"/>
+
+      <result property="sendStatus" jdbcType="VARCHAR" column="send_status"/>
+
+      <result property="remark" jdbcType="VARCHAR" column="remark"/>
+
+      <result property="needConfirm" jdbcType="VARCHAR" column="need_confirm"/>
+
+      <result property="needInform" jdbcType="VARCHAR" column="need_inform"/>
+
+      <result property="needTrigger" jdbcType="VARCHAR" column="need_trigger"/>
+
+      <result property="triggerType" jdbcType="VARCHAR" column="trigger_type"/>
+
+      <result property="conditionHandler" jdbcType="VARCHAR" column="condition_handler"/>
+
+      <result property="thirdInvokeType" jdbcType="VARCHAR" column="third_invoke_type"/>
+
+      <result property="thirdType" jdbcType="VARCHAR" column="third_type"/>
+
+      <result property="appCode" jdbcType="VARCHAR" column="app_code"/>
+
+      <result property="thirdUrl" jdbcType="VARCHAR" column="third_url"/>
+
+      <result property="thirdStartMethod" jdbcType="VARCHAR" column="third_start_method"/>
+
+      <result property="thirdEndMethod" jdbcType="VARCHAR" column="third_end_method"/>
+
+      <result property="pointAccess" jdbcType="VARCHAR" column="point_access"/>
+
+      <result property="sequence" jdbcType="INTEGER" column="sequence"/>
+
+      <result property="cancelFlag" jdbcType="INTEGER" column="cancel_flag"/>
+
+      <result property="cancelId" jdbcType="INTEGER" column="cancel_id"/>
+
+      <result property="cancelType" jdbcType="VARCHAR" column="cancel_type"/>
+
+      <result property="dateChg" jdbcType="VARCHAR" column="date_chg"/>
+
+      <result property="groupId" jdbcType="VARCHAR" column="group_id"/>
+
+      <result property="loopExec" jdbcType="VARCHAR" column="loop_exec"/>
+
+      <result property="priority" jdbcType="INTEGER" column="priority"/>
+
+      <result property="taskStatus" jdbcType="VARCHAR" column="task_status"/>
+
+      <result property="mapCode" jdbcType="VARCHAR" column="map_code"/>
+
+      <result property="podCode" jdbcType="VARCHAR" column="pod_code"/>
+
+      <result property="podDir" jdbcType="VARCHAR" column="pod_dir"/>
+
+      <result property="startBercode" jdbcType="VARCHAR" column="start_bercode"/>
+
+      <result property="startX" jdbcType="DECIMAL" column="start_x"/>
+
+      <result property="startY" jdbcType="DECIMAL" column="start_y"/>
+
+      <result property="endBercode" jdbcType="VARCHAR" column="end_bercode"/>
+
+      <result property="endX" jdbcType="DECIMAL" column="end_x"/>
+
+      <result property="endY" jdbcType="DECIMAL" column="end_y"/>
+
+      <result property="endRemark" jdbcType="VARCHAR" column="end_remark"/>
+
+      <result property="workerTaskCode" jdbcType="VARCHAR" column="worker_task_code"/>
+
+      <result property="areaCode" jdbcType="VARCHAR" column="area_code"/>
+
+      <result property="subTaskBizProp" jdbcType="VARCHAR" column="sub_task_biz_prop"/>
+
+      <result property="robotCode" jdbcType="VARCHAR" column="robot_code"/>
 
 
   </resultMap>
@@ -53,12 +107,12 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, sub_task_num, sub_task_typ, sub_task_seq, main_task_num, main_task_seq, main_task_type, 
-    group_flag, task_group_code, create_date, task_msg, send_status, remark, need_confirm, 
-    need_inform, need_trigger, trigger_type, condition_handler, third_invoke_type, third_type, 
-    app_code, third_url, third_start_method, third_end_method, point_access, sequence,
-    cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec, priority,task_status,end_remark,
-    worker_task_code,area_code,sub_task_biz_prop, robot_code,pod_code,map_code
+      id, sub_task_num, sub_task_typ, sub_task_seq, main_task_num, main_task_seq, main_task_type, group_flag,
+      task_group_code, create_date, task_msg, send_status, remark, need_confirm, need_inform, need_trigger,
+      trigger_type, condition_handler, third_invoke_type, third_type, app_code, third_url, third_start_method,
+      third_end_method, point_access, sequence, cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec,
+      priority, task_status, map_code, pod_code, pod_dir, start_bercode, start_x, start_y, end_bercode, end_x, end_y,
+      end_remark, worker_task_code, area_code, sub_task_biz_prop, robot_code
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task
@@ -146,8 +200,8 @@
     update ts_sub_task
     <set>
       end_bercode = #{baseMapBerth.berCode},
-      end_x = #{baseMapBerth.coox},
-      end_y = #{baseMapBerth.cooy}
+        endX = #{baseMapBerth.coox},
+        endY = #{baseMapBerth.cooy}
     </set>
     where sub_task_num = #{subTaskNum}
   </update>

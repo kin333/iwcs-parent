@@ -1,27 +1,31 @@
 package com.wisdom.iwcs.common.utils.exception;
 
 public class BusinessException extends RuntimeException {
-    private String errorMsg;
+    private String msg;
 
     public BusinessException(ApplicationErrorEnum error) {
-        this.errorMsg = error.getResMsg();
+        this.msg = error.getResMsg();
     }
 
     public BusinessException(String errorMsg) {
         super(errorMsg);
-        this.errorMsg = errorMsg;
+        this.msg = errorMsg;
     }
 
     @Override
     public String getMessage() {
-        return errorMsg;
+        return msg;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public BusinessException() {
+        super();
     }
 }

@@ -3,7 +3,6 @@ package com.wisdom.iwcs.service.task.impl;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.PToPRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
@@ -22,8 +21,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.MANUAL_FIRST;
-import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 
 /**
@@ -84,13 +81,13 @@ public class PToPService implements IPToPService {
 
             //计算起点通过地图坐标查询坐标
             BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(pToPRequest.getStartPoint());
-            subTaskCreate.setStart_x(startBercode.getCoox().doubleValue());
-            subTaskCreate.setStart_y(startBercode.getCooy().doubleValue());
+            subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
+            subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
 
             //计算目标通过地图坐标查询坐标
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(pToPRequest.getTargetPoint());
-            subTaskCreate.setEnd_x(endBercode.getCoox().doubleValue());
-            subTaskCreate.setEnd_y(endBercode.getCooy().doubleValue());
+            subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
+            subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
             subTaskCreate.setEndBercode(pToPRequest.getTargetPoint());
 
 

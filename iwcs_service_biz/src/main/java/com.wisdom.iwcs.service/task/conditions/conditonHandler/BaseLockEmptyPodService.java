@@ -1,10 +1,8 @@
 package com.wisdom.iwcs.service.task.conditions.conditonHandler;
 
 
-import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
-import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockPodCondition;
 import com.wisdom.iwcs.domain.task.AreaCondition;
 import com.wisdom.iwcs.domain.task.SubTask;
@@ -43,8 +41,8 @@ public class BaseLockEmptyPodService {
      */
     public boolean handleConditionService(SubTaskCondition subTaskCondition, List<AreaCondition> areaConditions, String inStock) {
         logger.info("子任务{},开始锁定货架", subTaskCondition.getSubTaskNum());
-        Long subTaskId = subTaskCondition.getId();
-        SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
+        String subTaskNum = subTaskCondition.getSubTaskNum();
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
 
         logger.debug("子任务{},开始生成锁定条件", subTaskCondition.getSubTaskNum());
         //添加锁定条件

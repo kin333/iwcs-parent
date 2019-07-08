@@ -3,7 +3,9 @@ package com.wisdom.iwcs.service.task.impl;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.PlAutoWbCallPodRequest;
+import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.task.intf.IPlAutoWbCallPodService;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
-import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 
 
@@ -82,8 +83,8 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTask.setSubTaskSeq(taskRel.getSubTaskSeq());
             //通过地图坐标查询坐标
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plAutoWbCallPodRequest.getTargetPoint());
-            subTask.setEnd_x(endBercode.getCoox().doubleValue());
-            subTask.setEnd_y(endBercode.getCooy().doubleValue());
+            subTask.setEndX(endBercode.getCoox().doubleValue());
+            subTask.setEndY(endBercode.getCooy().doubleValue());
 
             subTask.setWorkerTaskCode(subTaskNum);
 

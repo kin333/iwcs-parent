@@ -1,6 +1,5 @@
 package com.wisdom.iwcs.service.task.conditions.conditonHandler;
 
-import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
@@ -46,8 +45,8 @@ public class BaseLockEmptyMapService {
         if (areaConditions.size() <= 0) {
             throw new BusinessException("子任务{}请求异常,请初始化目标区域");
         }
-        Long subTaskId = subTaskCondition.getId();
-        SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
+        String subTaskNum = subTaskCondition.getSubTaskNum();
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
 
         logger.debug("子任务{},开始生成锁定条件", subTaskCondition.getSubTaskNum());
         //添加锁定条件
@@ -87,8 +86,8 @@ public class BaseLockEmptyMapService {
         //还原子任务单中的货架号
         subTaskMapper.updateEndCodeBySubTaskCode(subTaskCondition.getSubTaskNum(), new BaseMapBerth());
         //还原地图数据的锁定信息
-        Long subTaskId = subTaskCondition.getId();
-        SubTask subTask = subTaskMapper.selectByPrimaryKey(subTaskId);
+        String subTaskNum = subTaskCondition.getSubTaskNum();
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
         LockStorageDto lockStorageDto = new LockStorageDto();
         lockStorageDto.setMapCode(subTask.getMapCode());
         lockStorageDto.setBerCode(subTask.getEndBercode());
