@@ -84,4 +84,18 @@ public class TaskConstants {
          */
         public final static String SUB_FINISHED = "9";
     }
+
+    /**
+     * 条件状态
+     */
+    public static final class metStatus {
+        /**
+         * 已符合
+         */
+        public final static String CONFORM = "1";
+        /**
+         * 不符合
+         */
+        public final static String NOT_CONFORM = "0";
+    }
 }

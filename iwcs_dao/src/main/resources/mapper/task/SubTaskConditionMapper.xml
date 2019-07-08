@@ -44,4 +44,12 @@
         and conditon_triger = #{conditonTriger}
     </select>
 
+    <update id="updateMetStatusBySubTaskNum">
+        update ts_sub_task_condition
+        <set>
+            condition_met_status = #{metStatus}
+        </set>
+        where sub_task_num = #{subTaskNum}
+    </update>
+
 </mapper>

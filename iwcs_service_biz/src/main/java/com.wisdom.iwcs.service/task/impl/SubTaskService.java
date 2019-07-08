@@ -4,10 +4,7 @@ package com.wisdom.iwcs.service.task.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.base.context.AppContext;
-import com.wisdom.iwcs.common.utils.GridFilterInfo;
-import com.wisdom.iwcs.common.utils.GridPageRequest;
-import com.wisdom.iwcs.common.utils.GridReturnData;
-import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
@@ -283,6 +280,9 @@ public class SubTaskService {
                 }
             }
         });
+        //将子任务条件表中的条件状态改为已符合
+        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM);
+        logger.info("子任务{}前置条件已全部满足", subTask.getSubTaskNum());
         return true;
     }
 
@@ -306,6 +306,8 @@ public class SubTaskService {
                 }
             }
         });
+        //将子任务条件表中的条件状态回滚为不符合
+        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.NOT_CONFORM);
         return true;
     }
 

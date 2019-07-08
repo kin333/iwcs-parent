@@ -28,4 +28,11 @@ public interface SubTaskConditionMapper extends MyMapperAndIds<SubTaskCondition>
      * @return list
      */
     List<SubTaskCondition> selectByTaskNumAndTrigerType(@Param("subTaskNum") String subTaskNum,@Param("conditonTriger") String conditonTriger);
+
+    /**
+     * 通过子任务编号更新条件状态
+     * @param subTaskNum
+     * @param metStatus
+     */
+    void updateMetStatusBySubTaskNum(@Param("subTaskNum") String subTaskNum,@Param("metStatus") String metStatus);
 }
