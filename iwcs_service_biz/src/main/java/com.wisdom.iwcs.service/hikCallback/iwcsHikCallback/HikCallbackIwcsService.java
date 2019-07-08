@@ -109,6 +109,7 @@ public class HikCallbackIwcsService {
             throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 货架号不匹配");
         }
         if (!hikCallBackAgvMove.getRobotCode().equals(subTask.getRobotCode())) {
+            logger.error("实际AGV型号{}与任务AGV型号{}不匹配", hikCallBackAgvMove.getRobotCode(),subTask.getRobotCode());
             throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 机器人编号不匹配");
         }
     }
