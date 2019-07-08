@@ -75,12 +75,13 @@ public class HikCallbackIwcsService {
             }
         }
 
-        //2. 更新地码信息,因为此时使用的是起始点地码,为了代码复用,这里将起始点地码赋值给终点地码
-        hikCallBackAgvMove.setMapDataCode(hikCallBackAgvMove.getWbCode());
-        hikCallBackAgvMove.setPodCode("");
-        updateMapInfo(hikCallBackAgvMove, subTask);
-
-
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+        if (baseMapBerth == null) {
+            throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+        }
+        baseMapBerth.setPodCode("");
+        //更新储位信息,加货架号,解锁
+        baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
     }
 
     /**
