@@ -336,10 +336,10 @@ public class CommonService implements ICommonService {
     @Override
     public Boolean checkPodPointAgreement(String podCode){
         boolean podPointAgreement = false;
-        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(basePodDetail.getBerCode()), "查询货架：" + podCode + "坐标信息为空");
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
-        Preconditions.checkBusinessError(basePodDetail == null, "货架：" + podCode + "货架表中记录的坐标" + basePodDetail.getBerCode() + "在地图信息表中未查找到");
+        String berCode = basePodDetailMapper.selectBerCodeByPodCode(podCode);
+        Preconditions.checkBusinessError(berCode == null, "查询货架：" + podCode + "坐标信息为空");
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
+        Preconditions.checkBusinessError(baseMapBerth == null, "货架：" + podCode + "货架表中记录的坐标" + baseMapBerth.getBerCode() + "在地图信息表中未查找到");
         if (podCode.equals(baseMapBerth.getPodCode())) {
             podPointAgreement = true;
         }

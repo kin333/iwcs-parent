@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -146,7 +145,6 @@ public class TaskCreateService implements ITaskCreateService {
         //校验目标点位和用户登录的点位是否在同一楼层
         //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
 
-
         PlAutoWbCallPodRequest plAutoWbCallPodRequest = new PlAutoWbCallPodRequest();
         plAutoWbCallPodRequest.setPriority(taskCreateRequest.getPriority());
         plAutoWbCallPodRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
@@ -196,15 +194,14 @@ public class TaskCreateService implements ITaskCreateService {
         }
         if (!Strings.isNullOrEmpty(podCode)){
             //货架不为空，查询所在点位
-            BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
-            startPoint = basePodDetail.getBerCode();
+            startPoint = basePodDetailMapper.selectBerCodeByPodCode(podCode);
+            Preconditions.checkBusinessError(startPoint == null, "货架位置信息错误");
         }
         if (!Strings.isNullOrEmpty(startPointAlias)){
             //起点不为空，查询点位正在执行任务的货架
             //如果货架为空，查询创建失败
-            BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
-            podCode = startBaseMapBerth.getPodCode();
-            Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "未查找到货架，任务创建失败！");
+            podCode = baseMapBerthMapper.selectBerCodeByPodCode(startPointAlias);
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "该点位未查找到货架，任务创建失败！");
         }
         //当前货架所在楼层，对比用户登录楼层权限,如果不在一个楼层创建失败
         //String userAreaCode = SecurityUtils.getCurrentAreaCode();
@@ -315,6 +312,7 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
 
         BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+        Preconditions.checkBusinessError(startBaseMapBerth == null, "根据点位编号获取点位信息为空");
         startPoint = startBaseMapBerth.getBerCode();
         //初始化入库
         if (!Strings.isNullOrEmpty(taskCreateRequest.getpTopTaskSubTaskType()) && INIT_STORAGE.equals(taskCreateRequest.getpTopTaskSubTaskType())){
@@ -365,13 +363,14 @@ public class TaskCreateService implements ITaskCreateService {
         String startPointAlias = taskCreateRequest.getStartPointAlias();
         String startPoint = "";
 
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) || Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
 
         //校验货架点位是否正确
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
         Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
 
         BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+        Preconditions.checkBusinessError(startBaseMapBerth == null, "根据点位编号获取点位信息为空");
         startPoint = startBaseMapBerth.getBerCode();
 
         //创建任务

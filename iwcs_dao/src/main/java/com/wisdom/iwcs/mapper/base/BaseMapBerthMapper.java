@@ -7,6 +7,7 @@ import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -61,6 +62,12 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     BaseMapBerth selectByPointAlias(String pointAlias);
+
+    /**
+     * 根据点位编号查货架号
+     */
+    @Select("select pod_code from base_map_berth where delete_flag = 0  and point_alias = #{pointAlias,jdbcType=VARCHAR}")
+    String selectBerCodeByPodCode(String pointAlias);
 
     /**
      * 根据地图编号获取地码列表
