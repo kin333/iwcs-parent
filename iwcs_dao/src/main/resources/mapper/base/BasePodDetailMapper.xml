@@ -30,6 +30,7 @@
         <result column="in_lock" jdbcType="INTEGER" property="inLock"/>
         <result column="lock_source" jdbcType="VARCHAR" property="lockSource"/>
         <result column="in_stock" jdbcType="INTEGER" property="inStock"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
@@ -38,7 +39,7 @@
         id, pod_code, ber_code, last_bercode_update_time, area_code, map_code, stg_type_code,
         stg_code, coox, cooy, lock_stat, pod_prop1, pod_prop2,
         pod_prop3, pod_prop4, pod_prop5, valid_flag, delete_flag, created_by, created_time,
-        last_modified_by, last_modified_time,in_lock,lock_source,in_stock
+        last_modified_by, last_modified_time,in_lock,lock_source,in_stock, version
     </sql>
     <sql id="Table_Column_List">
         <!--
@@ -47,7 +48,7 @@
         bpd.id, bpd.pod_code, bpd.ber_code, bpd.last_bercode_update_time, bpd.area_code, bpd.map_code, bpd.stg_type_code,
         bpd.stg_code, bpd.coox, bpd.cooy, bpd.lock_stat, bpd.pod_prop1, bpd.pod_prop2,
         bpd.pod_prop3, bpd.pod_prop4, bpd.pod_prop5, bpd.valid_flag, bpd.delete_flag, bpd.created_by, bpd.created_time,
-        bpd.last_modified_by, bpd.last_modified_time, bpd.in_lock, bpd.lock_source, bpd.in_stock
+        bpd.last_modified_by, bpd.last_modified_time, bpd.in_lock, bpd.lock_source, bpd.in_stock, bpd.version
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select
@@ -296,9 +297,13 @@
         update base_pod_detail
         <set>
             in_lock = 1,
-            lock_source = #{lockSource}
+            lock_source = #{lockSource},
+            version = ifnull(version,0) + 1
         </set>
         where pod_code = #{podCode}
+        <if test="version != null and version != ''">
+            and version = #{version}
+        </if>
     </update>
     <update id="unlockPod">
         update base_pod_detail

@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.task.PlToAgingRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
@@ -92,8 +93,11 @@ public class PlToAgingService implements IPlToAgingService {
                 subTaskCreate.setEndBercode(endBercode.getBerCode());
             }
 
+            BasePodDetail basePodDetail = new BasePodDetail();
+            basePodDetail.setPodCode(plToAgingRequest.getPodCode());
+            basePodDetail.setLockSource(subTaskNum);
             //货架上锁
-            iMapResouceService.lockPod(plToAgingRequest.getPodCode(),subTaskNum);
+            iMapResouceService.lockPod(basePodDetail);
 
             subTaskCreate.setStartBercode(plToAgingRequest.getStartPoint());
             subTaskCreate.setMapCode(startBercode.getMapCode());

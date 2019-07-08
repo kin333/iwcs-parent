@@ -155,6 +155,21 @@ public class BasePodDetailDTO {
     @Column(name = "in_stock")
     private Integer inStock;
 
+
+    /**
+     * 版本号
+     */
+    @Column(name = "version")
+    private Integer version;
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     /**
      * 获取自增主键
      *

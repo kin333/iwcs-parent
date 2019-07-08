@@ -169,26 +169,30 @@ public class MapResouceService implements IMapResouceService {
 
     /**
      * 锁定选中货架
-     * @param lockSource 锁定源
      */
     @Override
-    public boolean lockPod(String podCode, String lockSource) {
-        if (Strings.isNullOrEmpty(podCode)) {
+    public boolean lockPod(BasePodDetail basePodDetail) {
+        if (Strings.isNullOrEmpty(basePodDetail.getPodCode())) {
             throw new BusinessException("货架不能为空");
         }
-        if (Strings.isNullOrEmpty(lockSource)) {
+        if (Strings.isNullOrEmpty(basePodDetail.getLockSource())) {
             throw new BusinessException("锁定源不能为空");
         }
-        int changeRow = basePodDetailMapper.lockPod(podCode, lockSource);
-        if (changeRow > 0) {
-            return true;
+        //乐观锁检查
+        BasePodDetail baseMapBerth = basePodDetailMapper.selectByPodCode(basePodDetail.getPodCode());
+        baseMapBerth.setVersion(baseMapBerth.getVersion());
+        //锁定货架
+        int changeRow = basePodDetailMapper.lockPod(basePodDetail);
+        if(changeRow < 1) {
+            throw new BusinessException("该货架在进行其他操作中，请稍后执行");
         }
-        return false;
+        logger.info("货架{}锁定成功", basePodDetail.getPodCode());
+        return true;
     }
 
     /**
      * 根据货架号解锁货架
-     * @param subTaskName
+     * @param
      */
     public boolean unlockPodByCode(String podCode) {
         int changeRow = basePodDetailMapper.unlockPodByCode(podCode);
@@ -241,8 +245,9 @@ public class MapResouceService implements IMapResouceService {
             throw new BusinessException("找不到符合要求的货架");
         }
         logger.debug("开始锁定货架{},锁定源为{}", needLockPod.getPodCode(), tmpLockPodCondition.getLockSource());
+        needLockPod.setLockSource(tmpLockPodCondition.getLockSource());
         //锁定货架操作
-        lockPod(needLockPod.getPodCode(), tmpLockPodCondition.getLockSource());
+        lockPod(needLockPod);
         //返回被锁定的货架信息
         needLockPod.setLockSource(tmpLockPodCondition.getLockSource());
         needLockPod.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.LOCK.getCode()));

@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.task.impl;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.task.PToPRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
@@ -90,9 +91,11 @@ public class PToPService implements IPToPService {
             subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
             subTaskCreate.setEndBercode(endBercode.getBerCode());
 
-
+            BasePodDetail basePodDetail = new BasePodDetail();
+            basePodDetail.setPodCode(pToPRequest.getPodCode());
+            basePodDetail.setLockSource(subTaskNum);
             //货架上锁
-            iMapResouceService.lockPod(pToPRequest.getPodCode(), subTaskNum);
+            iMapResouceService.lockPod(basePodDetail);
 
             subTaskCreate.setStartBercode(pToPRequest.getStartPoint());
             subTaskCreate.setMapCode(startBercode.getMapCode());

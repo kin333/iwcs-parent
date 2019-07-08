@@ -921,4 +921,9 @@
             <column defaultValueNumeric="0" name="version" remarks="版本" type="INT"/>
         </addColumn>
     </changeSet>
+    <changeSet id="201907081334" author="han">
+        <addColumn tableName="base_pod_detail">
+            <column name="version" remarks="版本号" type="INT" defaultValueNumeric="0"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -119,11 +119,9 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
 
     /**
      * 根据货架信息的ID锁定货架
-     * @param podCode
-     * @param lockSource 锁定源（子任务编号）
      * @return
      */
-    int lockPod(@Param("podCode") String podCode,@Param("lockSource") String lockSource);
+    int lockPod(BasePodDetail basePodDetail);
 
     /**
      * 根据货架号查询货架信息

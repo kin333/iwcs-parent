@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.task.impl;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.task.AgingToQuaInspRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
@@ -81,8 +82,11 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
             subTaskCreate.setPodCode(agingToQuaInspRequest.getPodCode());
             subTaskCreate.setWorkerTaskCode(subTaskNum);
 
+            BasePodDetail basePodDetail = new BasePodDetail();
+            basePodDetail.setPodCode(agingToQuaInspRequest.getPodCode());
+            basePodDetail.setLockSource(subTaskNum);
             //货架上锁
-            iMapResouceService.lockPod(agingToQuaInspRequest.getPodCode(),subTaskNum);
+            iMapResouceService.lockPod(basePodDetail);
 
 
             //计算起点通过地图坐标查询坐标
