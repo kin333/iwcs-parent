@@ -307,10 +307,6 @@ public class TaskCreateService implements ITaskCreateService {
 
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) || Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
 
-        //校验货架点位是否正确
-        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
-        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
-
         BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
         Preconditions.checkBusinessError(startBaseMapBerth == null, "根据点位编号获取点位信息为空");
         startPoint = startBaseMapBerth.getBerCode();
@@ -325,10 +321,15 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
             targetPoint = baseMapBerth.getBerCode();
         }else{
+            //非初始化入库 校验货架点位是否正确
+            Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+            Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "目标点不能为空");
             //查询点位是否有任务或有货架，无，上锁
             BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
             //TODO 查询模板，两个点是否允许搬运
+
             //加锁
             LockStorageDto lockStorageDto = new LockStorageDto();
             lockStorageDto.setMapCode(endBaseMapBerth.getMapCode());
