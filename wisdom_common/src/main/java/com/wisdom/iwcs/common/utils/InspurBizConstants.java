@@ -108,11 +108,11 @@ public class InspurBizConstants {
      */
     public static final class PodInStockConstants {
         /**
-         * 自动区优先
+         * 货架空
          */
         public final static Integer EMPTY_POD = 0;
         /**
-         * 手动区优先
+         * 货架满
          */
         public final static Integer NOT_EMPTY_POD = 1;
 

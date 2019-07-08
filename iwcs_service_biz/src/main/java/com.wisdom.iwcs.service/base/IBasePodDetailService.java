@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.base;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 
@@ -35,6 +36,8 @@ public interface IBasePodDetailService {
     int deleteMore(List<String> ids);
 
     int deleteMoreLogic(List<String> ids);
+
+    Result savePodInStock(BasePodDetailDTO record);
 
     GridReturnData<BasePodDetailDTO> selectPage(GridPageRequest gridPageRequest);
 

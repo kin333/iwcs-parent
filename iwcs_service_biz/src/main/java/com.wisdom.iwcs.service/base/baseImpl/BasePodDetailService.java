@@ -2,10 +2,7 @@ package com.wisdom.iwcs.service.base.baseImpl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wisdom.iwcs.common.utils.DeleteFlagEnum;
-import com.wisdom.iwcs.common.utils.GridFilterInfo;
-import com.wisdom.iwcs.common.utils.GridPageRequest;
-import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.podUtils.PodTaskLockEnum;
@@ -25,6 +22,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -282,5 +281,16 @@ public class BasePodDetailService implements IBasePodDetailService {
         }
 
         return podTaskLockName;
+    }
+
+    /**
+     * 更改货架空满
+     * @param
+     * @return
+     */
+    @Override
+    public Result savePodInStock(BasePodDetailDTO record){
+        basePodDetailMapper.updatePodInStock(record.getPodCode(),record.getInStock());
+        return new Result();
     }
 }

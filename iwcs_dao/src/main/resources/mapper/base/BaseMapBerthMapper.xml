@@ -183,7 +183,7 @@
     <select id="selectAlltorageByMapCode" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth">
         select
         <include refid="Base_Column_List"/>
-        from base_map_berth where map_code = #{mapCode,jdbcType=VARCHAR}
+        from base_map_berth where area_code = #{areaCode,jdbcType=VARCHAR} and operate_area_code = #{operateAreaCode,jdbcType=VARCHAR}
     </select>
 
     <select id="selectBerthCodeByMapCode" resultMap="BaseResultMap">

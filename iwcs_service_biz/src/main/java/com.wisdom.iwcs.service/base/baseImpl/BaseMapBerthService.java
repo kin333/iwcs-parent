@@ -282,7 +282,7 @@ public class BaseMapBerthService implements IBaseMapBerthService {
      */
     @Override
     public List<BaseMapBerth> selectAlltorageInfo(BaseMapBerthDTO baseMapBerthDTO){
-        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectAlltorageByMapCode(baseMapBerthDTO.getMapCode());
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectAlltorageByMapCode(baseMapBerthDTO.getMapCode(),baseMapBerthDTO.getOperateAreaCode());
         return baseMapBerthList;
     }
 

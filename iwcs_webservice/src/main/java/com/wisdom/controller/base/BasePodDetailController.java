@@ -112,4 +112,15 @@ public class BasePodDetailController {
 
         return new Result();
     }
+
+    /**
+     * 更新货架空满
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/saveInStock")
+    public Result savePodInStock(@RequestBody BasePodDetailDTO basePodDetailDTO) {
+        IBasePodDetailService.savePodInStock(basePodDetailDTO);
+        return new Result();
+    }
 }
