@@ -120,4 +120,7 @@
 
 
     <include file="liquibase/changelog/iwcs/iwcs_db_add_agv_callback_changelog_20190705.xml" relativeToChangelogFile="false"/>
+
+
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_task_point_black_rule_20190708.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
