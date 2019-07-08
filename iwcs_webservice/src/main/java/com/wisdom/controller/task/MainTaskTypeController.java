@@ -5,6 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.MainTaskType;
 import com.wisdom.iwcs.domain.task.dto.MainTaskTypeDTO;
 import com.wisdom.iwcs.mapstruct.task.MainTaskTypeMapStruct;
 import com.wisdom.iwcs.service.task.impl.MainTaskTypeService;
@@ -116,5 +117,16 @@ public class MainTaskTypeController {
         mainTaskTypeService.updateByPrimaryKey(mainTaskTypeDTO);
 
         return new Result();
+    }
+
+    /**
+     * 查询所有任务
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/getAllTaskType")
+    public Result selectAllTaskType() {
+        List<MainTaskType> mainTaskType = mainTaskTypeService.selectAllTaskType();
+        return new Result(mainTaskType);
     }
 }

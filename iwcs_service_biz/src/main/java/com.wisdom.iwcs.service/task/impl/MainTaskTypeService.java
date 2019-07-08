@@ -229,4 +229,14 @@ public class MainTaskTypeService {
 
         return mGridReturnData;
     }
+
+    /**
+     * 查询所有任务类型
+     * @param
+     * @return
+     */
+    public List<MainTaskType> selectAllTaskType(){
+        List<MainTaskType> mainTaskType = mainTaskTypeMapper.selectAllTaskType();
+        return mainTaskType;
+    }
 }
