@@ -315,7 +315,7 @@ public class TaskCreateService implements ITaskCreateService {
             //筛选目标点，并锁定
             LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
             lockMapBerthCondition.setMapCode(startBaseMapBerth.getMapCode());
-            lockMapBerthCondition.setBizType(AGINGREA);
+            lockMapBerthCondition.setOperateAreaCode(AGINGREA);
             List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
             Preconditions.checkBusinessError(baseMapBerthList.size() < 1, "未找到合适的目标点");
             BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
@@ -339,8 +339,8 @@ public class TaskCreateService implements ITaskCreateService {
         }
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+//        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //创建任务
         PToPRequest ptopRequest = new PToPRequest();

@@ -15,6 +15,20 @@ public class LockMapBerthCondition extends BaseLockCondition {
     @Column(name = "biz_type")
     private String bizType;
 
+    /**
+     * 地码类型
+     */
+    @Column(name = "berth_type_value")
+    private String berthTypeValue;
+
+    public String getBerthTypeValue() {
+        return berthTypeValue;
+    }
+
+    public void setBerthTypeValue(String berthTypeValue) {
+        this.berthTypeValue = berthTypeValue;
+    }
+
     public String getPodCode() {
         return podCode;
     }

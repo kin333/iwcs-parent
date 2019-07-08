@@ -110,7 +110,7 @@ public class HikCallbackIwcsService {
         }
         if (!hikCallBackAgvMove.getRobotCode().equals(subTask.getRobotCode())) {
             logger.error("实际AGV型号{}与任务AGV型号{}不匹配", hikCallBackAgvMove.getRobotCode(),subTask.getRobotCode());
-            throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 机器人编号不匹配");
+//            throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 机器人编号不匹配");
         }
     }
 
@@ -126,9 +126,6 @@ public class HikCallbackIwcsService {
         //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
         if (subTask != null) {
             publicCheckSubTask(hikCallBackAgvMove, subTask);
-            if (!SubTaskStatusEnum.Finished.getStatusCode().equals(subTask.getTaskStatus())) {
-                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
-            }
         }
 
         //2. 更新地码信息

@@ -61,9 +61,12 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void postConditions() {
-
+        SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
+        subTaskService.finishTask(subTask.getSubTaskNum());
         //通知主任务的时机，待定......
         mainTaskWorker.onSubTaskDone();
+
+
 
         // 锁定的资源
 

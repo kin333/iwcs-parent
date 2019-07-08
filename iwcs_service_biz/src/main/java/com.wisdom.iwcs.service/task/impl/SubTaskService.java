@@ -14,6 +14,7 @@ import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
+import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
@@ -282,6 +283,9 @@ public class SubTaskService {
         });
         //将子任务条件表中的条件状态改为已符合
         subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM);
+        //将子任务的状态改为正在执行
+        subTaskMapper.updateTaskStatusByNum(subTask.getSubTaskNum(), SubTaskStatusEnum.Executing.getStatusCode());
+
         logger.info("子任务{}前置条件已全部满足", subTask.getSubTaskNum());
         return true;
     }
@@ -331,5 +335,13 @@ public class SubTaskService {
             return new Result(400, "优先级未修改");
         }
         return new Result();
+    }
+
+    /**
+     * 根据任务号将任务状态置为已完成
+     * @param subTaskNum
+     */
+    public void finishTask(String subTaskNum) {
+        subTaskMapper.updateTaskStatusByNum(subTaskNum, SubTaskStatusEnum.Finished.getStatusCode());
     }
 }

@@ -239,4 +239,12 @@
     where sub_task_num = #{subTaskNum}
   </update>
 
+  <update id="updateTaskStatusByNum">
+    update ts_sub_task
+    <set>
+      task_status = #{statusCode}
+    </set>
+    where sub_task_num = #{subTaskNum}
+  </update>
+
 </mapper>
