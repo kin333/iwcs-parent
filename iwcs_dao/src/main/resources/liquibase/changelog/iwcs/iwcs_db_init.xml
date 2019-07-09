@@ -943,4 +943,8 @@
             <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="201907091405" author="han">
+        <modifyDataType tableName="base_map_berth" columnName="biz_type" newDataType="VARCHAR(32)"/>
+    </changeSet>
 </databaseChangeLog>

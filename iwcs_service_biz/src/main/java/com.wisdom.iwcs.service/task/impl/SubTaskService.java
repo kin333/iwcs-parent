@@ -345,6 +345,11 @@ public class SubTaskService {
         subTaskMapper.updateTaskStatusByNum(subTaskNum, SubTaskStatusEnum.Finished.getStatusCode());
     }
 
+    /**
+     * 执行子任务后置条件检查并锁定/修改相关数据
+     * @param subTask
+     * @return
+     */
     public boolean postConditionsCheckAndExec(SubTask subTask) {
         List<SubTaskCondition> postTaskRelConditionsList =
                 subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.POST_CONDITION.getCode());
@@ -362,7 +367,8 @@ public class SubTaskService {
         });
         //将子任务条件表中的条件状态改为已符合
         subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.POST_CONDITION.getCode());
-
+        //将子任务的状态改为已结束
+        finishTask(subTask.getSubTaskNum());
         logger.info("子任务{}后置条件已全部满足", subTask.getSubTaskNum());
         return true;
     }
