@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.hikCallback.iwcsHikCallback;
 
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
@@ -54,7 +55,12 @@ public class HikCallbackIwcsService {
      */
     private void taskStart(HikCallBackAgvMove hikCallBackAgvMove) {
         logger.debug("任务{}的搬运任务开始", hikCallBackAgvMove.getTaskCode());
-        subTaskMapper.updateRobotCodeByBerCode(hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getRobotCode());
+        SubTask subTask  = new SubTask();
+        subTask.setRobotCode(hikCallBackAgvMove.getRobotCode());
+        subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.START);
+        subTask.setWorkerTaskCode(hikCallBackAgvMove.getTaskCode());
+        //更新子任务的执行AGV和实际任务状态
+        subTaskMapper.updateRobotCodeByBerCode(subTask);
     }
 
     /**
@@ -130,6 +136,10 @@ public class HikCallbackIwcsService {
         //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
         if (subTask != null) {
             publicCheckSubTask(hikCallBackAgvMove, subTask);
+            //更新子任务状态
+            subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
+            //更新子任务的实际任务状态
+            subTaskMapper.updateRobotCodeByBerCode(subTask);
         }
 
         //2. 更新地码信息
@@ -154,5 +164,6 @@ public class HikCallbackIwcsService {
         basePodDetail.setLockSource("");
         //更新货架信息表
         basePodDetailMapper.updateByPrimaryKeySelective(basePodDetail);
+
     }
 }

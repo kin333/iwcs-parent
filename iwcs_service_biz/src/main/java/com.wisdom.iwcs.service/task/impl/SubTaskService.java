@@ -282,7 +282,7 @@ public class SubTaskService {
             }
         });
         //将子任务条件表中的条件状态改为已符合
-        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM);
+        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.PRE_CONDITION.getCode());
         //将子任务的状态改为正在执行
         subTaskMapper.updateTaskStatusByNum(subTask.getSubTaskNum(), SubTaskStatusEnum.Executing.getStatusCode());
 
@@ -311,7 +311,7 @@ public class SubTaskService {
             }
         });
         //将子任务条件表中的条件状态回滚为不符合
-        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.NOT_CONFORM);
+        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.NOT_CONFORM, CondtionTriger.PRE_CONDITION.getCode());
         return true;
     }
 
@@ -343,5 +343,27 @@ public class SubTaskService {
      */
     public void finishTask(String subTaskNum) {
         subTaskMapper.updateTaskStatusByNum(subTaskNum, SubTaskStatusEnum.Finished.getStatusCode());
+    }
+
+    public boolean postConditionsCheckAndExec(SubTask subTask) {
+        List<SubTaskCondition> postTaskRelConditionsList =
+                subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.POST_CONDITION.getCode());
+        postTaskRelConditionsList.stream().forEach(c -> {
+            //如果条件状态为不符合,则执行子任务后置条件检查操作
+            if (ConditionMetStatus.IN_CONFORMITY.getCode().equals(c.getConditionMetStatus())) {
+                String conditonHandleName = c.getConditonHandler();
+                IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
+                boolean met = conditonHandler.handleCondition(c);
+                if (!met) {
+                    //抛出异常
+                    throw new TaskConditionException(-1, "子任务后置条件不满足", c.getSubTaskNum(), conditonHandleName);
+                }
+            }
+        });
+        //将子任务条件表中的条件状态改为已符合
+        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.POST_CONDITION.getCode());
+
+        logger.info("子任务{}后置条件已全部满足", subTask.getSubTaskNum());
+        return true;
     }
 }

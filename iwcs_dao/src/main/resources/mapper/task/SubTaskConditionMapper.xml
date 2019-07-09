@@ -50,6 +50,7 @@
             condition_met_status = #{metStatus}
         </set>
         where sub_task_num = #{subTaskNum}
+        and conditon_triger = #{conditonTriger}
     </update>
 
 </mapper>

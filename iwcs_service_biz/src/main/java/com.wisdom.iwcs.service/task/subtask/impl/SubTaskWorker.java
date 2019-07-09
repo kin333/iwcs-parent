@@ -7,6 +7,7 @@ import com.wisdom.base.quartz.SpringContextUtils;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.conditions.ConditionBase;
+import com.wisdom.iwcs.service.task.conditions.conditonHandler.CheckWorkStatusHandler;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
@@ -38,6 +39,11 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     }
 
+    public boolean postRunnable() {
+        SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
+        return subTaskService.postConditionsCheckAndExec(subTask);
+    }
+
 
     @Override
     public void preConditions() {
@@ -61,8 +67,21 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void postConditions() {
-        SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
-        subTaskService.finishTask(subTask.getSubTaskNum());
+        while (true){
+            try {
+                synchronized (waitLock){
+                    System.out.println("sub task is going to wait " + waitLock);
+                    if (! postRunnable()) {
+                        waitLock.wait(30 * 1000);
+                    } else{
+                        logger.info("子任务{}后置条件检查未符合,30s后重试", subTask.getSubTaskNum());
+                        break;
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         //通知主任务的时机，待定......
         mainTaskWorker.onSubTaskDone(subTask);
 

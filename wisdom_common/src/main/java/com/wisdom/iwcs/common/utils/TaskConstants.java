@@ -106,11 +106,11 @@ public class TaskConstants {
         /**
          * 未开始
          */
-        public final static String START = "0";
+        public final static String READY = "0";
         /**
          * 已开始
          */
-        public final static String LEAVE = "1";
+        public final static String START = "1";
         /**
          * 已结束
          */

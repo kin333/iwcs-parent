@@ -34,5 +34,7 @@ public interface SubTaskConditionMapper extends MyMapperAndIds<SubTaskCondition>
      * @param subTaskNum
      * @param metStatus
      */
-    void updateMetStatusBySubTaskNum(@Param("subTaskNum") String subTaskNum,@Param("metStatus") String metStatus);
+    void updateMetStatusBySubTaskNum(@Param("subTaskNum") String subTaskNum,
+                                     @Param("metStatus") String metStatus,
+                                     @Param("conditonTriger") String conditonTriger);
 }

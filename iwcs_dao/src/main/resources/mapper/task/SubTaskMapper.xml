@@ -218,9 +218,12 @@
   <update id="updateRobotCodeByBerCode">
     update ts_sub_task
     <set>
-      robot_code = #{robotCode}
+      work_task_status = #{workTaskStatus},
+      <if test="robotCode != null and robotCode != ''">
+        robot_code = #{robotCode},
+      </if>
     </set>
-    where worker_task_code = #{taskCode}
+    where worker_task_code = #{workerTaskCode}
   </update>
 
   <select id="selectByTaskCode" resultMap="BaseResultMap">

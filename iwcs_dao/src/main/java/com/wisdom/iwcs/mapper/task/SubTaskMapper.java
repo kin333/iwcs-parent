@@ -64,12 +64,10 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
     int updatePriority(@Param("subTaskNum")String subTaskNum,@Param("priority") Integer priority);
 
     /**
-     * 根据任务编号更新机器人编号
-     * @param taskCode
-     * @param robotCode
+     * 根据任务编号更新机器人编号,和状态
      * @return
      */
-    int updateRobotCodeByBerCode(@Param("taskCode") String taskCode,@Param("robotCode") String robotCode);
+    int updateRobotCodeByBerCode(SubTask subTask);
 
     /**
      * 通过执行任务号查询子任务
