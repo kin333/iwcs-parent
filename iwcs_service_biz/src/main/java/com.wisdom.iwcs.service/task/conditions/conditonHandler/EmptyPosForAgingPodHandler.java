@@ -37,12 +37,12 @@ public class EmptyPosForAgingPodHandler implements IConditionHandler{
         //自动区条件
         LockMapBerthCondition lockConditionAuto = new LockMapBerthCondition();
         lockConditionAuto.setMapCode(subTask.getMapCode());
-        lockConditionAuto.setOperateAreaCode(InspurBizConstants.BizTypeConstants.AGINGAREAAUTO);
+        lockConditionAuto.setBizType(InspurBizConstants.BizTypeConstants.AGINGAREAAUTO);
         lockConditionAuto.setLockSource(subTask.getSubTaskNum());
         //手动区条件
         LockMapBerthCondition lockConditionManual = new LockMapBerthCondition();
         lockConditionManual.setMapCode(subTask.getMapCode());
-        lockConditionManual.setOperateAreaCode(InspurBizConstants.BizTypeConstants.AGINGAREAMANUAL);
+        lockConditionManual.setBizType(InspurBizConstants.BizTypeConstants.AGINGAREAMANUAL);
         lockConditionManual.setLockSource(subTask.getSubTaskNum());
 
         if (InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST.equals(subTask.getSubTaskBizProp())) {
