@@ -19,6 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Hik的回调方法
  */
@@ -26,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 public class HikCallbackIwcsService {
     private static final Logger logger = LoggerFactory.getLogger(HikCallbackIwcsService.class);
+
+    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     @Autowired
     SubTaskMapper subTaskMapper;
     @Autowired
@@ -59,7 +65,13 @@ public class HikCallbackIwcsService {
         subTask.setRobotCode(hikCallBackAgvMove.getRobotCode());
         subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.START);
         subTask.setWorkerTaskCode(hikCallBackAgvMove.getTaskCode());
-        //更新子任务的执行AGV和实际任务状态
+        try {
+            subTask.setTaskStartTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
+        } catch (ParseException e) {
+            logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
+            subTask.setTaskStartTime(new Date());
+        }
+        //更新子任务的执行AGV和实际任务状态以及实际任务开始时间
         subTaskMapper.updateRobotCodeByBerCode(subTask);
     }
 
@@ -80,7 +92,16 @@ public class HikCallbackIwcsService {
                 logger.error(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
 //                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
             }
+            // 更新子任务实际离开储位时间
+            try {
+                subTask.setTaskLeaveTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
+            } catch (ParseException e) {
+                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
+                subTask.setTaskLeaveTime(new Date());
+            }
+            subTaskMapper.updateRobotCodeByBerCode(subTask);
         }
+
 
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
         if (baseMapBerth == null) {
@@ -136,9 +157,14 @@ public class HikCallbackIwcsService {
         //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
         if (subTask != null) {
             publicCheckSubTask(hikCallBackAgvMove, subTask);
-            //更新子任务状态
+            //更新子任务状态以及实际任务结束时间
             subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
-            //更新子任务的实际任务状态
+            try {
+                subTask.setTaskEndTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
+            } catch (ParseException e) {
+                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
+                subTask.setTaskEndTime(new Date());
+            }
             subTaskMapper.updateRobotCodeByBerCode(subTask);
         }
 

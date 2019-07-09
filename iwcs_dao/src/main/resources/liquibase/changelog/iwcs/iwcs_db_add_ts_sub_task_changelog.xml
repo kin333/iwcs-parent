@@ -94,4 +94,12 @@
     <changeSet id="201907090936" author="han">
         <addDefaultValue tableName="ts_sub_task" columnName="work_task_status" defaultValue="0"/>
     </changeSet>
+    
+    <changeSet id="201907091102" author="han">
+        <addColumn tableName="ts_sub_task">
+            <column name="task_start_time" type="DATETIME" remarks="实际任务开始时间"/>
+            <column name="task_leave_time" type="DATETIME" remarks="实际任务离开储位时间"/>
+            <column name="task_end_time" type="DATETIME" remarks="实际任务结束时间"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

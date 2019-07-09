@@ -279,6 +279,46 @@ public class SubTaskDTO {
     @Column(name = "work_task_status")
     private String workTaskStatus;
 
+    /**
+     * 实际任务开始时间
+     */
+    @Column(name = "task_start_time")
+    private Date taskStartTime;
+    /**
+     * 实际任务离开储位时间
+     */
+    @Column(name = "task_leave_time")
+    private Date taskLeaveTime;
+    /**
+     * 实际任务结束时间
+     */
+    @Column(name = "task_end_time")
+    private Date taskEndTime;
+
+    public Date getTaskStartTime() {
+        return taskStartTime;
+    }
+
+    public void setTaskStartTime(Date taskStartTime) {
+        this.taskStartTime = taskStartTime;
+    }
+
+    public Date getTaskLeaveTime() {
+        return taskLeaveTime;
+    }
+
+    public void setTaskLeaveTime(Date taskLeaveTime) {
+        this.taskLeaveTime = taskLeaveTime;
+    }
+
+    public Date getTaskEndTime() {
+        return taskEndTime;
+    }
+
+    public void setTaskEndTime(Date taskEndTime) {
+        this.taskEndTime = taskEndTime;
+    }
+
     public String getWorkTaskStatus() {
         return workTaskStatus;
     }
