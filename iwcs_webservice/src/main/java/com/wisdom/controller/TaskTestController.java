@@ -7,6 +7,7 @@ import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,8 +31,8 @@ public class TaskTestController {
     }
 
 
-    @GetMapping("/startMainTask")
-    public Result startSubtask(Long mainTaskId) {
+    @GetMapping("/startMainTask/{mainTaskId}")
+    public Result startSubtask(@PathVariable Long mainTaskId) {
         MainTask mainTask = mainTaskMapper.selectByPrimaryKey(mainTaskId);
         if (mainTask != null) {
             MainTaskWorker mainTaskWorker = new MainTaskWorker(null, mainTask, null);

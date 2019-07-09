@@ -201,8 +201,8 @@
     update ts_sub_task
     <set>
       end_bercode = #{baseMapBerth.berCode},
-        endX = #{baseMapBerth.coox},
-        endY = #{baseMapBerth.cooy}
+        end_x = #{baseMapBerth.coox},
+        end_y = #{baseMapBerth.cooy}
     </set>
     where sub_task_num = #{subTaskNum}
   </update>
