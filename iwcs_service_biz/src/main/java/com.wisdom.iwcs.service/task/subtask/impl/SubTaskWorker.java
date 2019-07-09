@@ -64,7 +64,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
         SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
         subTaskService.finishTask(subTask.getSubTaskNum());
         //通知主任务的时机，待定......
-        mainTaskWorker.onSubTaskDone();
+        mainTaskWorker.onSubTaskDone(subTask);
 
 
 

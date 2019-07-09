@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/test/wcsTask")
 public class TaskTestController {
-    @Autowired
-    private WcsTaskScheduler wcsTaskScheduler;
+
     @Autowired
     private MainTaskMapper mainTaskMapper;
 
 
     @GetMapping("/startWcsTaskScheduler")
     public Result startWcsTaskScheduler() {
+        WcsTaskScheduler wcsTaskScheduler = new WcsTaskScheduler();
         wcsTaskScheduler.dispatchMaintask();
         return new Result();
     }
@@ -34,7 +34,7 @@ public class TaskTestController {
     public Result startSubtask(Long mainTaskId) {
         MainTask mainTask = mainTaskMapper.selectByPrimaryKey(mainTaskId);
         if (mainTask != null) {
-            MainTaskWorker mainTaskWorker = new MainTaskWorker(null, mainTask);
+            MainTaskWorker mainTaskWorker = new MainTaskWorker(null, mainTask, null);
             Thread thread = new Thread(mainTaskWorker);
             thread.start();
             return new Result("任务已启动");
