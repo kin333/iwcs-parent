@@ -163,6 +163,9 @@ public class MapResouceService implements IMapResouceService {
             return validateResult;
         }
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(lockStorageDto);
+        if(!Strings.isNullOrEmpty(baseMapBerth.getPodCode())) {
+            return new Result(400,"该储位存在货架:"+baseMapBerth.getPodCode()+"，请稍后执行");
+        }
         //锁住选中的点位
         lockStorageDto.setVersion(baseMapBerth.getVersion());
         int count = baseMapBerthMapper.lockMapBerth(lockStorageDto);

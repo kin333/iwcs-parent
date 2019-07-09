@@ -57,7 +57,7 @@
     </update>
     <update id="unlockMapBerth">
         update base_map_berth
-        set in_lock = 0,pod_code = '',lock_source = ''
+        set in_lock = 0,lock_source = ''
         where map_code = #{mapCode} and ber_code = #{berCode}
     </update>
 
