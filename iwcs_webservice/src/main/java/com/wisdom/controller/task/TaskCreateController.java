@@ -27,6 +27,7 @@ public class TaskCreateController {
      */
     @PostMapping(value = "/create")
     public Result createTask(@RequestBody TaskCreateRequest taskCreateRequest) {
-        return new Result(taskCreateService.creatTask(taskCreateRequest));
+        Result result = taskCreateService.creatTask(taskCreateRequest);
+        return result;
     }
 }

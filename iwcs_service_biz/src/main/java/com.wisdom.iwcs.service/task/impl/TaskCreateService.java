@@ -201,6 +201,7 @@ public class TaskCreateService implements ITaskCreateService {
             //如果货架为空，查询创建失败
             podCode = baseMapBerthMapper.selectBerCodeByPodCode(startPointAlias);
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "该点位未查找到货架，任务创建失败！");
+            startPoint = basePodDetailMapper.selectBerCodeByPodCode(podCode);
         }
         //当前货架所在楼层，对比用户登录楼层权限,如果不在一个楼层创建失败
         //String userAreaCode = SecurityUtils.getCurrentAreaCode();
@@ -251,6 +252,7 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
         //根据货架号查询起始点
         BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+        Preconditions.checkBusinessError(basePodDetail == null, "为查询到该货架号");
 
         //校验货架点位是否正确
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
