@@ -39,7 +39,7 @@ public class QuaWbLockHandler implements IConditionHandler {
         tmpCon.setId(subTaskCondition.getId());
         tmpCon.setConditionMetStatus("1");
         subTaskConditionsMapper.updateByPrimaryKeySelective(tmpCon);
-        return false;
+        return true;
     }
 
     @Override
@@ -61,6 +61,6 @@ public class QuaWbLockHandler implements IConditionHandler {
         tmpCon.setId(subTaskCondition.getId());
         tmpCon.setConditionMetStatus("0");
         subTaskConditionsMapper.updateByPrimaryKeySelective(tmpCon);
-        return false;
+        return true;
     }
 }
