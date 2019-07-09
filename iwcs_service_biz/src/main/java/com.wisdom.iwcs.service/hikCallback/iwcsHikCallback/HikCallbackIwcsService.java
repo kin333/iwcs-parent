@@ -71,7 +71,8 @@ public class HikCallbackIwcsService {
             logger.warn("任务号" + hikCallBackAgvMove.getTaskCode() + "没有匹配的任务");
             publicCheckSubTask(hikCallBackAgvMove, subTask);
             if (!SubTaskStatusEnum.Executing.getStatusCode().equals(subTask.getTaskStatus())) {
-                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+                logger.error(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+//                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
             }
         }
 
@@ -94,8 +95,10 @@ public class HikCallbackIwcsService {
             throw new BusinessException(hikCallBackAgvMove.getMapDataCode() + "此地码的信息不存在");
         }
         if (subTask != null && !subTask.getSubTaskNum().equals(baseMapBerth.getLockSource())) {
-            throw new BusinessException("地码锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
+            logger.error("地码锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
                     + " 地码编号:" + hikCallBackAgvMove.getMapDataCode());
+//            throw new BusinessException("地码锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
+//                    + " 地码编号:" + hikCallBackAgvMove.getMapDataCode());
         }
         //解锁这个储位
         baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
@@ -138,8 +141,10 @@ public class HikCallbackIwcsService {
             throw new BusinessException(hikCallBackAgvMove.getPodCode() + "货架号无对应货架信息");
         }
         if (subTask != null && !subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
-            throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
-                    + " 货架编号:" + hikCallBackAgvMove.getPodCode());
+            logger.error("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
+                    + " 地码编号:" + hikCallBackAgvMove.getMapDataCode());
+//            throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
+//                    + " 货架编号:" + hikCallBackAgvMove.getPodCode());
         }
         basePodDetail.setCoox(hikCallBackAgvMove.getCooX());
         basePodDetail.setCooy(hikCallBackAgvMove.getCooY());
