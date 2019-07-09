@@ -36,4 +36,26 @@
     </if>
     order by last_modified_time desc
   </select>
+    <select id="selectBlackRule" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_point_black_rule
+    where 1=1
+    <if test="startOperateArea != null ">
+        and start_operate_area = #{startOperateArea,jdbcType=BIGINT}
+    </if>
+    <if test="startBizType != null">
+        and start_biz_type = #{startBizType,jdbcType=BIGINT}
+    </if>
+    <if test="startBizSecondArea != null">
+        and start_biz_second_area = #{startBizSecondArea,jdbcType=BIGINT}
+    </if>
+    <if test="startOperateArea != null ">
+        and target_operate_area = #{targetOperateArea,jdbcType=BIGINT}
+    </if>
+    <if test="startBizType != null">
+        and target_biz_type = #{targetBizType,jdbcType=BIGINT}
+    </if>
+    <if test="startBizSecondArea != null">
+        and target_biz_second_area = #{targetBizSecondArea,jdbcType=BIGINT}
+    </if>
+</select>
 </mapper>

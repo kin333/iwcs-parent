@@ -20,4 +20,6 @@ public interface TaskPointBlackRuleMapper extends MyMapperAndIds<TaskPointBlackR
      * @return list
      */
     List<TaskPointBlackRule> selectPage(Map map);
+
+    List<TaskPointBlackRule> selectBlackRule(TaskPointBlackRule taskPointBlackRule);
 }

@@ -22,7 +22,7 @@ public class Result {
     /**
      * 返回请求code
      */
-    private String reqCode;
+    //private String reqCode;
     /**
      * 返回数据
      */
@@ -76,11 +76,11 @@ public class Result {
         this.returnData = returnData;
     }
 
-    public String getReqCode() {
-        return reqCode;
-    }
-
-    public void setReqCode(String reqCode) {
-        this.reqCode = reqCode;
-    }
+//    public String getReqCode() {
+//        return reqCode;
+//    }
+//
+//    public void setReqCode(String reqCode) {
+//        this.reqCode = reqCode;
+//    }
 }

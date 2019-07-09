@@ -13,10 +13,7 @@ import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
-import com.wisdom.iwcs.mapper.task.MainTaskMapper;
-import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
-import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
-import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
+import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.*;
@@ -75,6 +72,8 @@ public class TaskCreateService implements ITaskCreateService {
     private IPToPService ipToPService;
     @Autowired
     private IQuaBufToQuaService iQuaBufToQuaService;
+    @Autowired
+    private TaskPointBlackRuleMapper taskPointBlackRuleMapper;
 
     /**
      * 创建任务
@@ -308,7 +307,7 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) || Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
 
         BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
-        Preconditions.checkBusinessError(startBaseMapBerth == null, "根据点位编号获取点位信息为空");
+        Preconditions.checkBusinessError(startBaseMapBerth == null, "根据起点点位编号获取点位信息为空");
         startPoint = startBaseMapBerth.getBerCode();
         //初始化入库
         if (!Strings.isNullOrEmpty(taskCreateRequest.getpTopTaskSubTaskType()) && INIT_STORAGE.equals(taskCreateRequest.getpTopTaskSubTaskType())){
@@ -327,8 +326,18 @@ public class TaskCreateService implements ITaskCreateService {
 
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "目标点不能为空");
             //查询点位是否有任务或有货架，无，上锁
-            BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+            BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(targetPointAlias);
+            Preconditions.checkBusinessError(endBaseMapBerth == null, "根据目标点位编号获取点位信息为空");
             //TODO 查询模板，两个点是否允许搬运
+            TaskPointBlackRule taskPointBlackRule = new TaskPointBlackRule();
+            taskPointBlackRule.setStartOperateArea(startBaseMapBerth.getOperateAreaCode());
+            taskPointBlackRule.setStartBizType(startBaseMapBerth.getBizType());
+            taskPointBlackRule.setStartBizSecondArea(startBaseMapBerth.getBizSecondAreaCode());
+            taskPointBlackRule.setTargetOperateArea(endBaseMapBerth.getOperateAreaCode());
+            taskPointBlackRule.setTargetBizType(endBaseMapBerth.getBizType());
+            taskPointBlackRule.setTargetBizSecondArea(endBaseMapBerth.getBizSecondAreaCode());
+            List<TaskPointBlackRule> taskPointBlackRuleList = taskPointBlackRuleMapper.selectBlackRule(taskPointBlackRule);
+            Preconditions.checkBusinessError(taskPointBlackRuleList.size() > 0, "目标点不允许创建该起点的搬运任务");
 
             //加锁
             LockStorageDto lockStorageDto = new LockStorageDto();
