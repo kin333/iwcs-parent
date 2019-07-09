@@ -266,6 +266,7 @@ public class SubTaskService {
      *
      * @return
      */
+    @Transactional
     public boolean preConditionsCheckAndExec(SubTask subTask) {
         List<SubTaskCondition> preTaskRelConditionsList =
                 subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.PRE_CONDITION.getCode());
@@ -350,6 +351,7 @@ public class SubTaskService {
      * @param subTask
      * @return
      */
+    @Transactional
     public boolean postConditionsCheckAndExec(SubTask subTask) {
         List<SubTaskCondition> postTaskRelConditionsList =
                 subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.POST_CONDITION.getCode());

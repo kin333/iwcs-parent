@@ -14,7 +14,6 @@ import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
-import com.wisdom.iwcs.service.task.subtask.impl.SubTaskWorker;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -51,6 +51,7 @@ public class IwcsPublicService {
      * 根据子任务单号获取最新子任务信息,并将任务消息体取出并完善,然后发送给第三方
      * @param subTaskNum
      */
+    @Transactional
     public void sendInfoBySubTaskNum(String subTaskNum) {
         logger.info("子任务{}开始下发process ", subTaskNum);
         // 1. 从数据库获取子任务单

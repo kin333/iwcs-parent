@@ -7,7 +7,6 @@ import com.wisdom.base.quartz.SpringContextUtils;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.conditions.ConditionBase;
-import com.wisdom.iwcs.service.task.conditions.conditonHandler.CheckWorkStatusHandler;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
@@ -34,14 +33,26 @@ public class SubTaskWorker extends AbstractTaskWorker {
         // 1. 判断内存中记录的N个条件是否都已经满足，如果满足，直接返回OK
         // 判断是否有资源能满足条件，如果满足则直接锁定。
         // 满足的条件该锁定资源需要锁定，并记录锁定状态及谁锁定了该资源, in_lock and lock_source
-        SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
-        return subTaskService.preConditionsCheckAndExec(subTask);
+        try {
+            SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
+            subTaskService.preConditionsCheckAndExec(subTask);
+            return true;
+        } catch (Exception e) {
+            logger.info("{}子任务前置条件暂不满足", subTask.getSubTaskNum());
+            return false;
+        }
 
     }
 
     public boolean postRunnable() {
-        SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
-        return subTaskService.postConditionsCheckAndExec(subTask);
+        try {
+            SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
+            subTaskService.postConditionsCheckAndExec(subTask);
+            return true;
+        } catch (Exception e) {
+            logger.info("{}子任务后置条件暂不满足", subTask.getSubTaskNum());
+            return false;
+        }
     }
 
 
@@ -52,9 +63,10 @@ public class SubTaskWorker extends AbstractTaskWorker {
                 synchronized (waitLock){
                     System.out.println("sub task is going to wait " + waitLock);
                     if (! isRunnable()) {
+                        logger.info("Task {}, subtask: {} is gonging to wait 10*1000, go...", subTask.getMainTaskNum(), subTask.getSubTaskNum());
                         waitLock.wait(10 * 1000);
                     } else{
-                        logger.info("Task {}, subtask: {} become runnable, go...");
+                        logger.info("Task {}, subtask: {} become runnable, go...", subTask.getMainTaskNum(), subTask.getSubTaskNum());
                         break;
                     }
                 }
@@ -84,9 +96,6 @@ public class SubTaskWorker extends AbstractTaskWorker {
         }
         //通知主任务的时机，待定......
         mainTaskWorker.onSubTaskDone(subTask);
-
-
-
         // 锁定的资源
 
 
@@ -94,8 +103,13 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void process() {
-        IwcsPublicService iwcsPublicService = (IwcsPublicService) SpringContextUtils.getBean("iwcsPublicService");
-        iwcsPublicService.sendInfoBySubTaskNum(subTask.getSubTaskNum());
+        try {
+            IwcsPublicService iwcsPublicService = (IwcsPublicService) SpringContextUtils.getBean("iwcsPublicService");
+            iwcsPublicService.sendInfoBySubTaskNum(subTask.getSubTaskNum());
+        } catch (Exception e) {
+
+
+        }
     }
 
     public SubTask getSubTask() {

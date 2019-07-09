@@ -251,6 +251,7 @@ public class MainTaskService implements IMainTaskService {
         return false;
     }
 
+    @Transactional
     @Override
     public boolean endMainTask(String mainTaskNum) {
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
