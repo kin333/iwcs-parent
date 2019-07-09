@@ -100,6 +100,7 @@
       <result property="subTaskBizProp" jdbcType="VARCHAR" column="sub_task_biz_prop"/>
 
       <result property="robotCode" jdbcType="VARCHAR" column="robot_code"/>
+      <result property="workTaskStatus" jdbcType="VARCHAR" column="work_task_status"/>
 
 
   </resultMap>
@@ -112,7 +113,7 @@
       trigger_type, condition_handler, third_invoke_type, third_type, app_code, third_url, third_start_method,
       third_end_method, point_access, sequence, cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec,
       priority, task_status, map_code, pod_code, pod_dir, start_bercode, start_x, start_y, end_bercode, end_x, end_y,
-      end_remark, worker_task_code, area_code, sub_task_biz_prop, robot_code
+      end_remark, worker_task_code, area_code, sub_task_biz_prop, robot_code, work_task_status
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task

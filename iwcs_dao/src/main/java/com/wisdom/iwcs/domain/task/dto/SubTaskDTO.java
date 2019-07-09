@@ -273,6 +273,21 @@ public class SubTaskDTO {
     @Column(name = "robot_code")
     private String robotCode;
 
+    /**
+     * 实际工作状态
+     */
+    @Column(name = "work_task_status")
+    private String workTaskStatus;
+
+    public String getWorkTaskStatus() {
+        return workTaskStatus;
+    }
+
+    public void setWorkTaskStatus(String workTaskStatus) {
+        this.workTaskStatus = workTaskStatus;
+    }
+
+
     public String getRobotCode() {
         return robotCode;
     }

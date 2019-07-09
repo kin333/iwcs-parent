@@ -84,4 +84,14 @@
             <column name="robot_code" remarks="执行机器人编号" type="VARCHAR(20)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201907090922" author="han">
+        <addColumn tableName="ts_sub_task">
+            <column name="work_task_status" type="VARCHAR(6)" remarks="实际工作状态:0 未开始,1 已开始,2 已结束"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="201907090936" author="han">
+        <addDefaultValue tableName="ts_sub_task" columnName="work_task_status" defaultValue="0"/>
+    </changeSet>
 </databaseChangeLog>

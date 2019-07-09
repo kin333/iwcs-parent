@@ -98,4 +98,22 @@ public class TaskConstants {
          */
         public final static String NOT_CONFORM = "0";
     }
+
+    /**
+     * 实际工作状态
+     */
+    public static final class workTaskStatus {
+        /**
+         * 未开始
+         */
+        public final static String START = "0";
+        /**
+         * 已开始
+         */
+        public final static String LEAVE = "1";
+        /**
+         * 已结束
+         */
+        public final static String END = "2";
+    }
 }
