@@ -71,7 +71,10 @@ public class IwcsPublicService {
             resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
             iCommonService.handleHikResponseAndThrowException(resultBody);
         }
-        subTaskMapper.updateSendStatus(subTaskNum, SendStatus.SEND.getCode());
+        subTask.setSendStatus(SendStatus.SEND.getCode());
+        subTask.setTaskMsg(jsonStr);
+        //更新子任务的下发状态以及发送的消息体
+        subTaskMapper.updateByPrimaryKeySelective(subTask);
     }
 
     /**
