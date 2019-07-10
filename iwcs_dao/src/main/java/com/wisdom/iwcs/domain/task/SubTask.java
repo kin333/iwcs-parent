@@ -296,6 +296,20 @@ public class SubTask {
     @Column(name = "task_end_time")
     private Date taskEndTime;
 
+    /**
+     * 任务下发时间
+     */
+    @Column(name = "send_time")
+    private Date sendTime;
+
+    public Date getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
+    }
+
     public Date getTaskStartTime() {
         return taskStartTime;
     }

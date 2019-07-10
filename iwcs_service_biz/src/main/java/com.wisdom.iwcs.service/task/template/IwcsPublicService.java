@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -80,6 +81,7 @@ public class IwcsPublicService {
         SubTask tmpSubask = new SubTask();
         tmpSubask.setId(subTask.getId());
         tmpSubask.setSendStatus(SendStatus.SEND.getCode());
+        tmpSubask.setSendTime(new Date());
         tmpSubask.setTaskMsg(jsonStr);
         //更新子任务的下发状态以及发送的消息体
         subTaskMapper.updateByPrimaryKeySelective(tmpSubask);

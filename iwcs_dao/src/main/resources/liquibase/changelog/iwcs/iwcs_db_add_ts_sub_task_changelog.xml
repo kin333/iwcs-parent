@@ -102,4 +102,10 @@
             <column name="task_end_time" type="DATETIME" remarks="实际任务结束时间"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201907101748" author="han">
+        <addColumn tableName="ts_sub_task">
+            <column name="send_time" type="DATETIME" remarks="任务下发时间"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
