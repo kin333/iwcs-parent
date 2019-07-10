@@ -255,6 +255,7 @@ public class MainTaskService implements IMainTaskService {
     @Override
     public boolean endMainTask(String mainTaskNum) {
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
+        logger.info("开始结束主任务{}", mainTask);
         if (mainTask == null) {
             logger.error("无效的主任务编号：{}", mainTaskNum);
             return false;
@@ -264,16 +265,19 @@ public class MainTaskService implements IMainTaskService {
             if ((TaskConstants.mainTaskStatus.MAIN_FINISHED.equals(taskStatus))) {
                 logger.warn("主任务状态异常{}，尝试结束前发现其状态为已结束", mainTask.getMainTaskNum(), taskStatus);
                 return true;
-            }
-            if (TaskConstants.mainTaskStatus.MAIN_ISSUED.equals(taskStatus)) {
+            } else if (TaskConstants.mainTaskStatus.MAIN_ISSUED.equals(taskStatus) || TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED.equals(taskStatus)) {
                 MainTask mainTaskTmp = new MainTask();
                 mainTaskTmp.setId(mainTask.getId());
                 mainTaskTmp.setTaskStatus(TaskConstants.mainTaskStatus.MAIN_FINISHED);
                 mainTaskMapper.updateByPrimaryKeySelective(mainTaskTmp);
+                logger.info("修改主任务状态为9：{}", mainTaskNum);
                 return true;
+            } else {
+                logger.error("结束主任务时，任务状态异常，处于不可结束状态{}", mainTask.getTaskStatus());
             }
 
         }
+        logger.error("结束主任务失败，无效的主任务号{}", mainTaskNum);
         return false;
     }
 

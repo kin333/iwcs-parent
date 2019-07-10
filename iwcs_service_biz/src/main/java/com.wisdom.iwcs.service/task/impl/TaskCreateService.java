@@ -139,7 +139,7 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPointAlias()), "请填写点位编号");
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getTargetPointAlias());
-        Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效目标点编码" + taskCreateRequest.getTargetPointAlias());
 
         Preconditions.checkBusinessError(!LINEAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体区域");
 

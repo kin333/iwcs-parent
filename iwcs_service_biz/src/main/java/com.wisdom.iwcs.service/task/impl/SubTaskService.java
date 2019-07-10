@@ -278,6 +278,7 @@ public class SubTaskService {
                 boolean met = conditonHandler.handleCondition(c);
                 if (!met) {
                     //抛出异常
+                    logger.info("{}子任务前置条件不满足,条件处理器{}", c.getSubTaskNum(), conditonHandleName);
                     throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
                 }
             }

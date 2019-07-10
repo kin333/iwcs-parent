@@ -39,6 +39,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
             return true;
         } catch (Exception e) {
             logger.info("{}子任务前置条件暂不满足", subTask.getSubTaskNum());
+            e.printStackTrace();
             return false;
         }
 
@@ -51,6 +52,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
             return true;
         } catch (Exception e) {
             logger.info("{}子任务后置条件暂不满足", subTask.getSubTaskNum());
+            e.printStackTrace();
             return false;
         }
     }

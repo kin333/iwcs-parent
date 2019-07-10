@@ -74,7 +74,7 @@ public class MainTaskWorker extends AbstractTaskWorker {
                             wcsTaskScheduler.onMainTaskEnd(mainTaskNum);
                         }
                         MainTaskService mainTaskService = (MainTaskService) AppContext.getBean("mainTaskService");
-                        logger.info("更新{}主任务状态为已完成9", mainTaskNum);
+                        logger.info("调用更新{}主任务结束方法", mainTaskNum);
                         boolean endMainTaskRes = mainTaskService.endMainTask(mainTaskNum);
                         logger.debug("结束主任务{}结果：{}", mainTask.getMainTaskNum(), endMainTaskRes);
                         break;
