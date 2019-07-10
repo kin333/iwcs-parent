@@ -227,14 +227,14 @@
       <if test="robotCode != null and robotCode != ''">
         robot_code = #{robotCode},
       </if>
-      <if test="taskStartTime != null and taskStartTime != ''">
-        task_start_time = #{taskStartTime},
+      <if test="taskStartTime != null">
+        task_start_time = #{taskStartTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="taskLeaveTime != null and taskLeaveTime != ''">
-        task_leave_time = #{taskLeaveTime},
+      <if test="taskLeaveTime != null">
+        task_leave_time = #{taskLeaveTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="taskEndTime != null and taskEndTime != ''">
-        task_end_time = #{taskEndTime},
+      <if test="taskEndTime != null">
+        task_end_time = #{taskEndTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where worker_task_code = #{workerTaskCode}
