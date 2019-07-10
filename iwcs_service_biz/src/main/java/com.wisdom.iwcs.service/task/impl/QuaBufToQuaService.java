@@ -1,6 +1,8 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
@@ -8,6 +10,7 @@ import com.wisdom.iwcs.domain.task.QuaBufToQuaRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.base.BaseWaMapMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
@@ -45,6 +48,8 @@ public class QuaBufToQuaService implements IQuaBufToQuaService {
     private ITaskCreateService iTaskCreateService;
     @Autowired
     private IMapResouceService iMapResouceService;
+    @Autowired
+    private BaseWaMapMapper baseWaMapMapper;
 
     @Override
     public Result quaBufToQua(QuaBufToQuaRequest quaBufToQuaRequest){
@@ -81,18 +86,22 @@ public class QuaBufToQuaService implements IQuaBufToQuaService {
             subTaskCreate.setWorkerTaskCode(subTaskNum);
 
             //计算起点通过地图坐标查询坐标
-            BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(quaBufToQuaRequest.getStartPoint());
-            subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
-            subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
+//            BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(quaBufToQuaRequest.getStartPoint());
+//            subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
+//            subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
+//
+//            BasePodDetail basePodDetail = new BasePodDetail();
+//            basePodDetail.setPodCode(quaBufToQuaRequest.getPodCode());
+//            basePodDetail.setLockSource(subTaskNum);
+//            //货架上锁
+//            iMapResouceService.lockPod(basePodDetail);
 
-            BasePodDetail basePodDetail = new BasePodDetail();
-            basePodDetail.setPodCode(quaBufToQuaRequest.getPodCode());
-            basePodDetail.setLockSource(subTaskNum);
-            //货架上锁
-            iMapResouceService.lockPod(basePodDetail);
+//            subTaskCreate.setStartBercode(quaBufToQuaRequest.getStartPoint());
 
-            subTaskCreate.setStartBercode(quaBufToQuaRequest.getStartPoint());
-            subTaskCreate.setMapCode(startBercode.getMapCode());
+            String mapCode = baseWaMapMapper.selectMapCodeByAreaCode(quaBufToQuaRequest.getAreaCode());
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(mapCode),"找不到对应的地图代码");
+
+            subTaskCreate.setMapCode(mapCode);
             subTaskCreate.setAreaCode(quaBufToQuaRequest.getAreaCode());
             subTaskMapper.insertSelective(subTaskCreate);
 

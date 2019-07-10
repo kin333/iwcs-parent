@@ -118,7 +118,7 @@ public class TaskCreateService implements ITaskCreateService {
                 break;
             case QUABUFTOQUA:
                 taskCreateRequest.setPriority(mainTaskType.getPriority());
-                pTopFunction(taskCreateRequest);
+                quaBufToQuaFunction(taskCreateRequest);
                 break;
             default:
                 logger.error("wrong task type Code:{}",taskTypeCode);
@@ -177,6 +177,8 @@ public class TaskCreateService implements ITaskCreateService {
         plBufSupplyRequest.setAreaCode(taskCreateRequest.getAreaCode());
         iPlBufSupplyService.plBufSupply(plBufSupplyRequest);
     }
+
+
 
     /**
      * 任务：产线去老化区搬运
@@ -378,27 +380,30 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public Result quaBufToQuaFunction(TaskCreateRequest taskCreateRequest){
         logger.info("检验缓冲区去检验点:{}",JSON.toJSONString(taskCreateRequest));
-        String podCode = taskCreateRequest.getPodCode();
-        String startPointAlias = taskCreateRequest.getStartPointAlias();
-        String startPoint = "";
+//        String podCode = taskCreateRequest.getPodCode();
+//        String startPointAlias = taskCreateRequest.getStartPointAlias();
+//        String startPoint = "";
 
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) || Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
+//        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) || Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
+//
+//        //校验货架点位是否正确
+//        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+//        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+//
+//        BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+//        Preconditions.checkBusinessError(startBaseMapBerth == null, "根据点位编号获取点位信息为空");
+//        startPoint = startBaseMapBerth.getBerCode();
 
-        //校验货架点位是否正确
-        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
-        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
-
-        BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
-        Preconditions.checkBusinessError(startBaseMapBerth == null, "根据点位编号获取点位信息为空");
-        startPoint = startBaseMapBerth.getBerCode();
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getAreaCode()), "请填写需补充货架的楼层");
+        //查询楼层是否存在
+        BaseWhArea baseWhArea = baseWhAreaMapper.selectByAreaCodeAndDeleteFlag(taskCreateRequest.getAreaCode(),0);
+        Preconditions.checkBusinessError(baseWhArea == null, "楼层不存在");
 
         //创建任务
         QuaBufToQuaRequest quaBufToQuaRequest = new QuaBufToQuaRequest();
         quaBufToQuaRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         quaBufToQuaRequest.setPriority(taskCreateRequest.getPriority());
-        quaBufToQuaRequest.setAreaCode(startBaseMapBerth.getAreaCode());
-        quaBufToQuaRequest.setPodCode(podCode);
-        quaBufToQuaRequest.setStartPoint(startPoint);
+        quaBufToQuaRequest.setAreaCode(taskCreateRequest.getAreaCode());
         iQuaBufToQuaService.quaBufToQua(quaBufToQuaRequest);
         return new Result();
     }

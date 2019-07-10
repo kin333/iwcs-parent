@@ -15,4 +15,6 @@ public class AreaCondition {
      * 业务次级区域
      */
     private String bizSecondArea;
+
+    private String bizType;
 }
