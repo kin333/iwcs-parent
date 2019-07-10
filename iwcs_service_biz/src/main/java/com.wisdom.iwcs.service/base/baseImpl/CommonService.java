@@ -339,7 +339,7 @@ public class CommonService implements ICommonService {
         String berCode = basePodDetailMapper.selectBerCodeByPodCode(podCode);
         Preconditions.checkBusinessError(berCode == null, "查询货架：" + podCode + "坐标信息为空");
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
-        Preconditions.checkBusinessError(baseMapBerth == null, "货架：" + podCode + "货架表中记录的坐标" + baseMapBerth.getBerCode() + "在地图信息表中未查找到");
+        Preconditions.checkBusinessError(baseMapBerth == null, "货架：" + podCode + "货架表中记录的坐标" + berCode + "在地图信息表中未查找到");
         if (podCode.equals(baseMapBerth.getPodCode())) {
             podPointAgreement = true;
         }

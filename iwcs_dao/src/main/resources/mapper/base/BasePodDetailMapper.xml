@@ -328,4 +328,14 @@
         </set>
         where pod_code = #{podCode}
     </update>
+    <update id="updateMapByPodCode">
+        update base_pod_detail
+        <set>
+            ber_code = #{berCode},
+            coox = #{coox},
+            cooy = #{cooy},
+            map_code = #{mapCode}
+        </set>
+        where pod_code = #{podCode}
+    </update>
 </mapper>

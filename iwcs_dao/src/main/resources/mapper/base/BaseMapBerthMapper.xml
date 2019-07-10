@@ -200,6 +200,14 @@
         </foreach>
     </update>
 
+    <update id="updatePodCodeByBerCode">
+        update base_map_berth
+        <set>
+            pod_code = #{podCode}
+        </set>
+        where ber_code  = #{berCode}
+    </update>
+
     <delete id="deleteByBerCodeListAndMapCode">
         delete from base_map_berth where map_code = #{mapCode} and ber_code in
         <foreach collection="berCodeList" index="index" item="item" open="(" close=")" separator=",">

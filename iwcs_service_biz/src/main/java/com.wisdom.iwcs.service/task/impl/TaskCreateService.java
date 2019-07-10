@@ -265,8 +265,8 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+//        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //获取目标空闲点位，如果没有空闲点，任务创建失败
         //检验区先检验缓存区是否有空闲点，后获工作点是否有空闲

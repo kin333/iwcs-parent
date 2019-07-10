@@ -8,6 +8,7 @@ import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.domain.base.dto.LockPodCondition;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -158,4 +159,16 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      */
     @Select("select ber_code from base_pod_detail where pod_code = #{podCode} and in_lock = 0 and valid_flag = 1 and delete_flag = 0")
     String selectBerCodeByPodCode(String podCode);
+
+    /**
+     * 查询所有已初始化货架
+     */
+    @Select("select pod_code from base_pod_detail where ber_code is not null and ber_code != ''")
+    List<String> selectInitPod();
+
+    /**
+     * 根据货架编号更新货架的地图位置信息
+     * @return
+     */
+    int updateMapByPodCode(BasePodDetail basePodDetail);
 }

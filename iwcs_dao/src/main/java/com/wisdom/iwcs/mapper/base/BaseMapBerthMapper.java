@@ -98,4 +98,12 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     int updateListByBerCode(BaseMapBerthDTO baseMapBerthDTO);
+
+    /**
+     * 根据地码编号更新货架号
+     * @param podCode
+     * @param berCode
+     * @return
+     */
+    int updatePodCodeByBerCode(@Param("podCode") String podCode,@Param("berCode") String berCode);
 }
