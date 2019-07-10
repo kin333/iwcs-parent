@@ -1,12 +1,15 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.PlBufSupplyRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.base.BaseWaMapMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.slf4j.Logger;
@@ -42,6 +45,8 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     private ITaskCreateService iTaskCreateService;
+    @Autowired
+    private BaseWaMapMapper baseWaMapMapper;
 
     /**
      *  呼叫空货架
@@ -83,15 +88,12 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
             subTaskCreate.setNeedTrigger(taskRel.getNeedTrigger());
             subTaskCreate.setNeedConfirm(taskRel.getNeedConfirm());
             subTaskCreate.setNeedInform(taskRel.getNeedInform());
-
             subTaskCreate.setWorkerTaskCode(subTaskNum);
 
-            //计算目标通过地图坐标查询坐标
-            BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plBufSupplyRequest.getTargetPoint());
-            subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
-            subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
-            subTaskCreate.setEndBercode(endBercode.getBerCode());
-            subTaskCreate.setMapCode(endBercode.getMapCode());
+            String mapCode = baseWaMapMapper.selectMapCodeByAreaCode(plBufSupplyRequest.getAreaCode());
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(mapCode),"找不到对应的地图代码");
+
+            subTaskCreate.setMapCode(mapCode);
             subTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());
             subTaskMapper.insertSelective(subTaskCreate);
 

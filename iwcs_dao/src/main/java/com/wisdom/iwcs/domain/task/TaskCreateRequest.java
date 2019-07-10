@@ -52,6 +52,11 @@ public class TaskCreateRequest {
      */
     private String pTopTaskSubTaskType;
 
+    /**
+     *
+     */
+    private String areaCode;
+
     public String getTaskTypeCode() {
         return taskTypeCode;
     }
@@ -122,5 +127,13 @@ public class TaskCreateRequest {
 
     public void setpTopTaskSubTaskType(String pTopTaskSubTaskType) {
         this.pTopTaskSubTaskType = pTopTaskSubTaskType;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 }

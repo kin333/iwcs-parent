@@ -8,11 +8,13 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.BaseWhArea;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.mapper.base.BaseWhAreaMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -74,6 +76,8 @@ public class TaskCreateService implements ITaskCreateService {
     private IQuaBufToQuaService iQuaBufToQuaService;
     @Autowired
     private TaskPointBlackRuleMapper taskPointBlackRuleMapper;
+    @Autowired
+    private BaseWhAreaMapper baseWhAreaMapper;
 
     /**
      * 创建任务
@@ -160,21 +164,17 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public void plBufSupplyFunction(TaskCreateRequest taskCreateRequest){
         logger.info("补充产线空货架缓存区:{}",JSON.toJSONString(taskCreateRequest));
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPointAlias()), "请填写目标点位");
-        //查询点位坐标
-        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getTargetPointAlias());
-        Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
-
-        Preconditions.checkBusinessError(LINECACHEAREA.equals(baseMapBerth.getBizType()), "点位不属于线体区域缓存区");
-
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getAreaCode()), "请填写需补充货架的楼层");
+        //查询楼层是否存在
+        BaseWhArea baseWhArea = baseWhAreaMapper.selectByAreaCodeAndDeleteFlag(taskCreateRequest.getAreaCode(),0);
+        Preconditions.checkBusinessError(baseWhArea == null, "楼层不存在");
         //校验目标点位和用户登录的点位是否在同一楼层
-        //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
+//        Preconditions.checkBusinessError(taskCreateRequest.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
 
         PlBufSupplyRequest plBufSupplyRequest = new PlBufSupplyRequest();
         plBufSupplyRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         plBufSupplyRequest.setPriority(taskCreateRequest.getPriority());
-        plBufSupplyRequest.setTargetPoint(baseMapBerth.getBerCode());
-        plBufSupplyRequest.setAreaCode(baseMapBerth.getAreaCode());
+        plBufSupplyRequest.setAreaCode(taskCreateRequest.getAreaCode());
         iPlBufSupplyService.plBufSupply(plBufSupplyRequest);
     }
 

@@ -32,4 +32,6 @@ public interface BaseWaMapMapper extends DeleteLogicMapper<BaseWaMap>, MyMapperA
      * @return
      */
     BaseWaMap selectByMapCodeAndValidFlagAndDeleteFlag(@Param("mapCode") String mapCode, @Param("validFlag") Integer validFlag, @Param("deleteFlag") Integer deleteFlag);
+
+    String selectMapCodeByAreaCode(String areaCode);
 }

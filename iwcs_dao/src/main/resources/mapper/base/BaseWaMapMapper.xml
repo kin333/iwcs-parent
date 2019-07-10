@@ -48,4 +48,7 @@
         from base_wa_map
         where map_code = #{mapCode} and valid_flag = #{validFlag} and delete_flag = #{deleteFlag}
     </select>
+    <select id="selectMapCodeByAreaCode" resultType="java.lang.String">
+        select map_code from base_wa_map where area_code = #{areaCode} and  delete_flag = 0
+    </select>
 </mapper>
