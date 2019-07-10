@@ -54,7 +54,7 @@ public class BaseLockEmptyMapService {
         for (AreaCondition areaCondition : areaConditions) {
             LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
             lockMapBerthCondition.setMapCode(subTask.getMapCode());
-            lockMapBerthCondition.setOperateAreaCode(areaCondition.getArea());
+            lockMapBerthCondition.setBizType(areaCondition.getArea());
             lockMapBerthCondition.setLockSource(subTask.getSubTaskNum());
             if (StringUtils.isNotEmpty(areaCondition.getBizSecondArea())) {
                 lockMapBerthCondition.setBizSecondAreaCode(areaCondition.getBizSecondArea());
