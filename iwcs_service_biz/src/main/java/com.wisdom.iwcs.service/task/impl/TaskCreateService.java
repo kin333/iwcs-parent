@@ -335,6 +335,7 @@ public class TaskCreateService implements ITaskCreateService {
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "目标点不能为空");
             //查询点位是否有任务或有货架，无，上锁
             BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(targetPointAlias);
+            targetPoint = endBaseMapBerth.getBerCode();
             Preconditions.checkBusinessError(endBaseMapBerth == null, "根据目标点位编号获取点位信息为空");
             //TODO 查询模板，两个点是否允许搬运
             TaskPointBlackRule taskPointBlackRule = new TaskPointBlackRule();

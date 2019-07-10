@@ -108,12 +108,6 @@ public class TaskTestController {
             String coox = berCode.substring(0, 6);
             String cooy = berCode.substring(berCode.length() - 6);
             String mapCode = berCode.substring(6, 8);
-            BasePodDetail basePodDetail = new BasePodDetail();
-            basePodDetail.setPodCode(podCode);
-            basePodDetail.setCoox(coox);
-            basePodDetail.setCooy(cooy);
-            basePodDetail.setMapCode(mapCode);
-            basePodDetail.setBerCode(berCode);
             while (true) {
                 if ("0".equals(coox.substring(0, 1))) {
                     coox = coox.substring(1);
@@ -121,6 +115,12 @@ public class TaskTestController {
                     break;
                 }
             }
+            BasePodDetail basePodDetail = new BasePodDetail();
+            basePodDetail.setPodCode(podCode);
+            basePodDetail.setCoox(coox);
+            basePodDetail.setCooy(cooy);
+            basePodDetail.setMapCode(mapCode);
+            basePodDetail.setBerCode(berCode);
             basePodDetailMapper.updateMapByPodCode(basePodDetail);
             System.out.println(podCode + "----" + berCode);
         }
