@@ -141,7 +141,7 @@ public class TaskCreateService implements ITaskCreateService {
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getTargetPointAlias());
         Preconditions.checkBusinessError(baseMapBerth == null, "目标点位信息为空");
 
-        Preconditions.checkBusinessError(LINEAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体区域");
+        Preconditions.checkBusinessError(!LINEAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体区域");
 
         //校验目标点位和用户登录的点位是否在同一楼层
         //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");

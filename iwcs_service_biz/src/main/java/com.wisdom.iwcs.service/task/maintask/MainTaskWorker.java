@@ -93,7 +93,6 @@ public class MainTaskWorker extends AbstractTaskWorker {
                     }
                 }
                 //TODO 是否需要做线程相关处理、事件监听等。待定
-                logger.info("主任务执行器{}结束", mainTask.getMainTaskNum());
             } catch (Exception e) {
                 logger.error("调度器出错，主任务{}执行出错", mainTask.getMainTaskNum());
 

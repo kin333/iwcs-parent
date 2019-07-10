@@ -319,9 +319,12 @@ public class SubTaskService {
 
     public SubTask getCurrentPendingSubtask(String mainTaskNum) {
         List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
-        subTasks = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).collect(Collectors.toList());
-
-        return subTasks.get(0);
+        subTasks = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).filter(t -> !TaskConstants.subTaskStatus.SUB_FINISHED.equals(t.getTaskStatus())).collect(Collectors.toList());
+        if (subTasks != null && subTasks.size() != 0) {
+            return subTasks.get(0);
+        } else {
+            return null;
+        }
     }
 
 

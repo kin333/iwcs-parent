@@ -86,6 +86,20 @@ public class TaskConstants {
     }
 
     /**
+     * 子任务下发状态
+     */
+    public static final class subTaskSendStatus {
+        /**
+         * 任务初始化，未下发
+         */
+        public final static String INIT = "0";
+        /**
+         * 已下发worker
+         */
+        public final static String HAS_SEND = "1";
+    }
+
+    /**
      * 条件状态
      */
     public static final class metStatus {

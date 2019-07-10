@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.InterfaceLogConstants;
 import com.wisdom.iwcs.common.utils.NetWorkUtil;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.constant.SendStatus;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
@@ -56,6 +57,10 @@ public class IwcsPublicService {
         logger.info("子任务{}开始下发process ", subTaskNum);
         // 1. 从数据库获取子任务单
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
+        if (TaskConstants.subTaskSendStatus.HAS_SEND.equals(subTask.getSendStatus())) {
+            logger.warn("{}子任务下发状态为已下发，跳过本次下发过程", subTask.getSubTaskNum());
+            return;
+        }
         String jsonStr = "";
         try {
             jsonStr = templateRelatedServer.templateIntoInfo(subTaskNum);
