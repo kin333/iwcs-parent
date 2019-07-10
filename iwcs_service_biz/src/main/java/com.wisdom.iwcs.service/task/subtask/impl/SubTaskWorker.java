@@ -105,13 +105,23 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void process() {
-        try {
-            IwcsPublicService iwcsPublicService = (IwcsPublicService) SpringContextUtils.getBean("iwcsPublicService");
-            iwcsPublicService.sendInfoBySubTaskNum(subTask.getSubTaskNum());
-        } catch (Exception e) {
-
-
+        while (true) synchronized (waitLock) {
+            try {
+                IwcsPublicService iwcsPublicService = (IwcsPublicService) SpringContextUtils.getBean("iwcsPublicService");
+                iwcsPublicService.sendInfoBySubTaskNum(subTask.getSubTaskNum());
+                break;
+            } catch (Exception e) {
+                logger.error("子任务发送失败{}", subTask.getSubTaskNum());
+                e.printStackTrace();
+                try {
+                    waitLock.wait(1000 * 3);
+                } catch (InterruptedException e1) {
+                    logger.error("子任务发送失败后，尝试休眠失败{}", subTask.getSubTaskNum());
+                    e1.printStackTrace();
+                }
+            }
         }
+
     }
 
     public SubTask getSubTask() {
