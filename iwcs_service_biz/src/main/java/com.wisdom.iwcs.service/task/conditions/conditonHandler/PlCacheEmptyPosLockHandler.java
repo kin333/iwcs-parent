@@ -13,8 +13,7 @@ import java.util.Arrays;
  * @author  han
  */
 @Service
-public class CacheEmptyPodLockHandler implements IConditionHandler{
-
+public class PlCacheEmptyPosLockHandler implements IConditionHandler{
     @Autowired
     BaseLockEmptyMapService baseLockEmptyMapService;
 
