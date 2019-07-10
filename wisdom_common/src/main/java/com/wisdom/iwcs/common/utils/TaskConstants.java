@@ -111,8 +111,12 @@ public class TaskConstants {
          * 不符合
          */
         public final static String NOT_CONFORM = "0";
-    }
 
+    }
+    /**
+     * 手动锁定锁定源
+     */
+    public final static String MANUAL_LOCK = "manual_lock";
     /**
      * 实际工作状态
      */
@@ -129,5 +133,6 @@ public class TaskConstants {
          * 已结束
          */
         public final static String END = "2";
+
     }
 }
