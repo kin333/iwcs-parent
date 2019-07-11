@@ -42,10 +42,10 @@
       and result_flag = #{resultFlag}
     </if>
     <if test="startTime != null">
-      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+      and UNIX_TIMESTAMP(created_time) >= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
     </if>
     <if test="endTime != null">
-      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+      and UNIX_TIMESTAMP(created_time) &lt;= (#{endTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
     </if>
   </select>
 </mapper>

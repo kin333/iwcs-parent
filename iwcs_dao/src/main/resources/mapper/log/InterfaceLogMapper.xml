@@ -53,10 +53,10 @@
             and 1=1
         </if>
         <if test="startTime != null">
-            and receive_time &gt;= #{startTime,jdbcType=BIGINT}
+            and UNIX_TIMESTAMP(receive_time) >= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
         </if>
         <if test="endTime != null">
-            and receive_time &lt;= #{endTime,jdbcType=BIGINT}
+            and UNIX_TIMESTAMP(receive_time) &lt;= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
         </if>
         <if test="srcClientCode != null and srcClientCode != ''">
             and src_client_code = #{srcClientCode}
