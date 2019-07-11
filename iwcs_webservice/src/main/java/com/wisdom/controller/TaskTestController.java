@@ -12,6 +12,8 @@ import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
+import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
+import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -42,6 +44,11 @@ public class TaskTestController {
     BasePodDetailMapper basePodDetailMapper;
     @Autowired
     MainTaskService mainTaskService;
+    @Autowired
+    QuaAutoCallPodWorker quaAutoCallPodWorker;
+
+    @Autowired
+    QuaAutoToAgingWorker quaAutoToAgingWorker;
 
 
     @GetMapping("/startWcsTaskScheduler")
@@ -50,6 +57,19 @@ public class TaskTestController {
         wcsTaskScheduler.dispatchMaintask();
         return new Result();
     }
+
+    @GetMapping("/testQuaAutoCallPodWorker")
+    public Result testQuaAutoCallPodWorker() {
+        quaAutoCallPodWorker.checkEmptyQua();
+        return new Result();
+    }
+
+    @GetMapping("/testQuaAutoToAgingWorkerr")
+    public Result checkQuaHavePodThenToAging() {
+        quaAutoToAgingWorker.checkQuaHavePodThenToAging();
+        return new Result();
+    }
+
 
 
     @GetMapping("/startMainTask/{mainTaskId}")

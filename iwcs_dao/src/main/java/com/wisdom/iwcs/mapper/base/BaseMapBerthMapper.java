@@ -46,6 +46,8 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
 
     List<BaseMapBerth> selectEmptyStorageOfInspectionArea(LockMapBerthCondition  lockMapBerthCondition);
 
+    List<BaseMapBerth> selectNotEmptyStorageOfInspectionArea(LockMapBerthCondition  lockMapBerthCondition);
+
     int lockMapBerth(LockStorageDto lockStorageDto);
 
     int unlockMapBerth(LockStorageDto lockStorageDto);
@@ -114,4 +116,6 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      */
     @Update("update base_map_berth set pod_code = ''")
     int updateAllCleanPodCode();
+
+
 }
