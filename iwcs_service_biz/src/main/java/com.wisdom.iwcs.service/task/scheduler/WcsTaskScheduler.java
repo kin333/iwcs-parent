@@ -79,8 +79,8 @@ public class WcsTaskScheduler implements Runnable {
             logger.info("主任务在线程中存在，maintaskWorkerMaps中移除主任务{}", mainTaskNum);
             this.maintaskWorkerMaps.remove(mainTaskNum);
         }
-
     }
+
 }
 
 

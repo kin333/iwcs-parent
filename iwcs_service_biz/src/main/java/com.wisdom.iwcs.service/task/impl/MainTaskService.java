@@ -7,9 +7,11 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.MainTask;
+import com.wisdom.iwcs.domain.task.MainTaskType;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
+import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.IMainTaskService;
@@ -29,7 +31,10 @@ import java.util.Map;
 public class MainTaskService implements IMainTaskService {
     private final Logger logger = LoggerFactory.getLogger(MainTaskService.class);
 
+    @Autowired
     private final MainTaskMapper mainTaskMapper;
+    @Autowired
+    private MainTaskTypeMapper mainTaskTypeMapper;
 
     private final MainTaskMapStruct mainTaskMapStruct;
 
@@ -293,5 +298,14 @@ public class MainTaskService implements IMainTaskService {
             return new Result(400, "优先级未修改");
         }
         return new Result();
+    }
+
+    public void loopMaintTask(String mainTaskNum) {
+        logger.info("检查已结束的主任务是否为循环任务{}", mainTaskNum);
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
+        MainTaskType mainTaskType = mainTaskTypeMapper.selectByMainTaskTypeCode(mainTask.getMainTaskTypeCode());
+        String loopExec = mainTaskType.getLoopExec();
+
+
     }
 }
