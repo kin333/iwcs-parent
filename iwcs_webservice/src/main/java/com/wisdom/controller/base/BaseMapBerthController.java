@@ -116,14 +116,11 @@ public class BaseMapBerthController {
     }
 
     @PostMapping("/updateByBerCode")
-    public Result updateByBerCode(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
-        int changeRow = IBaseMapBerthService.updateByBerCode(baseMapBerthDTO);
+    public Result updateByBerCode(@RequestBody List<BaseMapBerthDTO> list) {
+        int changeRow = IBaseMapBerthService.updateByBerCode(list);
         if (changeRow <= 0) {
             return new Result(400, "此次修改没有更新任何数据");
         }
-
         return new Result();
-
     }
-
 }

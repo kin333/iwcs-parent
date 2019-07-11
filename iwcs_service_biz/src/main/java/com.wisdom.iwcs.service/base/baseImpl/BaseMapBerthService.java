@@ -288,15 +288,14 @@ public class BaseMapBerthService implements IBaseMapBerthService {
 
     /**
      * 根据berCode修改点位的特定字段
-     * @param baseMapBerthDTO
+     * @param baseMapBerthDTOList
      * @return
      */
     @Override
-    public int updateByBerCode(BaseMapBerthDTO baseMapBerthDTO) {
-        if (baseMapBerthDTO.getBizType() == null && baseMapBerthDTO.getPointAlias() == null
-                && baseMapBerthDTO.getOperateAreaCode() == null && baseMapBerthDTO.getBizSecondAreaCode() == null) {
+    public int updateByBerCode(List<BaseMapBerthDTO> baseMapBerthDTOList) {
+        if (baseMapBerthDTOList==null||baseMapBerthDTOList.size()==0) {
             return 0;
         }
-        return baseMapBerthMapper.updateListByBerCode(baseMapBerthDTO);
+        return baseMapBerthMapper.updateListByBerCode(baseMapBerthDTOList);
     }
 }

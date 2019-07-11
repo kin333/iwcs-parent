@@ -94,10 +94,10 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
 
     /**
      * 通过berCode更新特定的字段
-     * @param baseMapBerthDTO
+     * @param baseMapBerthDTOList
      * @return
      */
-    int updateListByBerCode(BaseMapBerthDTO baseMapBerthDTO);
+    int updateListByBerCode(List<BaseMapBerthDTO> baseMapBerthDTOList);
 
     /**
      * 根据地码编号更新货架号

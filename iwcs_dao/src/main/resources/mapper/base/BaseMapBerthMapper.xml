@@ -215,25 +215,24 @@
         </foreach>
     </delete>
 
-    <update id="updateListByBerCode">
-        update base_map_berth
-        <set>
-            <if test="bizType != null">
-                biz_type = #{bizType},
-            </if>
-            <if test="pointAlias != null">
-                point_alias = #{pointAlias},
-            </if>
-            <if test="operateAreaCode != null">
-                operate_area_code = #{operateAreaCode},
-            </if>
-            <if test="bizSecondAreaCode != null">
-                biz_second_area_code = #{bizSecondAreaCode},
-            </if>
-        </set>
-        where ber_code in 
-        <foreach collection="berCodeList" item="item" open="(" close=")" separator=",">
-            #{item}
+    <update id="updateListByBerCode" parameterType="java.util.List">
+        <foreach collection="list" item="item"  separator=";">
+            update base_map_berth
+            <set>
+                <if test="item.bizType != null">
+                    biz_type = #{item.bizType},
+                </if>
+                <if test="item.pointAlias != null">
+                    point_alias = #{item.pointAlias},
+                </if>
+                <if test="item.operateAreaCode != null">
+                    operate_area_code = #{item.operateAreaCode},
+                </if>
+                <if test="item.bizSecondAreaCode != null">
+                    biz_second_area_code = #{item.bizSecondAreaCode},
+                </if>
+            </set>
+            where ber_code = #{item.berCode}
         </foreach>
     </update>
 </mapper>
