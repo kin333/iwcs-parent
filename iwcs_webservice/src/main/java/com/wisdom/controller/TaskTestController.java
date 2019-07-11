@@ -13,7 +13,6 @@ import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import org.json.JSONException;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
