@@ -36,6 +36,8 @@ public class TaskConstants {
          */
         public final static String QUABUFTOQUA = "quaBufToQua";
         public final static String QUAINSPTOELVBUF = "quaInspToElvBuf";
+
+        public final static String PTOPWITHOUTPODCHECK = "pTopWithoutPodCheck";
     }
 
     /**

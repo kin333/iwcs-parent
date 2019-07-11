@@ -120,6 +120,10 @@ public class TaskCreateService implements ITaskCreateService {
                 taskCreateRequest.setPriority(mainTaskType.getPriority());
                 quaBufToQuaFunction(taskCreateRequest);
                 break;
+            case PTOPWITHOUTPODCHECK:
+                taskCreateRequest.setPriority(mainTaskType.getPriority());
+                pTopFunction(taskCreateRequest);
+                break;
             default:
                 logger.error("wrong task type Code:{}",taskTypeCode);
         }
