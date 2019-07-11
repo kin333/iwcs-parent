@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,7 +94,11 @@ public class TaskTestController {
      */
     @GetMapping("/updateAllPodInfo")
     public Result updateAllPodInfo() {
-        List<String> podCodes = basePodDetailMapper.selectInitPod();
+        List<BasePodDetail> basePodDetails = basePodDetailMapper.selectAll();
+        List<String> podCodes = new ArrayList<>();
+        for (BasePodDetail basePodDetail : basePodDetails) {
+            podCodes.add(basePodDetail.getPodCode());
+        }
         for (String podCode : podCodes) {
             List<String> berCodes = null;
             try {
@@ -126,6 +131,17 @@ public class TaskTestController {
         }
 
 
+        return new Result();
+    }
+
+    /**
+     * 根据海康的信息更新我们数据库货架和地图信息
+     * @return
+     */
+    @GetMapping("/updateAllInfo")
+    public Result updateAllInfo() {
+        updateAllPodInfo();
+        updateAllMapInfo();
         return new Result();
     }
 
