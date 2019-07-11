@@ -170,5 +170,11 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      * 根据货架编号更新货架的地图位置信息
      * @return
      */
-    int updateMapByPodCode(BasePodDetail basePodDetail);
+    int updateMapByPodCode(List<BasePodDetail> list);
+
+    /**
+     * 清空所有货架对应的地图信息
+     */
+    @Update("update base_pod_detail set ber_code = '', map_code = '', coox = '', cooy = '' ")
+    int updateCleanMapInfo();
 }

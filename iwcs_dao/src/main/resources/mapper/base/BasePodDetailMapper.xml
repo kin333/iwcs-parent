@@ -329,13 +329,16 @@
         where pod_code = #{podCode}
     </update>
     <update id="updateMapByPodCode">
-        update base_pod_detail
-        <set>
-            ber_code = #{berCode},
-            coox = #{coox},
-            cooy = #{cooy},
-            map_code = #{mapCode}
-        </set>
-        where pod_code = #{podCode}
+        <foreach collection="list" item="item" separator=";">
+            update base_pod_detail
+            <set>
+                ber_code = #{item.berCode},
+                coox = #{item.coox},
+                cooy = #{item.cooy},
+                map_code = #{item.mapCode}
+            </set>
+            where pod_code = #{item.podCode}
+        </foreach>
+
     </update>
 </mapper>

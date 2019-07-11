@@ -3,6 +3,7 @@ package com.wisdom.controller;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
@@ -12,6 +13,7 @@ import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import jdk.nashorn.internal.objects.annotations.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,22 +73,39 @@ public class TaskTestController {
     @GetMapping("/updateAllMapInfo")
     public Result updateAllMapInfo() {
         List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectAll();
+        //需要更新的地图信息
+        List<BaseMapBerthDTO> updateMapInfo = new ArrayList<>();
         for (BaseMapBerth baseMapBerth : baseMapBerths) {
-            if ("CC".equals(baseMapBerth.getMapCode()) || "AA".equals(baseMapBerth.getMapCode()) || "AB".equals(baseMapBerth.getMapCode())) {
-
+            if (StringUtils.isNotBlank(baseMapBerth.getMapCode())) {
                 try {
-                    //查找地码对应的货架号
+                    //调用海康接口 查找地码对应的货架号
                     List<String> podCodes = iwcsPublicService.selectPodCodeByBerCode(baseMapBerth.getBerCode());
                     if (podCodes == null || podCodes.size() <= 0) {
                         continue;
                     }
-                    baseMapBerthMapper.updatePodCodeByBerCode(podCodes.get(0), baseMapBerth.getBerCode());
+                    if (!podCodes.get(0).equals(baseMapBerth.getPodCode())) {
+                        //如果数据库数据与海康不一致,则提示
+                        System.out.println("更新地图数据:" + baseMapBerth.getBerCode()
+                                    + "  本地数据货架为:" + baseMapBerth.getPodCode()
+                                    + "  海康数据库货架为:" + podCodes.get(0));
+                    }
+                    BaseMapBerthDTO baseMapBerthDTO = new BaseMapBerthDTO();
+                    baseMapBerthDTO.setPodCode(podCodes.get(0));
+                    baseMapBerthDTO.setBerCode(baseMapBerth.getBerCode());
+                    updateMapInfo.add(baseMapBerthDTO);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
 
         }
+        if (updateMapInfo.size() <= 0) {
+            return new Result(400, "地图没有更新任何数据");
+        }
+        //清空地图中的货架号数据
+        baseMapBerthMapper.updateAllCleanPodCode();
+        //更新
+        baseMapBerthMapper.updateListByBerCode(updateMapInfo);
 
         return new Result();
     }
@@ -97,21 +116,21 @@ public class TaskTestController {
      */
     @GetMapping("/updateAllPodInfo")
     public Result updateAllPodInfo() {
+        //1.获取数据库中所有的货架信息
         List<BasePodDetail> basePodDetails = basePodDetailMapper.selectAll();
-        List<String> podCodes = new ArrayList<>();
+        List<BasePodDetail> updatePodDetails = new ArrayList<>();
         for (BasePodDetail basePodDetail : basePodDetails) {
-            podCodes.add(basePodDetail.getPodCode());
-        }
-        for (String podCode : podCodes) {
             List<String> berCodes = null;
             try {
-                berCodes = iwcsPublicService.selectBerCodeByPodCode(podCode);
+                //2.调用海康接口 查找货架号对应的地码
+                berCodes = iwcsPublicService.selectBerCodeByPodCode(basePodDetail.getPodCode());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             if (berCodes == null || berCodes.size() <= 0) {
                 continue;
             }
+            //3.拼接地图其他信息
             String berCode = berCodes.get(0);
             String coox = berCode.substring(0, 6);
             String cooy = berCode.substring(berCode.length() - 6);
@@ -123,15 +142,25 @@ public class TaskTestController {
                     break;
                 }
             }
-            BasePodDetail basePodDetail = new BasePodDetail();
-            basePodDetail.setPodCode(podCode);
-            basePodDetail.setCoox(coox);
-            basePodDetail.setCooy(cooy);
-            basePodDetail.setMapCode(mapCode);
-            basePodDetail.setBerCode(berCode);
-            basePodDetailMapper.updateMapByPodCode(basePodDetail);
-            System.out.println(podCode + "----" + berCode);
+            //提示更新的数据
+            if (!berCode.equals(basePodDetail.getBerCode())) {
+                //如果数据库数据与海康不一致,则提示
+                System.out.println("更新货架数据:" + basePodDetail.getPodCode()
+                        + "  本地数据地码为:" + basePodDetail.getBerCode()
+                        + "  海康数据库货架为:" + berCode);
+            }
+            //4.合成数据集合
+            BasePodDetail newBasePodDetail = new BasePodDetail();
+            newBasePodDetail.setPodCode(basePodDetail.getPodCode());
+            newBasePodDetail.setCoox(coox);
+            newBasePodDetail.setCooy(cooy);
+            newBasePodDetail.setMapCode(mapCode);
+            newBasePodDetail.setBerCode(berCode);
+            updatePodDetails.add(newBasePodDetail);
         }
+        //5.清库,更新
+        basePodDetailMapper.updateCleanMapInfo();
+        basePodDetailMapper.updateMapByPodCode(updatePodDetails);
 
 
         return new Result();

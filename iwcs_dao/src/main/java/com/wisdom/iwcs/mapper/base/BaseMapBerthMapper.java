@@ -8,6 +8,7 @@ import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -106,4 +107,11 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     int updatePodCodeByBerCode(@Param("podCode") String podCode,@Param("berCode") String berCode);
+
+    /**
+     * 清空地图数据中的pod_code信息
+     * @return
+     */
+    @Update("update base_map_berth set pod_code = ''")
+    int updateAllCleanPodCode();
 }

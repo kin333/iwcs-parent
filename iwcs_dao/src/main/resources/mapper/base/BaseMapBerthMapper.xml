@@ -231,6 +231,9 @@
                 <if test="item.bizSecondAreaCode != null">
                     biz_second_area_code = #{item.bizSecondAreaCode},
                 </if>
+                <if test="item.podCode != null and item.podCode != ''">
+                    pod_code = #{item.podCode}
+                </if>
             </set>
             where ber_code = #{item.berCode}
         </foreach>
