@@ -135,4 +135,18 @@ public class TaskConstants {
         public final static String END = "2";
 
     }
+
+    /**
+     * 主任务是否循环调用
+     */
+    public static final class loopExec {
+        /**
+         * 不循环调用
+         */
+        public final static String NOT_LOOP = "0";
+        /**
+         * 循环调用
+         */
+        public final static String LOOP = "1";
+    }
 }

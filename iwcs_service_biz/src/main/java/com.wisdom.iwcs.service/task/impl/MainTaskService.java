@@ -5,13 +5,18 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.MainTaskType;
 import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.TaskCreateRequest;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
+import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
+import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.IMainTaskService;
@@ -37,6 +42,12 @@ public class MainTaskService implements IMainTaskService {
     private MainTaskTypeMapper mainTaskTypeMapper;
 
     private final MainTaskMapStruct mainTaskMapStruct;
+    @Autowired
+    TaskCreateService taskCreateService;
+    @Autowired
+    SubTaskMapper subTaskMapper;
+    @Autowired
+    BaseMapBerthMapper baseMapBerthMapper;
 
     @Autowired
     public MainTaskService(MainTaskMapStruct mainTaskMapStruct, MainTaskMapper mainTaskMapper) {
@@ -300,12 +311,37 @@ public class MainTaskService implements IMainTaskService {
         return new Result();
     }
 
+    /**
+     * 主任务结束后会进入这个方法,来检查是否是循环任务
+     * @param mainTaskNum
+     */
     public void loopMaintTask(String mainTaskNum) {
         logger.info("检查已结束的主任务是否为循环任务{}", mainTaskNum);
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
+        if (mainTask == null) {
+            throw new BusinessException("主任务不存在" + mainTaskNum);
+        }
         MainTaskType mainTaskType = mainTaskTypeMapper.selectByMainTaskTypeCode(mainTask.getMainTaskTypeCode());
         String loopExec = mainTaskType.getLoopExec();
-
-
+        if (loopExec == null || "".equals(loopExec) || TaskConstants.loopExec.NOT_LOOP.equals(loopExec)) {
+            return;
+        }
+        //创建循环的任务
+        TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
+        taskCreateRequest.setPriority(mainTaskType.getPriority());
+        taskCreateRequest.setTaskTypeCode(mainTaskType.getMainTaskTypeCode());
+        taskCreateRequest.setAreaCode(mainTask.getAreaCode());
+        //设置目标点(进自动补充产线时使用)
+        if (TaskConstants.taskCodeType.PLAUTOWBCALLPOD.equals(mainTaskType.getMainTaskTypeCode())) {
+            List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(mainTaskNum);
+            if (subTaskList == null || subTaskList.size() != 1) {
+                throw new BusinessException("循环任务" + mainTaskNum + "子任务单信息异常(未查找到或查询到多条子任务)");
+            }
+            String endBercode = subTaskList.get(0).getEndBercode();
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endBercode);
+            taskCreateRequest.setTargetPointAlias(baseMapBerth.getPointAlias());
+        }
+        taskCreateService.creatTask(taskCreateRequest);
     }
+
 }

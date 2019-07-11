@@ -7,11 +7,13 @@ import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
+import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import org.json.JSONException;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +39,8 @@ public class TaskTestController {
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     BasePodDetailMapper basePodDetailMapper;
+    @Autowired
+    MainTaskService mainTaskService;
 
 
     @GetMapping("/startWcsTaskScheduler")
@@ -143,6 +147,11 @@ public class TaskTestController {
         updateAllPodInfo();
         updateAllMapInfo();
         return new Result();
+    }
+
+    @GetMapping("/testMainTask")
+    public void testMainTask(){
+        mainTaskService.loopMaintTask("M196550067523584");
     }
 
 

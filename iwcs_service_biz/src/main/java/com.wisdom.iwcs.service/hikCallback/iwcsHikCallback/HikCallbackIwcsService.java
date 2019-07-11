@@ -188,6 +188,7 @@ public class HikCallbackIwcsService {
         basePodDetail.setMapCode(hikCallBackAgvMove.getMapCode());
         basePodDetail.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
         basePodDetail.setLockSource("");
+        basePodDetail.setLastModifiedTime(new Date());
         //更新货架信息表
         basePodDetailMapper.updateByPrimaryKeySelective(basePodDetail);
 
