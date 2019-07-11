@@ -4,6 +4,7 @@ package com.wisdom.base.context;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * Spring AppContext 上下文
@@ -12,6 +13,7 @@ import org.springframework.context.ApplicationContextAware;
  * @version V1.0
  * @modify: {原因} by wuhuapeng 2015年3月4日 下午4:22:34
  */
+@Component
 public class AppContext implements ApplicationContextAware {
 
     private static ApplicationContext context = null;

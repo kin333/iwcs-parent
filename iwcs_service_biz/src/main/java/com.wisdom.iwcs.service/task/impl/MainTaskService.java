@@ -267,11 +267,11 @@ public class MainTaskService implements IMainTaskService {
         return false;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     @Override
     public boolean endMainTask(String mainTaskNum) {
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
-        logger.info("开始结束主任务{}", mainTask);
+        logger.info("开始结束主任务{}", mainTask.getMainTaskNum());
         if (mainTask == null) {
             logger.error("无效的主任务编号：{}", mainTaskNum);
             return false;
