@@ -29,7 +29,7 @@ public class EmptyPodForPlHandler implements IConditionHandler{
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
         AreaCondition areaCondition1 = new AreaCondition();
         //优先查找缓存区货架
-        areaCondition1.setArea(InspurBizConstants.BizTypeConstants.LINECACHEAREA);
+        areaCondition1.setBizType(InspurBizConstants.BizTypeConstants.LINECACHEAREA);
         AreaCondition areaCondition2 = new AreaCondition();
         //次优先查找老化区货架
         areaCondition2.setArea(InspurBizConstants.OperateAreaCodeConstants.AGINGREA);

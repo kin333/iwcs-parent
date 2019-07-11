@@ -277,7 +277,7 @@ public class MapResouceService implements IMapResouceService {
                 return result;
             }
             if(Strings.isNullOrEmpty(lockPodCondition.getInStock())) {
-                return new Result(400,"缺少货架是否有货");
+                return new Result(400,"缺少货架是否有货的条件");
             }
             //查找符合条件的货架
             List<BasePodDetail> basePodDetails = basePodDetailMapper.selectByLockPodConfigtion(lockPodCondition);
