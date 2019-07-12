@@ -334,7 +334,7 @@ public class MapResouceService implements IMapResouceService {
 
             //根据传入的条件找到符合储位
             List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
-            if(selectBaseMapBerths.size() >= 0) {
+            if(selectBaseMapBerths.size() > 0) {
                 selectLockMapBerthCondition = lockMapBerthCondition;
                 selectBaseMapBerth = selectBaseMapBerths.get(0);
                 break;

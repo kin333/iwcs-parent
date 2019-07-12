@@ -1,5 +1,6 @@
 package com.wisdom.controller;
 
+import com.wisdom.config.DatabaseConfiguration;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
@@ -17,6 +18,8 @@ import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +36,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/test/wcsTask")
 public class TaskTestController {
+    private final Logger logger = LoggerFactory.getLogger(TaskTestController.class);
 
     @Autowired
     private MainTaskMapper mainTaskMapper;
@@ -139,6 +143,7 @@ public class TaskTestController {
         //1.获取数据库中所有的货架信息
         List<BasePodDetail> basePodDetails = basePodDetailMapper.selectAll();
         List<BasePodDetail> updatePodDetails = new ArrayList<>();
+        List<String> errorPod = new ArrayList<>();
         for (BasePodDetail basePodDetail : basePodDetails) {
             List<String> berCodes = null;
             try {
@@ -149,6 +154,9 @@ public class TaskTestController {
             }
             if (berCodes == null || berCodes.size() <= 0) {
                 continue;
+            }
+            if (berCodes.size() >= 2) {
+                errorPod.add(basePodDetail.getPodCode());
             }
             //3.拼接地图其他信息
             String berCode = berCodes.get(0);
@@ -182,8 +190,11 @@ public class TaskTestController {
         basePodDetailMapper.updateCleanMapInfo();
         basePodDetailMapper.updateMapByPodCode(updatePodDetails);
 
+        for (String pod : errorPod) {
+            logger.error("{}货架的位置有多个",pod);
+        }
 
-        return new Result();
+        return new Result(errorPod);
     }
 
     /**
