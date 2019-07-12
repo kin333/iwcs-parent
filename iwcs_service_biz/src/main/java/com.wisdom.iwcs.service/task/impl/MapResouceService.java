@@ -226,6 +226,7 @@ public class MapResouceService implements IMapResouceService {
         //锁定货架
         int changeRow = basePodDetailMapper.lockPod(basePodDetail);
         if(changeRow < 1) {
+            logger.error("货架{}正在进行其他操作,请稍后执行", basePodDetail.getPodCode());
             throw new BusinessException("该货架在进行其他操作中，请稍后执行");
         }
         logger.info("货架{}锁定成功", basePodDetail.getPodCode());
