@@ -121,8 +121,6 @@
         and delete_flag = 0
         and (in_lock = 0 or in_lock is null )
         and (pod_code = '' or pod_code is null)
-        and ber_group != ''
-        and ber_group is not null
         and map_code = #{mapCode}
         <if test="bizType != null and bizType != ''">
             and biz_type = #{bizType}

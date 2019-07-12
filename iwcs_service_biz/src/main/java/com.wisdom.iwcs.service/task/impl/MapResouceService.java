@@ -52,10 +52,11 @@ public class MapResouceService implements IMapResouceService {
 
         BaseMapBerth emptyPoit = new BaseMapBerth();
         //获取检验点空位置
-        lockMapBerthCondition.setBizType(QUAINSPWORKAREA);
         lockMapBerthCondition.setOperateAreaCode(QUAINSPAREA);
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
-        Preconditions.checkBusinessError(baseMapBerthList.size() <= 0, "检验点暂无空位置");
+        if(baseMapBerthList.size() <= 0) {
+            return null;
+        }
         if (QUAINSPWORKAREA.equals(lockMapBerthCondition.getBizType())){
             //根据获取空位置计算最优位置
             emptyPoit=calculatingOptimalLocation(baseMapBerthList);
@@ -64,14 +65,6 @@ public class MapResouceService implements IMapResouceService {
         }else{
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(lockMapBerthCondition.getBizType()), "缺少作业区域类型");
         }
-
-        //锁住
-        LockStorageDto lockStorageDto = new LockStorageDto();
-        lockStorageDto.setMapCode(emptyPoit.getMapCode());
-        lockStorageDto.setBerCode(emptyPoit.getBerCode());
-        lockStorageDto.setPodCode(lockMapBerthCondition.getPodCode());
-        lockStorageDto.setLockSource(lockMapBerthCondition.getLockSource());
-        lockMapBerth(lockStorageDto);
 
         return emptyPoit;
     }
@@ -172,6 +165,7 @@ public class MapResouceService implements IMapResouceService {
         if(count < 1) {
             return new Result(400,"该储位在进行其他操作中，请稍后执行");
         }
+        logger.info("点位锁定成功:"+baseMapBerth.getBerCode());
         //更新子任务终点坐标
         String subTaskNum = lockStorageDto.getLockSource();
         BaseMapBerth lockMapBerth = new BaseMapBerth();

@@ -278,6 +278,7 @@ public class TaskCreateService implements ITaskCreateService {
         //检验区先检验缓存区是否有空闲点，后获工作点是否有空闲
         LockMapBerthCondition cachelockMapBerthCondition = new LockMapBerthCondition();
         cachelockMapBerthCondition.setBizType(QUAINSPCACHEAREA);
+        cachelockMapBerthCondition.setPodCode(taskCreateRequest.getPodCode());
         cachelockMapBerthCondition.setMapCode(basePodDetail.getMapCode());
         BaseMapBerth cacheLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(cachelockMapBerthCondition);
         if (cacheLockMapBerth != null){
@@ -301,6 +302,7 @@ public class TaskCreateService implements ITaskCreateService {
         agingToQuaInspRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
         agingToQuaInspRequest.setStartPoint(basePodDetail.getBerCode());
         agingToQuaInspRequest.setTargetPoint(targetPoint);
+        agingToQuaInspRequest.setMapCode(basePodDetail.getMapCode());
         iAgingToQuaInspService.agingToQuaInsp(agingToQuaInspRequest);
 
     }

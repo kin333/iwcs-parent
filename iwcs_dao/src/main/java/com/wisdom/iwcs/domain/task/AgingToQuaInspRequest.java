@@ -37,6 +37,8 @@ public class AgingToQuaInspRequest {
      */
     private String targetPoint;
 
+    private String mapCode;
+
     public String getPodCode() {
         return podCode;
     }
@@ -83,5 +85,13 @@ public class AgingToQuaInspRequest {
 
     public void setTargetPoint(String targetPoint) {
         this.targetPoint = targetPoint;
+    }
+
+    public String getMapCode() {
+        return mapCode;
+    }
+
+    public void setMapCode(String mapCode) {
+        this.mapCode = mapCode;
     }
 }

@@ -29,15 +29,15 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        logger.info("开始启动任务调度器线程");
-        Thread thread = new Thread(wcsTaskScheduler);
-        thread.start();
-        logger.info("启动任务调度器线程成功");
+//        logger.info("开始启动任务调度器线程");
+//        Thread thread = new Thread(wcsTaskScheduler);
+//        thread.start();
+//        logger.info("启动任务调度器线程成功");
 
-        logger.info("开始产线工作台任务生成器");
-        Thread workLineThread = new Thread(workLineScheduler);
-        workLineThread.start();
-        logger.info("启动产线工作台任务生成器成功");
+//        logger.info("开始产线工作台任务生成器");
+//        Thread workLineThread = new Thread(workLineScheduler);
+//        workLineThread.start();
+//        logger.info("启动产线工作台任务生成器成功");
 //
 //        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
 //        Thread quaAutoToAgingThread = new Thread(quaAutoToAgingWorker);
