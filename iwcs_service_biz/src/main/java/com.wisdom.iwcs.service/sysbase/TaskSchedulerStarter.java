@@ -11,6 +11,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 /**
  * 任务调度启动器
  */
@@ -21,7 +23,7 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
     @Autowired
     private WcsTaskScheduler wcsTaskScheduler;
     @Autowired
-    WorkLineScheduler workLineScheduler;
+    private WorkLineScheduler workLineScheduler;
     @Autowired
     private QuaAutoToAgingWorker quaAutoToAgingWorker;
     @Autowired
@@ -33,9 +35,9 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 //        Thread thread = new Thread(wcsTaskScheduler);
 //        thread.start();
 //        logger.info("启动任务调度器线程成功");
-
+//
 //        logger.info("开始产线工作台任务生成器");
-//        Thread workLineThread = new Thread(workLineScheduler);
+//        Thread workLineThread = new Thread(workLineScheduler, "超级线程" + UUID.randomUUID().toString().substring(0, 4));
 //        workLineThread.start();
 //        logger.info("启动产线工作台任务生成器成功");
 //

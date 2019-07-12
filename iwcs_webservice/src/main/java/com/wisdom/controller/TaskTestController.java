@@ -9,9 +9,11 @@ import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
+import com.wisdom.iwcs.service.sysbase.TaskSchedulerStarter;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
+import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
@@ -26,10 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Devin
@@ -41,6 +40,16 @@ public class TaskTestController {
     private final Logger logger = LoggerFactory.getLogger(TaskTestController.class);
 
     @Autowired
+    private WcsTaskScheduler wcsTaskScheduler;
+    @Autowired
+    private WorkLineScheduler workLineScheduler;
+    @Autowired
+    private QuaAutoToAgingWorker quaAutoToAgingWorker;
+    @Autowired
+    private QuaAutoCallPodWorker quaAutoCallPodWorker;
+
+
+    @Autowired
     private MainTaskMapper mainTaskMapper;
     @Autowired
     IwcsPublicService iwcsPublicService;
@@ -50,11 +59,6 @@ public class TaskTestController {
     BasePodDetailMapper basePodDetailMapper;
     @Autowired
     MainTaskService mainTaskService;
-    @Autowired
-    QuaAutoCallPodWorker quaAutoCallPodWorker;
-
-    @Autowired
-    QuaAutoToAgingWorker quaAutoToAgingWorker;
 
 
     @GetMapping("/startWcsTaskScheduler")
@@ -220,7 +224,25 @@ public class TaskTestController {
 
     @GetMapping("/testMainTask")
     public void testMainTask(){
-        mainTaskService.loopMaintTask("M196550067523584");
+        logger.info("开始启动任务调度器线程");
+        Thread thread = new Thread(wcsTaskScheduler);
+        thread.start();
+        logger.info("启动任务调度器线程成功");
+
+        logger.info("开始产线工作台任务生成器");
+        Thread workLineThread = new Thread(workLineScheduler);
+        workLineThread.start();
+        logger.info("启动产线工作台任务生成器成功");
+//
+//        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
+//        Thread quaAutoToAgingThread = new Thread(quaAutoToAgingWorker);
+//        quaAutoToAgingThread.start();
+//        logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
+//
+//        logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
+//        Thread quaAutoCallPodThread = new Thread(quaAutoCallPodWorker);
+//        quaAutoCallPodThread.start();
+//        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
     }
 
 

@@ -37,8 +37,8 @@ public class WorkLineScheduler implements Runnable {
             try {
                 this.todo();
                 synchronized (this) {
-                    logger.debug("产线工作台主任务生成器线程主动睡眠60s");
-                    this.wait(60 * 1000);
+                    logger.debug("产线工作台主任务生成器线程主动睡眠 2 min");
+                    this.wait(60 * 1000 * 2);
                 }
 
             } catch (InterruptedException e) {
@@ -51,9 +51,9 @@ public class WorkLineScheduler implements Runnable {
     private void todo() {
         //查询三个产线工作台
         List<String> workLineList = new ArrayList<>();
-        workLineList.add("WL1");
-        workLineList.add("WL2");
-        workLineList.add("WL3");
+        workLineList.add("WL3-1");
+        workLineList.add("WL3-2");
+        workLineList.add("WL3-3");
 
         for (String name : workLineList) {
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(name);
