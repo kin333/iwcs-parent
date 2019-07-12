@@ -140,28 +140,31 @@
         </if>
     </select>
     <select id="selectNotEmptyStorageOfInspectionArea" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from base_map_berth
+        select bmb.id, bmb.map_code, bmb.ber_code, bmb.coox, bmb.cooy, bmb.valid_flag, bmb.delete_flag, bmb.created_by, bmb.created_time,
+        bmb.last_modified_by, bmb.last_modified_time,bmb.berth_type_value,bmb.pod_code,bmb.lock_source,bmb.in_lock,bmb.area_code,
+        bmb.biz_type,bmb.relation_piont_code,bmb.point_alias,bmb.ber_group,bmb.version,bmb.operate_area_code,bmb.biz_second_area_code
+        from base_map_berth as bmb
+        left join base_pod_detail as bpd on bmb.pod_code = bpd.pod_code
         where 1=1
-        and (in_lock = 0 or in_lock is null )
-        and delete_flag = 0
-        and pod_code != ''
-        and pod_code is not null
+        and bmb.in_lock = 0
+        and bmb.delete_flag = 0
+        and bmb.pod_code != ''
+        and bmb.pod_code is not null
+        and bpd.in_lock = 0
         <if test="mapCode != null and mapCode != ''">
-            and map_code = #{mapCode}
+            and bmb.map_code = #{mapCode}
         </if>
         <if test="bizType != null and bizType != ''">
-            and biz_type = #{bizType}
+            and bmb.biz_type = #{bizType}
         </if>
         <if test="bizSecondAreaCode != null and bizSecondAreaCode != ''">
-            and biz_second_area_code = #{bizSecondAreaCode}
+            and bmb.biz_second_area_code = #{bizSecondAreaCode}
         </if>
         <if test="operateAreaCode != null and operateAreaCode != ''">
-            and operate_area_code = #{operateAreaCode}
+            and bmb.operate_area_code = #{operateAreaCode}
         </if>
         <if test="berthTypeValue != null and berthTypeValue != ''">
-            and berth_type_value = #{berthTypeValue}
+            and bmb.berth_type_value = #{berthTypeValue}
         </if>
     </select>
 

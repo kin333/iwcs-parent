@@ -62,10 +62,10 @@ public class QuaAutoToAgingWorker implements Runnable {
                 this.checkQuaHavePodThenToAging();
                 synchronized (this) {
                     logger.error("创建检验区到老化区调度器线程主动随眠60*1000*2");
-                    this.wait(60 * 1000 * 2);
+                    this.wait(60 * 1000 * 3);
                 }
 
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 logger.error("创建检验区到老化区主任务调度器线程尝试休眠失败！");
                 e.printStackTrace();
             }
