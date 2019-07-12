@@ -106,6 +106,9 @@
         <if test="bizSecondAreaCode != null and bizSecondAreaCode != ''">
             and biz_second_area_code = #{bizSecondAreaCode}
         </if>
+        <if test="berthTypeValue != null and berthTypeValue != ''">
+            and berth_type_value = #{berthTypeValue}
+        </if>
         order by last_modified_time desc
     </select>
 

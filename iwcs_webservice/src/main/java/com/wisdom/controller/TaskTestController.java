@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Devin
@@ -96,7 +98,13 @@ public class TaskTestController {
      */
     @GetMapping("/updateAllMapInfo")
     public Result updateAllMapInfo() {
-        List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectAll();
+//        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectAll();
+        Map<String, String> map = new HashMap<>(10);
+        //仅更新AB地图(浪潮二楼)
+//        map.put("mapCode", "AB");
+        //仅更新储位信息
+        map.put("berthTypeValue", "1");
+        List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectPage(map);
         //需要更新的地图信息
         List<BaseMapBerthDTO> updateMapInfo = new ArrayList<>();
         for (BaseMapBerth baseMapBerth : baseMapBerths) {
@@ -203,9 +211,11 @@ public class TaskTestController {
      */
     @GetMapping("/updateAllInfo")
     public Result updateAllInfo() {
+        long startTime = System.currentTimeMillis();
         updateAllPodInfo();
         updateAllMapInfo();
-        return new Result();
+        long endTime = System.currentTimeMillis();
+        return new Result("耗时:" + (endTime - startTime) + "ms");
     }
 
     @GetMapping("/testMainTask")
