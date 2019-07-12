@@ -27,7 +27,7 @@
     <changeSet author="george.bian" id="201907020820-01">
         <addColumn tableName="base_pod_detail">
             <column defaultValue="0" name="in_lock" remarks="是否有锁,1是，0否" type="INT"></column>
-            <column name="lock_source" remarks="锁的来源" type="VARCHAR(32)"></column>
+            <column name="lock_source" remarks="锁的来源" type="VARCHAR(32)" ></column>
             <column defaultValue="0" name="in_stock" remarks="货架是否有货，,0为否，1为是"  type="INT"/>
         </addColumn>
     </changeSet>
@@ -37,5 +37,10 @@
             <column name="lock_source_time" remarks="上锁时间" type="datetime"></column>
         </addColumn>
     </changeSet>
-
+    <changeSet author="baoxun" id="201907121425-01">
+        <addDefaultValue tableName="base_pod_detail" columnName="lock_source" defaultValue=""></addDefaultValue>
+    </changeSet>
+    <changeSet author="baoxun" id="201907121425-02">
+        <addDefaultValue tableName="base_pod_detail" columnName="version" defaultValue="0"></addDefaultValue>
+    </changeSet>
 </databaseChangeLog>

@@ -7,5 +7,13 @@
             <column name="lock_resource_time" remarks="上锁时间" type="datetime"></column>
         </addColumn>
     </changeSet>
-
+    <changeSet author="baoxun" id="201907121452-01">
+        <addDefaultValue tableName="base_map_berth" columnName="in_lock" defaultValue="0"></addDefaultValue>
+    </changeSet>
+    <changeSet author="baoxun" id="201907121452-02">
+        <addDefaultValue tableName="base_map_berth" columnName="lock_source" defaultValue=""></addDefaultValue>
+    </changeSet>
+    <changeSet author="baoxun" id="201907121452-03">
+        <addDefaultValue tableName="base_map_berth" columnName="version" defaultValue="0"></addDefaultValue>
+    </changeSet>
 </databaseChangeLog>
