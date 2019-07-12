@@ -3,7 +3,6 @@ package com.wisdom.controller.base;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.mapstruct.base.BasePodDetailMapStruct;
 import com.wisdom.iwcs.service.base.IBasePodDetailService;
@@ -25,7 +24,6 @@ public class BasePodDetailController {
     IBasePodDetailService IBasePodDetailService;
     @Autowired
     BasePodDetailMapStruct basePodDetailMapStruct;
-
     /**
      * 根据主键ID删除
      *

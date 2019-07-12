@@ -31,6 +31,7 @@
         <result column="lock_source" jdbcType="VARCHAR" property="lockSource"/>
         <result column="in_stock" jdbcType="INTEGER" property="inStock"/>
         <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="lock_source_time" jdbcType="TIMESTAMP" property="lockSourceTime"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
@@ -340,5 +341,14 @@
             where pod_code = #{item.podCode}
         </foreach>
 
+    </update>
+    <update id="updatePodLockSource">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update base_pod_detail
+            <set>
+                in_lock=#{item.inLock},lock_source_time = NOW(),lock_source=#{item.lockSource}
+            </set>
+            where  pod_code= #{item.podCode}
+        </foreach>
     </update>
 </mapper>

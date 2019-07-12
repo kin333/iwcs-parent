@@ -87,6 +87,12 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     int updateList(List<BaseMapBerth> baseMapBerthList);
 
     /**
+     *
+     * @param baseMapBerthList
+     * @return
+     */
+    int updateLockSource(List<BaseMapBerth> baseMapBerthList);
+    /**
      * 批量删除
      * @param berCodeList
      * @param mapCode

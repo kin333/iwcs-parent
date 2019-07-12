@@ -46,7 +46,10 @@ public class BaseMapBerthDTO {
      * 锁定源
      */
     private String lockSource;
-
+    /**
+     * 锁定时间
+     */
+    private Date lockSourceTime;
     /**
      * 有效标记，0有效，1无效
      */
@@ -350,6 +353,13 @@ public class BaseMapBerthDTO {
 
     public void setLockSource(String lockSource) {
         this.lockSource = lockSource;
+    }
+
+    public Date getLockSourceTime() {
+        return lockSourceTime;
+    }
+    public void setLockSourceTime(Date lockSourceTime) {
+        this.lockSourceTime = lockSourceTime;
     }
 
     public String getAreaCode() {

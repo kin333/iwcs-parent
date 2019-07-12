@@ -30,7 +30,6 @@ public class BasePodController {
     IBasePodService IBasePodService;
     @Autowired
     BasePodMapStruct basePodMapStruct;
-
     /**
      * 根据主键ID删除
      *

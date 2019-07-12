@@ -3,6 +3,7 @@ package com.wisdom.iwcs.mapper.base;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.commonDto.fliterCondition.PodFliterCondition;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.domain.base.dto.LockPodCondition;
@@ -170,6 +171,12 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      * 根据货架编号更新货架的地图位置信息
      * @return
      */
+    int updateMapByPodCode(BasePodDetail basePodDetail);
+    /**
+     *
+     * @param BasePodDetailList
+     * @return
+     */
     int updateMapByPodCode(List<BasePodDetail> list);
 
     /**
@@ -177,4 +184,5 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      */
     @Update("update base_pod_detail set ber_code = '', map_code = '', coox = '', cooy = '' ")
     int updateCleanMapInfo();
+    int updatePodLockSource(List<BasePodDetail> BasePodDetailList);
 }

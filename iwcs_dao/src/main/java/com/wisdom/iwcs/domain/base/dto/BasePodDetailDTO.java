@@ -155,6 +155,10 @@ public class BasePodDetailDTO {
     @Column(name = "in_stock")
     private Integer inStock;
 
+    /**
+     * 锁定时间
+     */
+    private Date podLockSourceTime;
 
     /**
      * 版本号
@@ -580,6 +584,13 @@ public class BasePodDetailDTO {
 
     public void setLockSource(String lockSource) {
         this.lockSource = lockSource;
+    }
+
+    public Date getPodLockSourceTime() {
+        return podLockSourceTime;
+    }
+    public void setPodLockSourceTime(Date podLockSourceTime) {
+        this.podLockSourceTime = podLockSourceTime;
     }
 
     public Integer getInStock() {

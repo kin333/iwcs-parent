@@ -28,6 +28,7 @@
         <result column="version" jdbcType="INTEGER" property="version"/>
         <result column="operate_area_code" jdbcType="VARCHAR" property="operateAreaCode"/>
         <result column="biz_second_area_code" jdbcType="VARCHAR" property="bizSecondAreaCode"/>
+        <result column="lock_source_time" jdbcType="TIMESTAMP" property="lockSourceTime"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
@@ -225,7 +226,15 @@
             where id = #{item.id}
         </foreach>
     </update>
-
+    <update id="updateLockSource">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update base_map_berth
+            <set>
+                in_lock=#{item.inLock},lock_resource_time = NOW(),lock_source=#{item.lockSource}
+            </set>
+            where  ber_code= #{item.berCode}
+        </foreach>
+    </update>
     <update id="updatePodCodeByBerCode">
         update base_map_berth
         <set>

@@ -35,6 +35,7 @@ public class BaseMapBerth {
     /**
      * 锁定状态：0:未锁定，1：已锁定
      */
+    @Column(name = "in_lock")
     private Integer inLock;
     /**
      * 货架号
@@ -43,7 +44,13 @@ public class BaseMapBerth {
     /**
      * 锁定源
      */
+    @Column(name = "lock_source")
     private String lockSource;
+    /**
+     * 锁定时间
+     */
+    @Column(name = "lock_Source_time")
+    private Date lockSourceTime;
 
     /**
      * 有效标记，0有效，1无效
@@ -337,6 +344,12 @@ public class BaseMapBerth {
 
     public void setLockSource(String lockSource) {
         this.lockSource = lockSource;
+    }
+    public Date getLockSourceTime() {
+        return lockSourceTime;
+    }
+    public void setLockSourceTime(Date lockSourceTime) {
+        this.lockSourceTime=lockSourceTime;
     }
 
     public String getAreaCode() {

@@ -167,7 +167,10 @@ public class BasePodDetail {
     public void setVersion(Integer version) {
         this.version = version;
     }
-
+    /**
+     * 锁定时间
+     */
+    private Date podLockSourceTime;
     /**
      * 获取自增主键
      *
@@ -587,5 +590,19 @@ public class BasePodDetail {
 
     public void setInStock(Integer inStock) {
         this.inStock = inStock;
+    }
+    /**
+     * 获取锁定时间
+     * @return podLockSourceTime
+     */
+    public Date getPodLockSourceTime() {
+        return podLockSourceTime;
+    }
+    /**
+     * 设置锁定时间
+     * @param podLockSourceTime 上锁时间，现在服务的时间
+     */
+    public void setPodLockSourceTime(Date podLockSourceTime) {
+        this.podLockSourceTime = podLockSourceTime;
     }
 }

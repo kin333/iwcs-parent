@@ -31,4 +31,11 @@
             <column defaultValue="0" name="in_stock" remarks="货架是否有货，,0为否，1为是"  type="INT"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="baoxun" id="201907112354-02">
+        <addColumn tableName="base_pod_detail">
+            <column name="lock_source_time" remarks="上锁时间" type="datetime"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

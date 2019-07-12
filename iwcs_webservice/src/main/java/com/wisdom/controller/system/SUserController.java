@@ -116,7 +116,7 @@ public class SUserController {
     }
 
     /**
-     * 获取不在指定部门的用户
+     *      * 获取不在指定部门的用户
      */
     @PostMapping(value = "/noSelected/{departmentId}")
     public Result getNoSelectUser(@PathVariable Integer departmentId, @RequestBody UserSearchDTO searchDTO) {
@@ -166,17 +166,16 @@ public class SUserController {
 
     /**
      * tmp
-     * 获取所有员工
+     * 获取所有员工，且无删除标记
      */
     @GetMapping(value = "/all")
     public Result getAllUsers() {
         return userService.getAllUsers();
     }
-
     /**
      * 根据职务获取当前公司用户
      */
-    @GetMapping(value = "/duty/{dutyType}")
+        @GetMapping(value = "/duty/{dutyType}")
     public Result getUsersByDuty(@PathVariable String dutyType) {
 
         return userService.getUsersByDuty(dutyType);

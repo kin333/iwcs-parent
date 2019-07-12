@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class BaseMapBerthService implements IBaseMapBerthService {
+public class BaseMapBerthService implements IBaseMapBerthService{
     private final Logger logger = LoggerFactory.getLogger(BaseMapBerthService.class);
 
     private final BaseMapBerthMapper baseMapBerthMapper;
