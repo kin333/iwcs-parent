@@ -25,16 +25,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class SubTaskService {
     private final Logger logger = LoggerFactory.getLogger(SubTaskService.class);
     @Autowired
@@ -45,6 +49,11 @@ public class SubTaskService {
     private SubTaskConditionMapper subTaskConditionMapper;
 
     @Autowired
+    PlatformTransactionManager transactionManager;
+    @Autowired
+    TransactionTemplate transactionTemplate;
+
+    @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
         this.subTaskMapStruct = SubTaskMapStruct;
         this.subTaskMapper = SubTaskMapper;
@@ -53,9 +62,7 @@ public class SubTaskService {
     /**
      * 写入记录
      *
-     *
      * @param record {@link SubTaskDTO }
-     *
      * @return int
      */
     public int insert(SubTaskDTO record) {
@@ -72,9 +79,7 @@ public class SubTaskService {
     /**
      * 批量写入记录
      *
-     *
      * @param records {@link List<SubTaskDTO> }
-     *
      * @return int
      */
     public int insertBatch(List<SubTaskDTO> records) {
@@ -91,9 +96,7 @@ public class SubTaskService {
     /**
      * 根据主键-ID查询
      *
-     *
      * @param id {@link Integer }
-     *
      * @return {@link SubTaskDTO }
      */
     public SubTaskDTO selectByPrimaryKey(Integer id) {
@@ -107,9 +110,7 @@ public class SubTaskService {
     /**
      * 根据字段选择性查询
      *
-     *
      * @param record {@link SubTaskDTO }
-     *
      * @return {@link List<SubTaskDTO> }
      */
     public List<SubTaskDTO> selectSelective(SubTaskDTO record) {
@@ -122,9 +123,7 @@ public class SubTaskService {
     /**
      * 根据主键更新
      *
-     *
      * @param record {@link SubTaskDTO }
-     *
      * @return int
      */
     public int updateByPrimaryKey(SubTaskDTO record) {
@@ -133,7 +132,7 @@ public class SubTaskService {
         Integer userId = SecurityUtils.getCurrentUserId();
 
         int num = subTaskMapper.updateByPrimaryKey(SubTask);
-        Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
+        Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
 
@@ -142,9 +141,7 @@ public class SubTaskService {
     /**
      * 根据主键选择性更新
      *
-     *
      * @param record {@link SubTaskDTO }
-     *
      * @return int
      */
     public int updateByPrimaryKeySelective(SubTaskDTO record) {
@@ -153,7 +150,7 @@ public class SubTaskService {
         Integer userId = SecurityUtils.getCurrentUserId();
 
         int num = subTaskMapper.updateByPrimaryKeySelective(SubTask);
-        Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
+        Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
     }
@@ -161,9 +158,7 @@ public class SubTaskService {
     /**
      * 根据主键删除记录
      *
-     *
      * @param id {@link Integer }
-     *
      * @return int
      */
     public int deleteByPrimaryKey(Integer id) {
@@ -188,12 +183,10 @@ public class SubTaskService {
     /**
      * 根据主键删除多条记录
      *
-     *
      * @param ids {@link List<String> }
-     *
      * @return int
      */
-    public int deleteMore(List<String> ids){
+    public int deleteMore(List<String> ids) {
         return subTaskMapper.deleteByIds(String.join(",", ids));
     }
 
@@ -212,17 +205,15 @@ public class SubTaskService {
     /**
      * 根据条件分页查询
      *
-     *
      * @param gridPageRequest {@link GridPageRequest }
-     *
      * @return {@link GridReturnData<SubTaskDTO> }
      */
-    public GridReturnData<SubTaskDTO> selectPage(GridPageRequest gridPageRequest){
+    public GridReturnData<SubTaskDTO> selectPage(GridPageRequest gridPageRequest) {
         GridReturnData<SubTaskDTO> mGridReturnData = new GridReturnData<>();
         List<GridFilterInfo> filterList = gridPageRequest.getFilterList();
         Map<String, Object> map = new HashMap<>(2);
         filterList.forEach(gridFilterInfo -> {
-            if(gridFilterInfo.getFilterKey() != null && gridFilterInfo.getFilterValue() != null){
+            if (gridFilterInfo.getFilterKey() != null && gridFilterInfo.getFilterValue() != null) {
                 map.put(gridFilterInfo.getFilterKey(), gridFilterInfo.getFilterValue());
             }
         });
@@ -294,6 +285,7 @@ public class SubTaskService {
 
     /**
      * 回滚执行的子任务前置条件并还原相关数据的操作
+     *
      * @param subTask
      * @return
      */
@@ -332,7 +324,7 @@ public class SubTaskService {
     public Result setPriority(SubTaskDTO subTaskDTO) {
         String subTaskNum = subTaskDTO.getSubTaskNum();
         Integer priority = subTaskDTO.getPriority();
-        if (StringUtils.isEmpty(subTaskNum) || priority == null || priority < 0 ) {
+        if (StringUtils.isEmpty(subTaskNum) || priority == null || priority < 0) {
             return new Result(400, "缺少参数(子任务单号或优先级)");
         }
         int changeRow = subTaskMapper.updatePriority(subTaskNum, priority);
@@ -344,6 +336,7 @@ public class SubTaskService {
 
     /**
      * 根据任务号将任务状态置为已完成
+     *
      * @param subTaskNum
      */
     public void finishTask(String subTaskNum) {
@@ -352,31 +345,43 @@ public class SubTaskService {
 
     /**
      * 执行子任务后置条件检查并锁定/修改相关数据
+     *
      * @param subTask
      * @return
      */
-    @Transactional
     public boolean postConditionsCheckAndExec(SubTask subTask) {
-        List<SubTaskCondition> postTaskRelConditionsList =
-                subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.POST_CONDITION.getCode());
-        postTaskRelConditionsList.stream().forEach(c -> {
-            //如果条件状态为不符合,则执行子任务后置条件检查操作
-            if (ConditionMetStatus.IN_CONFORMITY.getCode().equals(c.getConditionMetStatus())) {
-                String conditonHandleName = c.getConditonHandler();
-                IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
-                boolean met = conditonHandler.handleCondition(c);
-                if (!met) {
-                    //抛出异常
-                    logger.info("{}子任务后置条件暂时不满足不满足,条件名称{}", subTask.getSubTaskNum(), conditonHandleName);
-                    throw new TaskConditionException(-1, "子任务后置条件暂时不满足", c.getSubTaskNum(), conditonHandleName);
-                }
+        AtomicBoolean resultFlag = new AtomicBoolean(true);
+
+        transactionTemplate.execute(new TransactionCallback() {
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+
+                List<SubTaskCondition> postTaskRelConditionsList =
+                        subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.POST_CONDITION.getCode());
+                postTaskRelConditionsList.stream().forEach(c -> {
+                    //如果条件状态为不符合,则执行子任务后置条件检查操作
+                    if (ConditionMetStatus.IN_CONFORMITY.getCode().equals(c.getConditionMetStatus())) {
+                        String conditonHandleName = c.getConditonHandler();
+                        IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
+                        boolean met = conditonHandler.handleCondition(c);
+                        if (!met) {
+                            //抛出异常
+                            logger.info("{}子任务后置条件暂时不满足不满足,条件名称{}", subTask.getSubTaskNum(), conditonHandleName);
+                            transactionStatus.setRollbackOnly();
+                            resultFlag.set(false);
+                        }
+                    }
+                });
+                //将子任务条件表中的条件状态改为已符合
+                subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.POST_CONDITION.getCode());
+                //将子任务的状态改为已结束
+                finishTask(subTask.getSubTaskNum());
+                logger.info("子任务{}后置条件已全部满足", subTask.getSubTaskNum());
+                return resultFlag;
             }
         });
-        //将子任务条件表中的条件状态改为已符合
-        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.POST_CONDITION.getCode());
-        //将子任务的状态改为已结束
-        finishTask(subTask.getSubTaskNum());
-        logger.info("子任务{}后置条件已全部满足", subTask.getSubTaskNum());
+
+
         return true;
     }
 }

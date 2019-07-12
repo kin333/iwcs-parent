@@ -5,7 +5,6 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/ts_sub_task")
 public class SubTaskController {
     @Autowired
-    SubTaskService SubTaskService;
+    SubTaskService subTaskService;
     @Autowired
     SubTaskMapStruct SubTaskMapStruct;
 
@@ -39,7 +38,7 @@ public class SubTaskController {
      */
     @DeleteMapping(value = "/{id}")
     public Result deleteByPrimaryKey(@PathVariable Integer id) {
-        SubTaskService.deleteByPrimaryKey(id);
+        subTaskService.deleteByPrimaryKey(id);
 
         return new Result();
     }
@@ -54,7 +53,7 @@ public class SubTaskController {
      */
     @DeleteMapping
     public Result deleteMoreByIds(@RequestBody List<String> ids) {
-        SubTaskService.deleteMore(ids);
+        subTaskService.deleteMore(ids);
 
         return new Result();
     }
@@ -69,7 +68,7 @@ public class SubTaskController {
      */
     @PostMapping
     public Result insert(@RequestBody SubTaskDTO SubTaskDTO) {
-        SubTaskService.insert(SubTaskDTO);
+        subTaskService.insert(SubTaskDTO);
 
         return new Result();
     }
@@ -84,7 +83,7 @@ public class SubTaskController {
      */
     @GetMapping(value = "/{id}")
     public Result selectByPrimaryKey(@PathVariable Integer id) {
-        SubTaskDTO SubTaskDTO = SubTaskService.selectByPrimaryKey(id);
+        SubTaskDTO SubTaskDTO = subTaskService.selectByPrimaryKey(id);
 
         return new Result(SubTaskDTO);
     }
@@ -99,7 +98,7 @@ public class SubTaskController {
      */
     @PostMapping(value = "/page")
     public Result selectPage(@RequestBody GridPageRequest gridPageRequest) {
-        GridReturnData<SubTaskDTO> records = SubTaskService.selectPage(gridPageRequest);
+        GridReturnData<SubTaskDTO> records = subTaskService.selectPage(gridPageRequest);
 
         return new Result(records);
     }
@@ -114,7 +113,7 @@ public class SubTaskController {
      */
     @PutMapping
     public Result updateByPrimaryKey(@RequestBody SubTaskDTO SubTaskDTO) {
-        SubTaskService.updateByPrimaryKey(SubTaskDTO);
+        subTaskService.updateByPrimaryKey(SubTaskDTO);
 
         return new Result();
     }
@@ -126,7 +125,7 @@ public class SubTaskController {
      */
     @PostMapping("/setPriority")
     public Result setPriority(@RequestBody SubTaskDTO subTaskDTO) {
-        return SubTaskService.setPriority(subTaskDTO);
+        return subTaskService.setPriority(subTaskDTO);
     }
 
 }

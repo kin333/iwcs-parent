@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.Result;
@@ -283,6 +284,7 @@ public class MapResouceService implements IMapResouceService {
             }
         }
         if (needLockPod == null) {
+            logger.error("锁定源为{},锁定的条件{}", tmpLockPodCondition.getLockSource(), JSON.toJSONString(lockPodConditions));
             throw new BusinessException("找不到符合要求的货架");
         }
         logger.debug("开始锁定货架{},锁定源为{}", needLockPod.getPodCode(), tmpLockPodCondition.getLockSource());
