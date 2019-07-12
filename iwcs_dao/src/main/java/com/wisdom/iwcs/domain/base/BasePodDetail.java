@@ -170,6 +170,7 @@ public class BasePodDetail {
     /**
      * 锁定时间
      */
+    @Column(name = "lock_source_time")
     private Date podLockSourceTime;
     /**
      * 获取自增主键
