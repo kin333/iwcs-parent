@@ -285,7 +285,7 @@ public class MapResouceService implements IMapResouceService {
             }
         }
         if (needLockPod == null) {
-            logger.error("锁定源为{},锁定的条件{}", tmpLockPodCondition.getLockSource(), JSON.toJSONString(lockPodConditions));
+            logger.error("锁定源为{},锁定的条件{}", lockPodConditions.get(0).getLockSource(), JSON.toJSONString(lockPodConditions));
             throw new BusinessException("找不到符合要求的货架");
         }
         logger.debug("开始锁定货架{},锁定源为{}", needLockPod.getPodCode(), tmpLockPodCondition.getLockSource());

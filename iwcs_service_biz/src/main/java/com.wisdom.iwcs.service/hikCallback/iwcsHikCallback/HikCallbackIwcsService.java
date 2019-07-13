@@ -107,9 +107,18 @@ public class HikCallbackIwcsService {
         if (baseMapBerth == null) {
             throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
         }
-        baseMapBerth.setPodCode("");
+        logger.info("子任务{}开始清空地码{}的货架编号", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getWbCode());
+        BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
+        tmpBaseMapBerth.setId(baseMapBerth.getId());
+        tmpBaseMapBerth.setPodCode("");
         //更新储位信息,加货架号,解锁
-        baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
+        int changeRows = baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
+        if (changeRows <= 0) {
+            logger.error("子任务{}在清空地码{}的货架编号{}时失败", hikCallBackAgvMove.getTaskCode(),
+                                                    hikCallBackAgvMove.getWbCode(), baseMapBerth.getPodCode());
+        }
+        logger.info("子任务{}在清空地码{}的货架编号{}时成功", hikCallBackAgvMove.getTaskCode(),
+                hikCallBackAgvMove.getWbCode(), baseMapBerth.getPodCode());
     }
 
     /**
@@ -192,7 +201,13 @@ public class HikCallbackIwcsService {
         tmpBasePodDetail.setLockSource("");
         tmpBasePodDetail.setLastModifiedTime(new Date());
         //更新货架信息表
-        basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
+        int changeRows = basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
+        if (changeRows <= 0) {
+            logger.error("子任务{}在更新货架的地码编号{}时失败", hikCallBackAgvMove.getTaskCode(),
+                    hikCallBackAgvMove.getWbCode());
+        }
+        logger.info("子任务{}在更新货架的地码编号{}时成功 ", hikCallBackAgvMove.getTaskCode(),
+                hikCallBackAgvMove.getWbCode());
 
     }
 }
