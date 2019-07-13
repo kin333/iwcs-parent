@@ -55,7 +55,7 @@ public class TransTest {
             public Object doInTransaction(TransactionStatus transactionStatus) {
                 CodecCountry codecCountry = new CodecCountry();
                 codecCountryMapper.insert(codecCountry);
-                // transactionStatus.setRollbackOnly();
+                transactionStatus.setRollbackOnly();
 
                 Integer i = null;
 

@@ -48,8 +48,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
     public boolean postRunnable() {
         try {
             SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
-            subTaskService.postConditionsCheckAndExec(subTask);
-            return true;
+            return subTaskService.postConditionsCheckAndExec(subTask);
         } catch (Exception e) {
             logger.info("{}子任务后置条件暂不满足", subTask.getSubTaskNum());
             e.printStackTrace();
@@ -89,6 +88,9 @@ public class SubTaskWorker extends AbstractTaskWorker {
                         logger.info("子任务{}后置条件检查未符合,30s后重试", subTask.getSubTaskNum());
                         waitLock.wait(30 * 1000);
                     } else{
+                        //通知主任务的时机，待定......
+                        logger.info("子任务{}后置条件检查符合条件,通知结束", subTask.getSubTaskNum());
+                        mainTaskWorker.onSubTaskDone(subTask);
                         break;
                     }
                 }
@@ -96,8 +98,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
                 e.printStackTrace();
             }
         }
-        //通知主任务的时机，待定......
-        mainTaskWorker.onSubTaskDone(subTask);
+
         // 锁定的资源
 
 
@@ -112,7 +113,9 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     iwcsPublicService.sendInfoBySubTaskNum(subTask.getSubTaskNum());
                     break;
                 } catch (Exception e) {
-                    logger.error("子任务发送失败{}", subTask.getSubTaskNum());
+                    logger.error("子任务下发失败{},准备回滚前置条件", subTask.getSubTaskNum());
+                    SubTaskService subTaskService = (SubTaskService) SpringContextUtils.getBean("subTaskService");
+                    boolean rollBackTime = subTaskService.rollbackPreCondition(subTask.getSubTaskNum());
                     e.printStackTrace();
                     try {
                         waitLock.wait(1000 * 3);

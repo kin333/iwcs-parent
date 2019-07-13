@@ -289,9 +289,10 @@ public class SubTaskService {
      * @param subTask
      * @return
      */
-    public boolean preConditionsRallback(SubTask subTask) {
+    @Transactional
+    public boolean rollbackPreCondition(String subTaskNum) {
         List<SubTaskCondition> preTaskRelConditionsList =
-                subTaskConditionMapper.selectByTaskNumAndTrigerType(subTask.getSubTaskNum(), CondtionTriger.PRE_CONDITION.getCode());
+                subTaskConditionMapper.selectByTaskNumAndTrigerType(subTaskNum, CondtionTriger.PRE_CONDITION.getCode());
         preTaskRelConditionsList.forEach(c -> {
             //如果条件状态为符合,则执行子任务前置条件回滚操作
             if (ConditionMetStatus.CONFORMITY.getCode().equals(c.getConditionMetStatus())) {
@@ -305,7 +306,7 @@ public class SubTaskService {
             }
         });
         //将子任务条件表中的条件状态回滚为不符合
-        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.NOT_CONFORM, CondtionTriger.PRE_CONDITION.getCode());
+        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTaskNum, TaskConstants.metStatus.NOT_CONFORM, CondtionTriger.PRE_CONDITION.getCode());
         return true;
     }
 
