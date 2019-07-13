@@ -1,0 +1,105 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="george" id="201907052018">
+        <createTable tableName="ele_config">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="plc_url" remarks="电梯plc url" type="VARCHAR(32)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201907131340">
+        <createTable tableName="elevator">
+            <column autoIncrement="true" name="elevator_id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="elevator_code" remarks="电梯编号" type="INT"/>
+            <column name="elev_status" remarks="电梯状态" type="VARCHAR(10)"/>
+            <column name="remark" remarks="备注" type="TEXT"/>
+            <column name="status_update_time" remarks="状态更新时间" type="datetime"/>
+            <column name="status_remark" remarks="状态修改备注" type="TEXT"/>
+            <column name="current_floor" remarks="当前所在楼层" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201907131341">
+        <createTable tableName="ele_connection_point">
+            <column autoIncrement="true" name="coonnection_point_id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="connection_point_code" remarks="电梯交接点编号" type="VARCHAR(32)"/>
+            <column name="elevator_code" remarks="电梯编号" type="INT"/>
+            <column name="wb_code" remarks="电梯状态" type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="TEXT"/>
+            <column name="status" remarks="状态更新时间" type="VARCHAR(10)"/>
+            <column name="status_remark" remarks="状态修改备注" type="TEXT"/>
+            <column name="status_update_time" remarks="状态更新时间" type="datetime"/>
+            <column name="bercode" remarks="坐标" type="VARCHAR(32)"/>
+            <column name="map_code" remarks="地图code" type="VARCHAR(32)"/>
+            <column name="wait_bercode" remarks="等待进电梯" type="VARCHAR(32)"/>
+            <column name="connection_point_type" remarks="连接点类型" type="VARCHAR(32)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201907131342">
+        <createTable tableName="ele_cross_floor_task">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="cross_taskref" remarks="电梯任务编号" type="VARCHAR(50)"/>
+            <column name="pod_code" remarks="货架编号" type="VARCHAR(32)"/>
+            <column name="pid" remarks="任务状态" type="VARCHAR(10)"/>
+            <column name="source_wb_task_code" remarks="第三方小车任务id" type="datetime"/>
+            <column name="pod_type" remarks="货架类型" type="VARCHAR(10)"/>
+            <column name="elevator_work_type" remarks="电梯作业方式up/down" type="VARCHAR(10)"/>
+            <column name="pod_floor" remarks="当前所在楼层" type="VARCHAR(10)"/>
+            <column name="source_floor" remarks="起始楼层" type="VARCHAR(10)"/>
+            <column name="dest_floor" remarks="目标楼层" type="VARCHAR(10)"/>
+            <column name="priority" remarks="优先级" type="INT"/>
+            <column name="elevator_code" remarks="电梯编号" type="INT"/>
+            <column name="source_connection_point" remarks="源交接点" type="VARCHAR(10)"/>
+            <column name="suggest_dest_connection_point" remarks="计划送达的关联点" type="VARCHAR(10)"/>
+            <column name="dest_connection_point" remarks="最终送达的关联点" type="VARCHAR(10)"/>
+            <column name="source_wb_code" remarks="源进电梯口点位编号" type="VARCHAR(10)"/>
+            <column name="dest_area_type" remarks="目标区域" type="VARCHAR(10)"/>
+            <column name="dest_storage" remarks="目标储位" type="VARCHAR(10)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime"/>
+            <column name="delete_flag" remarks="删除标识" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201907131343">
+        <createTable tableName="ele_cross_floor_task_status_log">
+            <column autoIncrement="true" name="coonnection_point_id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="cross_taskref" remarks="电梯交接点编号" type="VARCHAR(50)"/>
+            <column name="pod_code" remarks="电梯编号" type="VARCHAR(32)"/>
+            <column name="pid" remarks="电梯状态" type="VARCHAR(32)"/>
+            <column name="created_time" remarks="状态更新时间" type="datetime"/>
+            <column name="remark" remarks="备注" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201907131344">
+        <createTable tableName="line_task">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="line_req_code" remarks="请求码" type="VARCHAR(50)"/>
+            <column name="web_code" remarks="下货坐标点" type="VARCHAR(32)"/>
+            <column name="line_status" remarks="线体状态" type="VARCHAR(32)"/>
+            <column name="work_type" remarks="作业方式" type="VARCHAR(32)"/>
+            <column name="cmd_type" remarks="命令类型码" type="VARCHAR(32)"/>
+            <column name="line_url" remarks="地址" type="VARCHAR(32)"/>
+            <column name="created_time" remarks="状态更新时间" type="datetime"/>
+            <column name="remark" remarks="备注" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
