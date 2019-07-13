@@ -166,7 +166,7 @@ public class MapResouceService implements IMapResouceService {
         if(count < 1) {
             return new Result(400,"该储位在进行其他操作中，请稍后执行");
         }
-        logger.info("点位锁定成功:"+baseMapBerth.getBerCode());
+        logger.info("点位锁定成功:{} 锁定源为:{}", baseMapBerth.getBerCode(), lockStorageDto.getLockSource());
         //更新子任务终点坐标
         String subTaskNum = lockStorageDto.getLockSource();
         BaseMapBerth lockMapBerth = new BaseMapBerth();
@@ -229,7 +229,7 @@ public class MapResouceService implements IMapResouceService {
             logger.error("货架{}正在进行其他操作,请稍后执行", basePodDetail.getPodCode());
             throw new BusinessException("该货架在进行其他操作中，请稍后执行");
         }
-        logger.info("货架{}锁定成功", basePodDetail.getPodCode());
+        logger.info("货架{}锁定成功,锁定源为{}", basePodDetail.getPodCode(), basePodDetail.getLockSource());
         return true;
     }
 

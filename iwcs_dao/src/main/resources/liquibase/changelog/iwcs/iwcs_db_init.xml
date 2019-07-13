@@ -947,4 +947,28 @@
     <changeSet id="201907091405" author="han">
         <modifyDataType tableName="base_map_berth" columnName="biz_type" newDataType="VARCHAR(32)"/>
     </changeSet>
+
+    <changeSet id="201907131306-2" author="han">
+        <createIndex tableName="base_map_berth" indexName="idx_berCode" unique="true">
+            <column name="ber_code"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="201907131306-3" author="han">
+        <createIndex tableName="base_map_berth" indexName="idx_inLock" unique="false">
+            <column name="in_lock"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="201907131306-4" author="han">
+        <createIndex tableName="base_pod_detail" indexName="idx_inStock" unique="false">
+            <column name="in_stock"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="201907131306-5" author="han">
+        <createIndex tableName="base_pod_detail" indexName="idx_inLock" unique="false">
+            <column name="in_lock"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

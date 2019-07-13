@@ -1,5 +1,7 @@
 package com.wisdom.iwcs.domain.task;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 import javax.persistence.*;
 
@@ -60,6 +62,20 @@ public class SubTaskCondition {
      */
     @Column(name = "subscribe_event")
     private String subscribeEvent;
+
+    /**
+     * 满足时间
+     */
+    @Column(name = "meet_time")
+    private String meetTime;
+
+    public String getMeetTime() {
+        return meetTime;
+    }
+
+    public void setMeetTime(String meetTime) {
+        this.meetTime = meetTime;
+    }
 
     public String getSubscribeEvent() {
         return subscribeEvent;

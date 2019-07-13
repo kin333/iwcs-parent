@@ -64,18 +64,20 @@ public class HikCallBackNotifyPodArrService implements IHikCallBackNotifyPodArrS
         }
         BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCodeAndValidFlagAndDeleteFlag(podCode, ValidFlagEnum.VALID.getStatus(), NOT_DELETED.getStatus());
         List<BaseBincodeDetail> bincodeDetails = baseBincodeDetailMapper.selectByPodCodeAndValidFlagAndDeletedFlag(podCode, ValidFlagEnum.VALID.getStatus(), NOT_DELETED.getStatus());
-        basePodDetail.setBerCode(notifyData.getMapDataCode());
-        basePodDetail.setLastBercodeUpdateTime(new Date());
-        basePodDetail.setMapCode(requestMapCode);
-        basePodDetail.setAreaCode(areaCode);
-        basePodDetail.setStgTypeCode(notifyData.getAreaCode());
-        basePodDetail.setStgCode(notifyData.getStgSecCode());
-        basePodDetail.setCoox(notifyData.getCooX());
-        basePodDetail.setCooy(notifyData.getCooY());
+        BasePodDetail tmpBasePodDetail = new BasePodDetail();
+        tmpBasePodDetail.setId(basePodDetail.getId());
+        tmpBasePodDetail.setBerCode(notifyData.getMapDataCode());
+        tmpBasePodDetail.setLastBercodeUpdateTime(new Date());
+        tmpBasePodDetail.setMapCode(requestMapCode);
+        tmpBasePodDetail.setAreaCode(areaCode);
+        tmpBasePodDetail.setStgTypeCode(notifyData.getAreaCode());
+        tmpBasePodDetail.setStgCode(notifyData.getStgSecCode());
+        tmpBasePodDetail.setCoox(notifyData.getCooX());
+        tmpBasePodDetail.setCooy(notifyData.getCooY());
         Integer userId = SecurityUtils.getCurrentUserId();
-        basePodDetail.setLastModifiedBy(userId);
-        basePodDetail.setLastModifiedTime(new Date());
-        basePodDetailMapper.updateByPrimaryKeySelective(basePodDetail);
+        tmpBasePodDetail.setLastModifiedBy(userId);
+        tmpBasePodDetail.setLastModifiedTime(new Date());
+        basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
         for (BaseBincodeDetail bincode : bincodeDetails) {
             bincode.setMapCode(notifyData.getMapCode());
             bincode.setAreaCode(areaCode);

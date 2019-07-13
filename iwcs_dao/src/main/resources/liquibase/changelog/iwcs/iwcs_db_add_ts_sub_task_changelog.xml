@@ -108,4 +108,15 @@
             <column name="send_time" type="DATETIME" remarks="任务下发时间"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201907131302-1" author="han">
+        <createIndex tableName="ts_sub_task" indexName="idx_subTaskNum" unique="true">
+            <column name="sub_task_num"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="201907131259-3" author="han">
+        <createIndex tableName="ts_sub_task" indexName="idx_mainTaskNum" unique="true">
+            <column name="main_task_num"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

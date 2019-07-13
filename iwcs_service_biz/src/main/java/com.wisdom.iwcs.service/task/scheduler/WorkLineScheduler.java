@@ -35,8 +35,8 @@ public class WorkLineScheduler implements Runnable {
     public void run() {
         while (true) {
             try {
-                this.todo();
                 synchronized (this) {
+                    this.todo();
                     logger.debug("产线工作台主任务生成器线程主动睡眠 2 min");
                     this.wait(60 * 1000 * 2);
                 }
@@ -54,6 +54,9 @@ public class WorkLineScheduler implements Runnable {
         workLineList.add("WL3-1");
         workLineList.add("WL3-2");
         workLineList.add("WL3-3");
+        workLineList.add("WL1");
+        workLineList.add("WL2");
+        workLineList.add("WL3");
 
         for (String name : workLineList) {
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(name);

@@ -182,15 +182,17 @@ public class HikCallbackIwcsService {
 //            throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
 //                    + " 货架编号:" + hikCallBackAgvMove.getPodCode());
         }
-        basePodDetail.setCoox(hikCallBackAgvMove.getCooX());
-        basePodDetail.setCooy(hikCallBackAgvMove.getCooY());
-        basePodDetail.setBerCode(hikCallBackAgvMove.getMapDataCode());
-        basePodDetail.setMapCode(hikCallBackAgvMove.getMapCode());
-        basePodDetail.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
-        basePodDetail.setLockSource("");
-        basePodDetail.setLastModifiedTime(new Date());
+        BasePodDetail tmpBasePodDetail = new BasePodDetail();
+        tmpBasePodDetail.setId(basePodDetail.getId());
+        tmpBasePodDetail.setCoox(hikCallBackAgvMove.getCooX());
+        tmpBasePodDetail.setCooy(hikCallBackAgvMove.getCooY());
+        tmpBasePodDetail.setBerCode(hikCallBackAgvMove.getMapDataCode());
+        tmpBasePodDetail.setMapCode(hikCallBackAgvMove.getMapCode());
+        tmpBasePodDetail.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
+        tmpBasePodDetail.setLockSource("");
+        tmpBasePodDetail.setLastModifiedTime(new Date());
         //更新货架信息表
-        basePodDetailMapper.updateByPrimaryKeySelective(basePodDetail);
+        basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
 
     }
 }

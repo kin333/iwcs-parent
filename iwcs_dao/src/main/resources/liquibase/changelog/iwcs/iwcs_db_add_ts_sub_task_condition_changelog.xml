@@ -28,4 +28,15 @@
     <changeSet id="201907071722-1" author="ted">
         <modifyDataType tableName="ts_sub_task_condition" columnName="conditon_triger" newDataType="VARCHAR(32)"/>
     </changeSet>
+    <changeSet id="201907131145" author="han">
+        <addColumn tableName="ts_sub_task_condition">
+            <column name="meet_time" remarks="条件满足的时间" type="datetime"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="201907131306-1" author="han">
+        <createIndex tableName="ts_sub_task_condition" indexName="idx_subTaskNum" unique="false">
+            <column name="sub_task_num"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

@@ -37,4 +37,10 @@
             <column name="area_code" remarks="库区编号" type="VARCHAR(32)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201907131259-2" author="han">
+        <createIndex tableName="ts_main_task" indexName="idx_mainTaskNum" unique="true">
+            <column name="main_task_num"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
