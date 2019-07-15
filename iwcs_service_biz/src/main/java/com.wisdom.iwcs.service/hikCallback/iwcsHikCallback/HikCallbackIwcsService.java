@@ -186,8 +186,8 @@ public class HikCallbackIwcsService {
             throw new BusinessException(hikCallBackAgvMove.getPodCode() + "货架号无对应货架信息");
         }
         if (subTask != null && !subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
-            logger.error("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
-                    + " 地码编号:" + hikCallBackAgvMove.getMapDataCode());
+            logger.error("货架锁定源与子任务号不匹配,子任务号:{}  地码编号:{}  锁定源:{}", subTask.getSubTaskNum(),
+                   hikCallBackAgvMove.getMapDataCode(), basePodDetail.getLockSource());
 //            throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
 //                    + " 货架编号:" + hikCallBackAgvMove.getPodCode());
         }

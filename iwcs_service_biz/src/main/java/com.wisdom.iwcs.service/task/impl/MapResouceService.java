@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.YZConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
@@ -221,8 +222,12 @@ public class MapResouceService implements IMapResouceService {
             throw new BusinessException("锁定源不能为空");
         }
         //乐观锁检查
-        BasePodDetail baseMapBerth = basePodDetailMapper.selectByPodCode(basePodDetail.getPodCode());
-        baseMapBerth.setVersion(baseMapBerth.getVersion());
+        BasePodDetail updateBasePodDetail = basePodDetailMapper.selectByPodCode(basePodDetail.getPodCode());
+        if (YZConstants.LOCK.equals(updateBasePodDetail.getInLock())) {
+            logger.error("货架{}正在进行其他操作,已被锁定,请稍后执行", basePodDetail.getPodCode());
+            throw new BusinessException("该货架在进行其他操作中，请稍后执行");
+        }
+        basePodDetail.setVersion(updateBasePodDetail.getVersion());
         //锁定货架
         int changeRow = basePodDetailMapper.lockPod(basePodDetail);
         if(changeRow < 1) {

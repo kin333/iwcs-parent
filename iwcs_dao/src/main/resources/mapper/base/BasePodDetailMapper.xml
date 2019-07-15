@@ -31,7 +31,7 @@
         <result column="lock_source" jdbcType="VARCHAR" property="lockSource"/>
         <result column="in_stock" jdbcType="INTEGER" property="inStock"/>
         <result column="version" jdbcType="INTEGER" property="version"/>
-        <result column="lock_source_time" jdbcType="TIMESTAMP" property="lockSourceTime"/>
+        <result column="lock_source_time" jdbcType="TIMESTAMP" property="podLockSourceTime"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
@@ -317,7 +317,7 @@
     <update id="updatePodInStock">
         update base_pod_detail
         <set>
-            in_lock = 1
+            in_stock  = 1
         </set>
         where pod_code = #{podCode}
     </update>
