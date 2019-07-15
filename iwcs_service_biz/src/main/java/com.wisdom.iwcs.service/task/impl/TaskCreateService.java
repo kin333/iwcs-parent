@@ -226,7 +226,8 @@ public class TaskCreateService implements ITaskCreateService {
 
         //创建任务
         PlToAgingRequest plToAgingRequest = new PlToAgingRequest();
-        plToAgingRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+        plToAgingRequest.setAreaCode(baseMapBerth.getAreaCode());
         plToAgingRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         plToAgingRequest.setPriority(taskCreateRequest.getPriority());
         plToAgingRequest.setPodCode(podCode);
@@ -281,8 +282,10 @@ public class TaskCreateService implements ITaskCreateService {
         cachelockMapBerthCondition.setPodCode(taskCreateRequest.getPodCode());
         cachelockMapBerthCondition.setMapCode(basePodDetail.getMapCode());
         BaseMapBerth cacheLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(cachelockMapBerthCondition);
+        String areaCode;
         if (cacheLockMapBerth != null){
             targetPoint = cacheLockMapBerth.getBerCode();
+            areaCode = cacheLockMapBerth.getAreaCode();
         }else {
             LockMapBerthCondition worklockMapBerthCondition = new LockMapBerthCondition();
             worklockMapBerthCondition.setBizType(QUAINSPWORKAREA);
@@ -290,6 +293,7 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth workLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(worklockMapBerthCondition);
             if (workLockMapBerth != null){
                 targetPoint = workLockMapBerth.getBerCode();
+                areaCode = workLockMapBerth.getAreaCode();
             }else{
                 throw new BusinessException("创建任务失败，检验区没有空闲点位！");
             }
@@ -299,7 +303,7 @@ public class TaskCreateService implements ITaskCreateService {
         agingToQuaInspRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         agingToQuaInspRequest.setPriority(taskCreateRequest.getPriority());
         agingToQuaInspRequest.setPodCode(podCode);
-        agingToQuaInspRequest.setAreaCode(SecurityUtils.getCurrentAreaCode());
+        agingToQuaInspRequest.setAreaCode(areaCode);
         agingToQuaInspRequest.setStartPoint(basePodDetail.getBerCode());
         agingToQuaInspRequest.setTargetPoint(targetPoint);
         agingToQuaInspRequest.setMapCode(basePodDetail.getMapCode());

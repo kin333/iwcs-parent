@@ -43,4 +43,10 @@
             <column name="main_task_num"/>
         </createIndex>
     </changeSet>
+    
+    <changeSet id="201907151444" author="han">
+        <createIndex tableName="ts_main_task" indexName="idx_task_status">
+            <column name="task_status"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
