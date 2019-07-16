@@ -385,11 +385,6 @@
             <version>2.0.0.Final</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/io.prometheus/simpleclient_spring_boot -->
         <dependency>
             <groupId>io.prometheus</groupId>
@@ -456,15 +451,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- rabbitmq -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <version>1.5.2.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
@@ -526,6 +523,15 @@
                         <version>${validation-api.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.wisdom.Application</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
