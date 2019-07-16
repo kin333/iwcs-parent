@@ -1,7 +1,9 @@
 package com.wisdom.iwcs.service.task.wcsSimulator;
 
+import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
@@ -32,16 +34,26 @@ public class QuaAutoCallPodWorker implements Runnable {
     @Autowired
     private BasePodDetailMapper basePodDetailMapper;
 
+    private String mapCode;
+
+    public QuaAutoCallPodWorker(String mapCode) {
+        this.mapCode = mapCode;
+    }
 
     public void checkEmptyQua() {
+
+        if(Strings.isNullOrEmpty(this.mapCode)) {
+            logger.error("模拟老化区到检验区线程失败,原因：缺少地图代码");
+            throw new BusinessException("缺少地图代码");
+        }
         //首先判断检验点是否需要补充
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setOperateAreaCode(InspurBizConstants.OperateAreaCodeConstants.QUAINSPAREA);
-        lockMapBerthCondition.setMapCode("AB");
+        lockMapBerthCondition.setMapCode(this.mapCode);
         List<BaseMapBerth>baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
         //从老化区找一个符合条件货架
         LockPodCondition lockPodCondition = new LockPodCondition();
-        lockPodCondition.setMapCode("AB");
+        lockPodCondition.setMapCode(this.mapCode);
         lockPodCondition.setOperateAreaCode(InspurBizConstants.OperateAreaCodeConstants.AGINGREA);
         List<BasePodDetail> basePodDetails = basePodDetailMapper.selectByLockPodConfigtion(lockPodCondition);
 

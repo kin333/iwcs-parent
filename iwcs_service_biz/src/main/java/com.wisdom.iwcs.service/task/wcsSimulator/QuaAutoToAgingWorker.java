@@ -1,7 +1,9 @@
 package com.wisdom.iwcs.service.task.wcsSimulator;
 
+import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.task.TaskCreateRequest;
@@ -29,14 +31,24 @@ public class QuaAutoToAgingWorker implements Runnable {
     @Autowired
     private BasePodDetailMapper basePodDetailMapper;
 
+    private String mapCode;
+
+    public QuaAutoToAgingWorker(String mapCode) {
+        this.mapCode = mapCode;
+    }
 
     /**
      * 检查检验区的工作点是否有货架，有货架的或创建任务
      */
     public void checkQuaHavePodThenToAging() {
 
+        if(Strings.isNullOrEmpty(this.mapCode)) {
+            logger.error("模拟检验区到老化区线程失败,原因：缺少地图代码");
+            throw new BusinessException("缺少地图代码");
+        }
+
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
-        lockMapBerthCondition.setMapCode("AB");
+        lockMapBerthCondition.setMapCode(this.mapCode);
         lockMapBerthCondition.setBizType(QUAINSPWORKAREA);
         lockMapBerthCondition.setOperateAreaCode(InspurBizConstants.OperateAreaCodeConstants.QUAINSPAREA);
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectNotEmptyStorageOfInspectionArea(lockMapBerthCondition);
