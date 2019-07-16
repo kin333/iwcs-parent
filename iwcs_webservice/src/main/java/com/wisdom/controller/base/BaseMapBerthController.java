@@ -111,7 +111,7 @@ public class BaseMapBerthController {
      */
     @PostMapping(value = "/getAlltorageInfo")
     public Result selectAlltorageInfo(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
-        List<BaseMapBerth> baseMapBerths = IBaseMapBerthService.selectAlltorageInfo(baseMapBerthDTO);
+        List<BaseMapBerthDTO> baseMapBerths = IBaseMapBerthService.selectAlltorageInfo(baseMapBerthDTO);
         return new Result(baseMapBerths);
     }
 

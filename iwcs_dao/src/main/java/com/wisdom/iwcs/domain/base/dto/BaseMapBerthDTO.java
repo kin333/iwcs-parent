@@ -137,6 +137,16 @@ public class BaseMapBerthDTO {
     @Column(name = "version")
     private Integer version;
 
+
+    private Integer useEnable;
+
+
+    @Column(name = "ber_row")
+    private String berRow;
+
+    @Column(name = "ber_column")
+    private String berColumn;
+
     /**
      * 需要更新的点位列表
      */
@@ -424,5 +434,29 @@ public class BaseMapBerthDTO {
 
     public void setBizSecondAreaCode(String bizSecondAreaCode) {
         this.bizSecondAreaCode = bizSecondAreaCode;
+    }
+
+    public Integer getUseEnable() {
+        return useEnable;
+    }
+
+    public void setUseEnable(Integer useEnable) {
+        this.useEnable = useEnable;
+    }
+
+    public String getBerRow() {
+        return berRow;
+    }
+
+    public void setBerRow(String berRow) {
+        this.berRow = berRow;
+    }
+
+    public String getBerColumn() {
+        return berColumn;
+    }
+
+    public void setBerColumn(String berColumn) {
+        this.berColumn = berColumn;
     }
 }

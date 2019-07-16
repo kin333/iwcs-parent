@@ -34,7 +34,7 @@ public interface IBaseMapBerthService {
 
     GridReturnData<BaseMapBerthDTO> selectPage(GridPageRequest gridPageRequest);
 
-    List<BaseMapBerth> selectAlltorageInfo(BaseMapBerthDTO record);
+    List<BaseMapBerthDTO> selectAlltorageInfo(BaseMapBerthDTO record);
 
     int updateByBerCode(List<BaseMapBerthDTO> list);
 }

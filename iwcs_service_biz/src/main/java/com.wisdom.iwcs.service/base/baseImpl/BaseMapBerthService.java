@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.base.baseImpl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.DeleteFlagEnum;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
@@ -20,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -281,9 +279,19 @@ public class BaseMapBerthService implements IBaseMapBerthService{
      * @return
      */
     @Override
-    public List<BaseMapBerth> selectAlltorageInfo(BaseMapBerthDTO baseMapBerthDTO){
+    public List<BaseMapBerthDTO> selectAlltorageInfo(BaseMapBerthDTO baseMapBerthDTO){
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectAlltorageByMapCode(baseMapBerthDTO.getAreaCode(),baseMapBerthDTO.getOperateAreaCode());
-        return baseMapBerthList;
+        List<BaseMapBerthDTO> baseMapBerthDTOList = new ArrayList<>();
+        baseMapBerthList.forEach(baseMapBerth -> {
+            BaseMapBerthDTO resultBaseMapBerthDTO = baseMapBerthMapStruct.toDto(baseMapBerth);
+            if(!Strings.isNullOrEmpty(baseMapBerth.getPodCode()) || (baseMapBerth.getInLock() != null && baseMapBerth.getInLock() ==1)) {
+                resultBaseMapBerthDTO.setUseEnable(0);
+            }else {
+                resultBaseMapBerthDTO.setUseEnable(1);
+            }
+            baseMapBerthDTOList.add(resultBaseMapBerthDTO);
+        });
+        return baseMapBerthDTOList;
     }
 
     /**

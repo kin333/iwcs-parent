@@ -321,6 +321,13 @@
         </set>
         where pod_code = #{podCode}
     </update>
+    <update id="updateInStock">
+        update base_pod_detail
+        <set>
+            in_stock = #{inStock}
+        </set>
+        where pod_code = #{podCode}
+    </update>
     <update id="unlockPodByCode">
         update base_pod_detail
         <set>

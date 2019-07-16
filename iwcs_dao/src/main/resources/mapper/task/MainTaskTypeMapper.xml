@@ -19,6 +19,22 @@
     <result column="is_default" jdbcType="INTEGER" property="isDefault" />
     <result column="decomp_num" jdbcType="INTEGER" property="decompNum" />
   </resultMap>
+  <resultMap id="MainTaskTypeAndAreaCodeMap" type="com.wisdom.iwcs.domain.base.dto.MainTaskTypeAndAreaCode">
+    <result column="main_task_type_code" jdbcType="VARCHAR" property="mainTaskTypeCode" />
+    <result column="main_task_type_name" jdbcType="VARCHAR" property="mainTaskTypeName" />
+    <result column="exec_bean" jdbcType="VARCHAR" property="execBean" />
+    <result column="priority" jdbcType="INTEGER" property="priority" />
+    <result column="loop_exec" jdbcType="VARCHAR" property="loopExec" />
+    <result column="interval_time" jdbcType="INTEGER" property="intervalTime" />
+    <result column="multi_target_task" jdbcType="VARCHAR" property="multiTargetTask" />
+    <result column="rel_vice_task_typ" jdbcType="VARCHAR" property="relViceTaskTyp" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="is_default" jdbcType="INTEGER" property="isDefault" />
+    <result column="decomp_num" jdbcType="INTEGER" property="decompNum" />
+  </resultMap>
+
+
+
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
@@ -47,4 +63,12 @@
         select <include refid="Base_Column_List" /> from ts_main_task_type
         where 1 = 1
     </select>
+  <select id="selectTaskTypeWithAreaCode" resultType="com.wisdom.iwcs.domain.base.dto.MainTaskTypeAndAreaCode" resultMap="MainTaskTypeAndAreaCodeMap">
+    select tmtt.main_task_type_code,tmtt.main_task_type_name,tmtt.priority,tmtt.loop_exec,tmtt.interval_time,
+    tmtt.multi_target_task,tmtt.rel_vice_task_typ,tmtt.is_default,tmtt.decomp_num,wrtt.area_code
+    from wh_area_rel_task_type as wrtt
+    left join ts_main_task_type as tmtt on wrtt.main_task_type_code = tmtt.main_task_type_code
+    where wrtt.area_code = #{areaCode}
+  </select>
+
 </mapper>

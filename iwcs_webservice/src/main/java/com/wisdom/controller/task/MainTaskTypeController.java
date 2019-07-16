@@ -5,6 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.base.dto.MainTaskTypeAndAreaCode;
 import com.wisdom.iwcs.domain.task.MainTaskType;
 import com.wisdom.iwcs.domain.task.dto.MainTaskTypeDTO;
 import com.wisdom.iwcs.mapstruct.task.MainTaskTypeMapStruct;
@@ -124,9 +125,9 @@ public class MainTaskTypeController {
      * @param
      * @return
      */
-    @GetMapping(value = "/getAllTaskType")
-    public Result selectAllTaskType() {
-        List<MainTaskType> mainTaskType = mainTaskTypeService.selectAllTaskType();
+    @GetMapping(value = "/getAllTaskType/{areaCode}")
+    public Result selectAllTaskType(@PathVariable String areaCode) {
+        List<MainTaskTypeAndAreaCode> mainTaskType = mainTaskTypeService.selectAllTaskType(areaCode);
         return new Result(mainTaskType);
     }
 }

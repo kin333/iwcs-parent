@@ -139,6 +139,12 @@ public class BaseMapBerth {
     @Column(name = "version")
     private Integer version;
 
+    @Column(name = "ber_row")
+    private String berRow;
+
+    @Column(name = "ber_column")
+    private String berColumn;
+
     public String getBerthTypeValue() {
         return berthTypeValue;
     }
@@ -415,4 +421,22 @@ public class BaseMapBerth {
     public void setBizSecondAreaCode(String bizSecondAreaCode) {
         this.bizSecondAreaCode = bizSecondAreaCode;
     }
+
+    public String getBerRow() {
+        return berRow;
+    }
+
+    public void setBerRow(String berRow) {
+        this.berRow = berRow;
+    }
+
+    public String getBerColumn() {
+        return berColumn;
+    }
+
+    public void setBerColumn(String berColumn) {
+        this.berColumn = berColumn;
+    }
+
+
 }

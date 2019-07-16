@@ -8,6 +8,7 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.domain.base.dto.MainTaskTypeAndAreaCode;
 import com.wisdom.iwcs.domain.task.MainTaskType;
 import com.wisdom.iwcs.domain.task.dto.MainTaskTypeDTO;
 import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
@@ -235,8 +236,8 @@ public class MainTaskTypeService {
      * @param
      * @return
      */
-    public List<MainTaskType> selectAllTaskType(){
-        List<MainTaskType> mainTaskType = mainTaskTypeMapper.selectAllTaskType();
+    public List<MainTaskTypeAndAreaCode> selectAllTaskType(String areaCode){
+        List<MainTaskTypeAndAreaCode> mainTaskType = mainTaskTypeMapper.selectTaskTypeWithAreaCode(areaCode);
         return mainTaskType;
     }
 }

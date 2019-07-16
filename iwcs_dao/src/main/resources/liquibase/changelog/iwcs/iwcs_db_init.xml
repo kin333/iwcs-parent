@@ -970,5 +970,20 @@
             <column name="in_lock"/>
         </createIndex>
     </changeSet>
+    <changeSet author="yang" id="20190715153030-1">
+        <createTable tableName="wh_area_rel_task_type">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="area_code" remarks="库区代码" type="VARCHAR(32)"/>
+            <column name="main_task_type_code" remarks="主任务类型" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="20190715153030-2" author="yang">
+        <addColumn tableName="base_map_berth">
+            <column name="ber_row" remarks="点位所处行" type="VARCHAR(32)" />
+            <column name="ber_column" remarks="点位所处列" type="VARCHAR(32)" />
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

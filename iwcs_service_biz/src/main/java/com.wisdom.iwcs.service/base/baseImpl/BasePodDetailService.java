@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.base.baseImpl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -290,7 +291,11 @@ public class BasePodDetailService implements IBasePodDetailService {
      */
     @Override
     public Result savePodInStock(BasePodDetailDTO record){
-        basePodDetailMapper.updatePodInStock(record.getPodCode(),record.getInStock());
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(record.getPodCode()),"缺少货架号");
+        Preconditions.checkBusinessError(record.getInStock() == null || record.getInStock() <0 || record.getInStock() > 1,"空满状态值不正确，1-有货，0-空");
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(record.getPodCode());
+        Preconditions.checkBusinessError(basePodDetail == null,"货架："+record.getPodCode()+"不存在");
+        basePodDetailMapper.updateInStock(record.getPodCode(),record.getInStock());
         return new Result();
     }
 }

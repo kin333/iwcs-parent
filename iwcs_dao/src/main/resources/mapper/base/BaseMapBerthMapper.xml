@@ -29,13 +29,16 @@
         <result column="operate_area_code" jdbcType="VARCHAR" property="operateAreaCode"/>
         <result column="biz_second_area_code" jdbcType="VARCHAR" property="bizSecondAreaCode"/>
         <result column="lock_source_time" jdbcType="TIMESTAMP" property="lockSourceTime"/>
+        <result column="ber_row" jdbcType="VARCHAR" property="berRow"/>
+        <result column="ber_column" jdbcType="VARCHAR" property="berColumn"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, map_code, ber_code, coox, cooy, valid_flag, delete_flag, created_by, created_time,
-        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,relation_piont_code,point_alias,ber_group,version,operate_area_code,biz_second_area_code
+        last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,
+        relation_piont_code,point_alias,ber_group,version,operate_area_code,biz_second_area_code,ber_row,ber_column
     </sql>
     <update id="lockMapBerth">
         update base_map_berth
