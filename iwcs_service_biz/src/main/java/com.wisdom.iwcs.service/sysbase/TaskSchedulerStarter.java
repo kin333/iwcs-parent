@@ -1,5 +1,10 @@
 package com.wisdom.iwcs.service.sysbase;
 
+import com.alibaba.fastjson.JSON;
+import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
+import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
+import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
@@ -22,6 +27,8 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
     private WcsTaskScheduler wcsTaskScheduler;
     @Autowired
     private WorkLineScheduler workLineScheduler;
+    @Autowired
+    TaskOperationLogMapper taskOperationLogMapper;
 
 
     @Override
@@ -30,6 +37,12 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
 
             logger.info("开始启动任务调度器线程");
+            //启动消息日志
+            Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, message -> {
+                TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
+                taskOperationLogMapper.insert(taskOperationLog);
+            }));
+            thread.start();
 //        Thread thread = new Thread(wcsTaskScheduler);
 //        thread.start();
 //        logger.info("启动任务调度器线程成功");

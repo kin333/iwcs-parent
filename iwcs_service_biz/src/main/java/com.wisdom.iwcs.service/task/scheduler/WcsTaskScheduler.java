@@ -66,12 +66,6 @@ public class WcsTaskScheduler implements Runnable {
 
     @Override
     public void run() {
-        //启动消息日志
-        Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, message -> {
-            TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
-            taskOperationLogMapper.insert(taskOperationLog);
-        }));
-        thread.start();
         // 检查主任务列表，拿到所有可以执行的主任务列表，判断主任务是否可以执行，以主任务当前的子任务是否可以执行为标准
         while (true) {
             this.dispatchMaintask();
