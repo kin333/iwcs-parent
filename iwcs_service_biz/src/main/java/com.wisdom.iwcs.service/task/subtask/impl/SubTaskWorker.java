@@ -4,9 +4,14 @@ package com.wisdom.iwcs.service.task.subtask.impl;
 import com.rabbitmq.client.Channel;
 import com.wisdom.base.context.AppContext;
 import com.wisdom.base.quartz.SpringContextUtils;
+import com.wisdom.iwcs.common.utils.RabbitMQUtil;
+import com.wisdom.iwcs.common.utils.TaskConstants;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.conditions.ConditionBase;
+import com.wisdom.iwcs.service.task.impl.SubTaskConditionService;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
@@ -113,6 +118,10 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     iwcsPublicService.sendInfoBySubTaskNum(subTask.getSubTaskNum());
                     break;
                 } catch (Exception e) {
+                    //向消息队列发送消息
+                    String message = "子任务下发失败,主任务号:" + subTask.getMainTaskNum() + ",错误信息:" + e.getMessage();
+                    RabbitMQPublicService.failureTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.SEND_FAILURE,message));
+
                     logger.error("子任务下发失败{},准备回滚前置条件", subTask.getSubTaskNum());
                     SubTaskService subTaskService = (SubTaskService) SpringContextUtils.getBean("subTaskService");
                     boolean rollBackTime = subTaskService.rollbackPreCondition(subTask.getSubTaskNum());
@@ -127,6 +136,22 @@ public class SubTaskWorker extends AbstractTaskWorker {
             }
         }
 
+
+    }
+
+    @Override
+    public void loginListenner() {
+        try {
+            SubTaskConditionService subTaskConditionService = (SubTaskConditionService) AppContext.getBean("subTaskConditionService");
+            subTaskConditionService.loginListenner(subTask.getSubTaskNum());
+        } catch (Exception e) {
+            logger.error("子任务单{}消息队列创建失败", subTask.getSubTaskNum());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteListenner() {
 
     }
 

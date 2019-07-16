@@ -123,5 +123,10 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     @Update("update base_map_berth set pod_code = ''")
     int updateAllCleanPodCode();
 
-
+    /**
+     * 根据地图编号查询产线工作台的别名
+     * @param mapCode
+     * @return
+     */
+    List<String> selectAliasByMapCode(String mapCode);
 }

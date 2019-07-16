@@ -2,26 +2,31 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.rabbitmq.client.*;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.dto.SubTaskConditionDTO;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskConditionMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.ISubTaskConditionsService;
+import liquibase.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -253,5 +258,33 @@ public class SubTaskConditionService implements ISubTaskConditionsService {
         mGridReturnData.setPageInfo(pageInfoFinal);
 
         return mGridReturnData;
+    }
+
+    /**
+     * 消息队列订阅事件
+     * @return
+     */
+    public boolean loginListenner(String subTaskNum) {
+        if (StringUtils.isEmpty(subTaskNum)) {
+            throw new BusinessException("消息队列订阅事件时,子单号不能为空");
+        }
+        List<SubTaskCondition> subTaskConditionList = subTaskConditionMapper.selectByTaskNum(subTaskNum);
+        List<String> eventList = new ArrayList<>();
+        for (SubTaskCondition subTaskCondition : subTaskConditionList) {
+            String subscribeEvent = subTaskCondition.getSubscribeEvent();
+            if (StringUtils.isNotEmpty(subscribeEvent)) {
+                String[] split = subscribeEvent.split(",");
+                eventList.addAll(Arrays.asList(split));
+            }
+        }
+        logger.info("子任务单{}开始订阅事件", subTaskNum);
+
+        for (String event : eventList) {
+            Thread thread = new Thread(new ConsumerThread(event, "agv.task." + event));
+            thread.start();
+        }
+
+        logger.info("子任务单{}订阅事件完成", subTaskNum);
+        return true;
     }
 }

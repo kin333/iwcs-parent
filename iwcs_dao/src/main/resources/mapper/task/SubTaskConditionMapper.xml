@@ -45,6 +45,11 @@
         and conditon_triger = #{conditonTriger}
     </select>
 
+    <select id="selectByTaskNum" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_sub_task_condition
+        where sub_task_num = #{subTaskNum}
+    </select>
+
     <update id="updateMetStatusBySubTaskNum">
         update ts_sub_task_condition
         <set>

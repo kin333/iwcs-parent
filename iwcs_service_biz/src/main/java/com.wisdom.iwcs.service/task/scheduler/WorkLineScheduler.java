@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.task.scheduler;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.YZConstants;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.task.TaskCreateRequest;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 
 /**
  * 自动生成  线体工作台补充空货架,线体去老化区  的主任务
@@ -30,6 +32,15 @@ public class WorkLineScheduler implements Runnable {
     BasePodDetailMapper basePodDetailMapper;
     @Autowired
     private ITaskCreateService taskCreateService;
+
+    private String mapCode;
+
+    public WorkLineScheduler(String mapCode) {
+        this.mapCode = mapCode;
+    }
+    public WorkLineScheduler() {
+        this.mapCode = "DD";
+    }
 
     @Override
     public void run() {
@@ -50,15 +61,23 @@ public class WorkLineScheduler implements Runnable {
 
     private void todo() {
         //查询三个产线工作台
-        List<String> workLineList = new ArrayList<>();
-        workLineList.add("WL3-1");
-        workLineList.add("WL3-2");
-        workLineList.add("WL3-3");
-        workLineList.add("WL1");
-        workLineList.add("WL2");
-        workLineList.add("WL3");
+//        List<String> workLineList = new ArrayList<>();
+//        workLineList.add("WL3-1");
+//        workLineList.add("WL3-2");
+//        workLineList.add("WL3-3");
+//        workLineList.add("WL1");
+//        workLineList.add("WL2");
+//        workLineList.add("WL3");
+
+        List<String> workLineList = baseMapBerthMapper.selectAliasByMapCode(mapCode);
+        if (workLineList == null || workLineList.size() <= 0) {
+            throw new BusinessException("您输入的地图编号不存在");
+        }
 
         for (String name : workLineList) {
+            if (name == null) {
+                continue;
+            }
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(name);
             if (StringUtils.isBlank(baseMapBerth.getPodCode()) && YZConstants.UNLOCK.equals(baseMapBerth.getInLock())) {
                 //调用生成 工作台点位呼叫空货架 的任务

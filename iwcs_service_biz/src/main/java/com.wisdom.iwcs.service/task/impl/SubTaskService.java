@@ -10,6 +10,7 @@ import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
@@ -18,6 +19,7 @@ import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -270,6 +272,10 @@ public class SubTaskService {
                 if (!met) {
                     //抛出异常
                     logger.info("{}子任务前置条件不满足,条件处理器{}", c.getSubTaskNum(), conditonHandleName);
+                    //向消息队列发送消息
+                    String message = "子任务前置条件不满足,主任务号:" + subTask.getMainTaskNum()
+                            + ",条件处理器:" + conditonHandleName;
+                    RabbitMQPublicService.failureTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.PRE_CONDITION_FAILURE,message));
                     throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
                 }
             }
@@ -280,13 +286,19 @@ public class SubTaskService {
         subTaskMapper.updateTaskStatusByNum(subTask.getSubTaskNum(), SubTaskStatusEnum.Executing.getStatusCode());
 
         logger.info("子任务{}前置条件已全部满足", subTask.getSubTaskNum());
+
+        SubTask tmpSubTask = subTaskMapper.selectBySubTaskNum(subTask.getSubTaskNum());
+        //向消息队列发送消息
+        String message = "子任务前置条件已全部满足,主任务号:" + subTask.getMainTaskNum() + ",货架号:" + tmpSubTask.getPodCode()
+                + ",起始地码:" + tmpSubTask.getStartBercode() + ",终点地码:" + tmpSubTask.getEndBercode();
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.PRE_CONDITION_SUCCESS,message));
         return true;
     }
 
     /**
      * 回滚执行的子任务前置条件并还原相关数据的操作
      *
-     * @param subTask
+     * @param
      * @return
      */
     @Transactional
@@ -368,21 +380,31 @@ public class SubTaskService {
                         if (!met) {
                             //抛出异常
                             logger.info("{}子任务后置条件暂时不满足不满足,条件名称{}", subTask.getSubTaskNum(), conditonHandleName);
+                            //向消息队列发送消息
+                            String message = "子任务后置条件不满足,主任务号:" + subTask.getMainTaskNum()
+                                     + ",条件名称" + conditonHandleName;
+                            RabbitMQPublicService.failureTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.POST_CONDITION_FAILURE,message));
                             transactionStatus.setRollbackOnly();
                             resultFlag.set(false);
                         }
                     }
                 });
+                if (!resultFlag.get()) {
+                    return false;
+                }
                 //将子任务条件表中的条件状态改为已符合
                 subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.POST_CONDITION.getCode());
                 //将子任务的状态改为已结束
                 finishTask(subTask.getSubTaskNum());
                 logger.info("子任务{}后置条件已全部满足", subTask.getSubTaskNum());
+                //向消息队列发送消息
+                String message = "子任务后置条件已全部满足,主任务号:" + subTask.getMainTaskNum();
+                RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.POST_CONDITION_SUCCESS,message));
                 return resultFlag;
             }
         });
 
 
-        return true;
+        return resultFlag.get();
     }
 }

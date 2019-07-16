@@ -1,15 +1,18 @@
 package com.wisdom.controller;
 
-import com.wisdom.config.DatabaseConfiguration;
+import com.alibaba.fastjson.JSON;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
+import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
-import com.wisdom.iwcs.service.sysbase.TaskSchedulerStarter;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
@@ -17,7 +20,7 @@ import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
-import jdk.nashorn.internal.objects.annotations.Getter;
+import com.wisdom.rabbitmq.consumerAction.IConsumerAction;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -28,7 +31,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * @author Devin
@@ -54,6 +61,9 @@ public class TaskTestController {
     BasePodDetailMapper basePodDetailMapper;
     @Autowired
     MainTaskService mainTaskService;
+    @Autowired
+    TaskOperationLogMapper taskOperationLogMapper;
+
 
 
     @GetMapping("/startWcsTaskScheduler")
@@ -242,6 +252,20 @@ public class TaskTestController {
         Thread thread = new Thread(wcsTaskScheduler);
         thread.start();
         logger.info("启动任务调度器线程成功");
+    }
+
+    /**
+     * 自动生成任务日志
+     */
+    @GetMapping("/taskLogTest")
+    public void taskLogTest() {
+
+        Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, message -> {
+            TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
+            taskOperationLogMapper.insert(taskOperationLog);
+        }));
+        thread.start();
+
     }
 
 

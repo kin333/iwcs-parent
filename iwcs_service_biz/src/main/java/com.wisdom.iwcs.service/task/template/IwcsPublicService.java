@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.InterfaceLogConstants;
 import com.wisdom.iwcs.common.utils.NetWorkUtil;
+import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.constant.SendStatus;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
 import com.wisdom.iwcs.domain.task.dto.FindPodOrMapResult;
@@ -15,6 +17,7 @@ import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,6 +88,10 @@ public class IwcsPublicService {
         tmpSubask.setTaskMsg(jsonStr);
         //更新子任务的下发状态以及发送的消息体
         subTaskMapper.updateByPrimaryKeySelective(tmpSubask);
+        //向消息队列发送消息
+        String message = "子任务发送(下发)完成,主任务号:" + subTask.getMainTaskNum()
+                        + ",发送的消息体为:" + jsonStr;
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.SEND_SUCCESS,message));
     }
 
     /**

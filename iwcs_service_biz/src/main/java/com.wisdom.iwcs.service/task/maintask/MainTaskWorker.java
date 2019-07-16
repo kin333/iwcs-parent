@@ -3,8 +3,12 @@ package com.wisdom.iwcs.service.task.maintask;
 
 import com.rabbitmq.client.Channel;
 import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.common.utils.RabbitMQUtil;
+import com.wisdom.iwcs.common.utils.TaskConstants;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
@@ -86,6 +90,11 @@ public class MainTaskWorker extends AbstractTaskWorker {
                         Thread subTaskWorkerThread = new Thread(subTaskWorker);
                         subTaskWorkerThread.setName("subtaskWorker-" + currentPendingSubtask.getSubTaskNum());
                         subTaskWorkerThread.start();
+
+                        //向消息队列发送消息
+                        String message = "开始执行子任务";
+                        RabbitMQPublicService.successTaskLog(new TaskOperationLog(currentPendingSubtask.getSubTaskNum(), TaskConstants.operationStatus.START_TASK,message));
+
                         //将当前已启动的subtaskWork注入主任务对象
                         this.subTaskWorker = subTaskWorker;
                         //TODO 注册子任务事件监听
@@ -99,6 +108,16 @@ public class MainTaskWorker extends AbstractTaskWorker {
 
             }
         }
+    }
+
+    @Override
+    public void loginListenner() {
+
+    }
+
+    @Override
+    public void deleteListenner() {
+
     }
 
 

@@ -2,15 +2,17 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
-import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.PlBufSupplyRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BaseWaMapMapper;
 import com.wisdom.iwcs.mapper.task.*;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +98,11 @@ public class PlBufSupplyService implements com.wisdom.iwcs.service.task.intf.IPl
             subTaskCreate.setMapCode(mapCode);
             subTaskCreate.setAreaCode(plBufSupplyRequest.getAreaCode());
             subTaskMapper.insertSelective(subTaskCreate);
+
+            //向消息队列发送消息
+            String message = "空货架缓存区补充任务创建完成,主任务号:" + mainTaskNum;
+            RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
+
 
             //添加子任务条件
             iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);

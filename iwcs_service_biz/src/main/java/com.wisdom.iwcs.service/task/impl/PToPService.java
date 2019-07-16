@@ -1,9 +1,11 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.PToPRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
@@ -11,6 +13,7 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import com.wisdom.iwcs.service.task.intf.IPToPService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
@@ -101,6 +104,10 @@ public class PToPService implements IPToPService {
             subTaskCreate.setMapCode(startBercode.getMapCode());
             subTaskCreate.setAreaCode(pToPRequest.getAreaCode());
             subTaskMapper.insertSelective(subTaskCreate);
+
+            //向消息队列发送消息
+            String message = "点到点任务创建完成,主任务号:" + mainTaskNum;
+            RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
 
             //添加子任务条件
             iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);

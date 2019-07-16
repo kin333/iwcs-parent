@@ -1,6 +1,7 @@
 package com.wisdom.config;
 
 import com.wisdom.base.context.ApplicationProperties;
+import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -21,10 +22,6 @@ public class RabbitConfig {
     @Autowired
     ApplicationProperties applicationProperties;
 
-    public static final String EXCHANGE_A = "iwcs_exchange_A";
-    public static final String QUEUE_A = "iwcs_queue_A";
-
-
     /**
      * 默认的交换机使用的是DirectExchange,这里使用Topic类型的交换机
      * @return
@@ -35,7 +32,7 @@ public class RabbitConfig {
         boolean durable = true;
         // 当所有消费客户端连接断开后，是否自动删除队列
         boolean autoDelete = false;
-        return new TopicExchange(EXCHANGE_A, durable, autoDelete);
+        return new TopicExchange(RabbitMQConstants.EXCHANGE_A, durable, autoDelete);
     }
 
     /**
@@ -50,7 +47,7 @@ public class RabbitConfig {
         boolean exclusive = false;
         // 当所有消费客户端连接断开后，是否自动删除队列
         boolean autoDelete = false;
-        return new Queue(QUEUE_A, durable, exclusive, autoDelete);
+        return new Queue(RabbitMQConstants.QUEUE_A, durable, exclusive, autoDelete);
     }
 
 
@@ -58,7 +55,7 @@ public class RabbitConfig {
     SimpleMessageListenerContainer container(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(QUEUE_A);
+        container.setQueueNames(RabbitMQConstants.QUEUE_A);
         return container;
     }
 

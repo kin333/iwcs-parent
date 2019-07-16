@@ -5,6 +5,17 @@ import javax.persistence.*;
 
 @Table(name = "task_operation_log")
 public class TaskOperationLog {
+
+    public TaskOperationLog(String subTaskNum, String operationStatus, String operationContent) {
+        this.subTaskNum = subTaskNum;
+        this.operationStatus = operationStatus;
+        this.operationContent = operationContent;
+    }
+
+
+    public TaskOperationLog() {
+    }
+
     @Id
     private Integer id;
 

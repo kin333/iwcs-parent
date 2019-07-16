@@ -151,4 +151,65 @@ public class TaskConstants {
          */
         public final static String LOOP = "1";
     }
+
+    public static final class resultStatus {
+        /**
+         * 成功
+         */
+        public final static String SUCCESS = "0";
+        /**
+         * 失败
+         */
+        public final static String FAILURE = "1";
+    }
+
+    /**
+     * 操作状态
+     */
+    public static final class operationStatus {
+        /**
+         * 创建任务
+         */
+        public final static String CREATE_TASK = "create_task";
+        /**
+         * 开始执行任务
+         */
+        public final static String START_TASK = "start_task";
+        /**
+         * 前置条件全部满足
+         */
+        public final static String PRE_CONDITION_SUCCESS = "pre_condition_success";
+        /**
+         * 前置条件不满足
+         */
+        public final static String PRE_CONDITION_FAILURE = "pre_condition_failure";
+        /**
+         * 下发成功
+         */
+        public final static String SEND_SUCCESS = "send_success";
+        /**
+         * 下发失败
+         */
+        public final static String SEND_FAILURE = "send_failure";
+        /**
+         * 后置条件全部满足
+         */
+        public final static String POST_CONDITION_SUCCESS = "post_condition_success";
+        /**
+         * 后置条件不满足
+         */
+        public final static String POST_CONDITION_FAILURE = "post_condition_failure";
+        /**
+         * 任务开始时的回调
+         */
+        public final static String CALLBACK_START = "callback_start";
+        /**
+         * 走出储位时回调
+         */
+        public final static String CALLBACK_LEAVE = "callback_leave";
+        /**
+         * 任务结束时回调
+         */
+        public final static String CALLBACK_END = "callback_end";
+    }
 }

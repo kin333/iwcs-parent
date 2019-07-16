@@ -20,8 +20,15 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
     public abstract void postConditions();
     public abstract void process();
 
+    public abstract void loginListenner();
+    public abstract void deleteListenner();
+
     @Override
     public void run() {
+        /**
+         * 订阅消费者
+         */
+        loginListenner();
         /**
          * Handle pre-conditions
          */
@@ -36,6 +43,10 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
          * Some post works after the task finished.
          */
         postConditions();
+        /**
+         * 取消订阅
+         */
+        deleteListenner();
 
 
     }

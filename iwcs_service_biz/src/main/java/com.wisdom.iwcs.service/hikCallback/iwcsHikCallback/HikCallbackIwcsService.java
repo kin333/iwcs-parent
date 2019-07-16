@@ -2,17 +2,20 @@ package com.wisdom.iwcs.service.hikCallback.iwcsHikCallback;
 
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
+import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.hikSync.HikCallBackAgvMove;
 import com.wisdom.iwcs.domain.hikSync.HikSyncResponse;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +76,10 @@ public class HikCallbackIwcsService {
         }
         //更新子任务的执行AGV和实际任务状态以及实际任务开始时间
         subTaskMapper.updateRobotCodeByBerCode(subTask);
+
+        //向消息队列发送消息
+        String message = "子任务回调:子任务已开始搬运";
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_START,message));
     }
 
     /**
@@ -119,6 +126,10 @@ public class HikCallbackIwcsService {
         }
         logger.info("子任务{}在清空地码{}的货架编号{}时成功", hikCallBackAgvMove.getTaskCode(),
                 hikCallBackAgvMove.getWbCode(), baseMapBerth.getPodCode());
+
+        //向消息队列发送消息
+        String message = "子任务回调:子任务已离开储位";
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_LEAVE,message));
     }
 
     /**
@@ -209,5 +220,8 @@ public class HikCallbackIwcsService {
         logger.info("子任务{}在更新货架的地码编号{}时成功 ", hikCallBackAgvMove.getTaskCode(),
                 hikCallBackAgvMove.getWbCode());
 
+        //向消息队列发送消息
+        String message = "子任务回调:子任务已结束";
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
     }
 }

@@ -1,10 +1,12 @@
 package com.wisdom.iwcs.common.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.rabbitmq.client.*;
 import com.wisdom.base.context.ApplicationProperties;
-import org.springframework.amqp.core.*;
+import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -25,11 +27,15 @@ import java.util.concurrent.TimeoutException;
  */
 @Component
 public class RabbitMQUtil {
+    private static final Logger logger = LoggerFactory.getLogger(RabbitMQUtil.class);
+
     private static String host;
     private static Integer port;
     private static String username;
     private static String password;
     private static String virtualHost;
+
+    private static Connection connection;
 
     @Autowired
     ApplicationProperties applicationProperties;
@@ -60,10 +66,8 @@ public class RabbitMQUtil {
     /**
      * 创建连接
      * @return
-     * @throws IOException
-     * @throws TimeoutException
      */
-    public static Connection getConnection() throws IOException, TimeoutException {
+    private static Connection getNewConnection() {
         //1、定义连接工厂
         ConnectionFactory factory = new ConnectionFactory();
         //2、设置服务器地址
@@ -75,7 +79,23 @@ public class RabbitMQUtil {
         factory.setUsername(username);
         factory.setPassword(password);
         //5、通过连接工厂获取连接
-        Connection connection = factory.newConnection();
+        Connection connection = null;
+        try {
+            connection = factory.newConnection();
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
+        }
+        return connection;
+    }
+
+    /**
+     * 创建连接
+     * @return
+     */
+    public static Connection getConnection() {
+        if (connection == null) {
+            connection = getNewConnection();
+        }
         return connection;
     }
 
@@ -95,9 +115,15 @@ public class RabbitMQUtil {
     /**
      * 合并创建连接和创建消息信道
      */
-    public static Channel createChannelDefault() throws IOException, TimeoutException {
+    public static Channel createChannelDefault() {
         Connection connection = getConnection();
-        return connection.createChannel();
+        Channel channel = null;
+        try {
+            channel = connection.createChannel();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return channel;
     }
 
 
@@ -240,6 +266,60 @@ public class RabbitMQUtil {
     public static AMQP.Queue.PurgeOk clearQueue(Channel channel, String queue) throws IOException {
         return channel.queuePurge(queue);
     }
+
+    /**
+     * 建立新的消息队列并绑定交换机
+     * @param queueName 队列名称
+     * @param routeKey routeKey
+     * @param consumer 消费者动作
+     * @return 连接key,删除连接时使用
+     */
+//    public static String createNewEvent(String queueName, String routeKey, Consumer consumer) {
+//        Connection connection = getConnection();
+//        try {
+//            Channel channel = connection.createChannel();
+//            String queue = channel.queueDeclare(queueName, false, false, true, null).getQueue();
+//            logger.debug("建立消息队列成功:" + queue);
+//            channel.queueBind(queue, "EXCHANGE_NAME", routeKey);
+//            logger.debug("交换机与消息队列绑定成功:" + queue);
+////            channel.basicQos(1);
+//            return channel.basicConsume(queueName, true, consumer);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
+    /**
+     * 向交换机发送消息
+     * @param exchangeName 交换机名称
+     * @param routeKey routeKey
+     * @param message 发送的消息体
+     */
+    public static void basicPublish(String exchangeName, String routeKey, String message) {
+        Connection connection = getConnection();
+        Channel channel = null;
+        try {
+            channel = connection.createChannel();
+            channel.basicPublish(exchangeName, routeKey, null, message.getBytes("UTF-8"));
+            channel.close();
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 消息日志向交换机发送消息
+     * @param param
+     * @param <T>
+     */
+    public static <T> void basicPublicTaskLog(T param) {
+        String jsonString = JSON.toJSONString(param);
+        basicPublish(RabbitMQConstants.EXCHANGE_A, RabbitMQConstants.ROUTEKEY_TASK_LOG, jsonString);
+    }
+
+
 
 
 }
