@@ -1,12 +1,18 @@
 package com.wisdom.iwcs.service.task.scheduler;
 
 
+import com.alibaba.fastjson.JSON;
 import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
+import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
+import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -16,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class WcsTaskScheduler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(WcsTaskScheduler.class);
+
+    @Autowired
+    TaskOperationLogMapper taskOperationLogMapper;
 
     private ConcurrentHashMap<String, MainTaskWorker> maintaskWorkerMaps = new ConcurrentHashMap<String, MainTaskWorker>();
 
@@ -57,6 +66,12 @@ public class WcsTaskScheduler implements Runnable {
 
     @Override
     public void run() {
+        //启动消息日志
+        Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, message -> {
+            TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
+            taskOperationLogMapper.insert(taskOperationLog);
+        }));
+        thread.start();
         // 检查主任务列表，拿到所有可以执行的主任务列表，判断主任务是否可以执行，以主任务当前的子任务是否可以执行为标准
         while (true) {
             this.dispatchMaintask();
