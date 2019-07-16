@@ -1,37 +1,17 @@
 package com.wisdom.iwcs.service.task.scheduler;
 
-import com.wisdom.iwcs.common.utils.InspurBizConstants;
-import com.wisdom.iwcs.common.utils.TaskConstants;
-import com.wisdom.iwcs.common.utils.YZConstants;
-import com.wisdom.iwcs.common.utils.exception.BusinessException;
-import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.base.BasePodDetail;
-import com.wisdom.iwcs.domain.task.TaskCreateRequest;
-import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
-import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
-import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
-import org.apache.commons.lang3.StringUtils;
+import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.prefs.BackingStoreException;
 
 /**
  * 自动生成  线体工作台补充空货架,线体去老化区  的主任务
+ * @author han
  */
-@Component
 public class WorkLineScheduler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(WcsTaskScheduler.class);
-    @Autowired
-    BaseMapBerthMapper baseMapBerthMapper;
-    @Autowired
-    BasePodDetailMapper basePodDetailMapper;
-    @Autowired
-    private ITaskCreateService taskCreateService;
+
 
     private String mapCode;
 
@@ -47,7 +27,8 @@ public class WorkLineScheduler implements Runnable {
         while (true) {
             try {
                 synchronized (this) {
-                    this.todo();
+                    QuaAutoToAgingService quaAutoToAgingService = AppContext.getBean("quaAutoToAgingService");
+                    quaAutoToAgingService.workLineScheduler(mapCode);
                     logger.debug("产线工作台主任务生成器线程主动睡眠 2 min");
                     this.wait(60 * 1000 * 2);
                 }
@@ -59,46 +40,4 @@ public class WorkLineScheduler implements Runnable {
         }
     }
 
-    private void todo() {
-        //查询三个产线工作台
-//        List<String> workLineList = new ArrayList<>();
-//        workLineList.add("WL3-1");
-//        workLineList.add("WL3-2");
-//        workLineList.add("WL3-3");
-//        workLineList.add("WL1");
-//        workLineList.add("WL2");
-//        workLineList.add("WL3");
-
-        List<String> workLineList = baseMapBerthMapper.selectAliasByMapCode(mapCode);
-        if (workLineList == null || workLineList.size() <= 0) {
-            throw new BusinessException("您输入的地图编号不存在");
-        }
-
-        for (String name : workLineList) {
-            if (name == null) {
-                continue;
-            }
-            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(name);
-            if (StringUtils.isBlank(baseMapBerth.getPodCode()) && YZConstants.UNLOCK.equals(baseMapBerth.getInLock())) {
-                //调用生成 工作台点位呼叫空货架 的任务
-                TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
-                taskCreateRequest.setTaskTypeCode(TaskConstants.taskCodeType.PLAUTOWBCALLPOD);
-                taskCreateRequest.setTargetPointAlias(baseMapBerth.getPointAlias());
-                taskCreateService.creatTask(taskCreateRequest);
-                logger.info("{}工作台点位呼叫空货架主任务生成成功", baseMapBerth.getPointAlias());
-            } else if (StringUtils.isNotBlank(baseMapBerth.getPodCode()) && YZConstants.UNLOCK.equals(baseMapBerth.getInLock())){
-                BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(baseMapBerth.getPodCode());
-                if (YZConstants.UNLOCK.equals(basePodDetail.getInLock())) {
-                    //调用生成 产线去老化区搬运 的任务
-                    TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
-                    taskCreateRequest.setTaskTypeCode(TaskConstants.taskCodeType.PLTOAGING);
-                    taskCreateRequest.setStartPointAlias(baseMapBerth.getPointAlias());
-                    taskCreateRequest.setSubTaskBizProp(InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST);
-                    taskCreateService.creatTask(taskCreateRequest);
-                    logger.info("{}工作台去老化区搬运主任务生成成功", baseMapBerth.getPointAlias());
-                }
-            }
-
-        }
-    }
 }
