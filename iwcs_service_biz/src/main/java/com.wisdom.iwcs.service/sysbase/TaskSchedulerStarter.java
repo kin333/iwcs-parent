@@ -1,17 +1,15 @@
 package com.wisdom.iwcs.service.sysbase;
 
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
+import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
-import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 /**
  * 任务调度启动器
@@ -31,7 +29,10 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-//        logger.info("开始启动任务调度器线程");
+        //防止上下文多次刷新时，重复启动
+        if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
+
+            logger.info("开始启动任务调度器线程");
 //        Thread thread = new Thread(wcsTaskScheduler);
 //        thread.start();
 //        logger.info("启动任务调度器线程成功");
@@ -50,6 +51,8 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 //        Thread quaAutoCallPodThread = new Thread(quaAutoCallPodWorker);
 //        quaAutoCallPodThread.start();
 //        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
+
+        }
 
     }
 }
