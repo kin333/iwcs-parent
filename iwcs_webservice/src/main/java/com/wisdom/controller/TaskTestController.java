@@ -43,11 +43,6 @@ public class TaskTestController {
     private WcsTaskScheduler wcsTaskScheduler;
     @Autowired
     private WorkLineScheduler workLineScheduler;
-    @Autowired
-    private QuaAutoToAgingWorker quaAutoToAgingWorker;
-    @Autowired
-    private QuaAutoCallPodWorker quaAutoCallPodWorker;
-
 
     @Autowired
     private MainTaskMapper mainTaskMapper;
@@ -70,12 +65,14 @@ public class TaskTestController {
 
     @GetMapping("/testQuaAutoCallPodWorker")
     public Result testQuaAutoCallPodWorker() {
+        QuaAutoCallPodWorker quaAutoCallPodWorker = new QuaAutoCallPodWorker("AB");
         quaAutoCallPodWorker.checkEmptyQua();
         return new Result();
     }
 
     @GetMapping("/testQuaAutoToAgingWorkerr")
     public Result checkQuaHavePodThenToAging() {
+        QuaAutoToAgingWorker quaAutoToAgingWorker = new QuaAutoToAgingWorker("AB");
         quaAutoToAgingWorker.checkQuaHavePodThenToAging();
         return new Result();
     }
@@ -231,12 +228,12 @@ public class TaskTestController {
         logger.info("启动产线工作台任务生成器成功");
 
         logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-        Thread quaAutoToAgingThread = new Thread(quaAutoToAgingWorker);
+        Thread quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("AB"));
         quaAutoToAgingThread.start();
         logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
 
         logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-        Thread quaAutoCallPodThread = new Thread(quaAutoCallPodWorker);
+        Thread quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("AB"));
         quaAutoCallPodThread.start();
         logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
 

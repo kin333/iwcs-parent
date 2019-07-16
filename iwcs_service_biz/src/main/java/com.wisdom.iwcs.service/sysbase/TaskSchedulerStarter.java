@@ -22,10 +22,7 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
     private WcsTaskScheduler wcsTaskScheduler;
     @Autowired
     private WorkLineScheduler workLineScheduler;
-    @Autowired
-    private QuaAutoToAgingWorker quaAutoToAgingWorker;
-    @Autowired
-    private QuaAutoCallPodWorker quaAutoCallPodWorker;
+
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {

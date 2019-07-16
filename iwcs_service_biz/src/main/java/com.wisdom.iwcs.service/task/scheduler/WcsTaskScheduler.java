@@ -23,6 +23,7 @@ public class WcsTaskScheduler implements Runnable {
     public WcsTaskScheduler() {
 
     }
+
     /**
      * 完成一次主任务下发检测及下发
      */
