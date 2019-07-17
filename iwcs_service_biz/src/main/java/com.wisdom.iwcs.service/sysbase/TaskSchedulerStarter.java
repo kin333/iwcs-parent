@@ -9,6 +9,7 @@ import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
+import com.wisdom.iwcs.service.task.wcsSimulator.TaskLogThreadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
     private WcsTaskScheduler wcsTaskScheduler;
     @Autowired
     TaskOperationLogMapper taskOperationLogMapper;
+    @Autowired
+    TaskLogThreadService taskLogThreadService;
 
 
     @Override
@@ -36,11 +39,9 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 
             logger.info("开始启动任务调度器线程");
             //启动消息日志
-            Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, message -> {
-                TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
-                taskOperationLogMapper.insert(taskOperationLog);
-            }));
+            Thread thread = new Thread(taskLogThreadService);
             thread.start();
+
 //        Thread thread = new Thread(wcsTaskScheduler);
 //        thread.start();
 //        logger.info("启动任务调度器线程成功");

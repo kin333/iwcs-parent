@@ -25,7 +25,7 @@ public class ConsumerThread implements Runnable {
     private String routeKey;
 
     /**
-     *
+     * 消费动作
      */
     private IConsumerAction consumerAction;
 
@@ -38,6 +38,9 @@ public class ConsumerThread implements Runnable {
         this.queueName = queueName;
         this.routeKey = routeKey;
         this.consumerAction = consumerAction;
+    }
+
+    public ConsumerThread() {
     }
 
     @Override

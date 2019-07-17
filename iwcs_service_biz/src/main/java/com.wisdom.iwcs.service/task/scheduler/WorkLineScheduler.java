@@ -4,11 +4,13 @@ import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * 自动生成  线体工作台补充空货架,线体去老化区  的主任务
  * @author han
  */
+@Component
 public class WorkLineScheduler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(WcsTaskScheduler.class);
 
