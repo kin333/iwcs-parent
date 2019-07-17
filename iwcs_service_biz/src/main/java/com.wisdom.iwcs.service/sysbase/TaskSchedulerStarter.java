@@ -26,8 +26,6 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
     @Autowired
     private WcsTaskScheduler wcsTaskScheduler;
     @Autowired
-    private WorkLineScheduler workLineScheduler;
-    @Autowired
     TaskOperationLogMapper taskOperationLogMapper;
 
 

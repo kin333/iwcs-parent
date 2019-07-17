@@ -48,8 +48,7 @@ public class TaskTestController {
 
     @Autowired
     private WcsTaskScheduler wcsTaskScheduler;
-    @Autowired
-    private WorkLineScheduler workLineScheduler;
+
 
     @Autowired
     private MainTaskMapper mainTaskMapper;
