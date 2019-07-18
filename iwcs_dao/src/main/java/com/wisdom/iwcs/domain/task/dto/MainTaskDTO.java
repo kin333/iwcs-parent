@@ -1,5 +1,9 @@
 package com.wisdom.iwcs.domain.task.dto;
 
+import com.github.crab2died.annotation.ExcelField;
+import com.wisdom.iwcs.domain.base.dto.MainTaskDTOChangeConverter.ChangeMainTaskCreatTimeDateConverter;
+import com.wisdom.iwcs.domain.base.dto.MainTaskDTOChangeConverter.ChangeMainTaskTypeCodeConverter;
+import com.wisdom.iwcs.domain.base.dto.MainTaskDTOChangeConverter.ChangeTaskStatusConverter;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -12,63 +16,74 @@ public class MainTaskDTO {
    * 主任务编号
    */
   @Column(name = "main_task_num")
+  @ExcelField(title = "主任务编号",order =1)
   private String mainTaskNum;
 
   /**
    * 任务类型
    */
   @Column(name = "main_task_type_code")
+  @ExcelField(title = "任务类型",order =2,writeConverter= ChangeMainTaskTypeCodeConverter.class)
   private String mainTaskTypeCode;
 
   /**
    * 任务状态
    */
   @Column(name = "task_status")
+  @ExcelField(title = "任务状态",order =3,writeConverter= ChangeTaskStatusConverter.class)
   private String taskStatus;
 
   /**
    * 状态变更时间
    */
   @Column(name = "date_chg")
+  @ExcelField(title = "创建时间",order =5)
   private Date dateChg;
 
   /**
    * 主任务顺序
    */
   @Column(name = "main_task_seq")
+  @ExcelField(title = "主任务顺序",order =6)
   private Integer mainTaskSeq;
 
   /**
    * 组编号
    */
   @Column(name = "group_id")
+  @ExcelField(title = "组编号",order =7)
   private String groupId;
 
   /**
    * 执行顺序
    */
+  @ExcelField(title = "执行顺序",order =8)
   private Integer sequence;
 
   /**
    * 创建时间
    */
   @Column(name = "create_date")
+  @ExcelField(title = "创建时间",order =11,writeConverter= ChangeMainTaskCreatTimeDateConverter.class)
   private Date createDate;
 
   /**
    * 备注
    */
+  @ExcelField(title = "备注",order =12)
   private String remark;
 
   /**
    * 优先级
    */
+  @ExcelField(title = "优先级",order =9)
   private Integer priority;
 
   /**
    * 任务组编号
    */
   @Column(name = "task_group_code")
+  @ExcelField(title = "任务组编号",order =10)
   private String taskGroupCode;
 
   /**
@@ -81,6 +96,7 @@ public class MainTaskDTO {
      * 库区编号
      */
     @Column(name = "area_code")
+    @ExcelField(title = "库区编号",order =4)
     private String areaCode;
 
   /**

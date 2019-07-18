@@ -36,7 +36,9 @@ public class TaskConstants {
          */
         public final static String QUABUFTOQUA = "quaBufToQua";
         public final static String QUAINSPTOELVBUF = "quaInspToElvBuf";
-
+        /**
+         * 点到点（暂时与上面的点到点一个意思）
+         */
         public final static String PTOPWITHOUTPODCHECK = "pTopWithoutPodCheck";
     }
 

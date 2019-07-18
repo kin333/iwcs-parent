@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
@@ -20,6 +21,19 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ExportExcelsUtil {
+    /**
+     * 模板读取头结点
+     */
+    public static HttpServletResponse headerSet(HttpServletResponse response) {
+        response.reset();
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("content-disposition", "attachment;filename=details.xls");
+        response.setHeader("Pragma","No-cache");
+        response.setHeader ( "Cache-Control", "no-store");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        return response;
+    }
     /**
      * @param dataset 数据
      * @param out     流

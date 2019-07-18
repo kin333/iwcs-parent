@@ -1,5 +1,9 @@
 package com.wisdom.iwcs.domain.base.dto;
 
+import com.github.crab2died.annotation.ExcelField;
+import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTOChangeConverter.ChangeInLockConverter;
+import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTOChangeConverter.ChangeInStockConverter;
+import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTOChangeConverter.ChangeLockSourceConverter;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -17,12 +21,14 @@ public class BasePodDetailDTO {
      * 货架编号
      */
     @Column(name = "pod_code")
+    @ExcelField(title = "货架编号",order =1)
     private String podCode;
 
     /**
      * 当前货架地码信息
      */
     @Column(name = "ber_code")
+    @ExcelField(title = "货架地码",order =2)
     private String berCode;
 
     /**
@@ -35,24 +41,28 @@ public class BasePodDetailDTO {
      * 库区编码
      */
     @Column(name = "area_code")
+    @ExcelField(title = "库区编码",order =3)
     private String areaCode;
 
     /**
      * 地图编码
      */
     @Column(name = "map_code")
+    @ExcelField(title = "地图编码",order =4)
     private String mapCode;
 
     /**
      * 存储区类型代码
      */
     @Column(name = "stg_type_code")
+    @ExcelField(title = "存储区类型",order =5)
     private String stgTypeCode;
 
     /**
      * 存储区代码
      */
     @Column(name = "stg_code")
+    @ExcelField(title = "存储区代码",order = 6)
     private String stgCode;
 
     /**
@@ -69,6 +79,7 @@ public class BasePodDetailDTO {
      * 锁状态，Y入库锁，Z出库锁，X其他锁，N无锁
      */
     @Column(name = "lock_stat")
+    @ExcelField(title = "锁状态",order =7,writeConverter=ChangeLockStatConverter.class)
     private Integer lockStat;
 
     /**
@@ -123,6 +134,7 @@ public class BasePodDetailDTO {
      * 创建时间
      */
     @Column(name = "created_time")
+    @ExcelField(title = "创建时间",order =11,writeConverter=PodDetailCreatTimeDateConverter.class)
     private Date createdTime;
 
     /**
@@ -141,18 +153,21 @@ public class BasePodDetailDTO {
      * 是否有锁,1是，0否
      */
     @Column(name = "in_lock")
+    @ExcelField(title = "是否有锁",order =8,writeConverter= ChangeInLockConverter.class)
     private Integer inLock;
 
     /**
      * 锁的来源
      */
     @Column(name = "lock_source")
+    @ExcelField(title = "锁的来源",order =9,writeConverter= ChangeLockSourceConverter.class)
     private String lockSource;
 
     /**
      * 货架是否有货，,0为否，1为是
      */
     @Column(name = "in_stock")
+    @ExcelField(title = "锁的来源",order =10,writeConverter= ChangeInStockConverter.class)
     private Integer inStock;
 
     /**

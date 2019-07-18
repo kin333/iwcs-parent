@@ -3,7 +3,6 @@ package com.wisdom.iwcs.mapper.base;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.commonDto.fliterCondition.PodFliterCondition;
-import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.domain.base.dto.LockPodCondition;
@@ -21,6 +20,7 @@ import java.util.Map;
  */
 @Repository
 public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, MyMapperAndIds<BasePodDetail> {
+
     /**
      * selectPage
      *
@@ -159,6 +159,7 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      */
     int unlockPodByCode(String podCode);
 
+
     /**
      * 根据货架号查询ber_code
      */
@@ -178,7 +179,7 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
     int updateMapByPodCode(BasePodDetail basePodDetail);
     /**
      *
-     * @param BasePodDetailList
+     * @param list
      * @return
      */
     int updateMapByPodCode(List<BasePodDetail> list);
@@ -188,5 +189,6 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      */
     @Update("update base_pod_detail set ber_code = '', map_code = '', coox = '', cooy = '' ")
     int updateCleanMapInfo();
+
     int updatePodLockSource(List<BasePodDetail> BasePodDetailList);
 }

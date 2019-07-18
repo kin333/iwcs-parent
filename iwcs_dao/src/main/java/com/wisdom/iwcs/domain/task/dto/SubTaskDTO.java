@@ -1,5 +1,14 @@
 package com.wisdom.iwcs.domain.task.dto;
 
+import com.github.crab2died.annotation.ExcelField;
+import com.github.crab2died.converter.WriteConvertible;
+import com.wisdom.iwcs.domain.base.dto.MainTaskDTOChangeConverter.ChangeMainTaskTypeCodeConverter;
+import com.wisdom.iwcs.domain.base.dto.MainTaskDTOChangeConverter.ChangeTaskStatusConverter;
+import com.wisdom.iwcs.domain.base.dto.PodDetailCreatTimeDateConverter;
+import com.wisdom.iwcs.domain.base.dto.SubTaskDTOChangeConverter.ChangeSendStatusConverter;
+import com.wisdom.iwcs.domain.base.dto.SubTaskDTOChangeConverter.ChangeSubTaksTypConverter;
+import com.wisdom.iwcs.domain.base.dto.SubTaskDTOChangeConverter.ChangeSubTaskBizPropConverter;
+
 import java.util.Date;
 import javax.persistence.*;
 
@@ -15,54 +24,63 @@ public class SubTaskDTO {
      * 子任务编号
      */
     @Column(name = "sub_task_num")
+    @ExcelField(title = "子任务编号",order =1)
     private String subTaskNum;
 
     /**
      * 子任务类型
      */
     @Column(name = "sub_task_typ")
+    @ExcelField(title = "子任务类型",order =2,writeConverter= ChangeSubTaksTypConverter.class)
     private String subTaskTyp;
 
     /**
      * 子任务执行顺序
      */
     @Column(name = "sub_task_seq")
+    @ExcelField(title = "子任务执行顺序",order =3)
     private Integer subTaskSeq;
 
     /**
      * 主任务编号
      */
     @Column(name = "main_task_num")
+    @ExcelField(title = "主任务编号",order =4)
     private String mainTaskNum;
 
     /**
      * 主任务执行顺序
      */
     @Column(name = "main_task_seq")
+    @ExcelField(title = "主任务执行顺序",order =5)
     private Integer mainTaskSeq;
 
     /**
      * 任务类型（主任务）
      */
     @Column(name = "main_task_type")
+    @ExcelField(title = "主任务类型",order =6,writeConverter= ChangeMainTaskTypeCodeConverter.class)
     private String mainTaskType;
 
     /**
      * 任务组/子任务
      */
     @Column(name = "group_flag")
+    @ExcelField(title = "任务组/子任务",order =7)
     private String groupFlag;
 
     /**
      * 任务组编号
      */
     @Column(name = "task_group_code")
+    @ExcelField(title = "任务组编号",order =12)
     private String taskGroupCode;
 
     /**
      * 创建时间
      */
     @Column(name = "create_date")
+    @ExcelField(title = "创建时间",order =17,writeConverter= PodDetailCreatTimeDateConverter.class)
     private Date createDate;
 
     /**
@@ -75,11 +93,13 @@ public class SubTaskDTO {
      * 下发状态
      */
     @Column(name = "send_status")
+    @ExcelField(title = "下发状态",order =11,writeConverter= ChangeSendStatusConverter.class)
     private String sendStatus;
 
     /**
      * 备注
      */
+    @ExcelField(title = "备注",order =18)
     private String remark;
 
     /**
@@ -204,15 +224,20 @@ public class SubTaskDTO {
      * 任务状态
      */
     @Column(name = "task_status")
+    @ExcelField(title = "任务状态",order =8,writeConverter= ChangeTaskStatusConverter.class)
     private String taskStatus;
 
-
+    /**
+     * 地图编码
+     */
     @Column(name = "map_code")
+    @ExcelField(title = "地图编码",order =13)
     private String mapCode;
     /**
      * 货架号
      */
     @Column(name = "pod_code")
+    @ExcelField(title = "货架号",order =14)
     private String podCode;
     /**
      * 货架方向
@@ -223,6 +248,7 @@ public class SubTaskDTO {
      * 任务起始码
      */
     @Column(name = "start_bercode")
+    @ExcelField(title = "起始地码",order =9)
     private String startBercode;
 
     @Column(name = "start_x")
@@ -235,6 +261,7 @@ public class SubTaskDTO {
      * 任务终点码
      */
     @Column(name = "end_bercode")
+    @ExcelField(title = "终点地码",order =10)
     private String endBercode;
 
     @Column(name = "end_x")
@@ -259,12 +286,14 @@ public class SubTaskDTO {
      * 库区编号
      */
     @Column(name = "area_code")
+    @ExcelField(title = "库区编号",order =16)
     private String areaCode;
 
     /**
      * 子任务单业务属性
      */
     @Column(name = "sub_task_biz_prop")
+    @ExcelField(title = "子任务单业务属性",order =15,writeConverter= ChangeSubTaskBizPropConverter.class)
     private String subTaskBizProp;
 
     /**
