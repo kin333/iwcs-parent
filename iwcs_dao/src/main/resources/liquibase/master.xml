@@ -121,4 +121,5 @@
 
     <include file="liquibase/changelog/iwcs/iwcs_db_add_agv_callback_changelog_20190705.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_base_map_berth_201907111147.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_mapcode_event_201907191027.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
