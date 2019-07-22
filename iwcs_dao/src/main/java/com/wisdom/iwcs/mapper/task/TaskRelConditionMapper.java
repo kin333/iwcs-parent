@@ -30,4 +30,12 @@ public interface TaskRelConditionMapper extends MyMapperAndIds<TaskRelCondition>
      * 根据子任务编号查询
      */
     TaskRelCondition selectBySubCode(String subTaskTypeCode);
+
+    /**
+     * 根据主任务类型和执行顺序查找
+     * @param mainTaskType
+     * @param subTaskSeq
+     * @return
+     */
+    TaskRelCondition selectByMainTaskTypeAndPriority(@Param("mainTaskType") String mainTaskType,@Param("subTaskSeq") Integer subTaskSeq);
 }

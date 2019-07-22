@@ -242,8 +242,6 @@ public class HikCallbackIwcsService {
             tmpBasePodDetail.setCooy(hikCallBackAgvMove.getCooY());
             tmpBasePodDetail.setBerCode(hikCallBackAgvMove.getMapDataCode());
             tmpBasePodDetail.setMapCode(hikCallBackAgvMove.getMapCode());
-            tmpBasePodDetail.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
-            tmpBasePodDetail.setLockSource("");
             tmpBasePodDetail.setLastModifiedTime(new Date());
             //更新货架信息表
             int changeRows = basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
@@ -264,16 +262,16 @@ public class HikCallbackIwcsService {
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
 
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getMapDataCode());
-        //发送释放货架消息
-        ResPodEvt resPodEvt = new ResPodEvt();
-        resPodEvt.setPodCode(hikCallBackAgvMove.getPodCode());
-        resPodEvt.setCreateTime(new Date());
-        resPodEvt.setAreaCode(baseMapBerth.getOperateAreaCode());
-        resPodEvt.setMapCode(baseMapBerth.getMapCode());
-        resPodEvt.setResourcesType(TaskConstants.resourceType.POD_RELEASE);
-        resPodEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
-        String routeKey = CreateRouteKeyUtils.createPodRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
-        RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPodEvt);
+//        //发送释放货架消息
+//        ResPodEvt resPodEvt = new ResPodEvt();
+//        resPodEvt.setPodCode(hikCallBackAgvMove.getPodCode());
+//        resPodEvt.setCreateTime(new Date());
+//        resPodEvt.setAreaCode(baseMapBerth.getOperateAreaCode());
+//        resPodEvt.setMapCode(baseMapBerth.getMapCode());
+//        resPodEvt.setResourcesType(TaskConstants.resourceType.POD_RELEASE);
+//        resPodEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
+//        String routeKey = CreateRouteKeyUtils.createPodRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
+//        RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPodEvt);
         //发送释放储位消息
         ResPosEvt resPosEvt = new ResPosEvt();
         resPosEvt.setBerCode(hikCallBackAgvMove.getMapDataCode());
@@ -282,7 +280,7 @@ public class HikCallbackIwcsService {
         resPosEvt.setMapCode(baseMapBerth.getMapCode());
         resPosEvt.setResourcesType(TaskConstants.resourceType.POS_RELEASE);
         resPosEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
-        routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
+        String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
     }
 }

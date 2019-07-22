@@ -53,4 +53,11 @@
         where main_task_type_code = #{mainTaskTypeCode,jdbcType=VARCHAR} and
         sub_task_type_code = #{subTaskTypeCode}
     </select>
+
+    <select id="selectByMainTaskTypeAndPriority" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_task_rel_condition
+        where main_task_type_code = #{mainTaskType}
+        and  sub_task_seq = #{subTaskSeq}
+        LIMIT 1
+    </select>
 </mapper>

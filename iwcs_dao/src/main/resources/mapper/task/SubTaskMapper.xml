@@ -268,4 +268,14 @@
     where sub_task_num = #{subTaskNum}
   </update>
 
+  <update id="updateByMainTaskNumAndSubTaskType">
+    update ts_sub_task
+    <set>
+      pod_code = #{podCode},
+      start_bercode = #{startBercode}
+    </set>
+    where main_task_num = #{mainTaskNum,jdbcType= VARCHAR}
+    and sub_task_typ = #{subTaskTypeCode}
+  </update>
+
 </mapper>
