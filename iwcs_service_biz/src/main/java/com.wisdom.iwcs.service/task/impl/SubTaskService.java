@@ -312,8 +312,9 @@ public class SubTaskService {
                 IConditionHandler conditonHandler = (IConditionHandler) AppContext.getBean(conditonHandleName);
                 boolean met = conditonHandler.rollbackCondition(c);
                 if (!met) {
+                    logger.error("子任务{}前置条件回滚失败,失败Handler:{}", c.getSubTaskNum(), conditonHandleName);
                     //抛出异常
-                    throw new TaskConditionException(-1, "子任务前置条件回滚失败", c.getSubTaskNum(), conditonHandleName);
+                    throw new TaskConditionException(-1, "子任务前置条件回滚失败" + conditonHandleName, c.getSubTaskNum(), conditonHandleName);
                 }
             }
         });

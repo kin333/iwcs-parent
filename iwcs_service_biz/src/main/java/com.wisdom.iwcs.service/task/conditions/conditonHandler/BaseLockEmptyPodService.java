@@ -80,7 +80,7 @@ public class BaseLockEmptyPodService {
      * @return
      */
     public boolean rollbackConditionService(SubTaskCondition subTaskCondition) {
-        logger.info("子任务{}回滚开始", subTaskCondition.getSubTaskNum());
+        logger.info("子任务{}锁定货架回滚开始", subTaskCondition.getSubTaskNum());
         //还原子任务单中的货架号
         subTaskMapper.updatePodCodeBySubTaskCode(subTaskCondition.getSubTaskNum(), "");
         //还原货架状态

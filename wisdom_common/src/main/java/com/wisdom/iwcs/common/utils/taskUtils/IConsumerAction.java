@@ -1,4 +1,4 @@
-package com.wisdom.rabbitmq.consumerAction;
+package com.wisdom.iwcs.common.utils.taskUtils;
 
 /**
  * RabbitMQ消费者的消费动作

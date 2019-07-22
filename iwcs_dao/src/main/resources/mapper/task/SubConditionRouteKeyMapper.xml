@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.SubConditionRouteKeyMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.SubConditionRouteKey">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="route_key_name" jdbcType="VARCHAR" property="routeKeyName" />
+    <result column="route_key_code" jdbcType="VARCHAR" property="routeKeyCode" />
+    <result column="route_key" jdbcType="VARCHAR" property="routeKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, route_key_name, route_key_code, route_key
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from sub_condition_route_key
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+
+  <select id="selectByCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from sub_condition_route_key
+    where 1=1
+    and route_key_code = #{code}
+  </select>
+</mapper>

@@ -214,4 +214,18 @@ public class TaskConstants {
          */
         public final static String CALLBACK_END = "callback_end";
     }
+
+    /**
+     * 事件类型
+     */
+    public static final class resourceType {
+        /**
+         * 释放货架
+         */
+        public final static String POD_RELEASE = "podRelease";
+        /**
+         * 释放储位
+         */
+        public final static String POS_RELEASE = "posRelease";
+    }
 }

@@ -3,7 +3,6 @@ package com.wisdom.iwcs.common.utils.taskUtils;
 import com.rabbitmq.client.*;
 import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
-import com.wisdom.rabbitmq.consumerAction.IConsumerAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,16 +71,22 @@ public class ConsumerThread implements Runnable {
             logger.debug("交换机与消息队列绑定成功:" + queue);
 //            channel.basicQos(1);
 
-            Consumer consumer = new DefaultConsumer(RabbitMQUtil.getConnection().createChannel()) {
+            Consumer consumer = new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     String message = new String(body, "UTF-8");
                     logger.info("队列名称:{} routeKey:{} 信息:{}", queueName, envelope.getRoutingKey() , message);
+                    //调用消费者活动
                     consumerAction.action(message);
-                    if (message.contains(RabbitMQConstants.END_LOGO)){
-                        logger.info("{}队列的连接将被关闭: {}", queueName, consumerTag);
+                    String subTaskNum = "";
+                    if (!queueName.contains("_")) {
+                        return;
+                    }
+                    subTaskNum = queueName.split("_")[1];
+                    //当队列消息含有结束标识,并且含有启动这个子任务的子任务号时,则认为这个子任务已经执行完了,可以关闭这个消息队列了
+                    if (message.contains(RabbitMQConstants.END_LOGO) && message.contains(subTaskNum)){
+                        logger.info("{}队列的连接将被关闭: {}, routeKey:{}", queueName, consumerTag, envelope.getRoutingKey());
                         channel.basicCancel(consumerTag);
-//                        channel.queuePurge(queueName);
                         try {
                             channel.close();
                         } catch (TimeoutException e) {

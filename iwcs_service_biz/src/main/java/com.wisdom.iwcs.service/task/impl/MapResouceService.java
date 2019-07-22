@@ -234,7 +234,7 @@ public class MapResouceService implements IMapResouceService {
             logger.error("货架{}正在进行其他操作,请稍后执行", basePodDetail.getPodCode());
             throw new BusinessException("该货架在进行其他操作中，请稍后执行");
         }
-        logger.info("货架{}锁定成功,锁定源为{}", basePodDetail.getPodCode(), basePodDetail.getLockSource());
+        logger.info("货架{}锁定成功,锁定源为{},版本号{}", basePodDetail.getPodCode(), basePodDetail.getLockSource(), updateBasePodDetail.getVersion());
         return true;
     }
 
@@ -257,6 +257,7 @@ public class MapResouceService implements IMapResouceService {
     public boolean unlockPod(String subTaskName) {
         int changeRow = basePodDetailMapper.unlockPod(subTaskName);
         if (changeRow > 0) {
+            logger.info("子任务{}解锁货架成功", subTaskName);
             return true;
         }
         return false;

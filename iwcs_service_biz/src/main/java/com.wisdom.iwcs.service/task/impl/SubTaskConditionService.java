@@ -11,11 +11,15 @@ import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
+import com.wisdom.iwcs.domain.task.SubConditionRouteKey;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.dto.SubTaskConditionDTO;
+import com.wisdom.iwcs.mapper.task.SubConditionRouteKeyMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskConditionMapStruct;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
+import com.wisdom.iwcs.service.task.action.RouseMainTaskAction;
 import com.wisdom.iwcs.service.task.intf.ISubTaskConditionsService;
 import liquibase.util.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +41,8 @@ public class SubTaskConditionService implements ISubTaskConditionsService {
     private final SubTaskConditionMapper subTaskConditionMapper;
 
     private final SubTaskConditionMapStruct subTaskConditionMapStruct;
+    @Autowired
+    SubConditionRouteKeyMapper subConditionRouteKeyMapper;
 
     @Autowired
     public SubTaskConditionService(SubTaskConditionMapStruct subTaskConditionMapStruct, SubTaskConditionMapper subTaskConditionMapper) {
@@ -265,26 +271,71 @@ public class SubTaskConditionService implements ISubTaskConditionsService {
      * @return
      */
     public boolean loginListenner(String subTaskNum) {
-        if (StringUtils.isEmpty(subTaskNum)) {
-            throw new BusinessException("消息队列订阅事件时,子单号不能为空");
+        //查询子任务单对应的事件
+        List<String> eventList = getEventList(subTaskNum);
+        logger.info("子任务单{}开始订阅事件", subTaskNum);
+        if (eventList == null || eventList.size() <= 0) {
+            return false;
         }
+
+        int i = 0;
+        for (String event : eventList) {
+            SubConditionRouteKey subConditionRouteKey = subConditionRouteKeyMapper.selectByCode(event);
+            if (subConditionRouteKey == null) {
+                continue;
+            }
+            String queueName = "Event" + i++ + "_" + subTaskNum;
+            Thread thread = new Thread(new ConsumerThread(queueName, subConditionRouteKey.getRouteKey(), new RouseMainTaskAction()));
+            thread.start();
+            logger.info("子任务{}的订阅事件{}已开始,中文名:{},routeKey:{}", subTaskNum,subConditionRouteKey.getRouteKeyCode(),
+                    subConditionRouteKey.getRouteKeyName(), subConditionRouteKey.getRouteKey());
+        }
+
+        logger.info("子任务单{}订阅事件完成", subTaskNum);
+        return true;
+    }
+
+    public boolean deleteListenner(String subTaskNum) {
+        //查询子任务单对应的事件
+        List<String> eventList = getEventList(subTaskNum);
+        logger.info("子任务单{}开始取消订阅事件", subTaskNum);
+        if (eventList == null || eventList.size() <= 0) {
+            return false;
+        }
+        for (String event : eventList) {
+            SubConditionRouteKey subConditionRouteKey = subConditionRouteKeyMapper.selectByCode(event);
+            if (subConditionRouteKey == null) {
+                continue;
+            }
+            //发送结束标识
+            RabbitMQPublicService.sendEndLogo(subConditionRouteKey.getRouteKey(), subTaskNum);
+            logger.info("子任务{}的订阅事件{}已发送结束标识,中文名:{},routeKey:{}", subTaskNum,subConditionRouteKey.getRouteKeyCode(),
+                    subConditionRouteKey.getRouteKeyName(), subConditionRouteKey.getRouteKey());
+        }
+        logger.info("子任务单{}取消订阅事件完成", subTaskNum);
+        return true;
+    }
+
+    /**
+     * 查询子任务单对应的事件
+     * @param subTaskNum
+     * @return
+     */
+    private List<String> getEventList(String subTaskNum) {
+        if (StringUtils.isEmpty(subTaskNum)) {
+            throw new BusinessException("消息队列订阅或取消事件时,子单号不能为空");
+        }
+        //查询子任务单对应的事件
         List<SubTaskCondition> subTaskConditionList = subTaskConditionMapper.selectByTaskNum(subTaskNum);
         List<String> eventList = new ArrayList<>();
         for (SubTaskCondition subTaskCondition : subTaskConditionList) {
             String subscribeEvent = subTaskCondition.getSubscribeEvent();
             if (StringUtils.isNotEmpty(subscribeEvent)) {
+                //将事件名称拆分出来
                 String[] split = subscribeEvent.split(",");
                 eventList.addAll(Arrays.asList(split));
             }
         }
-        logger.info("子任务单{}开始订阅事件", subTaskNum);
-
-        for (String event : eventList) {
-            Thread thread = new Thread(new ConsumerThread(event, "agv.task." + event));
-            thread.start();
-        }
-
-        logger.info("子任务单{}订阅事件完成", subTaskNum);
-        return true;
+        return eventList;
     }
 }

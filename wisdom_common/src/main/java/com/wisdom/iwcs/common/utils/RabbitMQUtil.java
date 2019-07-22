@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
  *
  * 提示: 在获取消息通道之后
  *          如果需要创建交换机,可使用 channel.exchangeDeclare（exchange_name，"topic"）;
- *          如果需要创建消息队列,可使用 channel.queueDeclare(queue_name, true, false, false, null);
+ *          如果需要创建消息队列,可使用 channel.queueDeclare(queue_name, true, false, false, null);是否持久化/是否排他/是否自动删除
  *          如果需要将队列绑定到交换器中,可使用 channel.queueBind(queue_name, exchange_name, routingKey);
  *
  */
@@ -36,6 +36,11 @@ public class RabbitMQUtil {
     private static String virtualHost;
 
     private static Connection connection;
+
+    /**
+     * 消息日志使用的channel
+     */
+    private static Channel taskLogChannel;
 
     @Autowired
     ApplicationProperties applicationProperties;
@@ -268,35 +273,13 @@ public class RabbitMQUtil {
     }
 
     /**
-     * 建立新的消息队列并绑定交换机
-     * @param queueName 队列名称
-     * @param routeKey routeKey
-     * @param consumer 消费者动作
-     * @return 连接key,删除连接时使用
-     */
-//    public static String createNewEvent(String queueName, String routeKey, Consumer consumer) {
-//        Connection connection = getConnection();
-//        try {
-//            Channel channel = connection.createChannel();
-//            String queue = channel.queueDeclare(queueName, false, false, true, null).getQueue();
-//            logger.debug("建立消息队列成功:" + queue);
-//            channel.queueBind(queue, "EXCHANGE_NAME", routeKey);
-//            logger.debug("交换机与消息队列绑定成功:" + queue);
-////            channel.basicQos(1);
-//            return channel.basicConsume(queueName, true, consumer);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
-    /**
      * 向交换机发送消息
      * @param exchangeName 交换机名称
      * @param routeKey routeKey
-     * @param message 发送的消息体
+     * @param param 发送的消息体对象
      */
-    public static void basicPublish(String exchangeName, String routeKey, String message) {
+    public static <T> void basicPublish(String exchangeName, String routeKey, T param) {
+        String message = JSON.toJSONString(param);
         Connection connection = getConnection();
         Channel channel = null;
         try {
@@ -314,9 +297,39 @@ public class RabbitMQUtil {
      * @param param
      * @param <T>
      */
-    public static <T> void basicPublicTaskLog(T param) {
+    public static synchronized <T> void basicPublicTaskLog(T param) {
         String jsonString = JSON.toJSONString(param);
-        basicPublish(RabbitMQConstants.EXCHANGE_A, RabbitMQConstants.ROUTEKEY_TASK_LOG, jsonString);
+        Channel channel = null;
+        try {
+            channel = createChannelDefault();
+            channel.basicPublish(RabbitMQConstants.EXCHANGE_A, RabbitMQConstants.ROUTEKEY_TASK_LOG, null, jsonString.getBytes("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (channel != null) {
+                    channel.close();
+                }
+            } catch (TimeoutException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 获取消息日志的channel
+     * 消息日志使用单独的channel
+     * @return
+     */
+    private static Channel getTaskLogChannel() {
+        if (taskLogChannel == null) {
+            try {
+                taskLogChannel = getConnection().createChannel();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return taskLogChannel;
     }
 
 

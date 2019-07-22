@@ -122,7 +122,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     String message = "子任务下发失败,主任务号:" + subTask.getMainTaskNum() + ",错误信息:" + e.getMessage();
                     RabbitMQPublicService.failureTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.SEND_FAILURE,message));
 
-                    logger.error("子任务下发失败{},准备回滚前置条件", subTask.getSubTaskNum());
+                    logger.error("子任务下发失败{},原因:{},准备回滚前置条件", subTask.getSubTaskNum(), e.getMessage());
                     SubTaskService subTaskService = (SubTaskService) SpringContextUtils.getBean("subTaskService");
                     boolean rollBackTime = subTaskService.rollbackPreCondition(subTask.getSubTaskNum());
                     e.printStackTrace();
@@ -152,7 +152,13 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void deleteListenner() {
-
+        try {
+            SubTaskConditionService subTaskConditionService = AppContext.getBean("subTaskConditionService");
+            subTaskConditionService.deleteListenner(subTask.getSubTaskNum());
+        } catch (Exception e) {
+            logger.error("子任务单{}消息队列取消失败", subTask.getSubTaskNum());
+            e.printStackTrace();
+        }
     }
 
     public SubTask getSubTask() {

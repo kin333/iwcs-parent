@@ -1,10 +1,13 @@
 package com.wisdom.iwcs.domain.task;
 
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
+@ToString
 @Table(name = "ts_sub_task")
 public class SubTask {
     /**

@@ -7,6 +7,7 @@ import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.log.ResPodEvt;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
@@ -20,7 +21,6 @@ import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
-import com.wisdom.rabbitmq.consumerAction.IConsumerAction;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
 
 /**
  * @author Devin
@@ -229,12 +228,12 @@ public class TaskTestController {
     }
 
     @GetMapping("/testMainTask")
-    public void testMainTask(){
+    public Result testMainTask(){
 
-        logger.info("开始产线工作台任务生成器");
-        Thread workLineThread1 = new Thread(new WorkLineScheduler("AB"));
-        workLineThread1.start();
-        logger.info("启动产线工作台任务生成器成功");
+//        logger.info("开始产线工作台任务生成器");
+//        Thread workLineThread1 = new Thread(new WorkLineScheduler("AB"));
+//        workLineThread1.start();
+//        logger.info("启动产线工作台任务生成器成功");
 
         logger.info("开始产线工作台任务生成器");
         Thread workLineThread2 = new Thread(new WorkLineScheduler("DD"));
@@ -242,12 +241,12 @@ public class TaskTestController {
         logger.info("启动产线工作台任务生成器成功");
 
         logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-        Thread quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("AB"));
+        Thread quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("DD"));
         quaAutoToAgingThread.start();
         logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
 
         logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-        Thread quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("AB"));
+        Thread quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
         quaAutoCallPodThread.start();
         logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
 
@@ -256,6 +255,8 @@ public class TaskTestController {
         Thread thread = new Thread(wcsTaskScheduler);
         thread.start();
         logger.info("启动任务调度器线程成功");
+
+        return new Result("启动成功");
     }
 
     /**
@@ -263,15 +264,12 @@ public class TaskTestController {
      */
     @GetMapping("/taskLogTest")
     public void taskLogTest() {
-
+        System.out.println("OK");
         Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, message -> {
             TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
             taskOperationLogMapper.insert(taskOperationLog);
         }));
         thread.start();
-
     }
-
-
 
 }

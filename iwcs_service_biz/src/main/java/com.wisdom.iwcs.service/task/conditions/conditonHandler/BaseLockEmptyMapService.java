@@ -91,13 +91,13 @@ public class BaseLockEmptyMapService {
         LockStorageDto lockStorageDto = new LockStorageDto();
         lockStorageDto.setMapCode(subTask.getMapCode());
         lockStorageDto.setBerCode(subTask.getEndBercode());
-        lockStorageDto.setLockSource("null");
+        lockStorageDto.setLockSource("");
         Result result = mapResouceService.unlockMapBerth(lockStorageDto);
         if (result.getReturnCode() ==  HttpStatus.OK.value()) {
             logger.info("子任务{}回滚成功", subTaskCondition.getSubTaskNum());
             return true;
         }
-        logger.warn("子任务{}回滚失败", subTaskCondition.getSubTaskNum());
+        logger.warn("子任务{}回滚失败:{},子任务单信息:{}", subTaskCondition.getSubTaskNum(), result.getReturnMsg(),subTask.toString());
         return false;
     }
 

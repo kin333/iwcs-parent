@@ -1,0 +1,44 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+
+    <changeSet id="201907181632-1" author="han">
+        <createTable tableName="route_key_template" remarks="routeKey模板">
+            <column autoIncrement="true" name="id" remarks="" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="route_key_temp_name" type="VARCHAR(30)" remarks="routeKey模板的中文名" defaultValue=""/>
+            <column name="route_key_temp_code" type="VARCHAR(30)" remarks="routeKey模板代码" defaultValue=""/>
+            <column name="route_key_template" type="VARCHAR(200)" remarks="routeKey模板" defaultValue=""/>
+        </createTable>
+    </changeSet>
+    <changeSet id="201907181632-2" author="han">
+        <createTable tableName="sub_condition_route_key" remarks="子任务与routeKey对应表">
+            <column autoIncrement="true" name="id" remarks="" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="route_key_name" type="VARCHAR(30)" remarks="routeKey中文名" defaultValue=""/>
+            <column name="route_key_code" type="VARCHAR(30)" remarks="routeKey代码" defaultValue=""/>
+            <column name="route_key" type="VARCHAR(200)" remarks="routeKey" defaultValue=""/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="201907181632-3" author="han">
+        <createTable tableName="sub_condition_event_log" remarks="子任务单与routeKey对应记录">
+            <column autoIncrement="true" name="id" remarks="" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="sub_task_num" type="VARCHAR(50)" remarks="子任务单号" defaultValue=""/>
+            <column name="route_key_name" type="VARCHAR(30)" remarks="routeKey中文名" defaultValue=""/>
+            <column name="route_key_code" type="VARCHAR(30)" remarks="routeKey代码" defaultValue=""/>
+            <column name="route_key" type="VARCHAR(200)" remarks="routeKey" defaultValue=""/>
+            <column name="event_status" type="VARCHAR(2)" remarks="事件下发状态" defaultValue=""/>
+            <column name="created_time" remarks="创建时间" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+
+
+
+</databaseChangeLog>

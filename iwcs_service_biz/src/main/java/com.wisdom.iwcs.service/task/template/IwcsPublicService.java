@@ -89,7 +89,7 @@ public class IwcsPublicService {
         //更新子任务的下发状态以及发送的消息体
         subTaskMapper.updateByPrimaryKeySelective(tmpSubask);
         //向消息队列发送消息
-        String message = "子任务发送(下发)完成,主任务号:" + subTask.getMainTaskNum()
+        String message = " 子任务发送(下发)完成,主任务号:" + subTask.getMainTaskNum()
                         + ",发送的消息体为:" + jsonStr;
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.SEND_SUCCESS,message));
     }
