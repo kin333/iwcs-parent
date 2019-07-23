@@ -8,4 +8,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="george" id="201907020820-02">
+        <addColumn tableName="ts_sub_task">
+            <column name="source_floor" remarks="电梯任务，开始楼层" type="VARCHAR(32)"/>
+            <column name="dest_floor" remarks="电梯任务，结束楼层" type="VARCHAR(32)"/>
+            <column name="elevator_work_type" remarks="电梯任务作业类型up/down" type="VARCHAR(32)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

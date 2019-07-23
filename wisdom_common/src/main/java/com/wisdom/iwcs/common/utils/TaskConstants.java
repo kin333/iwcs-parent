@@ -35,7 +35,22 @@ public class TaskConstants {
          * 自动检验缓冲区去检验点
          */
         public final static String QUABUFTOQUA = "quaBufToQua";
+        /**
+         * 检验区到电梯缓存区
+         */
         public final static String QUAINSPTOELVBUF = "quaInspToElvBuf";
+        /**
+         * 电梯缓存区到一楼包装线体缓存区
+         */
+        public final static String ELVBUFTOPACKBUF = "elvBufToPackBuf";
+        /**
+         * 一楼包装线体区呼叫满货货架
+         */
+        public final static String PACKWBCALLPOD = "packWbCallPod";
+        /**
+         * 一楼包装线区到线体缓存区/老化区
+         */
+        public final static String PACKTOPLORAGING = "packToPlorAging";
         /**
          * 点到点（暂时与上面的点到点一个意思）
          */

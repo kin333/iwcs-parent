@@ -121,4 +121,12 @@ public class Constants {
             return value;
         }
     }
+
+    public static final class PLC{
+        //电梯
+        public final static String PLC_DEVICE_TYPE_ELEVATOR = "elevator";
+        //线体
+        public final static String PLC_DEVICE_TYPE_LINE = "line";
+
+    }
 }

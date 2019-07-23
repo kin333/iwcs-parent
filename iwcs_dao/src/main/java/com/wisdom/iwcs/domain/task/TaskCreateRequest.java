@@ -57,6 +57,21 @@ public class TaskCreateRequest {
      */
     private String areaCode;
 
+    /**
+     * 跨楼层任务 起始楼层
+     */
+    private String sourceFloor;
+
+    /**
+     * 跨楼层任务 目标楼层
+     */
+    private String destFloor;
+
+    /**
+     * 电梯工作状态
+     */
+    private String eleWorkType;
+
     public String getTaskTypeCode() {
         return taskTypeCode;
     }
@@ -135,5 +150,29 @@ public class TaskCreateRequest {
 
     public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
+    }
+
+    public String getSourceFloor() {
+        return sourceFloor;
+    }
+
+    public void setSourceFloor(String sourceFloor) {
+        this.sourceFloor = sourceFloor;
+    }
+
+    public String getDestFloor() {
+        return destFloor;
+    }
+
+    public void setDestFloor(String destFloor) {
+        this.destFloor = destFloor;
+    }
+
+    public String getEleWorkType() {
+        return eleWorkType;
+    }
+
+    public void setEleWorkType(String eleWorkType) {
+        this.eleWorkType = eleWorkType;
     }
 }
