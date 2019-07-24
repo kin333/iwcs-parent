@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="han" id="201907242018">
+        <createTable tableName="line_body">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="line_code" remarks="线体编号" type="VARCHAR(32)"/>
+            <column name="msg_code" remarks="通信编号（三方通信协议使用）" type="VARCHAR(32)"/>
+            <column name="line_name" remarks="名称" type="VARCHAR(64)"/>
+            <column name="remark " remarks="备注" type="TEXT"/>
+            <column name="line_ip" remarks="通信ip" type="VARCHAR(64)"/>
+            <column name="floor" remarks="楼层" type="INT"/>
+            <column name="map_code" remarks="地图编号" type="VARCHAR(32)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="han" id="201907242019">
+        <createTable tableName="line_msg_log">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="msg_type" remarks="通信类型：收receive/发send" type="VARCHAR(32)"/>
+            <column name="msg_time" remarks="发送/接收时间" type="datetime"/>
+            <column name="req_code" remarks="请求编号" type="VARCHAR(32)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="msg_body" remarks="消息内容" type="VARCHAR(500)"/>
+            <column name="send_addr" remarks="发送地址" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

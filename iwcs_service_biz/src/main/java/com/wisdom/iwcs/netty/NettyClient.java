@@ -68,6 +68,7 @@ public class NettyClient extends  Thread{
 
     }
 
+    //测试 test
     public static void star() throws IOException{
         String str="Hello Netty";
         ch.writeAndFlush(str);

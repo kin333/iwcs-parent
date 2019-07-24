@@ -1,0 +1,65 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="george" id="201907131340">
+        <createTable tableName="elevator">
+            <column autoIncrement="true" name="elevator_id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="elevator_code" remarks="电梯编号" type="VARCHAR(32)"/>
+            <column name="elevator_name" remarks="电梯名称" type="VARCHAR(32)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+            <column name="ele_status" remarks="电梯状态: 正常、异常1，异常2等" type="VARCHAR(10)"/>
+            <column name="status_update_time" remarks="状态更新时间" type="datetime"/>
+            <column name="ele_ip" remarks="通信ip" type="VARCHAR(64)"/>
+            <column name="ele_task_status" remarks="电梯任务状态：空闲0、有任务1" type="VARCHAR(16)"/>
+            <column name="main_task_num" remarks="当前业务号（业务主任务号）" type="VARCHAR(32)"/>
+            <column name="ele_task_code" remarks="当前业务号梯控任务号" type="VARCHAR(32)"/>
+            <column name="ele_task_update_time" remarks="电梯任务状态变更时间" type="datetime"/>
+            <column name="version" remarks="电梯任务状态版本号" type="INT" defaultValueNumeric="0"/>
+            <column name="current_floor" remarks="最后上报所在楼层" type="INT"/>
+            <column name="floor_update_time" remarks="楼层上报时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201907242018">
+        <createTable tableName="ele_control_task">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="ele_task_code" remarks="电梯任务编号" type="VARCHAR(32)"/>
+            <column name="main_task_num" remarks="业务请求编号（主任务编号）" type="VARCHAR(32)"/>
+            <column name="elevator_work_type" remarks="电梯任务作业类型up/down" type="VARCHAR(16)"/>
+            <column name="source_floor " remarks="电梯任务，开始楼层" type="INT"/>
+            <column name="dest_floor" remarks="电梯任务，结束楼层" type="INT"/>
+            <column name="task_status" remarks="任务状态：创建0、起始接驳1、电梯运行2、目标接驳3 、结束9" type="VARCHAR(10)"/>
+            <column name="call_ele_arr_floor" remarks="是否已呼叫电梯到达起始楼层：否0,是1" type="VARCHAR(2)"/>
+            <column name="source_biz_notify" remarks="起点业务通知已就绪" type="VARCHAR(16)"/>
+            <column name="wcs_notify_entry_source" remarks="已通知电梯任务起始楼层就绪并检验是否可进" type="VARCHAR(16)"/>
+            <column name="wcs_notify_entry_dest" remarks="已通知电梯任务终点楼层就绪并检验是否可进" type="VARCHAR(16)"/>
+            <column name="plc_notify_entry_source" remarks="电梯通知起始楼层可进" type="VARCHAR(16)"/>
+            <column name="plc_notify_entry_dest" remarks="电梯通知目标楼层可进" type="VARCHAR(16)"/>
+            <column name="agv_leave_source" remarks="AGV已离开起点轿厢" type="VARCHAR(16)"/>
+            <column name="agv_leave_dest" remarks="AGV已离开终点轿厢" type="VARCHAR(16)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201907131341">
+        <createTable tableName="ele_msg_log">
+            <column autoIncrement="true" name="corr_id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="msg_type" remarks="通信类型：收receive/发send" type="VARCHAR(32)"/>
+            <column name="ele_task_code" remarks="梯控任务号" type="VARCHAR(32)"/>
+            <column name="msg_time" remarks="发送/接收时间" type="datetime"/>
+            <column name="req_code" remarks="请求编号" type="VARCHAR(32)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="msg_body" remarks="消息内容" type="VARCHAR(500)"/>
+            <column name="send_addr" remarks="发送地址" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

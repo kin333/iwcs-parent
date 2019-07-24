@@ -12,7 +12,7 @@ public class InboundByteToHexStrInterceptor extends ChannelInboundHandlerAdapter
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.println("收到消息");
+        System.out.println("收到消息,byte 转为16进制string");
         if(msg instanceof String){
             String str = (String) msg;
             ctx.fireChannelRead(str);
