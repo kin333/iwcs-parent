@@ -119,4 +119,12 @@
             <column name="main_task_num"/>
         </createIndex>
     </changeSet>
+    <changeSet id="201907221833" author="han">
+        <dropIndex tableName="ts_sub_task" indexName="idx_mainTaskNum"/>
+    </changeSet>
+    <changeSet id="201907221836" author="han">
+        <createIndex tableName="ts_sub_task" indexName="idx_mainTaskNum" unique="false">
+            <column name="main_task_num"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
