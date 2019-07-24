@@ -83,8 +83,6 @@ public class BaseLockEmptyMapService {
      */
     public boolean rollbackConditionService(SubTaskCondition subTaskCondition) {
         logger.info("子任务{}回滚开始", subTaskCondition.getSubTaskNum());
-        //还原子任务单中的货架号
-        subTaskMapper.updateEndCodeBySubTaskCode(subTaskCondition.getSubTaskNum(), new BaseMapBerth());
         //还原地图数据的锁定信息
         String subTaskNum = subTaskCondition.getSubTaskNum();
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
@@ -93,6 +91,8 @@ public class BaseLockEmptyMapService {
         lockStorageDto.setBerCode(subTask.getEndBercode());
         lockStorageDto.setLockSource("");
         Result result = mapResouceService.unlockMapBerth(lockStorageDto);
+        //还原子任务单中的货架号
+        subTaskMapper.updateEndCodeBySubTaskCode(subTaskCondition.getSubTaskNum(), new BaseMapBerth());
         if (result.getReturnCode() ==  HttpStatus.OK.value()) {
             logger.info("子任务{}回滚成功", subTaskCondition.getSubTaskNum());
             return true;

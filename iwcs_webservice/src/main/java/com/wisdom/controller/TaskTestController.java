@@ -227,26 +227,33 @@ public class TaskTestController {
         return new Result("耗时:" + (endTime - startTime) + "ms");
     }
 
+    /**
+     * 为了方便关闭而抽取出的线程
+     */
+    private Thread workLineThread1;
+    private Thread workLineThread2;
+    private Thread quaAutoToAgingThread;
+    private Thread quaAutoCallPodThread;
     @GetMapping("/testMainTask")
     public Result testMainTask(){
 
 //        logger.info("开始产线工作台任务生成器");
-//        Thread workLineThread1 = new Thread(new WorkLineScheduler("AB"));
+//        workLineThread1 = new Thread(new WorkLineScheduler("AB"));
 //        workLineThread1.start();
 //        logger.info("启动产线工作台任务生成器成功");
 
         logger.info("开始产线工作台任务生成器");
-        Thread workLineThread2 = new Thread(new WorkLineScheduler("DD"));
+        workLineThread2 = new Thread(new WorkLineScheduler("DD"));
         workLineThread2.start();
         logger.info("启动产线工作台任务生成器成功");
 
         logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-        Thread quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("DD"));
+        quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("DD"));
         quaAutoToAgingThread.start();
         logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
 
         logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-        Thread quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
+        quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
         quaAutoCallPodThread.start();
         logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
 
@@ -257,6 +264,22 @@ public class TaskTestController {
         logger.info("启动任务调度器线程成功");
 
         return new Result("启动成功");
+    }
+
+    @GetMapping("/testStopCreateTask")
+    public void testStopCreateTask() {
+        if (workLineThread1 != null) {
+            workLineThread1.interrupt();
+        }
+        if (workLineThread2 != null) {
+            workLineThread2.interrupt();
+        }
+        if (quaAutoToAgingThread != null) {
+            quaAutoToAgingThread.interrupt();
+        }
+        if (quaAutoCallPodThread != null) {
+            quaAutoCallPodThread.interrupt();
+        }
     }
 
     /**

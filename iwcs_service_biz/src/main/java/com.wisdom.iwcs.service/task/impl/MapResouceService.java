@@ -188,9 +188,11 @@ public class MapResouceService implements IMapResouceService {
     @Override
     public Result unlockMapBerth(LockStorageDto lockStorageDto) {
 
-        Result validateResult = validateLockParams(lockStorageDto);
-        if (validateResult.getReturnCode() != 200){
-            return validateResult;
+        if(Strings.isNullOrEmpty(lockStorageDto.getMapCode())) {
+            return new Result(400,"缺少地图编码");
+        }
+        if(Strings.isNullOrEmpty(lockStorageDto.getBerCode())) {
+            return new Result(400,"缺少点位代码");
         }
         //乐观锁版本检测
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(lockStorageDto);

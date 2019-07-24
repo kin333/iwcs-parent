@@ -34,6 +34,11 @@ public class InspurBizConstants {
          */
         public final static String QUAINSPAREA = "quaInspArea";
 
+        /**
+         * 包装区
+         */
+        public final static String PAGEAREA = "pageArea";
+
     }
 
     /**
@@ -68,6 +73,19 @@ public class InspurBizConstants {
          * 电梯缓存区
          */
         public final static String ELEVATORCACHEAREA = "elevatorCacheArea";
+        /**
+         * 电梯检验区
+         */
+        public final static String ELEVATORCHECKAREA = "elevatorCheckArea";
+
+        /**
+         * 包装区缓存区
+         */
+        public final static String PAGECACHEAREA = "pageCacheArea";
+        /**
+         * 包装区工作区
+         */
+        public final static String PAGEWORKAREA = "pageWorkArea";
 
     }
 
