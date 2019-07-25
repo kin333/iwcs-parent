@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static com.wisdom.iwcs.common.utils.DeleteFlagEnum.NOT_DELETED;
 import static com.wisdom.iwcs.common.utils.podUtils.PodConstants.BinCargoCapacityStatus.EMPTY_BIN;
@@ -344,6 +345,27 @@ public class CommonService implements ICommonService {
             podPointAgreement = true;
         }
         return podPointAgreement;
+    }
+
+    /**
+     * 随机产生16进制数
+     * @param len
+     */
+    @Override
+    public String randomHexString(int len)  {
+        try {
+            StringBuffer result = new StringBuffer();
+            for(int i=0;i<len;i++) {
+                result.append(Integer.toHexString(new Random().nextInt(16)));
+            }
+            return result.toString().toUpperCase();
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+
+        }
+        return null;
     }
 }
 

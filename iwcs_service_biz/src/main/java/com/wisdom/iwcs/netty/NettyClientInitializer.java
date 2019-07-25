@@ -40,8 +40,8 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast(new InboundByteToHexStrInterceptor());
         //16进制返回转为标准基础response类
         ch.pipeline().addLast(new InboundHexStrToResponseInterceptor());
-        //标准基础response类转为查询返回类
-        ch.pipeline().addLast(new InboundResponseToPLCSwitchResponseInterceptor());
+//        //标准基础response类转为查询返回类
+//        ch.pipeline().addLast(new InboundResponseToPLCSwitchResponseInterceptor());
         //业务处理
         ch.pipeline().addLast(new NettyClientHandler());
     }

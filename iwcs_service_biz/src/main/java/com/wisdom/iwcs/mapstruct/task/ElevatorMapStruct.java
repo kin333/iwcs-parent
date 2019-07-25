@@ -1,7 +1,7 @@
 package com.wisdom.iwcs.mapstruct.task;
 
-import com.wisdom.iwcs.domain.task.Elevator;
-import com.wisdom.iwcs.domain.task.dto.ElevatorDTO;
+import com.wisdom.iwcs.domain.elevator.Elevator;
+import com.wisdom.iwcs.domain.elevator.dto.ElevatorDTO;
 import com.wisdom.iwcs.mapstruct.EntityMapper;
 import org.mapstruct.Mapper;
 

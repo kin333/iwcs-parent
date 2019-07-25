@@ -5,9 +5,9 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.domain.task.dto.EleControlTaskDTO;
+import com.wisdom.iwcs.domain.elevator.dto.EleControlTaskDTO;
 import com.wisdom.iwcs.mapstruct.task.EleControlTaskMapStruct;
-import com.wisdom.iwcs.service.task.impl.EleControlTaskService;
+import com.wisdom.iwcs.service.elevator.impl.EleControlTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,6 +1,5 @@
 package com.wisdom.iwcs.service.plc;
 
-import com.wisdom.iwcs.common.utils.plcUtils.PlcSwitchStatusResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +16,9 @@ public class PLCControlService {
         return str;
     }
 
-    public String dealAlarmSwitchStatus(PlcSwitchStatusResponse alarmSwitchStatusResponse){
-        logger.info("接收到开关状态返回..........."+ alarmSwitchStatusResponse.getAddress()+":"+alarmSwitchStatusResponse.getReturnBodyBytes());
-        //alarmDataCollection.updateAlarmData(alarmSwitchStatusResponse);
-        return "成功";
-    }
+//    public String dealAlarmSwitchStatus(PlcSwitchStatusResponse alarmSwitchStatusResponse){
+//        logger.info("接收到开关状态返回..........."+ alarmSwitchStatusResponse.getAddress()+":"+alarmSwitchStatusResponse.getReturnBodyBytes());
+//        //alarmDataCollection.updateAlarmData(alarmSwitchStatusResponse);
+//        return "成功";
+//    }
 }

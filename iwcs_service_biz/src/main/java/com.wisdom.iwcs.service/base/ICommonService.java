@@ -125,4 +125,11 @@ public interface ICommonService {
      * @return podPointAgreement
      */
     Boolean checkPodPointAgreement(String podCode);
+
+    /**
+     * 随机产生16进制数
+     * @param  len
+     * @return
+     */
+    String randomHexString(int len);
 }

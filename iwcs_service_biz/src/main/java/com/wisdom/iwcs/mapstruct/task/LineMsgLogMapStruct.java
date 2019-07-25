@@ -1,7 +1,7 @@
 package com.wisdom.iwcs.mapstruct.task;
 
-import com.wisdom.iwcs.domain.task.LineMsgLog;
-import com.wisdom.iwcs.domain.task.dto.LineMsgLogDTO;
+import com.wisdom.iwcs.domain.linebody.LineMsgLog;
+import com.wisdom.iwcs.domain.linebody.dto.LineMsgLogDTO;
 import com.wisdom.iwcs.mapstruct.EntityMapper;
 import org.mapstruct.Mapper;
 

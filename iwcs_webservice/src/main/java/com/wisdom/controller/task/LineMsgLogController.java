@@ -5,9 +5,9 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.domain.task.dto.LineMsgLogDTO;
+import com.wisdom.iwcs.domain.linebody.dto.LineMsgLogDTO;
 import com.wisdom.iwcs.mapstruct.task.LineMsgLogMapStruct;
-import com.wisdom.iwcs.service.task.impl.LineMsgLogService;
+import com.wisdom.iwcs.service.linebody.impl.LineMsgLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

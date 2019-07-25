@@ -1,7 +1,6 @@
 package com.wisdom.iwcs.netty;
 
 import com.wisdom.iwcs.common.utils.ApplicationContextUtils;
-import com.wisdom.iwcs.common.utils.plcUtils.PlcSwitchStatusResponse;
 import com.wisdom.iwcs.service.plc.PLCControlService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -96,10 +95,10 @@ public class NettyClientHandler extends  ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {  
         System.out.println("第"+count+"次"+",客户端接受的消息:"+msg);
         PLCControlService plcControlService = ApplicationContextUtils.getBean("alarmBusinessService", PLCControlService.class);
-        if(msg instanceof PlcSwitchStatusResponse){
-            //TODO 接收消息处理
-            plcControlService.dealAlarmSwitchStatus((PlcSwitchStatusResponse)msg);
-        }
+//        if(msg instanceof PlcSwitchStatusResponse){
+//            //TODO 接收消息处理
+//            plcControlService.dealAlarmSwitchStatus((PlcSwitchStatusResponse)msg);
+//        }
         count++;
     }
 

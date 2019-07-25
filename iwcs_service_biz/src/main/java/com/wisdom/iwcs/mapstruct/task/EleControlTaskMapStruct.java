@@ -1,7 +1,7 @@
 package com.wisdom.iwcs.mapstruct.task;
 
 import com.wisdom.iwcs.domain.task.EleControlTask;
-import com.wisdom.iwcs.domain.task.dto.EleControlTaskDTO;
+import com.wisdom.iwcs.domain.elevator.dto.EleControlTaskDTO;
 import com.wisdom.iwcs.mapstruct.EntityMapper;
 import org.mapstruct.Mapper;
 

@@ -1,7 +1,7 @@
 package com.wisdom.iwcs.mapstruct.task;
 
-import com.wisdom.iwcs.domain.task.LineBody;
-import com.wisdom.iwcs.domain.task.dto.LineBodyDTO;
+import com.wisdom.iwcs.domain.linebody.LineBody;
+import com.wisdom.iwcs.domain.linebody.dto.LineBodyDTO;
 import com.wisdom.iwcs.mapstruct.EntityMapper;
 import org.mapstruct.Mapper;
 

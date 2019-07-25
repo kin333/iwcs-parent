@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.linebody.LineBodyMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.linebody.LineBody">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="line_code" jdbcType="VARCHAR" property="lineCode" />
+    <result column="msg_code" jdbcType="VARCHAR" property="msgCode" />
+    <result column="line_name" jdbcType="VARCHAR" property="lineName" />
+    <result column="line_ip" jdbcType="VARCHAR" property="lineIp" />
+    <result column="floor" jdbcType="INTEGER" property="floor" />
+    <result column="map_code" jdbcType="VARCHAR" property="mapCode" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.wisdom.iwcs.domain.linebody.LineBody">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, line_code, msg_code, line_name, line_ip, floor, map_code
+  </sql>
+  <sql id="Blob_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    remark
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from line_body
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>
