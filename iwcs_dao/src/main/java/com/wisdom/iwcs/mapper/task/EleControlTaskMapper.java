@@ -1,0 +1,23 @@
+package com.wisdom.iwcs.mapper.task;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
+import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
+import com.wisdom.iwcs.domain.task.EleControlTask;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author Generator
+ * @date 2019-07-25 10:35:59.
+ */
+@Repository
+public interface EleControlTaskMapper extends MyMapperAndIds<EleControlTask> {
+    /**
+     * selectPage
+     * @param map condition
+     * @return list
+     */
+    List<EleControlTask> selectPage(Map map);
+}
