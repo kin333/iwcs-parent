@@ -80,6 +80,8 @@ public class IwcsPublicService {
             //如果执行者类型是海康,则调用海康的接口
             resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
             iCommonService.handleHikResponseAndThrowException(resultBody);
+        } if ("TEST".equals(subTaskTyp.getWorkerType())) {
+            logger.info("子任务{}多任务测试类型成功", subTaskNum);
         }
         SubTask tmpSubask = new SubTask();
         tmpSubask.setId(subTask.getId());
