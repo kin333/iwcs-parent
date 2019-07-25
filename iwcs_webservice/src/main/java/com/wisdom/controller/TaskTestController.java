@@ -282,6 +282,14 @@ public class TaskTestController {
         }
     }
 
+    @GetMapping("/testTaskStart")
+    public void testTaskStart() {
+        logger.info("开始启动任务调度器线程");
+        Thread thread = new Thread(wcsTaskScheduler);
+        thread.start();
+        logger.info("启动任务调度器线程成功");
+    }
+
     /**
      * 自动生成任务日志
      */

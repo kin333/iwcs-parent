@@ -110,14 +110,14 @@
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_task_rel_changelog.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_main_task_changelog.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_main_task_type_changelog.xml" relativeToChangelogFile="false"/>
-
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_elevator_plc.xml" relativeToChangelogFile="false"/>
 
     <include file="liquibase/changelog/iwcs/iwcs_db_base_map_berth_201907020820.xml" relativeToChangelogFile="false"/>
 
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_sub_task_condition_changelog.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ts_task_rel_condition_changelog.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_add_task_point_black_rule_changelog.xml" relativeToChangelogFile="false"/>
-    <include file="liquibase/changelog/iwcs/iwcs_db_ts_sub_task_201907020820.xml" relativeToChangelogFile="false"/>
+
 
     <include file="liquibase/changelog/iwcs/iwcs_db_add_agv_callback_changelog_20190705.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_base_map_berth_201907111147.xml" relativeToChangelogFile="false"/>
@@ -127,4 +127,7 @@
 
     <include file="liquibase/changelog/iwcs/iwcs_db_add_ele_control_task_changelog_20190724.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_add_line_body_changelog_20190724.xml" relativeToChangelogFile="false"/>
+
+
+    <include file="liquibase/changelog/iwcs/iwcs_db_ts_sub_task_201907020820.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

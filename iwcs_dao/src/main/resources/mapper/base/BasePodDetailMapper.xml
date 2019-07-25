@@ -289,9 +289,9 @@
         <if test="operateAreaCode != null and operateAreaCode != ''">
             and bmb.operate_area_code = #{operateAreaCode}
         </if>
-        <if test="inStock != null and inStock != ''">
-            and bpd.in_stock = #{inStock}
-        </if>
+<!--        <if test="inStock != null and inStock != ''">-->
+<!--            and bpd.in_stock = #{inStock}-->
+<!--        </if>-->
     </select>
 
     <update id="lockPod">
