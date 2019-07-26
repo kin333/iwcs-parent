@@ -23,6 +23,7 @@ public class RouseMainTaskAction implements IConsumerAction {
     private final Logger logger = LoggerFactory.getLogger(RouseMainTaskAction.class);
     @Override
     public void action(String message) {
+        //判断是否是json格式
         if (!message.contains("{")) {
             return;
         }
@@ -33,6 +34,10 @@ public class RouseMainTaskAction implements IConsumerAction {
         BaseQueueInfo baseQueueInfo = JSON.parseObject(message, BaseQueueInfo.class);
         logger.info("子任务{}开始唤醒主任务", baseQueueInfo.getSubTaskNum());
         SubTask subTask = subTaskMapper.selectBySubTaskNum(baseQueueInfo.getSubTaskNum());
+        if (subTask == null) {
+            logger.error("子任务{}不存在", baseQueueInfo.getSubTaskNum());
+            return;
+        }
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
         //唤醒主任务
         MainTaskWorker mainTaskWorker = new MainTaskWorker(null, mainTask, wcsTaskScheduler);

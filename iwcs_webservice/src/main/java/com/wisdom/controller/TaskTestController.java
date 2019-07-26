@@ -268,6 +268,7 @@ public class TaskTestController {
 
     @GetMapping("/testStopCreateTask")
     public void testStopCreateTask() {
+        logger.info("开始停止任务生成器");
         if (workLineThread1 != null) {
             workLineThread1.interrupt();
         }
@@ -280,6 +281,7 @@ public class TaskTestController {
         if (quaAutoCallPodThread != null) {
             quaAutoCallPodThread.interrupt();
         }
+        logger.info("停止任务生成器完成");
     }
 
     @GetMapping("/testTaskStart")

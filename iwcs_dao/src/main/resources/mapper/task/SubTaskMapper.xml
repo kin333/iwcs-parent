@@ -108,9 +108,13 @@
 
       <result column="send_time" jdbcType="TIMESTAMP" property="sendTime"/>
 
-      <result property="sourceFloor" jdbcType="VARCHAR" column="source_floor"/>
-      <result property="destFloor" jdbcType="VARCHAR" column="dest_floor"/>
-      <result property="elevatorWorkType" jdbcType="VARCHAR" column="elevator_work_type"/>
+    <result property="sourceFloor" jdbcType="VARCHAR" column="source_floor"/>
+    <result property="destFloor" jdbcType="VARCHAR" column="dest_floor"/>
+    <result property="elevatorWorkType" jdbcType="VARCHAR" column="elevator_work_type"/>
+
+    <result column="end_alias" jdbcType="TIMESTAMP" property="endAlias"/>
+    <result column="start_alias" jdbcType="TIMESTAMP" property="startAlias"/>
+
 
 
   </resultMap>
@@ -124,7 +128,7 @@
       third_end_method, point_access, sequence, cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec,
       priority, task_status, map_code, pod_code, pod_dir, start_bercode, start_x, start_y, end_bercode, end_x, end_y,
       end_remark, worker_task_code, area_code, sub_task_biz_prop, robot_code, work_task_status, task_start_time,
-      task_leave_time, task_end_time, send_time, source_floor, dest_floor, elevator_work_type
+      task_leave_time, task_end_time, send_time, source_floor, dest_floor, elevator_work_type,start_alias,end_alias
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task
@@ -209,13 +213,15 @@
     where sub_task_num = #{subTaskNum}
   </update>
   <update id="updateEndCodeBySubTaskCode">
-    update ts_sub_task
+    update ts_sub_task tst, base_map_berth bmb
     <set>
-      end_bercode = #{baseMapBerth.berCode},
-        end_x = #{baseMapBerth.coox},
-        end_y = #{baseMapBerth.cooy}
+      tst.end_bercode = #{baseMapBerth.berCode},
+      tst.end_x = #{baseMapBerth.coox},
+      tst.end_y = #{baseMapBerth.cooy},
+      tst.end_alias = bmb.point_alias
     </set>
-    where sub_task_num = #{subTaskNum}
+    where tst.sub_task_num = #{subTaskNum}
+    and  bmb.ber_code = #{baseMapBerth.berCode}
   </update>
 
 
@@ -255,12 +261,14 @@
   </select>
 
   <update id="updatePodAndBerBySubTaskCode">
-    update ts_sub_task
+    update ts_sub_task tst, base_map_berth bmb
     <set>
-      pod_code = #{podCode},
-      start_bercode = #{berCode}
+      tst.pod_code = #{podCode},
+      tst.start_bercode = #{berCode},
+      tst.start_alias = bmb.point_alias
     </set>
-    where sub_task_num = #{subTaskNum}
+    where tst.sub_task_num = #{subTaskNum}
+    and bmb.ber_code = #{berCode}
   </update>
 
   <update id="updateTaskStatusByNum">

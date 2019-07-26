@@ -348,6 +348,33 @@ public class SubTaskDTO {
     @Column(name = "elevator_work_type")
     private String elevatorWorkType;
 
+    /**
+     * 起始点点位别名(冗余字段)
+     */
+    @Column(name = "start_alias")
+    private String startAlias;
+    /**
+     * 终点点位别名(冗余字段)
+     */
+    @Column(name = "end_alias")
+    private String endAlias;
+
+    public String getStartAlias() {
+        return startAlias;
+    }
+
+    public void setStartAlias(String startAlias) {
+        this.startAlias = startAlias;
+    }
+
+    public String getEndAlias() {
+        return endAlias;
+    }
+
+    public void setEndAlias(String endAlias) {
+        this.endAlias = endAlias;
+    }
+
     public Date getSendTime() {
         return sendTime;
     }
