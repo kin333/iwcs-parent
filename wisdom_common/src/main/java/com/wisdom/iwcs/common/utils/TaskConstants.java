@@ -299,10 +299,10 @@ public class TaskConstants {
         /**
          *
          */
-        public final static String QuaBufToQua = "quaBufToQuaHandler";
+        public final static String QUABUFTOQUA = "quaBufToQuaHandler";
         /**
          *
          */
-        public final static String QuaWbLock = "quaWbLockHandler";
+        public final static String QUAWBLOCK = "quaWbLockHandler";
     }
 }

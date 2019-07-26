@@ -79,7 +79,7 @@ public class InspurBizConstants {
         public final static String ELEVATORCHECKAREA = "elevatorCheckArea";
 
         /**
-         * 包装区缓存区
+         * 包装区缓存区前缀
          */
         public final static String PAGECACHEAREA = "pageCacheArea";
         /**
