@@ -336,6 +336,9 @@ public class MapResouceService implements IMapResouceService {
             if(Strings.isNullOrEmpty(lockMapBerthCondition.getBizType())) {
                 return new Result(400,"缺少berthTypeValue");
             }
+            if (Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
+                return new Result(400, "缺少地图编码");
+            }
 
             //根据传入的条件找到符合储位
             List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);

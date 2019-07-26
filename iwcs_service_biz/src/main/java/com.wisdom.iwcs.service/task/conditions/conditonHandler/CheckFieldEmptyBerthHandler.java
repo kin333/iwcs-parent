@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 
 /**
- * 检查并锁定电梯空闲缓存点
+ * 检验区检查空储位前置条件
  * @author han
  */
 @Service
-public class LockElevatorEmptyCacheHandler implements IConditionHandler{
+public class CheckFieldEmptyBerthHandler implements IConditionHandler {
 
     @Autowired
     BaseLockEmptyMapService baseLockEmptyMapService;
@@ -21,8 +21,8 @@ public class LockElevatorEmptyCacheHandler implements IConditionHandler{
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
         AreaCondition areaCondition = new AreaCondition();
-        //查找电梯缓存区的空点位
-        areaCondition.setArea(InspurBizConstants.BizTypeConstants.ELEVATORCACHEAREA);
+        //查找检查区的空点位
+        areaCondition.setArea(InspurBizConstants.BizTypeConstants.CHECKFIELD);
 
         return baseLockEmptyMapService.handleConditionService(subTaskCondition, Arrays.asList(areaCondition));
     }

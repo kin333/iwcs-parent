@@ -87,6 +87,11 @@ public class InspurBizConstants {
          */
         public final static String PAGEWORKAREA = "pageWorkArea";
 
+        /**
+         * 检查区
+         */
+        public final static String CHECKFIELD = "checkField";
+
     }
 
     /**

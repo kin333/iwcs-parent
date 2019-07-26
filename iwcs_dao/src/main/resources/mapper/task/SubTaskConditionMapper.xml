@@ -61,5 +61,22 @@
         where sub_task_num = #{subTaskNum}
         and conditon_triger = #{conditonTriger}
     </update>
+    <update id="updateStatusBySubTaskNumAndHandler">
+        update ts_sub_task_condition
+        <set>
+            condition_met_status = #{metStatus} ,
+            <if test="metStatus != null and metStatus == '1'">
+                meet_time = NOW()
+            </if>
+        </set>
+        where sub_task_num = #{subTaskNum}
+        and conditon_handler = #{conditonHandler}
+    </update>
+
+    <select id="selectByTaskNumAndHandler" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_sub_task_condition
+        where sub_task_num = #{subTaskNum}
+        and conditon_handler = #{conditonHandler}
+    </select>
 
 </mapper>

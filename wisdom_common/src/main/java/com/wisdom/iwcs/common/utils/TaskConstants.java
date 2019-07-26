@@ -243,4 +243,66 @@ public class TaskConstants {
          */
         public final static String POS_RELEASE = "posRelease";
     }
+
+    /**
+     * 前置/后置条件名称
+     */
+    public static final class handlerName {
+        /**
+         * 检查电梯是否可以离开前置条件
+         */
+        public final static String CHECKELECANLEAVE = "checkEleCanLeaveHandler";
+        /**
+         * 检查电梯是否可以进入前置条件
+         */
+        public final static String CHECKELECANENTER = "checkEleCanEnterHandler";
+        /**
+         * 检验区检查空储位前置条件
+         */
+        public final static String CHECKFIELDEMPTYBERTH = "checkFieldEmptyBerthHandler";
+        /**
+         * 检查任务是否完成后置条件
+         */
+        public final static String CHECKWORKSTATUS = "checkWorkStatusHandler";
+        /**
+         * 线体工作台补充空货架 检查空货架前置条件
+         */
+        public final static String EMPTYPODFORPL = "emptyPodForPlHandler";
+        /**
+         * 缓存区补充空货架前置条件--锁定老化区的一个空货架
+         */
+        public final static String EMPTYPODLOCKFORPLCACHE = "emptyPodLockForPlCacheHandler";
+        /**
+         * 产线工作点去老化区前置条件---老化区有空储位并锁定一个
+         */
+        public final static String EMPTYPOSFORAGINGPOD = "emptyPosForAgingPodHandler";
+        /**
+         * 多任务时,子任务间保持(传递)货架信息的后置条件
+         */
+        public final static String KEEPPODCODE = "keepPodCodeHandler";
+        /**
+         * 检查并锁定电梯空闲缓存点
+         */
+        public final static String LOCKELEVATOREMPTYCACHE = "lockElevatorEmptyCacheHandler";
+        /**
+         * 一楼包装线体区呼叫满货货架前置条件-->是否有有货的货架
+         */
+        public final static String PACKAREA = "packAreaHandler";
+        /**
+         * 缓存区补充空货架前置条件--锁定缓存区的一个空储位
+         */
+        public final static String PLCACHEEMPTYPOSLOCK = "plCacheEmptyPosLockHandler";
+        /**
+         * 产线工作台空闲处理类
+         */
+        public final static String PLWBAVALIABLECON = "plWbAvaliableConHandler";
+        /**
+         *
+         */
+        public final static String QuaBufToQua = "quaBufToQuaHandler";
+        /**
+         *
+         */
+        public final static String QuaWbLock = "quaWbLockHandler";
+    }
 }
