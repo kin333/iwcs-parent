@@ -20,4 +20,8 @@ public interface EleControlTaskMapper extends MyMapperAndIds<EleControlTask> {
      * @return list
      */
     List<EleControlTask> selectPage(Map map);
+
+    EleControlTask selectTaskInfo(String eleTaskCode);
+
+    int updateTaskInfo(EleControlTask eleControlTask);
 }

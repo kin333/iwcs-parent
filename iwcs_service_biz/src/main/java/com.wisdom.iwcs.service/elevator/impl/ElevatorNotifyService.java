@@ -4,6 +4,7 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.plcUtils.CRCUtils;
 import com.wisdom.iwcs.common.utils.plcUtils.PlcProtocolUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.elevator.EleMsgLog;
 import com.wisdom.iwcs.domain.elevator.ElevatorReport;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.elevator.EleMsgLogMapper;
@@ -12,6 +13,8 @@ import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 /**
  * 梯控 service
@@ -52,30 +55,48 @@ public class ElevatorNotifyService {
     }
 
     /**
-     * agvCallBack调用
+     * wcs调用  agvCallBack
      * 货架到达检验点,通知电梯检验
      * @param
      * @return
      */
-    public void notifyEleCheckPod(){
+    public void notifyEleCheckPod(String berCode){
+        //查询那个楼层
+        BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
+        //通知电梯 业务已就绪，可以检验
+//        byte[] arriveCommandBinary= this.notifyEleBizReadyCommandBinary(startBaseMapBerth.getPointAlias());
+//        ch.writeAndFlush(arriveCommandBinary);
 
+        //更新梯控任务
+
+        //写入日志 msg_log
     }
 
     /**
      * 电梯调用，通知wcs
-     * 检验成功,进电梯
+     * 检验结果
+     * 成功：进电梯
+     * 失败：TODO
      * @param
      * @return
      */
-    public void eleNotify(){
+    public void eleNotifyCheckResult(ElevatorReport elevatorReport){
+        //获取楼层
+        String floor = elevatorReport.getFloor();
+        //更新子任务handler
 
     }
     /**
      * wcs 调用 通知电梯 agv 离开，
      * 通知电梯，目标楼层，wcs呼叫目标楼层agv
      */
-    public void notifyEleAgvLeave(){
-
+    public void notifyEleAgvLeave(String areaCode){
+        //根据areaCode查询那个是哪个楼层
+        //BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
+//        //通知电梯 任务楼层的AGV离开
+//        byte[] arriveCommandBinary= this.agvLeaveEleCommandBinary(startBaseMapBerth.getPointAlias());
+//        ch.writeAndFlush(arriveCommandBinary);
+        //写入日志 msg_log
     }
 
     /**
@@ -161,6 +182,19 @@ public class ElevatorNotifyService {
     private byte[] eleMsgReturnCommandBinary(String controllerNo, String controllerType, String msgStatus, String randomNum){
         String generatorQueryCommandStr = this.eleMsgReturnCommandStr(controllerNo, controllerType, msgStatus, randomNum);
         return PlcProtocolUtils.hexStrToBinaryStr(generatorQueryCommandStr);
+    }
+
+    /**
+     * common insert line_msg_log
+     */
+    private void insertLineMsgLog(String sendAddr, String msgBody, String msgType, String reqCode){
+        EleMsgLog eleMsgLog = new EleMsgLog();
+        eleMsgLog.setCreatedTime(new Date());
+        eleMsgLog.setSendAddr(sendAddr);
+        eleMsgLog.setMsgBody(msgBody);
+        eleMsgLog.setMsgType(msgType);
+        eleMsgLog.setReqCode(reqCode);
+        eleMsgLogMapper.insertSelective(eleMsgLog);
     }
 
 }

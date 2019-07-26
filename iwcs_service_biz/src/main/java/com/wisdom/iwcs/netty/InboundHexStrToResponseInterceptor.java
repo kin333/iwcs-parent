@@ -19,16 +19,20 @@ public class InboundHexStrToResponseInterceptor extends ChannelInboundHandlerAda
             //01 03 01 02 03 04 01 01 01,
             String address = msgStr.substring(0, 2);
             String deviceType = msgStr.substring(2,4);
-            String dataLenthHex = msgStr.substring(4,6);
-            int dataLength10 = Integer.parseInt(dataLenthHex, 18);
-            String dataBody = msgStr.substring(6,6+2*dataLength10);
+            int dataLength10 = 1;
+            if (deviceType.equals("03")){
+                dataLength10 = 20;
+            }else {
+                dataLength10 = 18;
+            }
+            String dataBody = msgStr.substring(4,dataLength10);
             plcRespone.setAddress(address.toUpperCase());
             plcRespone.setCommandType(deviceType);
             plcRespone.setReturnBodyBytes(dataBody);
             plcRespone.setReturnBodyByteLength(2*dataLength10);
             ctx.fireChannelRead(plcRespone);
         }else{
-            logger.error("报警器返回数据无法解析");
+            logger.error("PLC返回数据无法解析");
         }
     }
 }

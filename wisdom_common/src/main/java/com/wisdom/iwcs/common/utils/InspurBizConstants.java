@@ -172,4 +172,18 @@ public class InspurBizConstants {
         public final static String TASK_FINISHED = "taskFinished";
 
     }
+
+    /**
+     * PLC 通讯消息类型
+     */
+    public static final class PlcMsgType{
+        /**
+         * 发送消息
+         */
+        public final static String PLC_SEND = "send";
+        /**
+         * 接收消息
+         */
+        public final static String PLC_RECEIVE = "receive";
+    }
 }

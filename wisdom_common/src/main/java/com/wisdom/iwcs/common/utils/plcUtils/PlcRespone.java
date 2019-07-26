@@ -9,7 +9,7 @@ public class PlcRespone {
 
     private String address;
     /**
-     *     03:读取 06:写入
+     *     03:电梯 04:线体
      */
     private String commandType;
 

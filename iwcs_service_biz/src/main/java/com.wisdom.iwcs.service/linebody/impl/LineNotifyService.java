@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.PlcMsgType.PLC_SEND;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PLAUTOWBCALLPOD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PLTOAGING;
 
@@ -66,8 +67,6 @@ public class LineNotifyService {
         //通知线体 是否成功
         byte[] leaveCommandBinary= this.lineMsgReturnCommandBinary(lineBodyReport.getAddress(), lineBodyReport.getDeviceType(), msgStatus, lineBodyReport.getReqCode());
         ch.writeAndFlush(leaveCommandBinary);
-        //更新line_msg_log
-        //this.insertLineMsgLog();
     }
 
     /**
@@ -97,8 +96,6 @@ public class LineNotifyService {
         //通知线体 是否成功
         byte[] leaveCommandBinary= this.lineMsgReturnCommandBinary(lineBodyReport.getAddress(), lineBodyReport.getDeviceType(), msgStatus, lineBodyReport.getReqCode());
         ch.writeAndFlush(leaveCommandBinary);
-        //更新line_msg_log
-        //this.insertLineMsgLog();
     }
 
     /**
@@ -110,8 +107,6 @@ public class LineNotifyService {
         //通知线体
         byte[] arriveCommandBinary= this.agvArriveCommandBinary(controllerNo, controllerType, workPoint);
         ch.writeAndFlush(arriveCommandBinary);
-        //写入line_msg_log
-        //this.insertLineMsgLog();
     }
 
     /**
@@ -123,8 +118,6 @@ public class LineNotifyService {
         //通知线体
         byte[] leaveCommandBinary= this.agvLeaveCommandBinary(controllerNo, controllerType, workPoint);
         ch.writeAndFlush(leaveCommandBinary);
-        //写入line_msg_log
-        //this.insertLineMsgLog();
     }
     /**
      * Agv搬运货架离开线体工作点
@@ -139,6 +132,10 @@ public class LineNotifyService {
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
         String commandComplete = commandBody + s;
+
+        //写入line_msg_log
+        this.insertLineMsgLog(controllerNo,commandComplete,PLC_SEND,randomNum);
+
         return commandComplete;
     }
     private byte[] agvLeaveCommandBinary(String controllerNo, String controllerType, String workPoint){
@@ -159,6 +156,10 @@ public class LineNotifyService {
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
         String commandComplete = commandBody + s;
+
+        //写入line_msg_log
+        this.insertLineMsgLog(controllerNo,commandComplete,PLC_SEND,randomNum);
+
         return commandComplete;
     }
     private byte[] agvArriveCommandBinary(String controllerNo, String controllerType, String workPoint){
@@ -176,6 +177,10 @@ public class LineNotifyService {
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
         String commandComplete = commandBody + s;
+
+        //写入line_msg_log
+        this.insertLineMsgLog(controllerNo,commandComplete,PLC_SEND,randomNum);
+
         return commandComplete;
     }
     private byte[] lineMsgReturnCommandBinary(String controllerNo, String controllerType, String msgStatus, String randomNum){

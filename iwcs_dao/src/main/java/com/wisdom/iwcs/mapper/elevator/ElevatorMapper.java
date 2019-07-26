@@ -19,4 +19,6 @@ public interface ElevatorMapper extends MyMapperAndIds<Elevator> {
      * @return list
      */
     List<Elevator> selectPage(Map map);
+
+    int updateElevatorInfo(Elevator elevator);
 }
