@@ -8,6 +8,7 @@ import com.wisdom.iwcs.domain.linebody.LineBodyReport;
 import com.wisdom.iwcs.domain.linebody.LineMsgLog;
 import com.wisdom.iwcs.domain.task.TaskCreateRequest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.linebody.LineBodyMapper;
 import com.wisdom.iwcs.mapper.linebody.LineMsgLogMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
@@ -41,6 +42,8 @@ public class LineNotifyService {
     private ITaskCreateService iTaskCreateService;
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    private LineBodyMapper lineBodyMapper;
 
     /**
      * 线体通知WCS 呼叫空货架
@@ -99,13 +102,17 @@ public class LineNotifyService {
     }
 
     /**
-     * Agv搬运货架到达线体工作点
-     * @param
+     * WCS 调用
+     * Agv搬运货架到达/离开线体工作点
+     * agvTaskType 到达01 离开02
+     * @param workPoint, agvTaskType
      * @return
      */
-    public void agvArriveLine(String controllerNo, String controllerType, String workPoint){
+    public void agvStatusine(String workPoint, String agvTaskType){
+        //通过工作点查询那个地址
+        String msgCode = lineBodyMapper.selectMsgCode(workPoint);
         //通知线体
-        byte[] arriveCommandBinary= this.agvArriveCommandBinary(controllerNo, controllerType, workPoint);
+        byte[] arriveCommandBinary= this.agvStatusCommandBinary(msgCode, workPoint, agvTaskType);
         ch.writeAndFlush(arriveCommandBinary);
     }
 
@@ -114,56 +121,21 @@ public class LineNotifyService {
      * @param
      * @return
      */
-    public void agvPickLine(String controllerNo, String controllerType, String workPoint){
-        //通知线体
-        byte[] leaveCommandBinary= this.agvLeaveCommandBinary(controllerNo, controllerType, workPoint);
-        ch.writeAndFlush(leaveCommandBinary);
-    }
-    /**
-     * Agv搬运货架离开线体工作点
-     * @param
-     * @return
-     */
-    private String agvLeaveCommandStr(String controllerNo, String controllerType, String workPoint){
+    private String agvStatusCommandStr(String msgCode, String workPoint, String agvTaskType){
         //获取随机码
         String randomNum = iCommonService.randomHexString(8);
         //写死询命令
-        String commandBody = controllerNo + controllerType + randomNum + workPoint + "02";
+        String commandBody = msgCode + "03" + randomNum + workPoint + agvTaskType;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
         String commandComplete = commandBody + s;
 
         //写入line_msg_log
-        this.insertLineMsgLog(controllerNo,commandComplete,PLC_SEND,randomNum);
-
+        this.insertLineMsgLog(msgCode,commandComplete,PLC_SEND,randomNum);
         return commandComplete;
     }
-    private byte[] agvLeaveCommandBinary(String controllerNo, String controllerType, String workPoint){
-        String generatorQueryCommandStr = this.agvLeaveCommandStr(controllerNo, controllerType, workPoint);
-        return PlcProtocolUtils.hexStrToBinaryStr(generatorQueryCommandStr);
-    }
-
-    /**
-     * Agv搬运货架到达线体工作点
-     * @param
-     * @return
-     */
-    private String agvArriveCommandStr(String controllerNo, String controllerType, String workPoint){
-        //获取随机码
-        String randomNum = iCommonService.randomHexString(8);
-        //写死询命令
-        String commandBody = controllerNo + controllerType + randomNum + workPoint + "01";
-        byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
-        String s = CRCUtils.Make_CRC(str16Tobyte);
-        String commandComplete = commandBody + s;
-
-        //写入line_msg_log
-        this.insertLineMsgLog(controllerNo,commandComplete,PLC_SEND,randomNum);
-
-        return commandComplete;
-    }
-    private byte[] agvArriveCommandBinary(String controllerNo, String controllerType, String workPoint){
-        String generatorQueryCommandStr = this.agvArriveCommandStr(controllerNo, controllerType, workPoint);
+    private byte[] agvStatusCommandBinary(String msgCode, String workPoint, String agvTaskType){
+        String generatorQueryCommandStr = this.agvStatusCommandStr(msgCode, workPoint, agvTaskType);
         return PlcProtocolUtils.hexStrToBinaryStr(generatorQueryCommandStr);
     }
 

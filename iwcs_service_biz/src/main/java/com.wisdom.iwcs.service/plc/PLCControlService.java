@@ -68,6 +68,8 @@ public class PLCControlService {
                 logger.info("电梯通知{}：不允许进去电梯"+ plcRespone.getAddress()+":"+allowEnterEle);
             }
             EleControlTask eleControlTask = new EleControlTask();
+            eleControlTask.setEleTaskCode(reqCode);
+
             eleControlTaskMapper.updateTaskInfo(eleControlTask);
 
             //更新电梯状态
