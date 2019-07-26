@@ -304,5 +304,29 @@ public class TaskConstants {
          *
          */
         public final static String QUAWBLOCK = "quaWbLockHandler";
+        /**
+         * 到达线体工作台任务后置条件
+         */
+        public final static String ENTERWORKLINE = "enterWorkLineHandler";
+        /**
+         * 离开线体工作台任务后置条件
+         */
+        public final static String LEAVEWORKLINE = "leaveWorkLineHandler";
+
+
+    }
+
+    /**
+     * agv状态
+     */
+    public static final class agvTaskType {
+        /**
+         * 到达线体工作台
+         */
+        public final static String ENTER = "01";
+        /**
+         * 离开线体工作台
+         */
+        public final static String LEAVE = "02";
     }
 }
