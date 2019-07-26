@@ -43,6 +43,18 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
+    <if test="eleTaskCode != null and eleTaskCode != ''">
+      and ele_task_code = #{eleTaskCode}
+    </if>
+    <if test="mainTaskNum != null and mainTaskNum != ''">
+      and main_task_num = #{mainTaskNum}
+    </if>
+    <if test="elevatorWorkType != null and elevatorWorkType != ''">
+      and elevator_work_type = #{mainTaskNum}
+    </if>
+    <if test="taskStatus != null and taskStatus != ''">
+      and task_status = #{mainTaskNum}
+    </if>
     order by last_modified_time desc
   </select>
 </mapper>

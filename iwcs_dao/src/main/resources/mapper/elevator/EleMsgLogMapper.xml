@@ -32,6 +32,15 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
+    <if test="msgType != null and msgType != ''">
+      and msg_type = #{msgType}
+    </if>
+    <if test="eleTaskCode != null and eleTaskCode != ''">
+      and ele_task_code = #{eleTaskCode}
+    </if>
+    <if test="reqCode != null and reqCode != ''">
+      and req_code = #{reqCode}
+    </if>
     order by last_modified_time desc
   </select>
 </mapper>
