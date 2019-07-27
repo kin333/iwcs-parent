@@ -1,19 +1,17 @@
 package com.wisdom.iwcs.netty;
 
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
-import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.ThirdAppConnectionExecption;
-import com.wisdom.iwcs.domain.codec.BusinessCode;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,10 +19,10 @@ import java.util.concurrent.TimeUnit;
  * @Author george
  * @Date 2019/7/13 15:19
  */
-public class LineNettyClient {
-   static Logger logger = LoggerFactory.getLogger(LineNettyClient.class);
+public class ElevatorNettyClient {
+   static Logger logger = LoggerFactory.getLogger(ElevatorNettyClient.class);
 
-    private static final LineNettyClient lineNettyClient = new LineNettyClient();
+    private static final ElevatorNettyClient elevatorNettyClient = new ElevatorNettyClient();
 
     public  String host = "192.168.56.1";
     public  int port = 9234;
@@ -35,7 +33,7 @@ public class LineNettyClient {
      * 客户端的是Bootstrap，服务端的则是    ServerBootstrap。
      **/
     protected void init() {
-        logger.info("线体客户端开始配置");
+        logger.info("电梯客户端开始配置");
 
         // 首先，netty通过ServerBootstrap启动服务端
         bootstrap = new Bootstrap();
@@ -84,11 +82,11 @@ public class LineNettyClient {
         }
     }
 
-    public static LineNettyClient getInstance() {
-        if(lineNettyClient.bootstrap == null){
-            lineNettyClient.init();
+    public static ElevatorNettyClient getInstance() {
+        if(elevatorNettyClient.bootstrap == null){
+            elevatorNettyClient.init();
         }
-        return lineNettyClient;
+        return elevatorNettyClient;
     }
 
     /**
@@ -112,8 +110,8 @@ public class LineNettyClient {
     }
 
 //    public static void main(String[] args) {
-//        LineNettyClient lineNettyClient = LineNettyClient.getInstance();
-//        lineNettyClient.sendStringMsg("sss");
+//        ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
+//        elevatorNettyClient.sendStringMsg("sss");
 //    }
 
 }

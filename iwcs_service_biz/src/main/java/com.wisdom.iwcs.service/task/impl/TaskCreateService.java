@@ -154,6 +154,8 @@ public class TaskCreateService implements ITaskCreateService {
 
     /**
      * 任务：工作台点位呼叫空货架
+     * 参数：目标点(上锁)
+     * 后置条件：计算起点，货架(上锁)
      * taskTypeCode: plAutoWbCallPod
      */
     public void plAutoWbCallPodFunction(TaskCreateRequest taskCreateRequest){
@@ -178,6 +180,8 @@ public class TaskCreateService implements ITaskCreateService {
 
     /**
      * 任务：补充产线空货架缓存区
+     * 参数：areaCode
+     * 后置条件：计算起点，目标点(上锁),货架(上锁)
      * taskTypeCode: plBufSupply
      */
     public void plBufSupplyFunction(TaskCreateRequest taskCreateRequest){
@@ -201,6 +205,9 @@ public class TaskCreateService implements ITaskCreateService {
 
     /**
      * 任务：产线去老化区搬运
+     * 参数：
+     * 前置条件：
+     * 后置条件：
      * taskTypeCode: plToAging
      */
     public void plToAgingFunction(TaskCreateRequest taskCreateRequest){
@@ -270,6 +277,9 @@ public class TaskCreateService implements ITaskCreateService {
 
     /**
      * 任务：老化区前往检验点
+     * 参数：计算起点，目标点(上锁),货架(上锁)
+     * 前置条件：
+     * 后置条件：
      * taskTypeCode: agingToQuaInsp
      */
     public void agingToQuaInspFunction(TaskCreateRequest taskCreateRequest){
@@ -327,7 +337,8 @@ public class TaskCreateService implements ITaskCreateService {
     }
 
     /**
-     * 点到点
+     * 点到点 / 初始化入库
+     * 参数：计算起点，目标点(上锁),货架(上锁)
      * @param taskCreateRequest
      * @return
      */
@@ -400,6 +411,9 @@ public class TaskCreateService implements ITaskCreateService {
     
     /**
      * 检验缓冲区去检验点
+     * 参数：计算起点/货架(上锁)
+     * 前置条件：货架没任务
+     * 后置条件：目标点(上锁)
      * @param  taskCreateRequest
      * @return 
      */

@@ -50,8 +50,8 @@ public class NettyClientHandler extends  ChannelInboundHandlerAdapter {
         logger.info("服务端[{}]连接", ctx.channel().id());
         logger.info("CLIENT"+getRemoteAddress(ctx)+" 接入连接");
         //往channel map中添加channel信息
-        NettyClient.getCurConnectedChannelsMap().put(getIPString(ctx), ctx.channel());
-        NettyClient.getCurConnectedCtxMap().put(getIPString(ctx), ctx);
+//        NettyClient.getCurConnectedChannelsMap().put(getIPString(ctx), ctx.channel());
+//        NettyClient.getCurConnectedCtxMap().put(getIPString(ctx), ctx);
     }  
 
      /**
@@ -62,7 +62,7 @@ public class NettyClientHandler extends  ChannelInboundHandlerAdapter {
         logger.info("关闭连接时："+new Date());
         logger.info("服务端[{}]断开", ctx.channel().id());
         //删除Channel Map中的失效Client
-        NettyClient.getCurConnectedChannelsMap().remove(getIPString(ctx));
+//        NettyClient.getCurConnectedChannelsMap().remove(getIPString(ctx));
     }  
 
     /**

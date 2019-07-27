@@ -10,9 +10,9 @@ import com.wisdom.iwcs.domain.task.TaskCreateRequest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.linebody.LineBodyMapper;
 import com.wisdom.iwcs.mapper.linebody.LineMsgLogMapper;
+import com.wisdom.iwcs.netty.LineNettyClient;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
-import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +33,6 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PLTOAGING;
 @Service
 public class LineNotifyService {
     private final Logger logger = LoggerFactory.getLogger(LineNotifyService.class);
-
-    private static Channel ch;
 
     @Autowired
     private ICommonService iCommonService;
@@ -69,9 +67,11 @@ public class LineNotifyService {
             taskCreateRequest.setAreaCode(baseMapBerth.getAreaCode());
             iTaskCreateService.creatTask(taskCreateRequest);
         }
+
         //通知线体 是否成功
         byte[] leaveCommandBinary= this.lineMsgReturnCommandBinary(lineBodyReport.getAddress(), lineBodyReport.getDeviceType(), msgStatus, lineBodyReport.getReqCode());
-        ch.writeAndFlush(leaveCommandBinary);
+        LineNettyClient lineNettyClient = LineNettyClient.getInstance();
+        lineNettyClient.sendMsg(leaveCommandBinary);
     }
 
     /**
@@ -98,9 +98,11 @@ public class LineNotifyService {
             taskCreateRequest.setAreaCode(baseMapBerth.getAreaCode());
             iTaskCreateService.creatTask(taskCreateRequest);
         }
+
         //通知线体 是否成功
         byte[] leaveCommandBinary= this.lineMsgReturnCommandBinary(lineBodyReport.getAddress(), lineBodyReport.getDeviceType(), msgStatus, lineBodyReport.getReqCode());
-        ch.writeAndFlush(leaveCommandBinary);
+        LineNettyClient lineNettyClient = LineNettyClient.getInstance();
+        lineNettyClient.sendMsg(leaveCommandBinary);
     }
 
     /**
@@ -115,7 +117,9 @@ public class LineNotifyService {
         String msgCode = lineBodyMapper.selectMsgCode(workPoint);
         //通知线体
         byte[] arriveCommandBinary= this.agvStatusCommandBinary(msgCode, workPoint, agvTaskType);
-        ch.writeAndFlush(arriveCommandBinary);
+
+        LineNettyClient lineNettyClient = LineNettyClient.getInstance();
+        lineNettyClient.sendMsg(arriveCommandBinary);
     }
 
     /**
