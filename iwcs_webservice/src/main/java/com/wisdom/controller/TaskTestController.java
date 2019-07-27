@@ -16,6 +16,7 @@ import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
+import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
@@ -232,13 +233,15 @@ public class TaskTestController {
     private Thread workLineThread2;
     private Thread quaAutoToAgingThread;
     private Thread quaAutoCallPodThread;
+    private Thread quaAutoToAgingThread2;
+    private Thread quaAutoCallPodThread2;
     @GetMapping("/testMainTask")
     public Result testMainTask(){
 
-//        logger.info("开始产线工作台任务生成器");
-//        workLineThread1 = new Thread(new WorkLineScheduler("AB"));
-//        workLineThread1.start();
-//        logger.info("启动产线工作台任务生成器成功");
+        logger.info("开始产线工作台任务生成器");
+        workLineThread1 = new Thread(new WorkLineScheduler("AB"));
+        workLineThread1.start();
+        logger.info("启动产线工作台任务生成器成功");
 
         logger.info("开始产线工作台任务生成器");
         workLineThread2 = new Thread(new WorkLineScheduler("DD"));
@@ -253,6 +256,16 @@ public class TaskTestController {
         logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
         quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
         quaAutoCallPodThread.start();
+        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
+
+        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
+        quaAutoToAgingThread2 = new Thread(new QuaAutoToAgingWorker("AB"));
+        quaAutoToAgingThread2.start();
+        logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
+
+        logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
+        quaAutoCallPodThread2 = new Thread(new QuaAutoCallPodWorker("AB"));
+        quaAutoCallPodThread2.start();
         logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
 
         try {
