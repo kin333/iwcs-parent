@@ -23,7 +23,9 @@ public enum ApplicationErrorEnum {
     USER_NOT_HAVE_ANY_AUTHORITY("0008", "用户没有任何权限"),
     USER_NOT_HAVE_ANY_VALID_ROLES("0008", "用户没有任何有效角色"),
 
-    DEPENDENCY_EXIST("0010", "存在依赖，不能删除");
+    DEPENDENCY_EXIST("0010", "存在依赖，不能删除"),
+
+    THRIDAPP_CONNECTION_LOST("T101", "连接中断");
 
 
     private final String resCode;

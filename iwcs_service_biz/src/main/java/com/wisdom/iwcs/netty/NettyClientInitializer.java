@@ -36,6 +36,7 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
         //拆包\粘包 inbound 拦截器
         ByteBuf buf = Unpooled.copiedBuffer(",".getBytes());
         ch.pipeline().addLast(new DelimiterBasedFrameDecoder(1024,buf));
+        ch.pipeline().addLast(new StringEncoder());
         //byte 转为16进制string
         ch.pipeline().addLast(new InboundByteToHexStrInterceptor());
         //16进制返回转为标准基础response类
