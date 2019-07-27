@@ -28,7 +28,6 @@ public class WcsTaskScheduler implements Runnable {
 
     private ConcurrentHashMap<String, MainTaskWorker> maintaskWorkerMaps = new ConcurrentHashMap<String, MainTaskWorker>();
 
-
     public WcsTaskScheduler() {
 
     }
@@ -92,6 +91,10 @@ public class WcsTaskScheduler implements Runnable {
         }
         MainTaskService mainTaskService = (MainTaskService) AppContext.getBean("mainTaskService");
         mainTaskService.loopMaintTask(mainTaskNum);
+    }
+
+    public ConcurrentHashMap<String, MainTaskWorker> getMaintaskWorkerMaps() {
+        return maintaskWorkerMaps;
     }
 
 }

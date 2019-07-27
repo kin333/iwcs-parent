@@ -77,12 +77,11 @@ public class ConsumerThread implements Runnable {
                     String message = new String(body, "UTF-8");
                     logger.info("队列名称:{} routeKey:{} 信息:{}", queueName, envelope.getRoutingKey() , message);
                     //调用消费者活动
-                    consumerAction.action(message);
-                    String subTaskNum = "";
+                    consumerAction.action(new ConsumerActionInfo(message, queueName));
                     if (!queueName.contains("_")) {
                         return;
                     }
-                    subTaskNum = queueName.split("_")[1];
+                    String subTaskNum = queueName.split("_")[1];
                     //当队列消息含有结束标识,并且含有启动这个子任务的子任务号时,则认为这个子任务已经执行完了,可以关闭这个消息队列了
                     if (message.contains(RabbitMQConstants.END_LOGO) && message.contains(subTaskNum)){
                         logger.info("{}队列的连接将被关闭: {}, routeKey:{}", queueName, consumerTag, envelope.getRoutingKey());

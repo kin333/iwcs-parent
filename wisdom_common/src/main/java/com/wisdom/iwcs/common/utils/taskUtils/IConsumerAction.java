@@ -8,6 +8,6 @@ public interface IConsumerAction {
     /**
      * 具体消费动作
      */
-    void action(String message);
+    void action(ConsumerActionInfo consumerActionInfo);
 
 }

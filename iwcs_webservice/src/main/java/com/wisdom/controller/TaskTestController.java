@@ -7,7 +7,6 @@ import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
-import com.wisdom.iwcs.domain.log.ResPodEvt;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
@@ -17,7 +16,6 @@ import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
-import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
@@ -257,6 +255,11 @@ public class TaskTestController {
         quaAutoCallPodThread.start();
         logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
 
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         logger.info("开始启动任务调度器线程");
         Thread thread = new Thread(wcsTaskScheduler);
@@ -267,7 +270,7 @@ public class TaskTestController {
     }
 
     @GetMapping("/testStopCreateTask")
-    public void testStopCreateTask() {
+    public Result testStopCreateTask() {
         logger.info("开始停止任务生成器");
         if (workLineThread1 != null) {
             workLineThread1.interrupt();
@@ -282,6 +285,7 @@ public class TaskTestController {
             quaAutoCallPodThread.interrupt();
         }
         logger.info("停止任务生成器完成");
+        return new Result();
     }
 
     @GetMapping("/testTaskStart")
@@ -298,7 +302,8 @@ public class TaskTestController {
     @GetMapping("/taskLogTest")
     public void taskLogTest() {
         System.out.println("OK");
-        Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, message -> {
+        Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, consumerActionInfo -> {
+            String message = consumerActionInfo.getMessage();
             TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
             taskOperationLogMapper.insert(taskOperationLog);
         }));

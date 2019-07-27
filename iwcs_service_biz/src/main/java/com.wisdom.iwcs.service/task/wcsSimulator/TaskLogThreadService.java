@@ -19,13 +19,15 @@ public class TaskLogThreadService extends ConsumerThread {
         //创建消息日志
         super(RabbitMQConstants.TASK_LOG_QUEUE,
                 RabbitMQConstants.ROUTEKEY_TASK_LOG,
-                message -> {
-            //消息日志的动作
-            TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
-            TaskOperationLogMapper taskOperationLogMapper = AppContext.getBean("taskOperationLogMapper");
-            //添加日志
-            taskOperationLogMapper.insert(taskOperationLog);
-        });
+                consumerActionInfo -> {
+                    String message = consumerActionInfo.getMessage();
+                    //消息日志的动作
+                    TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
+                    TaskOperationLogMapper taskOperationLogMapper = AppContext.getBean("taskOperationLogMapper");
+                    //添加日志
+                    taskOperationLogMapper.insert(taskOperationLog);
+
+                });
     }
 
 }

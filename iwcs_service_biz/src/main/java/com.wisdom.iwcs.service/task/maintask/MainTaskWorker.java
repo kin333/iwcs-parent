@@ -132,6 +132,9 @@ public class MainTaskWorker extends AbstractTaskWorker {
         return nextSubtask;
     }
 
+    public SubTaskWorker getSubTaskWorker() {
+        return subTaskWorker;
+    }
 
     /**
      * MainTask, Include all its sub-tasks and sub task conditions.

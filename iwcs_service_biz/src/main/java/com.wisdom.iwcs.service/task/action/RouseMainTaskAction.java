@@ -1,18 +1,18 @@
 package com.wisdom.iwcs.service.task.action;
 
-import com.alibaba.fastjson.JSON;
 import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.common.utils.taskUtils.ConsumerActionInfo;
 import com.wisdom.iwcs.common.utils.taskUtils.IConsumerAction;
-import com.wisdom.iwcs.domain.log.BaseQueueInfo;
-import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 唤醒主任务的动作
@@ -22,27 +22,33 @@ import org.springframework.stereotype.Component;
 public class RouseMainTaskAction implements IConsumerAction {
     private final Logger logger = LoggerFactory.getLogger(RouseMainTaskAction.class);
     @Override
-    public void action(String message) {
-        //判断是否是json格式
-        if (!message.contains("{")) {
+    public void action(ConsumerActionInfo consumerActionInfo) {
+        String queueName = consumerActionInfo.getQueueName();
+
+        //提取子任务号
+        if (!queueName.contains("_")) {
             return;
         }
-        MainTaskMapper mainTaskMapper = AppContext.getBean("mainTaskMapper");
+        String subTaskNum = queueName.split("_")[1];
         SubTaskMapper subTaskMapper = AppContext.getBean("subTaskMapper");
         WcsTaskScheduler wcsTaskScheduler = AppContext.getBean("wcsTaskScheduler");
-
-        BaseQueueInfo baseQueueInfo = JSON.parseObject(message, BaseQueueInfo.class);
-        logger.info("子任务{}开始唤醒主任务", baseQueueInfo.getSubTaskNum());
-        SubTask subTask = subTaskMapper.selectBySubTaskNum(baseQueueInfo.getSubTaskNum());
+        logger.info("子任务{}开始唤醒主任务", subTaskNum);
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
         if (subTask == null) {
-            logger.error("子任务{}不存在", baseQueueInfo.getSubTaskNum());
+            logger.error("子任务{}不存在", subTaskNum);
             return;
         }
-        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
-        //唤醒主任务
-        MainTaskWorker mainTaskWorker = new MainTaskWorker(null, mainTask, wcsTaskScheduler);
-        Thread thread = new Thread(mainTaskWorker);
-        thread.start();
-        logger.info("子任务{}唤醒主任务结束", baseQueueInfo.getSubTaskNum());
+        //获取正在执行的主任务Map
+        ConcurrentHashMap<String, MainTaskWorker> maintaskWorkerMaps = wcsTaskScheduler.getMaintaskWorkerMaps();
+        MainTaskWorker mainTaskWorker = maintaskWorkerMaps.get(subTask.getMainTaskNum());
+        //如果是null,说明主任务还没启动
+        if (mainTaskWorker != null && mainTaskWorker.getSubTaskWorker() != null) {
+            AtomicBoolean waitLock = mainTaskWorker.getSubTaskWorker().getWaitLock();
+            //唤醒主任务
+            synchronized (waitLock) {
+                waitLock.notify();
+            }
+        }
+        logger.info("子任务{}唤醒主任务结束", subTaskNum);
     }
 }

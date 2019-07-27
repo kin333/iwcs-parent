@@ -51,5 +51,7 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
 
     }
 
-
- }
+    public AtomicBoolean getWaitLock() {
+        return waitLock;
+    }
+}

@@ -70,7 +70,8 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     System.out.println("sub task is going to wait " + waitLock);
                     if (! isRunnable()) {
                         logger.info("Task {}, subtask: {} is gonging to wait 10*1000, go...", subTask.getMainTaskNum(), subTask.getSubTaskNum());
-                        waitLock.wait(10 * 1000);
+                        waitLock.wait(60 * 1000 * 1);
+                        logger.info("Task thread start!");
                     } else{
                         logger.info("Task {}, subtask: {} become runnable, go...", subTask.getMainTaskNum(), subTask.getSubTaskNum());
                         break;
