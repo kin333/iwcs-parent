@@ -16,6 +16,7 @@ import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
@@ -29,6 +30,7 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PLTOAGING;
  * @Author george
  * @Date 2019/7/16 16:17 
  */
+@Service
 public class LineNotifyService {
     private final Logger logger = LoggerFactory.getLogger(LineNotifyService.class);
 
