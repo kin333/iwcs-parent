@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @Author george
  * @Date 2019/7/13 15:19
  */
-public class LineNettyClient {
+public class LineNettyClient implements Runnable {
    static Logger logger = LoggerFactory.getLogger(LineNettyClient.class);
 
     private static final LineNettyClient lineNettyClient = new LineNettyClient();
@@ -86,7 +86,7 @@ public class LineNettyClient {
 
     public static LineNettyClient getInstance() {
         if(lineNettyClient.bootstrap == null){
-            lineNettyClient.init();
+           // lineNettyClient.init();
         }
         return lineNettyClient;
     }
@@ -109,6 +109,11 @@ public class LineNettyClient {
      */
     public void sendStringMsg(String msg){
         sendMsg(msg.getBytes());
+    }
+
+    @Override
+    public void run() {
+        init();
     }
 
 //    public static void main(String[] args) {

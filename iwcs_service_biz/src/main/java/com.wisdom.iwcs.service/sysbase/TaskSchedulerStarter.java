@@ -42,7 +42,9 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
             //启动消息日志
             Thread thread = new Thread(taskLogThreadService);
             thread.start();
-            LineNettyClient.getInstance();
+            LineNettyClient lineNettyClient = LineNettyClient.getInstance();
+            Thread lineNettyClientThread = new Thread(lineNettyClient);
+            lineNettyClientThread.start();
 //        Thread thread = new Thread(wcsTaskScheduler);
 //        thread.start();
 //        logger.info("启动任务调度器线程成功");
