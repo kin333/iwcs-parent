@@ -96,6 +96,8 @@ public class LineNotifyService {
             taskCreateRequest.setTargetPointAlias(lineBodyReport.getWorkPoint());
             taskCreateRequest.setSubTaskBizProp(AUTO_FIRST);
             taskCreateRequest.setAreaCode(baseMapBerth.getAreaCode());
+            taskCreateRequest.setPodCode(baseMapBerth.getPodCode());
+            taskCreateRequest.setStartPointAlias(baseMapBerth.getPointAlias());
             iTaskCreateService.creatTask(taskCreateRequest);
         }
 

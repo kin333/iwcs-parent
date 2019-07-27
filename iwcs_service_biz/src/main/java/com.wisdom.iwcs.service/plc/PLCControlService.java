@@ -16,6 +16,7 @@ import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
@@ -26,6 +27,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.PlcMsgType.PLC_REC
  * @Author george
  * @Date 2019/7/23 9:57
  */
+@Service
 public class PLCControlService {
     Logger logger = LoggerFactory.getLogger(PLCControlService.class);
 
@@ -94,8 +96,8 @@ public class PLCControlService {
             lineBodyReport.setAddress(sendAddr);
             lineBodyReport.setDeviceType(commandType);
             lineBodyReport.setReqCode(reqCode);
-            String workType = msgBody.substring(16,18);
-            String workPoint = msgBody.substring(14,16);
+            String workType = msgBody.substring(12,14);
+            String workPoint = msgBody.substring(10,12);
             if (workType.equals("01")){
                 logger.info("线体通知{}：呼叫空货架"+ plcRespone.getAddress()+":"+workPoint);
                 lineBodyReport.setWorkPoint(workPoint);
