@@ -134,4 +134,10 @@
             <column name="end_alias" type="VARCHAR(16)" remarks="终点点位别名(冗余字段)" defaultValue=""/>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="201907291644" author="han">
+        <createIndex tableName="ts_sub_task" indexName="idx_workTaskStatus" unique="true">
+            <column name="worker_task_code"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

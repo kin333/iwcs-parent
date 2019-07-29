@@ -84,6 +84,9 @@ public class MapResouceService implements IMapResouceService {
         if(Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
             return new Result(400,"检验点工作区暂无空位置");
         }
+        if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
+            return new Result(400, "检验点工作区暂无空位置");
+        }
         //计算空闲点位
         emptyPoit=calculatingOptimalLocation(baseMapBerthList);
 

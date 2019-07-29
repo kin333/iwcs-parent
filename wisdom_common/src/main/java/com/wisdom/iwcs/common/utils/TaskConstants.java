@@ -329,4 +329,31 @@ public class TaskConstants {
          */
         public final static String LEAVE = "02";
     }
+    /**
+     * Hik的任务状态
+     */
+    public static final class hikTaskStatus {
+        /**
+         * 发送异常0
+         */
+        public final static String SEND_ERROR = "发送异常";
+        /**
+         * 已创建1
+         */
+        public final static String CREATE = "已创建";
+        /**
+         * 正在执行2
+         */
+        public final static String RUNNING = "正在执行";
+        /**
+         * 取消完成5
+         */
+        public final static String CANCEL_FINISH = "取消完成";
+        /**
+         * 已结束9
+         */
+        public final static String END = "已结束";
+    }
+
+
 }

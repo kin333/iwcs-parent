@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.task.wcsSimulator;
 
 import com.alibaba.fastjson.JSON;
 import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
 import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
@@ -24,8 +25,12 @@ public class TaskLogThreadService extends ConsumerThread {
                     //消息日志的动作
                     TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
                     TaskOperationLogMapper taskOperationLogMapper = AppContext.getBean("taskOperationLogMapper");
-                    //添加日志
-                    taskOperationLogMapper.insert(taskOperationLog);
+                    if (!TaskConstants.operationStatus.POST_CONDITION_FAILURE.equals(taskOperationLog.getOperationStatus())) {
+                        //添加日志
+                        taskOperationLogMapper.insertSelective(taskOperationLog);
+                    } else {
+                        taskOperationLogMapper.updateBySubTaskNum(taskOperationLog);
+                    }
 
                 });
     }

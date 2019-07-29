@@ -47,7 +47,7 @@ public class QuaAutoCallPodWorker implements Runnable {
                 this.checkEmptyQua();
 
                 synchronized (this) {
-                    logger.error("创建老化区货架到检验区调度器线程主动随眠60*1000*2");
+                    logger.info("创建老化区货架到检验区调度器线程主动随眠60*1000*1");
                     this.wait(60 * 1000 * 1);
                 }
 

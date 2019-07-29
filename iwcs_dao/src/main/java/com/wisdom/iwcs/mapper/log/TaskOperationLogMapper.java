@@ -20,4 +20,11 @@ public interface TaskOperationLogMapper extends DeleteLogicMapper<TaskOperationL
      * @return list
      */
     List<TaskOperationLog> selectPage(Map map);
+
+    /**
+     * 根据子单号更新日志
+     * @param taskOperationLog
+     * @return
+     */
+    int updateBySubTaskNum(TaskOperationLog taskOperationLog);
 }

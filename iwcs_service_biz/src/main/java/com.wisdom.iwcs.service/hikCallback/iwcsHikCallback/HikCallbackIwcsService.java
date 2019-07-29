@@ -184,6 +184,7 @@ public class HikCallbackIwcsService {
         baseMapBerth.setLockSource("");
         //更新储位信息,加货架号,解锁
         baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
+        logger.info("子任务{}解锁地码{}成功", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getPodCode());
     }
 
     private void publicCheckSubTask(HikCallBackAgvMove hikCallBackAgvMove, SubTask subTask) {
@@ -201,6 +202,7 @@ public class HikCallbackIwcsService {
      * @param hikCallBackAgvMove
      */
     private void taskFinished(HikCallBackAgvMove hikCallBackAgvMove) {
+        logger.info("开始执行任务完成回调方法,任务号:{}", hikCallBackAgvMove.getTaskCode());
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
             logger.debug("任务{}已结束", hikCallBackAgvMove.getTaskCode());

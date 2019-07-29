@@ -69,7 +69,7 @@ public class ConsumerThread implements Runnable {
             logger.debug("建立消息队列成功:" + queue);
             channel.queueBind(queue, RabbitMQConstants.EXCHANGE_A, routeKey);
             logger.debug("交换机与消息队列绑定成功:" + queue);
-//            channel.basicQos(1);
+            channel.basicQos(3);
 
             Consumer consumer = new DefaultConsumer(channel) {
                 @Override

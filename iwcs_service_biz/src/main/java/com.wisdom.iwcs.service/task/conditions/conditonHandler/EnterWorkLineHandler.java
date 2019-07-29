@@ -35,7 +35,7 @@ public class EnterWorkLineHandler implements IConditionHandler {
             throw new BusinessException(subTask.getStartBercode() + "-地码不存在");
         }
         if (TaskConstants.workTaskStatus.END.equals(subTask.getWorkTaskStatus())) {
-            lineNotifyService.agvStatusine(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.ENTER);
+//            lineNotifyService.agvStatusine(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.ENTER);
             return true;
         }
         return false;

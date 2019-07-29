@@ -45,7 +45,7 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @param subTaskNum
      * @return
      */
-    int updatePodCodeBySubTaskCode(@Param("subTaskNum") String subTaskNum,@Param("podCode") String podCode);
+    int updatePodCodeBySubTaskCode(@Param("subTaskNum") String subTaskNum);
 
     /**
      * 根据子任务编号更新终点地码和位置
@@ -96,4 +96,6 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return
      */
     int updateByMainTaskNumAndSubTaskType(SubTask subTask);
+
+    List<SubTask> selectUnusualTask(String endStatus);
 }

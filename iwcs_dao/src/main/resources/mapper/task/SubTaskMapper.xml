@@ -208,7 +208,8 @@
   <update id="updatePodCodeBySubTaskCode">
     update ts_sub_task
     <set>
-          pod_code = #{podCode}
+          pod_code = '',
+        start_bercode = ''
     </set>
     where sub_task_num = #{subTaskNum}
   </update>
@@ -289,5 +290,14 @@
     where main_task_num = #{mainTaskNum,jdbcType= VARCHAR}
     and sub_task_typ = #{subTaskTypeCode}
   </update>
+
+  <select id="selectUnusualTask" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from ts_sub_task
+    where work_task_status != #{endStatus}
+    and send_time is not null
+    and send_time &lt;= DATE_SUB(NOW(),INTERVAL 5 MINUTE)
+  </select>
 
 </mapper>
