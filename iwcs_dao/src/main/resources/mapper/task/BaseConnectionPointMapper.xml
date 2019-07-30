@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.BaseConnectionPointMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.BaseConnectionPoint">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="connection_point_id" jdbcType="INTEGER" property="connectionPointId" />
+    <result column="connection_point_code" jdbcType="VARCHAR" property="connectionPointCode" />
+    <result column="ber_code" jdbcType="VARCHAR" property="berCode" />
+    <result column="point_alias" jdbcType="VARCHAR" property="pointAlias" />
+    <result column="connection_point_type" jdbcType="VARCHAR" property="connectionPointType" />
+    <result column="device_code" jdbcType="VARCHAR" property="deviceCode" />
+    <result column="map_code" jdbcType="VARCHAR" property="mapCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="connection_prop1" jdbcType="VARCHAR" property="connectionProp1" />
+    <result column="connection_prop2" jdbcType="VARCHAR" property="connectionProp2" />
+    <result column="connection_prop3" jdbcType="VARCHAR" property="connectionProp3" />
+    <result column="connection_prop4" jdbcType="VARCHAR" property="connectionProp4" />
+    <result column="connection_prop5" jdbcType="VARCHAR" property="connectionProp5" />
+    <result column="valid_flag" jdbcType="INTEGER" property="validFlag" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+    <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy" />
+    <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    connection_point_id, connection_point_code, ber_code, point_alias, connection_point_type, 
+    device_code, map_code, area_code, connection_prop1, connection_prop2, connection_prop3, 
+    connection_prop4, connection_prop5, valid_flag, delete_flag, created_by, created_time, 
+    last_modified_by, last_modified_time
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from base_connection_point
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>
