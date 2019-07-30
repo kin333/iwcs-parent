@@ -34,7 +34,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeCon
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class MapResouceService implements IMapResouceService {
-    private Logger logger = LoggerFactory.getLogger(BaseLockEmptyMapService.class);
+    private Logger logger = LoggerFactory.getLogger(MapResouceService.class);
 
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
@@ -170,7 +170,8 @@ public class MapResouceService implements IMapResouceService {
         if(count < 1) {
             return new Result(400,"该储位在进行其他操作中，请稍后执行");
         }
-        logger.info("点位锁定成功:{} 锁定源为:{}", baseMapBerth.getBerCode(), lockStorageDto.getLockSource());
+        logger.info("点位锁定成功:{} 锁定源为:{} 乐观锁版本号:{}", baseMapBerth.getBerCode(),
+                                        lockStorageDto.getLockSource(), baseMapBerth.getVersion());
         //更新子任务终点坐标
         String subTaskNum = lockStorageDto.getLockSource();
         BaseMapBerth lockMapBerth = new BaseMapBerth();

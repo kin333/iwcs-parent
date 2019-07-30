@@ -620,6 +620,16 @@ public class ApplicationProperties {
 
         private String returnMapOrPodUrl;
 
+        private String returnTaskStatus;
+
+        public String getReturnTaskStatus() {
+            return returnTaskStatus;
+        }
+
+        public void setReturnTaskStatus(String returnTaskStatus) {
+            this.returnTaskStatus = returnTaskStatus;
+        }
+
         public String getReturnMapOrPodUrl() {
             return returnMapOrPodUrl;
         }

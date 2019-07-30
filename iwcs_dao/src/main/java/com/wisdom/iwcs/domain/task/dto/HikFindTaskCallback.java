@@ -2,6 +2,7 @@ package com.wisdom.iwcs.domain.task.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 调用海康接口 查找指定任务号的任务状态的回调信息类
@@ -9,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class HikFindTaskCallback {
     /**
      * 任务编号

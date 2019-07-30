@@ -173,10 +173,10 @@ public class HikCallbackIwcsService {
             throw new BusinessException(hikCallBackAgvMove.getMapDataCode() + "此地码的信息不存在");
         }
         if (subTask != null && !subTask.getSubTaskNum().equals(baseMapBerth.getLockSource())) {
-            logger.error("地码锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
+            logger.error("地码锁定源与子任务号不匹配,子任务号:{} 地码编号:{} 地码锁定源:{}", subTask.getSubTaskNum(),
+                    hikCallBackAgvMove.getMapDataCode(), baseMapBerth.getLockSource());
+            throw new BusinessException("地码锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
                     + " 地码编号:" + hikCallBackAgvMove.getMapDataCode());
-//            throw new BusinessException("地码锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
-//                    + " 地码编号:" + hikCallBackAgvMove.getMapDataCode());
         }
         //解锁这个储位
         baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
@@ -235,8 +235,8 @@ public class HikCallbackIwcsService {
             if (subTask != null && !subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
                 logger.error("货架锁定源与子任务号不匹配,子任务号:{}  地码编号:{}  锁定源:{}", subTask.getSubTaskNum(),
                         hikCallBackAgvMove.getMapDataCode(), basePodDetail.getLockSource());
-//            throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
-//                    + " 货架编号:" + hikCallBackAgvMove.getPodCode());
+                throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
+                    + " 货架编号:" + hikCallBackAgvMove.getPodCode());
             }
             BasePodDetail tmpBasePodDetail = new BasePodDetail();
             tmpBasePodDetail.setId(basePodDetail.getId());
@@ -264,16 +264,6 @@ public class HikCallbackIwcsService {
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
 
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getMapDataCode());
-//        //发送释放货架消息
-//        ResPodEvt resPodEvt = new ResPodEvt();
-//        resPodEvt.setPodCode(hikCallBackAgvMove.getPodCode());
-//        resPodEvt.setCreateTime(new Date());
-//        resPodEvt.setAreaCode(baseMapBerth.getOperateAreaCode());
-//        resPodEvt.setMapCode(baseMapBerth.getMapCode());
-//        resPodEvt.setResourcesType(TaskConstants.resourceType.POD_RELEASE);
-//        resPodEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
-//        String routeKey = CreateRouteKeyUtils.createPodRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
-//        RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPodEvt);
         //发送释放储位消息
         ResPosEvt resPosEvt = new ResPosEvt();
         resPosEvt.setBerCode(hikCallBackAgvMove.getMapDataCode());

@@ -219,10 +219,14 @@
       tst.end_bercode = #{baseMapBerth.berCode},
       tst.end_x = #{baseMapBerth.coox},
       tst.end_y = #{baseMapBerth.cooy},
-      tst.end_alias = bmb.point_alias
+        <if test="baseMapBerth.berCode != null and baseMapBerth.berCode != ''">
+            tst.end_alias = bmb.point_alias
+        </if>
     </set>
     where tst.sub_task_num = #{subTaskNum}
-    and  bmb.ber_code = #{baseMapBerth.berCode}
+      <if test="baseMapBerth.berCode != null and baseMapBerth.berCode != ''">
+          and  bmb.ber_code = #{baseMapBerth.berCode}
+      </if>
   </update>
 
 
