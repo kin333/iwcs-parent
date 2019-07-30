@@ -27,6 +27,11 @@ public class ElevatorTaskRequest {
     private String startPoint;
 
     /**
+     * 电梯交接点
+     */
+    private String eleHandoverPoint;
+
+    /**
      * 跨楼层任务 起始楼层
      */
     private String sourceFloor;
@@ -71,6 +76,14 @@ public class ElevatorTaskRequest {
 
     public void setStartPoint(String startPoint) {
         this.startPoint = startPoint;
+    }
+
+    public String getEleHandoverPoint() {
+        return eleHandoverPoint;
+    }
+
+    public void setEleHandoverPoint(String eleHandoverPoint) {
+        this.eleHandoverPoint = eleHandoverPoint;
     }
 
     public String getSourceFloor() {

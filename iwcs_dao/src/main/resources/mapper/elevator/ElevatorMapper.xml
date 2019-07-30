@@ -29,7 +29,7 @@
     current_floor, floor_update_time
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List" /> from elevator
+    select <include refid="Base_Column_List" /> from elevator where elevator_code = #{elevatorCode,jdbcType=VARCHAR}
      where 1=1
     <if test="searchKey != null and searchKey != ''">
       and 1=1
@@ -42,6 +42,9 @@
     </if>
     order by last_modified_time desc
   </select>
+    <select id="selectEleStatus" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from elevator where
+    </select>
     <update id="updateElevatorInfo">
         update elevator
         <set>

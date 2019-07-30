@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="george" id="201902211039-1">
+        <createTable tableName="base_connection_point" remarks="关联点表">
+            <column autoIncrement="true" name="connection_point_id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="connection_point_code" remarks="关联点编号" type="VARCHAR(64)"/>
+            <column name="ber_code" remarks="点位地码" type="VARCHAR(64)"/>
+            <column name="point_alias" remarks="点位编号" type="VARCHAR(128)"/>
+            <column name="connection_point_type" remarks="点位类型：电梯检验点1，电梯交接点2，线体工作点3" type="VARCHAR(16)"/>
+            <column name="device_code" remarks="关联设备编号" type="VARCHAR(64)"/>
+            <column name="map_code" remarks="地图编号" type="VARCHAR(64)"/>
+            <column name="area_code" remarks="库区编号" type="VARCHAR(64)"/>
+            <column name="connection_prop1" remarks="预留字段1" type="VARCHAR(255)"/>
+            <column name="connection_prop2" remarks="预留字段2" type="VARCHAR(255)"/>
+            <column name="connection_prop3" remarks="预留字段3" type="VARCHAR(255)"/>
+            <column name="connection_prop4" remarks="预留字段4" type="VARCHAR(255)"/>
+            <column name="connection_prop5" remarks="预留字段5" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="valid_flag" remarks="有效标记，0有效，1无效" type="INT"/>
+            <column defaultValueNumeric="0" name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT"/>
+            <column name="created_by" remarks="创建人" type="INT"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="last_modified_by" remarks="最后修改人" type="INT"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -186,4 +186,58 @@ public class InspurBizConstants {
          */
         public final static String PLC_RECEIVE = "receive";
     }
+
+    /**
+     * 梯控任务状态
+     */
+    public static final class EleControlTaskStatus{
+        /**
+         * 创建
+         */
+        public final static String ELE_TASK_INIT = "0";
+        /**
+         * 起始接驳
+         */
+        public final static String ENTER_ELE = "1";
+        /**
+         * 电梯运行
+         */
+        public final static String ELE_WORKING = "2";
+        /**
+         * 目标接驳
+         */
+        public final static String OUT_ELE = "3";
+        /**
+         * 结束9
+         */
+        public final static String ELE_TASK_END = "9";
+    }
+
+    /**
+     * 电梯任务作业类型
+     */
+    public static final class EleControlTaskWorkType{
+        /**
+         * 上楼
+         */
+        public final static String ELE_UP = "up";
+        /**
+         * 下楼
+         */
+        public final static String ELE_DOWN = "down";
+    }
+
+    /**
+     * 电梯任务 agv动作：送货架/接货架
+     */
+    public static final class EleControlTaskAgvAction{
+        /**
+         * 上楼
+         */
+        public final static String AGV_SEND = "send";
+        /**
+         * 下楼
+         */
+        public final static String AGV_RECEIVE = "receive";
+    }
 }

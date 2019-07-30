@@ -140,4 +140,9 @@
             <column name="worker_task_code"/>
         </createIndex>
     </changeSet>
+    <changeSet author="george" id="2019007301407-3">
+        <dropColumn tableName="ts_sub_task" columnName="source_floor"/>
+        <dropColumn tableName="ts_sub_task" columnName="dest_floor"/>
+        <dropColumn tableName="ts_sub_task" columnName="elevator_work_type"/>
+    </changeSet>
 </databaseChangeLog>

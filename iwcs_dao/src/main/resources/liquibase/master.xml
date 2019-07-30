@@ -129,4 +129,5 @@
 
 
     <include file="liquibase/changelog/iwcs/iwcs_db_ts_sub_task_201907020820.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_base_connection_point_201902211039.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

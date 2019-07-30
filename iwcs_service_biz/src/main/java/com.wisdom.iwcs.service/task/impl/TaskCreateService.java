@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
+import com.wisdom.iwcs.common.utils.FloorMapEnum;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -11,11 +12,13 @@ import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.BaseWhArea;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
+import com.wisdom.iwcs.domain.elevator.Elevator;
 import com.wisdom.iwcs.domain.elevator.ElevatorTaskRequest;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.base.BaseWhAreaMapper;
+import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -31,6 +34,7 @@ import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.MANUAL_FIRST;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.*;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskWorkType.ELE_DOWN;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.AGINGREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
@@ -85,6 +89,8 @@ public class TaskCreateService implements ITaskCreateService {
     private IElevatorTaskService iElevatorTaskService;
     @Autowired
     private IPackWbCallPodService iPackWbCallPodService;
+    @Autowired
+    private ElevatorMapper elevatorMapper;
 
     /**
      * 创建任务
@@ -509,26 +515,47 @@ public class TaskCreateService implements ITaskCreateService {
     public Result elevatorTaskFunction(TaskCreateRequest taskCreateRequest){
         String podCode = taskCreateRequest.getPodCode();
         String sourceFloor = taskCreateRequest.getSourceFloor();
-        String destFloor = taskCreateRequest.getDestFloor();
+        String destFloor = "";
         String eleWorkType = taskCreateRequest.getDestFloor();
         String startPoint = "";
+        String eleHandoverPoint = "";
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(destFloor), "目标楼层不能为空");
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(sourceFloor), "起始楼层不能为空");
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(eleWorkType), "电梯作业类型不能为空");
 
         //TODO 通过梯控 校验是否有正在进行中的任务
 
+        //查询电梯状态是否正常
+        Elevator elevator = elevatorMapper.selectEleStatus("01");
+        Preconditions.checkBusinessError(!elevator.equals("1"), "电梯故障，不能执行电梯任务");
+
         //根据货架号查询起始点
         BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
         Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号");
 
-        BaseMapBerth startPointMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
-        startPoint = startPointMapBerth.getBerCode();
-
         //校验货架点位是否正确
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
         Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+
+        //查询起始点
+        BaseMapBerth startPointMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
+        startPoint = startPointMapBerth.getBerCode();
+
+        //根据上楼或下楼和货架号计算进电梯子任务目标点
+        if (eleWorkType.equals(ELE_DOWN)){
+            //查询一楼的点 TODO
+
+            //eleHandoverPoint = baseMapBerthMapper.selectBerCodeByPodCode();
+            destFloor = "1";
+        }else{
+            //查询货架的初始楼层
+            BasePodDetail basePodDetail1 = basePodDetailMapper.selectByPodCode(podCode);
+            Integer floor = FloorMapEnum.returnTaskValueByType(basePodDetail1.getPodProp2());
+            destFloor = floor.toString();
+
+            //eleHandoverPoint = baseMapBerthMapper.selectBerCodeByPodCode();
+
+        }
 
         //创建任务
         ElevatorTaskRequest elevatorTaskRequest = new ElevatorTaskRequest();
@@ -536,6 +563,7 @@ public class TaskCreateService implements ITaskCreateService {
         elevatorTaskRequest.setPriority(taskCreateRequest.getPriority());
         elevatorTaskRequest.setPodCode(podCode);
         elevatorTaskRequest.setStartPoint(startPoint);
+        elevatorTaskRequest.setEleHandoverPoint(eleHandoverPoint);
         elevatorTaskRequest.setSourceFloor(sourceFloor);
         elevatorTaskRequest.setDestFloor(destFloor);
         elevatorTaskRequest.setEleWorkType(eleWorkType);

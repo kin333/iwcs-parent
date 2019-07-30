@@ -3,13 +3,20 @@ package com.wisdom.iwcs.service.task.impl;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.elevator.Elevator;
+import com.wisdom.iwcs.domain.elevator.ElevatorReport;
 import com.wisdom.iwcs.domain.elevator.ElevatorTaskRequest;
+import com.wisdom.iwcs.domain.task.EleControlTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BaseWaMapMapper;
+import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
+import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
+import com.wisdom.iwcs.service.base.ICommonService;
+import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.task.intf.IElevatorTaskService;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
@@ -21,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskStatus.ELE_TASK_INIT;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 
 /**
@@ -44,6 +52,14 @@ public class ElevatorTaskService implements IElevatorTaskService {
     private BaseWaMapMapper baseWaMapMapper;
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    private EleControlTaskMapper eleControlTaskMapper;
+    @Autowired
+    private ICommonService iCommonService;
+    @Autowired
+    private ElevatorMapper elevatorMapper;
+    @Autowired
+    private ElevatorNotifyService elevatorNotifyService;
 
     @Override
     public Result elevatorTask(ElevatorTaskRequest elevatorTaskRequest){
@@ -74,6 +90,14 @@ public class ElevatorTaskService implements IElevatorTaskService {
             subTaskCreate.setNeedInform(taskRel.getNeedInform());
             subTaskCreate.setSubTaskSeq(taskRel.getSubTaskSeq());
 
+            //电梯子任务，第一个写入起始点和吊箱交接点，第二个写入起始点
+            if (taskRel.getSubTaskSeq() == 1){
+                subTaskCreate.setStartBercode(elevatorTaskRequest.getStartPoint());
+                subTaskCreate.setEndBercode(elevatorTaskRequest.getEleHandoverPoint());
+            }else {
+                subTaskCreate.setStartBercode(elevatorTaskRequest.getEleHandoverPoint());
+            }
+
             subTaskCreate.setPodCode(elevatorTaskRequest.getPodCode());
             subTaskCreate.setWorkerTaskCode(subTaskNum);
 
@@ -83,8 +107,6 @@ public class ElevatorTaskService implements IElevatorTaskService {
             //货架上锁
             iMapResouceService.lockPod(basePodDetail);
 
-            //TODO 锁住电梯 == 梯控
-
             subTaskCreate.setSourceFloor(elevatorTaskRequest.getSourceFloor());
             subTaskCreate.setDestFloor(elevatorTaskRequest.getDestFloor());
             subTaskCreate.setElevatorWorkType(elevatorTaskRequest.getEleWorkType());
@@ -93,6 +115,30 @@ public class ElevatorTaskService implements IElevatorTaskService {
             //添加子任务条件
             iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
         }
+
+        //TODO 锁住电梯 == 梯控任务创建
+        String eleTaskCode =  iCommonService.randomHexString(8);
+        EleControlTask eleControlTask = new EleControlTask();
+        eleControlTask.setMainTaskNum(mainTaskNum);
+        eleControlTask.setEleTaskCode(eleTaskCode);
+        eleControlTask.setTaskStatus(ELE_TASK_INIT);
+        eleControlTask.setSourceFloor(Integer.valueOf(elevatorTaskRequest.getSourceFloor()));
+        eleControlTask.setDestFloor(Integer.valueOf(elevatorTaskRequest.getDestFloor()));
+        eleControlTask.setCreatedTime(new Date());
+
+        //更新电梯表
+        Elevator elevator = new Elevator();
+        elevator.setEleTaskUpdateTime(new Date());
+        elevator.setMainTaskNum(mainTaskNum);
+        elevator.setEleTaskStatus("1");
+        elevator.setEleTaskCode(eleTaskCode);
+        elevatorMapper.updateElevatorInfo(elevator);
+
+        //通知电梯 到起始楼层
+        ElevatorReport elevatorReport = new ElevatorReport();
+        elevatorReport.setFloor("0"+elevatorTaskRequest.getSourceFloor());
+        elevatorNotifyService.selectCrossFloorTask(elevatorReport);
+
         return new Result();
     }
 }

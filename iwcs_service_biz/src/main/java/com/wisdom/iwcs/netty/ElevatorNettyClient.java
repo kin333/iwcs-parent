@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @Author george
  * @Date 2019/7/13 15:19
  */
-public class ElevatorNettyClient {
+public class ElevatorNettyClient implements Runnable {
    static Logger logger = LoggerFactory.getLogger(ElevatorNettyClient.class);
 
     private static final ElevatorNettyClient elevatorNettyClient = new ElevatorNettyClient();
@@ -84,7 +84,7 @@ public class ElevatorNettyClient {
 
     public static ElevatorNettyClient getInstance() {
         if(elevatorNettyClient.bootstrap == null){
-            elevatorNettyClient.init();
+            //elevatorNettyClient.init();
         }
         return elevatorNettyClient;
     }
@@ -107,6 +107,11 @@ public class ElevatorNettyClient {
      */
     public void sendStringMsg(String msg){
         sendMsg(msg.getBytes());
+    }
+
+    @Override
+    public void run() {
+        init();
     }
 
 //    public static void main(String[] args) {

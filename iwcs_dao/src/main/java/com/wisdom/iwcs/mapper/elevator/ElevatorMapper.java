@@ -20,5 +20,12 @@ public interface ElevatorMapper extends MyMapperAndIds<Elevator> {
      */
     List<Elevator> selectPage(Map map);
 
+    /**
+     * 查询电梯状态
+     */
+    Elevator selectEleStatus(String eleCode);
+    /**
+     * 更新电梯状态
+     */
     int updateElevatorInfo(Elevator elevator);
 }

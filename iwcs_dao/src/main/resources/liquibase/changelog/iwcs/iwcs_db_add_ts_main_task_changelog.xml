@@ -49,4 +49,11 @@
             <column name="task_status"/>
         </createIndex>
     </changeSet>
+    <changeSet id="201907151555" author="george">
+        <addColumn tableName="ts_main_task">
+            <column name="source_floor" remarks="电梯任务，开始楼层" type="VARCHAR(32)"/>
+            <column name="dest_floor" remarks="电梯任务，结束楼层" type="VARCHAR(32)"/>
+            <column name="elevator_work_type" remarks="电梯任务作业类型up/down" type="VARCHAR(32)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
