@@ -87,7 +87,7 @@ public class ElevatorNotifyService {
     public void notifyEleCheckPod(String reqCode, String berCode, String eleFloor){
         //查询那个楼层
         BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
-        Integer floorNum = FloorMapEnum.returnTaskValueByType(startBaseMapBerth.getMapCode());
+        Integer floorNum = FloorMapEnum.returnMapValueByType(startBaseMapBerth.getMapCode());
         String floor = "0" +floorNum;
 
         //更新梯控任务
@@ -141,7 +141,6 @@ public class ElevatorNotifyService {
             eleControlTask.setTaskStatus(ENTER_ELE);
             eleControlTask.setPlcNotifyEntryDest("1");
         }
-
         eleControlTaskMapper.updateTaskInfo(eleControlTask);
 
         //更新电梯表
@@ -167,7 +166,7 @@ public class ElevatorNotifyService {
     public void notifyEleAgvLeave(String reqCode,String mapCode, String agvAction){
 
         //根据areaCode查询那个是哪个楼层
-        Integer floorNum = FloorMapEnum.returnTaskValueByType(mapCode);
+        Integer floorNum = FloorMapEnum.returnMapValueByType(mapCode);
         String floor = "0"+floorNum;
 
         //更新梯控任务

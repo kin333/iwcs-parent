@@ -132,4 +132,18 @@ public interface ICommonService {
      * @return
      */
     String randomHexString(int len);
+
+    /**
+     * 根据货架号判断是否有正在执行的任务或上锁
+     * @param podCode
+     * @return bePodTask
+     */
+    boolean checkPodTask(String podCode);
+
+    /**
+     * 根据坐标判断是否有正在执行的任务或上锁
+     * @param
+     * @return
+     */
+    boolean checkBerTask(String berCode);
 }

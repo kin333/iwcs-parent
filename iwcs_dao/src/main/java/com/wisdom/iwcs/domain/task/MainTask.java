@@ -84,6 +84,24 @@ public class MainTask {
     private String areaCode;
 
     /**
+     * 电梯任务，开始楼层
+     */
+    @Column(name = "source_floor")
+    private String sourceFloor;
+
+    /**
+     * 电梯任务，结束楼层"
+     */
+    @Column(name = "dest_floor")
+    private String destFloor;
+
+    /**
+     * 电梯任务作业类型up/down
+     */
+    @Column(name = "elevator_work_type")
+    private String elevatorWorkType;
+
+    /**
      * @return id
      */
     public Long getId() {
@@ -319,5 +337,29 @@ public class MainTask {
 
     public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
+    }
+
+    public String getSourceFloor() {
+        return sourceFloor;
+    }
+
+    public void setSourceFloor(String sourceFloor) {
+        this.sourceFloor = sourceFloor;
+    }
+
+    public String getDestFloor() {
+        return destFloor;
+    }
+
+    public void setDestFloor(String destFloor) {
+        this.destFloor = destFloor;
+    }
+
+    public String getElevatorWorkType() {
+        return elevatorWorkType;
+    }
+
+    public void setElevatorWorkType(String elevatorWorkType) {
+        this.elevatorWorkType = elevatorWorkType;
     }
 }

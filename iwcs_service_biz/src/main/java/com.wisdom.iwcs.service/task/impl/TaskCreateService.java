@@ -18,6 +18,7 @@ import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.base.BaseWhAreaMapper;
+import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.base.ICommonService;
@@ -91,6 +92,10 @@ public class TaskCreateService implements ITaskCreateService {
     private IPackWbCallPodService iPackWbCallPodService;
     @Autowired
     private ElevatorMapper elevatorMapper;
+    @Autowired
+    private EleControlTaskMapper eleControlTaskMapper;
+    @Autowired
+    private BaseConnectionPointMapper baseConnectionPointMapper;
 
     /**
      * 创建任务
@@ -166,12 +171,16 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public void plAutoWbCallPodFunction(TaskCreateRequest taskCreateRequest){
         logger.info("工作台点位呼叫空货架:{}",JSON.toJSONString(taskCreateRequest));
+        String targetPoint = "";
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPointAlias()), "请填写点位编号");
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getTargetPointAlias());
         Preconditions.checkBusinessError(baseMapBerth == null, "无效目标点编码" + taskCreateRequest.getTargetPointAlias());
+        targetPoint = baseMapBerth.getBerCode();
 
         Preconditions.checkBusinessError(!LINEAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体区域");
+
+        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), "该目标点有正在执行的任务！");
 
         //校验目标点位和用户登录的点位是否在同一楼层
         //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
@@ -211,7 +220,7 @@ public class TaskCreateService implements ITaskCreateService {
 
     /**
      * 任务：产线去老化区搬运
-     * 参数：
+     * 参数：货架号或起始点，目标点手动有、自动无
      * 前置条件：
      * 后置条件：
      * taskTypeCode: plToAging
@@ -249,6 +258,8 @@ public class TaskCreateService implements ITaskCreateService {
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
         Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
 
+        Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
+
         //更改货架空满状态
         basePodDetailMapper.updatePodInStock(podCode,NOT_EMPTY_POD);
 
@@ -268,6 +279,8 @@ public class TaskCreateService implements ITaskCreateService {
             Preconditions.checkBusinessError(endBaseMapBerth == null, "目标点位信息为空");
 
             Preconditions.checkBusinessError(AGINGREA.equals(endBaseMapBerth.getOperateAreaCode()), "选择的点位不属于老化区");
+
+            Preconditions.checkBusinessError(iCommonService.checkBerTask(endBaseMapBerth.getBerCode()), "该目标点有正在执行的任务！");
             //加锁
             LockStorageDto lockStorageDto = new LockStorageDto();
             lockStorageDto.setMapCode(endBaseMapBerth.getMapCode());
@@ -302,6 +315,8 @@ public class TaskCreateService implements ITaskCreateService {
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
         Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
 
+        Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
+
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
 //        String userAreaCode = SecurityUtils.getCurrentAreaCode();
 //        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
@@ -329,6 +344,8 @@ public class TaskCreateService implements ITaskCreateService {
                 throw new BusinessException("创建任务失败，检验区没有空闲点位！");
             }
         }
+
+        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), "该目标点有正在执行的任务！");
         //创建任务
         AgingToQuaInspRequest agingToQuaInspRequest = new AgingToQuaInspRequest();
         agingToQuaInspRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
@@ -345,6 +362,8 @@ public class TaskCreateService implements ITaskCreateService {
     /**
      * 点到点 / 初始化入库
      * 参数：计算起点，目标点(上锁),货架(上锁)
+     * 参数：起点、货架号、目标点
+     * 初始化入库：参数 货架号、起始点 必传
      * @param taskCreateRequest
      * @return
      */
@@ -356,11 +375,27 @@ public class TaskCreateService implements ITaskCreateService {
         String startPoint = "";
         String targetPoint = "";
 
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) || Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
 
-        BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
-        Preconditions.checkBusinessError(startBaseMapBerth == null, "根据起点点位编号获取点位信息为空");
-        startPoint = startBaseMapBerth.getBerCode();
+        BaseMapBerth startBaseMapBerth = new BaseMapBerth();
+        if (!Strings.isNullOrEmpty(podCode)){
+            Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
+            //非初始化入库 校验货架点位是否正确
+            Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+            Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+
+            //根据货架号查询起始点
+            BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+            Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号");
+
+            startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
+        }
+        if (!Strings.isNullOrEmpty(startPointAlias)){
+            startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+            Preconditions.checkBusinessError(startBaseMapBerth == null, "根据起点点位编号获取点位信息为空");
+            startPoint = startBaseMapBerth.getBerCode();
+        }
+
         //初始化入库
         if (!Strings.isNullOrEmpty(taskCreateRequest.getpTopTaskSubTaskType()) && INIT_STORAGE.equals(taskCreateRequest.getpTopTaskSubTaskType())){
             //筛选目标点，锁定放在创建子任务中
@@ -372,10 +407,6 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
             targetPoint = baseMapBerth.getBerCode();
         }else{
-            //非初始化入库 校验货架点位是否正确
-            Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
-            Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
-
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "目标点不能为空");
             //查询点位是否有任务或有货架，无，上锁
             BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(targetPointAlias);
@@ -471,6 +502,8 @@ public class TaskCreateService implements ITaskCreateService {
         BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
         Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号");
 
+        Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
+
         BaseMapBerth startPointMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
         startPoint = startPointMapBerth.getBerCode();
 
@@ -523,7 +556,15 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(sourceFloor), "起始楼层不能为空");
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(eleWorkType), "电梯作业类型不能为空");
 
-        //TODO 通过梯控 校验是否有正在进行中的任务
+        Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
+
+        //校验货架点位是否正确
+        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+
+        //通过梯控 校验是否有正在进行中的任务
+        long countUnEndTask = eleControlTaskMapper.countUnEndTask();
+        Preconditions.checkBusinessError(countUnEndTask > 0, "电梯有未完结的任务，不能创建");
 
         //查询电梯状态是否正常
         Elevator elevator = elevatorMapper.selectEleStatus("01");
@@ -532,28 +573,21 @@ public class TaskCreateService implements ITaskCreateService {
         //根据货架号查询起始点
         BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
         Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号");
-
-        //校验货架点位是否正确
-        Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
-        Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
-
-        //查询起始点
-        BaseMapBerth startPointMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
-        startPoint = startPointMapBerth.getBerCode();
+        startPoint = basePodDetail.getBerCode();
 
         //根据上楼或下楼和货架号计算进电梯子任务目标点
         if (eleWorkType.equals(ELE_DOWN)){
-            //查询一楼的点 TODO
-
-            //eleHandoverPoint = baseMapBerthMapper.selectBerCodeByPodCode();
+            //查询一楼的电梯交接点
+            String mapCode = FloorMapEnum.returnTypeByMapValue(1);
+            eleHandoverPoint = baseConnectionPointMapper.selectBerCodeByMapCode(mapCode);
             destFloor = "1";
         }else{
             //查询货架的初始楼层
             BasePodDetail basePodDetail1 = basePodDetailMapper.selectByPodCode(podCode);
-            Integer floor = FloorMapEnum.returnTaskValueByType(basePodDetail1.getPodProp2());
+            Integer floor = FloorMapEnum.returnMapValueByType(basePodDetail1.getPodProp2());
             destFloor = floor.toString();
-
-            //eleHandoverPoint = baseMapBerthMapper.selectBerCodeByPodCode();
+            //查询货架原所在楼层的电梯交接点
+            eleHandoverPoint = baseConnectionPointMapper.selectBerCodeByMapCode(basePodDetail1.getPodProp2());
 
         }
 
@@ -575,7 +609,7 @@ public class TaskCreateService implements ITaskCreateService {
     /**
      * 一楼包装线体区呼叫满货货架
      * 前置条件：必须同楼层，包装区点位置空
-     * 必要参数：起始点位
+     * 必要参数：起始点位,
      * 触发：PDA
      * @param taskCreateRequest
      * @return
@@ -584,17 +618,24 @@ public class TaskCreateService implements ITaskCreateService {
         String startPoint = "";
         String podCode = "";
         String targetPoint = "";
+
         String startPointAlias = taskCreateRequest.getStartPointAlias();
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(startPointAlias), "起始点不能为空");
 
         //校验起始点是否有货，获取货架
         BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
-        Preconditions.checkBusinessError(startBaseMapBerth == null, "根据起点点位编号获取点位信息为空");
+        Preconditions.checkBusinessError(startBaseMapBerth == null || startBaseMapBerth.getPodCode() == null, "根据起点点位编号获取点位信息为空");
         startPoint = startBaseMapBerth.getBerCode();
+        podCode = startBaseMapBerth.getPodCode();
 
-        //校验目标点 有货架返错
-        BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias("");
-        Preconditions.checkBusinessError(endBaseMapBerth.getPodCode() == null, "包装线货架不能有货架");
+        Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
+
+        //一楼包装线体1个点，自动获取目标点
+        //校验目标点 有货架或有任务返错
+        BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(PAGEWORKAREA);
+        Preconditions.checkBusinessError(!Strings.isNullOrEmpty(endBaseMapBerth.getPodCode()), "包装线货架不能有货架");
+        targetPoint = endBaseMapBerth.getBerCode();
+        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), "该目标点有正在执行的任务！");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
         String userAreaCode = SecurityUtils.getCurrentAreaCode();

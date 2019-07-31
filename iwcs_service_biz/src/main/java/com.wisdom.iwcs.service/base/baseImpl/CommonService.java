@@ -367,5 +367,35 @@ public class CommonService implements ICommonService {
         }
         return null;
     }
+
+    /**
+     * 根据货架号判断是否有正在执行的任务或上锁
+     * @param podCode
+     * @return bePodTask
+     */
+    @Override
+    public boolean checkPodTask(String podCode){
+        boolean bePodTask = false;
+        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+        if (basePodDetail.getLockSource() != null || basePodDetail.getInLock() == 1){
+            bePodTask = true;
+        }
+        return bePodTask;
+    }
+
+    /**
+     * 根据坐标判断是否有正在执行的任务或上锁
+     * @param
+     * @return
+     */
+    @Override
+    public boolean checkBerTask(String berCode){
+        boolean beNerTask = false;
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
+        if (baseMapBerth.getLockSource() != null || baseMapBerth.getInLock() ==1){
+            beNerTask = true;
+        }
+        return beNerTask;
+    }
 }
 

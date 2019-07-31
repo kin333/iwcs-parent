@@ -6,6 +6,7 @@ import java.util.Map;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.BaseConnectionPoint;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -20,4 +21,11 @@ public interface BaseConnectionPointMapper extends DeleteLogicMapper<BaseConnect
      * @return list
      */
     List<BaseConnectionPoint> selectPage(Map map);
+
+    /**
+     * 更加mapCode查询电梯交接点
+     * 每个mapCode只能有一个电梯交接点
+     */
+    @Select("select ber_code from base_connection_point where map_code = {mapCode}")
+    String selectBerCodeByMapCode(String mapCode);
 }

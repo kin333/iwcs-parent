@@ -19,13 +19,17 @@
     <result column="task_group_code" jdbcType="VARCHAR" property="taskGroupCode" />
     <result column="exector_num" jdbcType="VARCHAR" property="exectorNum" />
       <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+
+      <result property="sourceFloor" jdbcType="VARCHAR" column="source_floor"/>
+      <result property="destFloor" jdbcType="VARCHAR" column="dest_floor"/>
+      <result property="elevatorWorkType" jdbcType="VARCHAR" column="elevator_work_type"/>
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
     -->
     id, main_task_num, main_task_type_code, task_status, date_chg, main_task_seq, group_id, 
-    sequence, create_date, remark, priority, task_group_code, exector_num, area_code
+    sequence, create_date, remark, priority, task_group_code, exector_num, area_code, source_floor, dest_floor, elevator_work_type
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_main_task
@@ -74,4 +78,14 @@
     </set>
     where main_task_num = #{mainTaskNum}
   </update>
+
+    <update id="updateMainTaskEleByMainTaskNum">
+        update ts_main_task
+        <set>
+            source_floor = #{sourceFloor},
+            dest_floor = #{destFloor},
+            elevator_work_type = #{elevatorWorkType},
+        </set>
+        where main_task_num = #{mainTaskNum}
+    </update>
 </mapper>

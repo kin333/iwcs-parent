@@ -6,6 +6,7 @@ import java.util.Map;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.EleControlTask;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -24,4 +25,7 @@ public interface EleControlTaskMapper extends MyMapperAndIds<EleControlTask> {
     EleControlTask selectTaskInfo(String eleTaskCode);
 
     int updateTaskInfo(EleControlTask eleControlTask);
+
+    @Select("select count(1) from ele_control_task where task_status != '9'")
+    long countUnEndTask();
 }

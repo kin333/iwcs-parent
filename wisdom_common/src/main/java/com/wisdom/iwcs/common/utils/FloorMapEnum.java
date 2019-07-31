@@ -35,10 +35,19 @@ public enum FloorMapEnum {
         return null;
     }
 
-    public static Integer returnTaskValueByType(String type) {
+    public static Integer returnMapValueByType(String type) {
         for (FloorMapEnum enumValue : FloorMapEnum.values()) {
             if (enumValue.getType().equals(type)) {
                 return enumValue.getMapValue();
+            }
+        }
+        return null;
+    }
+
+    public static String returnTypeByMapValue(Integer mapValue) {
+        for (FloorMapEnum enumValue : FloorMapEnum.values()) {
+            if (enumValue.getMapValue().equals(mapValue)) {
+                return enumValue.getType();
             }
         }
         return null;

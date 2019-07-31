@@ -39,4 +39,6 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
      * @return
      */
     int updatePriority(@Param("mainTaskNum") String mainTaskNum,@Param("priority") Integer priority);
+
+    int updateMainTaskEleByMainTaskNum(MainTask mainTask);
 }

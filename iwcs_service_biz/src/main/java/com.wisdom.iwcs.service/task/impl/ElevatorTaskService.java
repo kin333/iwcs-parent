@@ -7,12 +7,14 @@ import com.wisdom.iwcs.domain.elevator.Elevator;
 import com.wisdom.iwcs.domain.elevator.ElevatorReport;
 import com.wisdom.iwcs.domain.elevator.ElevatorTaskRequest;
 import com.wisdom.iwcs.domain.task.EleControlTask;
+import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BaseWaMapMapper;
 import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
+import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
@@ -60,6 +62,8 @@ public class ElevatorTaskService implements IElevatorTaskService {
     private ElevatorMapper elevatorMapper;
     @Autowired
     private ElevatorNotifyService elevatorNotifyService;
+    @Autowired
+    private MainTaskMapper mainTaskMapper;
 
     @Override
     public Result elevatorTask(ElevatorTaskRequest elevatorTaskRequest){
@@ -107,14 +111,19 @@ public class ElevatorTaskService implements IElevatorTaskService {
             //货架上锁
             iMapResouceService.lockPod(basePodDetail);
 
-            subTaskCreate.setSourceFloor(elevatorTaskRequest.getSourceFloor());
-            subTaskCreate.setDestFloor(elevatorTaskRequest.getDestFloor());
-            subTaskCreate.setElevatorWorkType(elevatorTaskRequest.getEleWorkType());
             subTaskMapper.insertSelective(subTaskCreate);
 
             //添加子任务条件
             iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
         }
+
+        //更新主任务
+        MainTask mainTask = new MainTask();
+        mainTask.setSourceFloor(elevatorTaskRequest.getSourceFloor());
+        mainTask.setDestFloor(elevatorTaskRequest.getDestFloor());
+        mainTask.setElevatorWorkType(elevatorTaskRequest.getEleWorkType());
+        mainTask.setMainTaskNum(mainTaskNum);
+        mainTaskMapper.updateMainTaskEleByMainTaskNum(mainTask);
 
         //TODO 锁住电梯 == 梯控任务创建
         String eleTaskCode =  iCommonService.randomHexString(8);
