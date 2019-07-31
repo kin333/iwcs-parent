@@ -112,9 +112,9 @@ application:
     movePodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/genMoveTaskByPod
     genAgvSchedulingTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/genAgvSchedulingTask
     continueTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/continueTask
-    cancelTaskUrl: http://192.168.102.97/rcs/services/rest/hikRpcService/cancelTask
+    cancelTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/cancelTask
     returnMapOrPodUrl: http://192.168.102.97/rcs/services/rest/hikRpcService/queryPodBerthAndMat
-    returnTaskStatus:  http://192.168.102.99/rcs/services/rest/hikRpcService/queryTaskStatus
+    returnTaskStatus:  http://192.168.102.97/rcs/services/rest/hikRpcService/queryTaskStatus
     tokenCode: 09bd3456991fe1cf2e185de92fa5aab5
     clientCode: INSPUR
   outstock:
