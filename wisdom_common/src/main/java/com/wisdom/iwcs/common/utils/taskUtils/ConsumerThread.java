@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import static com.wisdom.iwcs.common.utils.constant.RabbitMQConstants.TASK_LOG_QUEUE;
+
 public class ConsumerThread implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(ConsumerThread.class);
 
@@ -63,17 +65,21 @@ public class ConsumerThread implements Runnable {
      */
     private void createNewEvent() {
         Connection connection = RabbitMQUtil.getConnection();
+        Channel channel;
         try {
-            Channel channel = connection.createChannel();
+            channel = connection.createChannel();
             String queue = channel.queueDeclare(queueName, false, false, true, null).getQueue();
             logger.debug("建立消息队列成功:" + queue);
             channel.queueBind(queue, RabbitMQConstants.EXCHANGE_A, routeKey);
             logger.debug("交换机与消息队列绑定成功:" + queue);
-            channel.basicQos(3);
+            //每次仅处理一条消息
+            channel.basicQos(1);
 
             Consumer consumer = new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                    //返回确认状态
+                    channel.basicAck(envelope.getDeliveryTag(), false);
                     String message = new String(body, "UTF-8");
                     logger.info("队列名称:{} routeKey:{} 信息:{}", queueName, envelope.getRoutingKey() , message);
                     //调用消费者活动
@@ -97,8 +103,12 @@ public class ConsumerThread implements Runnable {
                     }
                 }
             };
-
-            String consumerTag = channel.basicConsume(queueName, true, consumer);
+            boolean autoAck = true;
+            if (TASK_LOG_QUEUE.equals(queueName)) {
+                //false是取消自动应答机制,开启手动应答机制
+                autoAck = false;
+            }
+            String consumerTag = channel.basicConsume(queueName, autoAck, consumer);
             logger.info("Consume with tag: {}", consumerTag);
         } catch (IOException e) {
             e.printStackTrace();
