@@ -47,7 +47,15 @@
     </set>
     where sub_task_num = #{subTaskNum}
     <if test="operationStatus != null and operationStatus != ''">
-      operation_status = #{operationStatus}
+      and operation_status = #{operationStatus}
     </if>
   </update>
+
+  <select id="selectLogCount" resultType="int">
+    select count(*) from task_operation_log
+    where sub_task_num = #{subTaskNum}
+    <if test="operationStatus != null and operationStatus != ''">
+      and operation_status = #{operationStatus}
+    </if>
+  </select>
 </mapper>

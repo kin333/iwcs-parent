@@ -985,5 +985,11 @@
             <column name="ber_column" remarks="点位所处列" type="VARCHAR(32)" />
         </addColumn>
     </changeSet>
+    
+    <changeSet id="201907311324" author="han">
+        <createIndex tableName="base_pod_detail" indexName="idx_podCode" unique="true">
+            <column name="pod_code"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>

@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,9 +48,11 @@ public class ErrorRepairThread implements Runnable {
     BasePodDetailMapper basePodDetailMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void run() {
         errorRepair();
     }
+
 
     private void errorRepair() {
 
@@ -141,7 +144,10 @@ public class ErrorRepairThread implements Runnable {
             return;
         }
         //4. 更新货架号信息
-        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(subTask.getPodCode());
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(subTask.getPodCode());
+        if (basePodDetail == null) {
+            logger.error("子任务{}的货架号{}异常",subTask.getSubTaskNum(), subTask.getPodCode());
+        }
         if (subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
             BasePodDetail tmpBasePodDetail = new BasePodDetail();
             tmpBasePodDetail.setId(basePodDetail.getId());

@@ -94,4 +94,14 @@ public class HikCallBackController {
         return hikCallbackIwcsService.taskNotify(hikCallBackAgvMove);
     }
 
+    /**
+     * 小车出电梯后的回调接口
+     * @param hikCallBackAgvMove
+     * @return
+     */
+    @PostMapping("/excuteTask")
+    public HikSyncResponse excuteTask(@RequestBody HikCallBackAgvMove hikCallBackAgvMove) {
+        return hikCallbackIwcsService.excuteTask(hikCallBackAgvMove);
+    }
+
 }

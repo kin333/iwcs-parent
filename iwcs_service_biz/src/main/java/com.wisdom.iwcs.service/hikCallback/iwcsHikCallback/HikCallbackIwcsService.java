@@ -275,4 +275,9 @@ public class HikCallbackIwcsService {
         String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
     }
+
+    public HikSyncResponse excuteTask(HikCallBackAgvMove hikCallBackAgvMove) {
+
+        return null;
+    }
 }

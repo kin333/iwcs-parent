@@ -27,4 +27,11 @@ public interface TaskOperationLogMapper extends DeleteLogicMapper<TaskOperationL
      * @return
      */
     int updateBySubTaskNum(TaskOperationLog taskOperationLog);
+
+    /**
+     * 根据子单号查询日志数量
+     * @param taskOperationLog
+     * @return
+     */
+    int selectLogCount(TaskOperationLog taskOperationLog);
 }

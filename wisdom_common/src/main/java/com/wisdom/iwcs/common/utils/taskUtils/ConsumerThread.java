@@ -79,7 +79,9 @@ public class ConsumerThread implements Runnable {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     //返回确认状态
-                    channel.basicAck(envelope.getDeliveryTag(), false);
+                    if (TASK_LOG_QUEUE.equals(queueName)) {
+                        channel.basicAck(envelope.getDeliveryTag(), false);
+                    }
                     String message = new String(body, "UTF-8");
                     logger.info("队列名称:{} routeKey:{} 信息:{}", queueName, envelope.getRoutingKey() , message);
                     //调用消费者活动
