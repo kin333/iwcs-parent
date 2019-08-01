@@ -170,6 +170,10 @@ public class InspurBizConstants {
          * 任务完成
          */
         public final static String TASK_FINISHED = "taskFinished";
+        /**
+         * 到达检查点
+         */
+        public final static String APPLY_RESOURCE = "applyResource";
 
     }
 

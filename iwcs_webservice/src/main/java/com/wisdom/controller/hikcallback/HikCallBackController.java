@@ -104,4 +104,15 @@ public class HikCallBackController {
         return hikCallbackIwcsService.excuteTask(hikCallBackAgvMove);
     }
 
+    /**
+     * 小车到达检验点回调
+     * @return
+     */
+    @PostMapping("/applyResource")
+    public HikSyncResponse applyResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
+        HikSyncResponse hikSyncResponse = new HikSyncResponse();
+        hikSyncResponse.setReqCode(hikReachCheckArea.getReqCode());
+        return hikSyncResponse;
+    }
+
 }

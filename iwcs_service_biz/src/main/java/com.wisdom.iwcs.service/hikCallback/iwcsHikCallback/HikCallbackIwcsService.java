@@ -62,9 +62,14 @@ public class HikCallbackIwcsService {
             //任务结束
             case InspurBizConstants.HikCallbackMethod.TASK_FINISHED:
                 taskFinished(hikCallBackAgvMove); break;
+            //到达检查点
+            case InspurBizConstants.HikCallbackMethod.APPLY_RESOURCE:
+                ; break;
             default: break;
         }
-        return new HikSyncResponse();
+        HikSyncResponse hikSyncResponse = new HikSyncResponse();
+        hikSyncResponse.setReqCode(hikCallBackAgvMove.getReqCode());
+        return hikSyncResponse;
     }
 
     /**
@@ -278,6 +283,6 @@ public class HikCallbackIwcsService {
 
     public HikSyncResponse excuteTask(HikCallBackAgvMove hikCallBackAgvMove) {
 
-        return null;
+        return new HikSyncResponse();
     }
 }
