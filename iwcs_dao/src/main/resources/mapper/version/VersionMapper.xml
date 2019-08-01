@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.version.VersionMapper">
+    <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.version.Version">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="information" jdbcType="VARCHAR" property="information"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id,version,information,url
+  </sql>
+    <select id="selectVersionPage"  resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List"/>
+     from iwcs_prd_dev.version
+    </select>
+    <select id="selectinformation" parameterType="java.lang.Integer" resultType="java.lang.String">
+    select
+      information
+    from iwcs_prd_dev.version
+    where version = #{version,jdbcType=INTEGER}
+  </select>
+    <insert id="insert" parameterType="com.wisdom.iwcs.domain.version.VersionDto" >
+        insert into iwcs_prd_dev.version (version,information,url)
+        values (#{version,jdbcType=INTEGER}, #{information,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR}})    </insert>
+    <select id="selectnewVersion" resultType="com.wisdom.iwcs.domain.version.Version">
+      select  version,information,url
+     from iwcs_prd_dev.version where id = (SELECT max(id) FROM iwcs_prd_dev.version)
+    </select>
+</mapper>
