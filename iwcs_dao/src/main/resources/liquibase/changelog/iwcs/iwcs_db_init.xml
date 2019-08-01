@@ -991,5 +991,11 @@
             <column name="pod_code"/>
         </createIndex>
     </changeSet>
+    
+    <changeSet id="201908010853" author="han">
+        <createIndex tableName="task_operation_log" indexName="idx_subTaskNum" unique="false">
+            <column name="sub_task_num"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>

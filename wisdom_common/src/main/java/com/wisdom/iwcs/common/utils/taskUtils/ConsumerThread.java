@@ -78,17 +78,16 @@ public class ConsumerThread implements Runnable {
             Consumer consumer = new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                    //返回确认状态
-                    if (TASK_LOG_QUEUE.equals(queueName)) {
-                        channel.basicAck(envelope.getDeliveryTag(), false);
-                    }
                     String message = new String(body, "UTF-8");
                     logger.info("队列名称:{} routeKey:{} 信息:{}", queueName, envelope.getRoutingKey() , message);
                     //调用消费者活动
                     consumerAction.action(new ConsumerActionInfo(message, queueName));
+                    //返回确认状态
+                    channel.basicAck(envelope.getDeliveryTag(), false);
                     if (!queueName.contains("_")) {
                         return;
                     }
+                    //获取子任务单号
                     String subTaskNum = queueName.split("_")[1];
                     //当队列消息含有结束标识,并且含有启动这个子任务的子任务号时,则认为这个子任务已经执行完了,可以关闭这个消息队列了
                     if (message.contains(RabbitMQConstants.END_LOGO) && message.contains(subTaskNum)){

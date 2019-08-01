@@ -28,7 +28,7 @@ public class TaskLogThreadService extends ConsumerThread {
                     //消息日志的动作
                     TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
                     TaskOperationLogMapper taskOperationLogMapper = AppContext.getBean("taskOperationLogMapper");
-                    logger.info("日志开始生成:{}", message);
+                    logger.info("子任务{}日志开始生成", taskOperationLog.getSubTaskNum());
                     if (!TaskConstants.operationStatus.POST_CONDITION_FAILURE.equals(taskOperationLog.getOperationStatus())) {
                         //添加日志
                         taskOperationLogMapper.insertSelective(taskOperationLog);
@@ -38,11 +38,11 @@ public class TaskLogThreadService extends ConsumerThread {
                         if (count <= 0) {
                             taskOperationLogMapper.insertSelective(taskOperationLog);
                         } else {
-                            //如果此条子任务已经存在后置条件不满足,则新增,只不更新
+                            //如果此条子任务已经存在后置条件不满足,则新增,否则更新
                             taskOperationLogMapper.updateBySubTaskNum(taskOperationLog);
                         }
                     }
-                    logger.info("日志生成结束:");
+                    logger.info("日志生成结束");
                 });
     }
 

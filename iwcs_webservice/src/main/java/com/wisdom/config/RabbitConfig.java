@@ -42,11 +42,11 @@ public class RabbitConfig {
     @Bean
     public Queue queue() {
         // 是否持久化
-        boolean durable = true;
+        boolean durable = false;
         // 仅创建者可以使用的私有队列，断开后自动删除
         boolean exclusive = false;
         // 当所有消费客户端连接断开后，是否自动删除队列
-        boolean autoDelete = false;
+        boolean autoDelete = true;
         return new Queue(RabbitMQConstants.QUEUE_A, durable, exclusive, autoDelete);
     }
 

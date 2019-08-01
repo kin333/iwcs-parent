@@ -12,7 +12,7 @@ public class RabbitMQConstants {
     /**
      * queue-A
      */
-    public static final String QUEUE_A = "iwcs_queue_A";
+    public static final String QUEUE_A = "iwcs_queue_A_Test";
     /**
      * 消息日志的队列名称
      */
