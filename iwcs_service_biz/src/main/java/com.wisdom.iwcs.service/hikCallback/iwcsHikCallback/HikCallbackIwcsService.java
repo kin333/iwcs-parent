@@ -69,7 +69,7 @@ public class HikCallbackIwcsService {
         }
         HikSyncResponse hikSyncResponse = new HikSyncResponse();
         hikSyncResponse.setReqCode(hikCallBackAgvMove.getReqCode());
-        return hikSyncResponse;
+         return hikSyncResponse;
     }
 
     /**
