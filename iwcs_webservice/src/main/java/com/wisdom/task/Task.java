@@ -17,6 +17,7 @@ package com.wisdom.task;
 
 import com.wisdom.iwcs.quartz.ErrorRepairThread;
 import com.wisdom.iwcs.service.codec.SequenceService;
+import com.wisdom.test.ComparingVersionsConsistent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class Task {
     SequenceService sequenceService;
     @Autowired
     ErrorRepairThread errorRepairThread;
+    @Autowired
+    com.wisdom.test.ComparingVersionsConsistent comparingVersionsConsistent;
+
 
 
     //	@Scheduled(cron="0 0/1 * * * ?")
@@ -72,6 +76,12 @@ public class Task {
 //        thread.start();
 //        logger.info("错误处理定时器开始执行");
     }
-
-
+    /**
+     * 开机检查版本是否一致
+     *
+     */
+    //@Scheduled(fixedRateString="6000000",initialDelayString="105")
+    //public void retversionconsistent() {
+    //    comparingVersionsConsistent.compare();logger.info("版本不一致");
+    //}
 }
