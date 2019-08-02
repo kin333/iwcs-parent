@@ -26,5 +26,37 @@ public class HikReachCheckArea extends BaseHikRequest{
      * 申请资源时对应的唯一标识
      */
     private String taskDetailKey;
+    /**
+     * 起始点地码
+     */
+    private String srcPosCode;
+    /**
+     * 目标点地码
+     */
+    private String destPosCode;
+    /**
+     * 货架号
+     */
+    private String podCode;
+    /**
+     * 方法名
+     */
+    private String method;
+    /**
+     * 提升机类型
+     */
+    private String liftTyp;
+    /**
+     *
+     */
+    private String data;
+    /**
+     *
+     */
+    private String needReqCode;
+    /**
+     *
+     */
+    private String thirdTyp;
 
 }

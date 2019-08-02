@@ -40,6 +40,10 @@ public class ApplicationProperties {
 
     private final Rabbitmq rabbitmq = new Rabbitmq();
 
+    private final Warn warn = new Warn();
+
+
+
 
     public Async getAsync() {
         return async;
@@ -91,6 +95,10 @@ public class ApplicationProperties {
 
     public Rabbitmq getRabbitmq() {
         return rabbitmq;
+    }
+
+    public Warn getWarn() {
+        return warn;
     }
 
     public static class Async {
@@ -622,6 +630,16 @@ public class ApplicationProperties {
 
         private String returnTaskStatus;
 
+        private String finiTask;
+
+        public String getFiniTask() {
+            return finiTask;
+        }
+
+        public void setFiniTask(String finiTask) {
+            this.finiTask = finiTask;
+        }
+
         public String getReturnTaskStatus() {
             return returnTaskStatus;
         }
@@ -798,6 +816,18 @@ public class ApplicationProperties {
 
         public void setVirtualHost(String virtualHost) {
             this.virtualHost = virtualHost;
+        }
+    }
+
+    public static class Warn {
+        private String checkName;
+
+        public String getCheckName() {
+            return checkName;
+        }
+
+        public void setCheckName(String checkName) {
+            this.checkName = checkName;
         }
     }
 }

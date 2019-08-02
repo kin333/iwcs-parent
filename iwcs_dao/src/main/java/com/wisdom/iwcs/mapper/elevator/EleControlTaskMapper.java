@@ -28,4 +28,11 @@ public interface EleControlTaskMapper extends MyMapperAndIds<EleControlTask> {
 
     @Select("select count(1) from ele_control_task where task_status != '9'")
     long countUnEndTask();
+
+    /**
+     * 根据主任务号查询
+     * @param mainTaskNum
+     * @return
+     */
+    EleControlTask selectByMainTaskNum(String mainTaskNum);
 }

@@ -331,123 +331,123 @@ public class TaskTestController {
 
     @GetMapping("/testHikConcurrent")
     public Result testHikConcurrent() {
-        String jsonStr1 = "{\n" +
-                "  \"reqCode\": \"H1d10005045\",\n" +
-                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
-                "  \"clientCode\": \"wisdom-port\",\n" +
-                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
-                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
-                "  \"taskTyp\": \"F01\",\n" +
-                "  \"positionCodePath\": [\n" +
-                "    {\n" +
-                "      \"positionCode\": \"086750DD120300\",\n" +
-                "      \"type\": \"00\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"positionCode\": \"076250DD127300\",\n" +
-                "      \"type\": \"00\"\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"podCode\": \"100341\",\n" +
-                "  \"priority\": \"1\"\n" +
-                "}";
-        String jsonStr2 = "{\n" +
-                "  \"reqCode\": \"H1d10005055\",\n" +
-                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
-                "  \"clientCode\": \"wisdom-port\",\n" +
-                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
-                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
-                "  \"taskTyp\": \"F01\",\n" +
-                "  \"positionCodePath\": [\n" +
-                "    {\n" +
-                "      \"positionCode\": \"088500DD120300\",\n" +
-                "      \"type\": \"00\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"positionCode\": \"076250DD127300\",\n" +
-                "      \"type\": \"00\"\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"podCode\": \"100355\",\n" +
-                "  \"priority\": \"1\"\n" +
-                "}\n";
-        String jsonStr3 = "{\n" +
-                "  \"reqCode\": \"H1d10005065\",\n" +
-                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
-                "  \"clientCode\": \"wisdom-port\",\n" +
-                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
-                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
-                "  \"taskTyp\": \"F01\",\n" +
-                "  \"positionCodePath\": [\n" +
-                "    {\n" +
-                "      \"positionCode\": \"090250DD120300\",\n" +
-                "      \"type\": \"00\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"positionCode\": \"076250DD127300\",\n" +
-                "      \"type\": \"00\"\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"podCode\": \"100322\",\n" +
-                "  \"priority\": \"1\"\n" +
-                "}";
-        String jsonStr4 = "{\n" +
-                "  \"reqCode\": \"H1d10005075\",\n" +
-                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
-                "  \"clientCode\": \"wisdom-port\",\n" +
-                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
-                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
-                "  \"taskTyp\": \"F01\",\n" +
-                "  \"positionCodePath\": [\n" +
-                "    {\n" +
-                "      \"positionCode\": \"092000DD120300\",\n" +
-                "      \"type\": \"00\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"positionCode\": \"076250DD127300\",\n" +
-                "      \"type\": \"00\"\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"podCode\": \"100328\",\n" +
-                "  \"priority\": \"1\"\n" +
-                "}";
-        String url = "http://192.168.102.97/rcs/services/rest/hikRpcService/genAgvSchedulingTask";
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
-        HttpEntity<String> requestEntity = new HttpEntity<>(jsonStr1, httpHeaders);
-        HttpEntity<String> requestEntity2 = new HttpEntity<>(jsonStr2, httpHeaders);
-        HttpEntity<String> requestEntity3 = new HttpEntity<>(jsonStr3, httpHeaders);
-        HttpEntity<String> requestEntity4 = new HttpEntity<>(jsonStr4, httpHeaders);
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<String> resp;
-        ResponseEntity<String> resp2;
-        ResponseEntity<String> resp3;
-        ResponseEntity<String> resp4;
-
-        System.out.println("开始!");
-        int i = 0;
-        while (true) {
-            i++;
-            resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp.getBody());
-            resp2 = restTemplate.exchange(url, HttpMethod.POST, requestEntity2, String.class);
-            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp2.getBody());
-            resp3 = restTemplate.exchange(url, HttpMethod.POST, requestEntity3, String.class);
-            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp3.getBody());
-            resp4 = restTemplate.exchange(url, HttpMethod.POST, requestEntity4, String.class);
-            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp4.getBody());
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (i > 5) {
-                break;
-            }
-        }
-        System.out.println("结束!");
+//        String jsonStr1 = "{\n" +
+//                "  \"reqCode\": \"H1d10005045\",\n" +
+//                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
+//                "  \"clientCode\": \"wisdom-port\",\n" +
+//                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
+//                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
+//                "  \"taskTyp\": \"F01\",\n" +
+//                "  \"positionCodePath\": [\n" +
+//                "    {\n" +
+//                "      \"positionCode\": \"086750DD120300\",\n" +
+//                "      \"type\": \"00\"\n" +
+//                "    },\n" +
+//                "    {\n" +
+//                "      \"positionCode\": \"076250DD127300\",\n" +
+//                "      \"type\": \"00\"\n" +
+//                "    }\n" +
+//                "  ],\n" +
+//                "  \"podCode\": \"100341\",\n" +
+//                "  \"priority\": \"1\"\n" +
+//                "}";
+//        String jsonStr2 = "{\n" +
+//                "  \"reqCode\": \"H1d10005055\",\n" +
+//                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
+//                "  \"clientCode\": \"wisdom-port\",\n" +
+//                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
+//                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
+//                "  \"taskTyp\": \"F01\",\n" +
+//                "  \"positionCodePath\": [\n" +
+//                "    {\n" +
+//                "      \"positionCode\": \"088500DD120300\",\n" +
+//                "      \"type\": \"00\"\n" +
+//                "    },\n" +
+//                "    {\n" +
+//                "      \"positionCode\": \"076250DD127300\",\n" +
+//                "      \"type\": \"00\"\n" +
+//                "    }\n" +
+//                "  ],\n" +
+//                "  \"podCode\": \"100355\",\n" +
+//                "  \"priority\": \"1\"\n" +
+//                "}\n";
+//        String jsonStr3 = "{\n" +
+//                "  \"reqCode\": \"H1d10005065\",\n" +
+//                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
+//                "  \"clientCode\": \"wisdom-port\",\n" +
+//                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
+//                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
+//                "  \"taskTyp\": \"F01\",\n" +
+//                "  \"positionCodePath\": [\n" +
+//                "    {\n" +
+//                "      \"positionCode\": \"090250DD120300\",\n" +
+//                "      \"type\": \"00\"\n" +
+//                "    },\n" +
+//                "    {\n" +
+//                "      \"positionCode\": \"076250DD127300\",\n" +
+//                "      \"type\": \"00\"\n" +
+//                "    }\n" +
+//                "  ],\n" +
+//                "  \"podCode\": \"100322\",\n" +
+//                "  \"priority\": \"1\"\n" +
+//                "}";
+//        String jsonStr4 = "{\n" +
+//                "  \"reqCode\": \"H1d10005075\",\n" +
+//                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
+//                "  \"clientCode\": \"wisdom-port\",\n" +
+//                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
+//                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
+//                "  \"taskTyp\": \"F01\",\n" +
+//                "  \"positionCodePath\": [\n" +
+//                "    {\n" +
+//                "      \"positionCode\": \"092000DD120300\",\n" +
+//                "      \"type\": \"00\"\n" +
+//                "    },\n" +
+//                "    {\n" +
+//                "      \"positionCode\": \"076250DD127300\",\n" +
+//                "      \"type\": \"00\"\n" +
+//                "    }\n" +
+//                "  ],\n" +
+//                "  \"podCode\": \"100328\",\n" +
+//                "  \"priority\": \"1\"\n" +
+//                "}";
+//        String url = "http://192.168.102.97/rcs/services/rest/hikRpcService/genAgvSchedulingTask";
+//
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
+//        HttpEntity<String> requestEntity = new HttpEntity<>(jsonStr1, httpHeaders);
+//        HttpEntity<String> requestEntity2 = new HttpEntity<>(jsonStr2, httpHeaders);
+//        HttpEntity<String> requestEntity3 = new HttpEntity<>(jsonStr3, httpHeaders);
+//        HttpEntity<String> requestEntity4 = new HttpEntity<>(jsonStr4, httpHeaders);
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        ResponseEntity<String> resp;
+//        ResponseEntity<String> resp2;
+//        ResponseEntity<String> resp3;
+//        ResponseEntity<String> resp4;
+//
+//        System.out.println("开始!");
+//        int i = 0;
+//        while (true) {
+//            i++;
+//            resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+//            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp.getBody());
+//            resp2 = restTemplate.exchange(url, HttpMethod.POST, requestEntity2, String.class);
+//            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp2.getBody());
+//            resp3 = restTemplate.exchange(url, HttpMethod.POST, requestEntity3, String.class);
+//            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp3.getBody());
+//            resp4 = restTemplate.exchange(url, HttpMethod.POST, requestEntity4, String.class);
+//            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp4.getBody());
+//            try {
+//                Thread.sleep(10000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            if (i > 5) {
+//                break;
+//            }
+//        }
+//        System.out.println("结束!");
         return new Result();
     }
 

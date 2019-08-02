@@ -9,16 +9,23 @@ import com.wisdom.iwcs.common.utils.taskUtils.CreateRouteKeyUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.hikSync.HikCallBackAgvMove;
+import com.wisdom.iwcs.domain.hikSync.HikReachCheckArea;
 import com.wisdom.iwcs.domain.hikSync.HikSyncResponse;
 import com.wisdom.iwcs.domain.log.ResPodEvt;
 import com.wisdom.iwcs.domain.log.ResPosEvt;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
+import com.wisdom.iwcs.domain.task.BaseConnectionPoint;
+import com.wisdom.iwcs.domain.task.EleControlTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
+import com.wisdom.iwcs.mapper.task.BaseConnectionPointMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
+import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +40,12 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
+import static com.wisdom.iwcs.common.utils.TaskConstants.eleFloor.SOURCE_FLOOR;
+import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.NO;
+import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.YES;
 
 /**
  * Hik的回调方法
@@ -50,6 +63,12 @@ public class HikCallbackIwcsService {
     BasePodDetailMapper basePodDetailMapper;
     @Autowired
     PlatformTransactionManager transactionManager;
+    @Autowired
+    ElevatorNotifyService elevatorNotifyService;
+    @Autowired
+    EleControlTaskMapper eleControlTaskMapper;
+    @Autowired
+    BaseConnectionPointMapper baseConnectionPointMapper;
 
     public HikSyncResponse taskNotify(HikCallBackAgvMove hikCallBackAgvMove) {
         switch (hikCallBackAgvMove.getMethod()) {
@@ -281,7 +300,73 @@ public class HikCallbackIwcsService {
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
     }
 
-    public HikSyncResponse excuteTask(HikCallBackAgvMove hikCallBackAgvMove) {
+    /**
+     * 小车送货架进电梯后,agv出电梯回调接口
+     * @param hikReachCheckArea
+     * @return
+     */
+    public HikSyncResponse excuteTask(HikReachCheckArea hikReachCheckArea) {
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(hikReachCheckArea.getTaskDetailKey());
+        EleControlTask eleControlTask = eleControlTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikReachCheckArea.getSrcPosCode());
+        //通知电梯小车已离开电梯
+        elevatorNotifyService.notifyEleAgvLeave(eleControlTask.getEleTaskCode(), baseMapBerth.getMapCode(), AGV_SEND);
+        //开启电梯到达线程,如果到达,则呼叫小车
+        Thread thread = new Thread(new CheckEleArrivedThread(eleControlTask.getEleTaskCode(), hikReachCheckArea.getSrcFloor()));
+        thread.start();
+        return new HikSyncResponse();
+    }
+
+    /**
+     * 小车到达检验点回调
+     * @param hikReachCheckArea
+     * @return
+     */
+    public HikSyncResponse applyResource(HikReachCheckArea hikReachCheckArea) {
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(hikReachCheckArea.getTaskDetailKey());
+        EleControlTask eleControlTask = eleControlTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+        //检查是否已经通知检查点了
+        if (NO.equals(eleControlTask.getWcsNotifyEntrySource())) {
+            logger.info("小车已到达电梯{}对应的检验点", hikReachCheckArea.getSrcPosCode());
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikReachCheckArea.getSrcPosCode());
+            String berCode = baseConnectionPointMapper.selectCheckBerCodeByMapCode(baseMapBerth.getMapCode());
+            //通知检查点货架到检查点了
+            elevatorNotifyService.notifyEleCheckPod(eleControlTask.getEleTaskCode(), berCode, SOURCE_FLOOR);
+
+            //更新电梯任务,已经通知电梯点了
+            EleControlTask tmpEleControlTask = new EleControlTask();
+            tmpEleControlTask.setId(eleControlTask.getId());
+            tmpEleControlTask.setWcsNotifyEntrySource(YES);
+            eleControlTaskMapper.updateByPrimaryKeySelective(tmpEleControlTask);
+        }
+
+        //如果检查点通过,则返回正确
+        if (YES.equals(eleControlTask.getPlcNotifyEntrySource())) {
+            logger.info("电梯{}的检验点检查完成", hikReachCheckArea.getSrcPosCode());
+            //清空储位货架
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(subTask.getStartBercode());
+            BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
+            tmpBaseMapBerth.setId(baseMapBerth.getId());
+            tmpBaseMapBerth.setPodCode("");
+            //更新储位信息,加货架号,解锁
+            baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
+            logger.info("地码{}已清空货架{}", subTask.getStartBercode(), baseMapBerth.getPodCode());
+            return new HikSyncResponse();
+        }
+        return new HikSyncResponse("99", "检查点未完成检查");
+    }
+
+    /**
+     * agv接货架出电梯时,小车出电梯回调
+     * @param hikReachCheckArea
+     * @return
+     */
+    public HikSyncResponse releaseResource(HikReachCheckArea hikReachCheckArea) {
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(hikReachCheckArea.getTaskDetailKey());
+        EleControlTask eleControlTask = eleControlTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikReachCheckArea.getSrcPosCode());
+        //通知电梯小车已离开电梯
+        elevatorNotifyService.notifyEleAgvLeave(eleControlTask.getEleTaskCode(), baseMapBerth.getMapCode(), AGV_RECEIVE);
 
         return new HikSyncResponse();
     }

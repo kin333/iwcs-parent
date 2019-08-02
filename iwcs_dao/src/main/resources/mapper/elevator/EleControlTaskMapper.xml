@@ -58,7 +58,7 @@
     order by last_modified_time desc
   </select>
     <select id="selectTaskInfo" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List" /> from ele_control_task where task_status != '9' ele_task_code = #{eleTaskCode}
+        select <include refid="Base_Column_List" /> from ele_control_task where task_status != '9' and ele_task_code = #{eleTaskCode}
     </select>
     <update id="updateTaskInfo">
         update ele_control_task
@@ -85,4 +85,8 @@
         where ele_task_code = #{eleTaskCode}
     </update>
 
+    <select id="selectByMainTaskNum" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ele_control_task
+        where main_task_num = #{mainTaskNum}
+    </select>
 </mapper>

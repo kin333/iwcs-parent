@@ -355,5 +355,32 @@ public class TaskConstants {
         public final static String END = "已结束";
     }
 
+    public static final class yesOrNo {
+        /**
+         * 否
+         */
+        public final static String NO = "0";
+        /**
+         * 是
+         */
+        public final static String YES = "1";
+    }
+
+    /**
+     * 通知电梯起始楼层source_floor或目标楼层dest_floor待检验
+     */
+    public static final class eleFloor {
+        /**
+         * 电梯起始楼层
+         */
+        public final static String SOURCE_FLOOR = "source_floor";
+        /**
+         * 目标楼层
+         */
+        public final static String DEST_FLOOR = "dest_floor";
+    }
+
+
+
 
 }

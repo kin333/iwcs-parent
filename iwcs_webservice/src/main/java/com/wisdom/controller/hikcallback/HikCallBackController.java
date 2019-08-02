@@ -36,6 +36,7 @@ public class HikCallBackController {
     @Autowired
     HikCallbackIwcsService hikCallbackIwcsService;
 
+
     /**
      * 同步海康基础数据
      *
@@ -95,13 +96,13 @@ public class HikCallBackController {
     }
 
     /**
-     * 小车出电梯后的回调接口
-     * @param hikCallBackAgvMove
+     * 小车送货架进电梯后,agv出电梯回调接口
+     * @param hikReachCheckArea
      * @return
      */
     @PostMapping("/excuteTask")
-    public HikSyncResponse excuteTask(@RequestBody HikCallBackAgvMove hikCallBackAgvMove) {
-        return hikCallbackIwcsService.excuteTask(hikCallBackAgvMove);
+    public HikSyncResponse excuteTask(@RequestBody HikReachCheckArea hikReachCheckArea) {
+        return hikCallbackIwcsService.excuteTask(hikReachCheckArea);
     }
 
     /**
@@ -110,19 +111,15 @@ public class HikCallBackController {
      */
     @PostMapping("/applyResource")
     public HikSyncResponse applyResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
-        HikSyncResponse hikSyncResponse = new HikSyncResponse();
-        hikSyncResponse.setReqCode(hikReachCheckArea.getReqCode());
-        return hikSyncResponse;
+        return hikCallbackIwcsService.applyResource(hikReachCheckArea);
     }
     /**
-     * 小车出电梯回调
+     * agv接货架出电梯时,小车出电梯回调
      * @return
      */
     @PostMapping("/releaseResource")
     public HikSyncResponse releaseResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
-        HikSyncResponse hikSyncResponse = new HikSyncResponse();
-        hikSyncResponse.setReqCode(hikReachCheckArea.getReqCode());
-        return hikSyncResponse;
+        return hikCallbackIwcsService.releaseResource(hikReachCheckArea);
     }
 
 }
