@@ -26,7 +26,7 @@ public class LineNettyClient implements Runnable {
 
     private static final LineNettyClient lineNettyClient = new LineNettyClient();
 
-    public  String host = "192.168.56.1";
+    public  String host = "192.168.89.169";
     public  int port = 9234;
     private  Channel ch;
     private Bootstrap bootstrap;
