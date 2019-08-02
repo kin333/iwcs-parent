@@ -36,8 +36,7 @@ import java.util.List;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.MANUAL_FIRST;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskWorkType.ELE_DOWN;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.AGINGREA;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.pTopTaskSubTaskTypeConstants.INIT_STORAGE;
@@ -518,7 +517,8 @@ public class TaskCreateService implements ITaskCreateService {
         //筛选目标点，锁定放在创建子任务中
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setMapCode(startPointMapBerth.getMapCode());
-        lockMapBerthCondition.setOperateAreaCode(ELEVATORCACHEAREA);
+        lockMapBerthCondition.setOperateAreaCode(ELEVATORAREA);
+        lockMapBerthCondition.setBizType(ELEVATORCACHEAREA);
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
         Preconditions.checkBusinessError(baseMapBerthList.size() < 1, "电梯缓存区未找到空闲位置");
         BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
@@ -541,7 +541,7 @@ public class TaskCreateService implements ITaskCreateService {
      * 电梯缓存区到一楼包装线体缓存区 / 一楼包装线体区到货架原有楼层线体缓存区或老化区
      * 前置条件：包装缓存区空，无进行中的电梯任务 / 计算线体缓存区/老化区的空点、锁定，无进行中的电梯任务 packToPlorAging
      * 必要参数：货架号,起始楼层,目标楼层，终点
-     * 触发：自动
+     * 触发：自动 传目标点 /  手动 筛选目标点
      * @param taskCreateRequest
      * @return
      */
@@ -551,7 +551,8 @@ public class TaskCreateService implements ITaskCreateService {
         String destFloor = "";
         String eleWorkType = taskCreateRequest.getDestFloor();
         String startPoint = "";
-        String eleHandoverPoint = "";
+        String targetPoint = "";
+        String targetPointAlias = taskCreateRequest.getTargetPointAlias();
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(sourceFloor), "起始楼层不能为空");
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(eleWorkType), "电梯作业类型不能为空");
@@ -579,16 +580,31 @@ public class TaskCreateService implements ITaskCreateService {
         if (eleWorkType.equals(ELE_DOWN)){
             //查询一楼的电梯交接点
             String mapCode = FloorMapEnum.returnTypeByMapValue(1);
-            eleHandoverPoint = baseConnectionPointMapper.selectBerCodeByMapCode(mapCode);
             destFloor = "1";
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "自动创建电梯任务，目标点不可为空");
+            BaseMapBerth targetBaseMapBerth = baseMapBerthMapper.selectByPointAlias(targetPointAlias);
+            targetPoint = targetBaseMapBerth.getBerCode();
+
         }else{
             //查询货架的初始楼层
             BasePodDetail basePodDetail1 = basePodDetailMapper.selectByPodCode(podCode);
             Integer floor = FloorMapEnum.returnMapValueByType(basePodDetail1.getPodProp2());
             destFloor = floor.toString();
-            //查询货架原所在楼层的电梯交接点
-            eleHandoverPoint = baseConnectionPointMapper.selectBerCodeByMapCode(basePodDetail1.getPodProp2());
 
+            //根据货架原所在楼层的mapCode筛选目标点，锁定放在创建子任务中
+            LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+            lockMapBerthCondition.setMapCode(basePodDetail1.getPodProp2());
+            lockMapBerthCondition.setOperateAreaCode(LINEAREA);
+            lockMapBerthCondition.setBizType(LINECACHEAREA);
+            List<BaseMapBerth> lineMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            if (lineMapBerthList.size() < 1 ){
+                lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+                List<BaseMapBerth> agingMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+                Preconditions.checkBusinessError(agingMapBerthList.size() < 1, "货架所在楼层没有空储位了");
+                targetPoint = agingMapBerthList.get(0).getBerCode();
+            }else{
+                targetPoint = lineMapBerthList.get(0).getBerCode();
+            }
         }
 
         //创建任务
@@ -597,7 +613,7 @@ public class TaskCreateService implements ITaskCreateService {
         elevatorTaskRequest.setPriority(taskCreateRequest.getPriority());
         elevatorTaskRequest.setPodCode(podCode);
         elevatorTaskRequest.setStartPoint(startPoint);
-        elevatorTaskRequest.setEleHandoverPoint(eleHandoverPoint);
+        elevatorTaskRequest.setTargetPoint(targetPoint);
         elevatorTaskRequest.setSourceFloor(sourceFloor);
         elevatorTaskRequest.setDestFloor(destFloor);
         elevatorTaskRequest.setEleWorkType(eleWorkType);

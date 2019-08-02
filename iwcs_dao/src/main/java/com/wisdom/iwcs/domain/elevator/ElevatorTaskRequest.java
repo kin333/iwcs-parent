@@ -27,9 +27,9 @@ public class ElevatorTaskRequest {
     private String startPoint;
 
     /**
-     * 电梯交接点
+     * 目标楼层储位
      */
-    private String eleHandoverPoint;
+    private String targetPoint;
 
     /**
      * 跨楼层任务 起始楼层
@@ -78,12 +78,12 @@ public class ElevatorTaskRequest {
         this.startPoint = startPoint;
     }
 
-    public String getEleHandoverPoint() {
-        return eleHandoverPoint;
+    public String getTargetPoint() {
+        return targetPoint;
     }
 
-    public void setEleHandoverPoint(String eleHandoverPoint) {
-        this.eleHandoverPoint = eleHandoverPoint;
+    public void setTargetPoint(String targetPoint) {
+        this.targetPoint = targetPoint;
     }
 
     public String getSourceFloor() {

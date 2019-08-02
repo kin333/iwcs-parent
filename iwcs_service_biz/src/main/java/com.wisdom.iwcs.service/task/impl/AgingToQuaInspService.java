@@ -95,7 +95,6 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
             //货架上锁
             iMapResouceService.lockPod(basePodDetail);
 
-
             //锁住目标点位
             LockStorageDto lockStorageDto = new LockStorageDto();
             lockStorageDto.setMapCode(agingToQuaInspRequest.getMapCode());
@@ -104,9 +103,6 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
             lockStorageDto.setLockSource(subTaskNum);
             Result result = iMapResouceService.lockMapBerth(lockStorageDto);
             Preconditions.checkBusinessError(result.getReturnCode() != 200,result.getReturnMsg());
-
-
-
 
 
             //计算起点通过地图坐标查询坐标

@@ -1,8 +1,11 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.elevator.Elevator;
 import com.wisdom.iwcs.domain.elevator.ElevatorReport;
 import com.wisdom.iwcs.domain.elevator.ElevatorTaskRequest;
@@ -94,21 +97,30 @@ public class ElevatorTaskService implements IElevatorTaskService {
             subTaskCreate.setNeedInform(taskRel.getNeedInform());
             subTaskCreate.setSubTaskSeq(taskRel.getSubTaskSeq());
 
-            //电梯子任务，第一个写入起始点和吊箱交接点，第二个写入起始点
-            if (taskRel.getSubTaskSeq() == 1){
-                subTaskCreate.setStartBercode(elevatorTaskRequest.getStartPoint());
-                subTaskCreate.setEndBercode(elevatorTaskRequest.getEleHandoverPoint());
-            }else {
-                subTaskCreate.setStartBercode(elevatorTaskRequest.getEleHandoverPoint());
-            }
-
+            //锁住目标点位
+            LockStorageDto lockStorageDto = new LockStorageDto();
+            lockStorageDto.setBerCode(elevatorTaskRequest.getTargetPoint());
+            lockStorageDto.setPodCode(elevatorTaskRequest.getPodCode());
+            lockStorageDto.setLockSource(subTaskNum);
+            Result result = iMapResouceService.lockMapBerth(lockStorageDto);
+            Preconditions.checkBusinessError(result.getReturnCode() != 200,result.getReturnMsg());
             subTaskCreate.setPodCode(elevatorTaskRequest.getPodCode());
             subTaskCreate.setWorkerTaskCode(subTaskNum);
 
+            //计算起点通过地图坐标查询坐标
+            BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(elevatorTaskRequest.getStartPoint());
+            subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
+            subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
+
+            //计算目标通过地图坐标查询坐标
+            BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(elevatorTaskRequest.getTargetPoint());
+            subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
+            subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
+
+            //货架上锁
             BasePodDetail basePodDetail = new BasePodDetail();
             basePodDetail.setPodCode(elevatorTaskRequest.getPodCode());
             basePodDetail.setLockSource(subTaskNum);
-            //货架上锁
             iMapResouceService.lockPod(basePodDetail);
 
             subTaskMapper.insertSelective(subTaskCreate);
