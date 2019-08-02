@@ -63,15 +63,14 @@ public class Task {
 
     /**
      * 处理任务信息异常
-     *    @Scheduled(fixedRateString="60000",initialDelayString="100")
+     *
      */
-//    @Scheduled(cron = "0 0/1 * * * ?")
     @Scheduled(fixedRateString="60000",initialDelayString="100")
     public void disposeError() {
-        logger.info("错误处理定时器准备执行");
-        Thread thread = new Thread(errorRepairThread);
-        thread.start();
-        logger.info("错误处理定时器开始执行");
+//        logger.info("错误处理定时器准备执行");
+//        Thread thread = new Thread(errorRepairThread);
+//        thread.start();
+//        logger.info("错误处理定时器开始执行");
     }
 
 

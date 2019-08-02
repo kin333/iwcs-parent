@@ -114,5 +114,15 @@ public class HikCallBackController {
         hikSyncResponse.setReqCode(hikReachCheckArea.getReqCode());
         return hikSyncResponse;
     }
+    /**
+     * 小车出电梯回调
+     * @return
+     */
+    @PostMapping("/releaseResource")
+    public HikSyncResponse releaseResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
+        HikSyncResponse hikSyncResponse = new HikSyncResponse();
+        hikSyncResponse.setReqCode(hikReachCheckArea.getReqCode());
+        return hikSyncResponse;
+    }
 
 }
