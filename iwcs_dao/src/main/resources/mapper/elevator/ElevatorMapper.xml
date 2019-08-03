@@ -43,46 +43,46 @@
     order by last_modified_time desc
   </select>
     <select id="selectEleStatus" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List" /> from elevator where
+        select <include refid="Base_Column_List" /> from elevator where ele_status = #{eleCode}
     </select>
     <update id="updateElevatorInfo">
         update elevator
         <set>
             <if test="elevatorName != null and elevatorName != ''">
-                elevator_name = #{elevatorName,jdbcType=VARCHAR}
+                elevator_name = #{elevatorName,jdbcType=VARCHAR},
             </if>
             <if test="remark != null and remark != ''">
-                remark = #{remark,jdbcType=VARCHAR}
+                remark = #{remark,jdbcType=VARCHAR},
             </if>
             <if test="eleStatus != null and eleStatus != ''">
-                ele_status = #{eleStatus,jdbcType=VARCHAR}
+                ele_status = #{eleStatus,jdbcType=VARCHAR},
             </if>
-            <if test="statusUpdateTime != null and statusUpdateTime != ''">
-                status_update_time = #{statusUpdateTime,jdbcType=BIGINT}
+            <if test="statusUpdateTime != null">
+                status_update_time = #{statusUpdateTime,jdbcType=BIGINT},
             </if>
             <if test="eleIp != null and eleIp != ''">
-                ele_ip = #{eleIp,jdbcType=VARCHAR}
+                ele_ip = #{eleIp,jdbcType=VARCHAR},
             </if>
             <if test="eleTaskStatus != null and eleTaskStatus != ''">
-                ele_task_status = #{eleTaskStatus,jdbcType=VARCHAR}
+                ele_task_status = #{eleTaskStatus,jdbcType=VARCHAR},
             </if>
             <if test="mainTaskNum != null and mainTaskNum != ''">
-                main_task_num = #{mainTaskNum,jdbcType=VARCHAR}
+                main_task_num = #{mainTaskNum,jdbcType=VARCHAR},
             </if>
             <if test="eleTaskCode != null and eleTaskCode != ''">
-                ele_task_code = #{eleTaskCode,jdbcType=VARCHAR}
+                ele_task_code = #{eleTaskCode,jdbcType=VARCHAR},
             </if>
-            <if test="eleTaskUpdateTime != null and eleTaskUpdateTime != ''">
-                ele_task_update_time = #{eleTaskUpdateTime,jdbcType=BIGINT}
+            <if test="eleTaskUpdateTime != null">
+                ele_task_update_time = #{eleTaskUpdateTime,jdbcType=BIGINT},
             </if>
             <if test="version != null and version != ''">
-                version = #{version,jdbcType=INTEGER}
+                version = #{version,jdbcType=INTEGER},
             </if>
             <if test="currentFloor != null and currentFloor != ''">
-                current_floor = #{currentFloor,jdbcType=INTEGER}
+                current_floor = #{currentFloor,jdbcType=INTEGER},
             </if>
-            <if test="floorUpdateTime != null and floorUpdateTime != ''">
-                floor_update_time = #{floorUpdateTime,jdbcType=BIGINT}
+            <if test="floorUpdateTime != null">
+                floor_update_time = #{floorUpdateTime,jdbcType=BIGINT},
             </if>
         </set>
         where elevator_code = #{elevatorCode}

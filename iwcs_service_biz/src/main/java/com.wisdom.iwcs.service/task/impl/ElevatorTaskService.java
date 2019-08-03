@@ -102,6 +102,8 @@ public class ElevatorTaskService implements IElevatorTaskService {
             lockStorageDto.setBerCode(elevatorTaskRequest.getTargetPoint());
             lockStorageDto.setPodCode(elevatorTaskRequest.getPodCode());
             lockStorageDto.setLockSource(subTaskNum);
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(elevatorTaskRequest.getTargetPoint());
+            lockStorageDto.setMapCode(baseMapBerth.getMapCode());
             Result result = iMapResouceService.lockMapBerth(lockStorageDto);
             Preconditions.checkBusinessError(result.getReturnCode() != 200,result.getReturnMsg());
             subTaskCreate.setPodCode(elevatorTaskRequest.getPodCode());

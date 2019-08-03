@@ -109,7 +109,7 @@ public class TaskCreateService implements ITaskCreateService {
         checkCreateTaskConfirmParam(taskCreateRequest);
 
         //根据任务编号调相应service
-        MainTaskType mainTaskType = mainTaskTypeMapper.selectByMainTaskTypeCode(taskCreateRequest.getTaskTypeCode());
+         MainTaskType mainTaskType = mainTaskTypeMapper.selectByMainTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         String taskTypeCode = mainTaskType.getMainTaskTypeCode();
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskTypeCode), "未配置任务类型编号");
         taskCreateRequest.setPriority(mainTaskType.getPriority());
@@ -549,7 +549,7 @@ public class TaskCreateService implements ITaskCreateService {
         String podCode = taskCreateRequest.getPodCode();
         String sourceFloor = taskCreateRequest.getSourceFloor();
         String destFloor = "";
-        String eleWorkType = taskCreateRequest.getDestFloor();
+        String eleWorkType = taskCreateRequest.getEleWorkType();
         String startPoint = "";
         String targetPoint = "";
         String targetPointAlias = taskCreateRequest.getTargetPointAlias();
@@ -568,8 +568,8 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(countUnEndTask > 0, "电梯有未完结的任务，不能创建");
 
         //查询电梯状态是否正常
-        Elevator elevator = elevatorMapper.selectEleStatus("01");
-        Preconditions.checkBusinessError(!elevator.equals("1"), "电梯故障，不能执行电梯任务");
+        Elevator elevator = elevatorMapper.selectEleStatus("1");
+        Preconditions.checkBusinessError(!elevator.getEleStatus().equals("1"), "电梯故障，不能执行电梯任务");
 
         //根据货架号查询起始点
         BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);

@@ -32,7 +32,7 @@ public class PackAreaHandler implements IConditionHandler {
         areaCondition.setArea(InspurBizConstants.OperateAreaCodeConstants.PAGEAREA);
         //包装区缓存区分楼层,每个楼层对应一个
         areaCondition.setBizType(InspurBizConstants.BizTypeConstants.PAGECACHEAREA + subTask.getMapCode());
-        return baseLockEmptyPodService.handleConditionService(subTaskCondition, Arrays.asList(areaCondition), InspurBizConstants.InStock.NO_GOODS);
+        return baseLockEmptyPodService.handleConditionService(subTaskCondition, Arrays.asList(areaCondition), InspurBizConstants.InStock.HAVE_GOODS);
 
     }
 

@@ -312,6 +312,10 @@ public class TaskConstants {
          * 离开线体工作台任务后置条件
          */
         public final static String LEAVEWORKLINE = "leaveWorkLineHandler";
+        /**
+         * 电梯缓存区查找有货货架
+         */
+        public final static String ELECACHEPODHANDLER = "eleCachePodHandler";
 
 
     }

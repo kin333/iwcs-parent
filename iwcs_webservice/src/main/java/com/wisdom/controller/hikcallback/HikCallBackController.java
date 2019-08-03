@@ -96,6 +96,15 @@ public class HikCallBackController {
     }
 
     /**
+     * 小车到达检验点回调
+     * @return
+     */
+    @PostMapping("/applyResource")
+    public HikSyncResponse applyResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
+        return hikCallbackIwcsService.applyResource(hikReachCheckArea);
+    }
+
+    /**
      * 小车送货架进电梯后,agv出电梯回调接口
      * @param hikReachCheckArea
      * @return
@@ -103,15 +112,6 @@ public class HikCallBackController {
     @PostMapping("/excuteTask")
     public HikSyncResponse excuteTask(@RequestBody HikReachCheckArea hikReachCheckArea) {
         return hikCallbackIwcsService.excuteTask(hikReachCheckArea);
-    }
-
-    /**
-     * 小车到达检验点回调
-     * @return
-     */
-    @PostMapping("/applyResource")
-    public HikSyncResponse applyResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
-        return hikCallbackIwcsService.applyResource(hikReachCheckArea);
     }
     /**
      * agv接货架出电梯时,小车出电梯回调
