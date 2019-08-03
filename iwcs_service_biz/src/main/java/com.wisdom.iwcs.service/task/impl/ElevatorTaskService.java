@@ -149,6 +149,7 @@ public class ElevatorTaskService implements IElevatorTaskService {
         eleControlTask.setSourceFloor(Integer.valueOf(elevatorTaskRequest.getSourceFloor()));
         eleControlTask.setDestFloor(Integer.valueOf(elevatorTaskRequest.getDestFloor()));
         eleControlTask.setCreatedTime(new Date());
+        eleControlTaskMapper.insertSelective(eleControlTask);
 
         //更新电梯表
         Elevator elevator = new Elevator();
@@ -160,8 +161,7 @@ public class ElevatorTaskService implements IElevatorTaskService {
 
         //通知电梯 到起始楼层
         ElevatorReport elevatorReport = new ElevatorReport();
-        String randomNum = iCommonService.randomHexString(8);
-        elevatorReport.setReqCode(randomNum);
+        elevatorReport.setReqCode(eleTaskCode);
         elevatorReport.setFloor("0"+elevatorTaskRequest.getSourceFloor());
         elevatorNotifyService.selectCrossFloorTask(elevatorReport);
 
