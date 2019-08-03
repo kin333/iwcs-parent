@@ -539,7 +539,8 @@ public class TaskCreateService implements ITaskCreateService {
 
     /**
      * 电梯缓存区到一楼包装线体缓存区 / 一楼包装线体区到货架原有楼层线体缓存区或老化区
-     * 前置条件：包装缓存区空，无进行中的电梯任务 / 计算线体缓存区/老化区的空点、锁定，无进行中的电梯任务 packToPlorAging
+     * 前置条件：包装缓存区空，无进行中的电梯任务 / 计算线
+     * 体缓存区/老化区的空点、锁定，无进行中的电梯任务 packToPlorAging
      * 必要参数：货架号,起始楼层,目标楼层，终点
      * 触发：自动 传目标点 /  手动 筛选目标点
      * @param taskCreateRequest

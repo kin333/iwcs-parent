@@ -159,6 +159,8 @@ public class ElevatorTaskService implements IElevatorTaskService {
 
         //通知电梯 到起始楼层
         ElevatorReport elevatorReport = new ElevatorReport();
+        String randomNum = iCommonService.randomHexString(8);
+        elevatorReport.setReqCode(randomNum);
         elevatorReport.setFloor("0"+elevatorTaskRequest.getSourceFloor());
         elevatorNotifyService.selectCrossFloorTask(elevatorReport);
 
