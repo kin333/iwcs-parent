@@ -100,7 +100,6 @@ public class ElevatorTaskService implements IElevatorTaskService {
             //锁住目标点位
             LockStorageDto lockStorageDto = new LockStorageDto();
             lockStorageDto.setBerCode(elevatorTaskRequest.getTargetPoint());
-            lockStorageDto.setPodCode(elevatorTaskRequest.getPodCode());
             lockStorageDto.setLockSource(subTaskNum);
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(elevatorTaskRequest.getTargetPoint());
             lockStorageDto.setMapCode(baseMapBerth.getMapCode());
@@ -125,6 +124,8 @@ public class ElevatorTaskService implements IElevatorTaskService {
             basePodDetail.setLockSource(subTaskNum);
             iMapResouceService.lockPod(basePodDetail);
 
+            subTaskCreate.setStartBercode(elevatorTaskRequest.getStartPoint());
+            subTaskCreate.setEndBercode(elevatorTaskRequest.getTargetPoint());
             subTaskMapper.insertSelective(subTaskCreate);
 
             //添加子任务条件
