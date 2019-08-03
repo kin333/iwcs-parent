@@ -291,4 +291,27 @@
         and operate_area_code = 'lineArea'
         and biz_second_area_code is not null
     </select>
+    <select id="selectHavePodByBizType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+         from base_map_berth
+        where 1=1
+        and map_code = #{mapCode}
+        and biz_type = #{bizType}
+        and pod_code != ''
+        and pod_code is not null
+    </select>
+    <select id="selectEmptyPosByOperateAreaCode" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/> from base_map_berth
+        where 1=1
+        and map_code = #{mapCode}
+        and operate_area_code = #{operateAreaCode}
+        and (pod_code = '' or pod_code is null)
+        limit 1
+    </select>
+    <select id="selectByBizTye" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/> from base_map_berth
+        where 1=1
+        and biz_type = #{bizType}
+    </select>
 </mapper>

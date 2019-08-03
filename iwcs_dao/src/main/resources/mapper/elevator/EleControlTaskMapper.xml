@@ -64,22 +64,22 @@
         update ele_control_task
         <set>
             <if test="mainTaskNum != null and mainTaskNum != ''">
-                main_task_num = #{mainTaskNum,jdbcType=VARCHAR}
+                main_task_num = #{mainTaskNum,jdbcType=VARCHAR},
             </if>
             <if test="elevatorWorkType != null and elevatorWorkType != ''">
-                elevator_work_type = #{elevatorWorkType,jdbcType=VARCHAR}
+                elevator_work_type = #{elevatorWorkType,jdbcType=VARCHAR},
             </if>
             <if test="sourceFloor != null and sourceFloor != ''">
-                source_floor = #{sourceFloor,jdbcType=INTEGER}
+                source_floor = #{sourceFloor,jdbcType=INTEGER},
             </if>
             <if test="destFloor != null and destFloor != ''">
-                dest_floor = #{destFloor,jdbcType=INTEGER}
+                dest_floor = #{destFloor,jdbcType=INTEGER},
             </if>
             <if test="taskStatus != null and taskStatus != ''">
-                task_status = #{taskStatus,jdbcType=VARCHAR}
+                task_status = #{taskStatus,jdbcType=VARCHAR},
             </if>
             <if test="callEleArrFloor != null and callEleArrFloor != ''">
-                call_ele_arr_floor = #{callEleArrFloor,jdbcType=VARCHAR}
+                call_ele_arr_floor = #{callEleArrFloor,jdbcType=VARCHAR},
             </if>
         </set>
         where ele_task_code = #{eleTaskCode}

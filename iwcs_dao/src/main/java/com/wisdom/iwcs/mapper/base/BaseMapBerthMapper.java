@@ -129,4 +129,22 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     List<String> selectAliasByMapCode(String mapCode);
+
+    /**
+     * 根据指定的bizType, 查找有货架的储位
+     * @param mapCode
+     * @param bizType
+     * @return
+     */
+    List<BaseMapBerth> selectHavePodByBizType(@Param("mapCode") String mapCode, @Param("bizType") String bizType);
+
+    /**
+     * 查找某区域内空储位
+     * @param mapCode
+     * @param operateAreaCode
+     * @return
+     */
+    BaseMapBerth selectEmptyPosByOperateAreaCode(@Param("mapCode") String mapCode,@Param("operateAreaCode")  String operateAreaCode);
+
+    List<BaseMapBerth> selectByBizTye(String bizType);
 }

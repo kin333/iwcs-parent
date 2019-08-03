@@ -28,8 +28,6 @@ public class CheckEleArrivedService {
     @Autowired
     TemplateRelatedServer templateRelatedServer;
 
-    private Object lock = new Object();
-
 
     /**
      * 检查电梯是否到达目标楼层
@@ -59,7 +57,7 @@ public class CheckEleArrivedService {
      * @param eleTaskCode 电梯任务号
      * @param instantLocation 门开时所在的楼层
      */
-    public void notifyAgv(String eleTaskCode, String instantLocation) {
+    public void notifyAgv(String eleTaskCode, String instantLocation, String subTaskNum) {
         while (true) {
             if (checkEleArrived(eleTaskCode)) {
                 TempdateRelatedContext template = templateRelatedServer.getRequestInfo();
@@ -69,14 +67,14 @@ public class CheckEleArrivedService {
                 hikFiniTask.setReqTime(template.getReqTime());
                 hikFiniTask.setTokenCode(template.getTokenCode());
                 hikFiniTask.setLiftId("01");
-                hikFiniTask.setTaskDetailKey(eleTaskCode);
+                hikFiniTask.setTaskDetailKey(subTaskNum);
                 hikFiniTask.setInstantLocation(instantLocation);
                 String jsonStr = JSON.toJSONString(hikFiniTask);
                 notifyHikEleArrived(jsonStr);
                 break;
             } else {
                 try {
-                    lock.wait(5 * 1000);
+                    Thread.sleep(5 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

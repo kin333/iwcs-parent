@@ -16,16 +16,21 @@ public class CheckEleArrivedThread implements Runnable {
      * 门开时所在的楼层
      */
     private String instantLocation;
+    /**
+     * 子任务号
+     */
+    private String subTaskNum;
 
-    public CheckEleArrivedThread(String eleTaskCode, String instantLocation) {
+    public CheckEleArrivedThread(String eleTaskCode, String instantLocation, String subTaskNum) {
         this.eleTaskCode = eleTaskCode;
         this.instantLocation = instantLocation;
+        this.subTaskNum = subTaskNum;
     }
 
     @Override
     public void run() {
         CheckEleArrivedService checkEleArrivedService = AppContext.getBean("checkEleArrivedService");
-        checkEleArrivedService.notifyAgv(eleTaskCode, instantLocation);
+        checkEleArrivedService.notifyAgv(eleTaskCode, instantLocation, subTaskNum);
     }
 
 

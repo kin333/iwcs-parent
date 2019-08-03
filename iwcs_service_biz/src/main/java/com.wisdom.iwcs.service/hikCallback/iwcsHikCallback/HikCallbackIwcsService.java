@@ -306,13 +306,14 @@ public class HikCallbackIwcsService {
      * @return
      */
     public HikSyncResponse excuteTask(HikReachCheckArea hikReachCheckArea) {
+        logger.info("小车送货架进电梯后,已出电梯,任务:{}", hikReachCheckArea.getTaskDetailKey());
         SubTask subTask = subTaskMapper.selectBySubTaskNum(hikReachCheckArea.getTaskDetailKey());
         EleControlTask eleControlTask = eleControlTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikReachCheckArea.getSrcPosCode());
         //通知电梯小车已离开电梯
         elevatorNotifyService.notifyEleAgvLeave(eleControlTask.getEleTaskCode(), baseMapBerth.getMapCode(), AGV_SEND);
         //开启电梯到达线程,如果到达,则呼叫小车
-        Thread thread = new Thread(new CheckEleArrivedThread(eleControlTask.getEleTaskCode(), hikReachCheckArea.getSrcFloor()));
+        Thread thread = new Thread(new CheckEleArrivedThread(eleControlTask.getEleTaskCode(), hikReachCheckArea.getSrcFloor(), subTask.getSubTaskNum()));
         thread.start();
         return new HikSyncResponse();
     }
@@ -362,6 +363,7 @@ public class HikCallbackIwcsService {
      * @return
      */
     public HikSyncResponse releaseResource(HikReachCheckArea hikReachCheckArea) {
+        logger.info("小车接货架出电梯,已离开电梯,任务:{}", hikReachCheckArea.getTaskDetailKey());
         SubTask subTask = subTaskMapper.selectBySubTaskNum(hikReachCheckArea.getTaskDetailKey());
         EleControlTask eleControlTask = eleControlTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikReachCheckArea.getSrcPosCode());
