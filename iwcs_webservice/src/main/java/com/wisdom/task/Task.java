@@ -17,6 +17,8 @@ package com.wisdom.task;
 
 import com.wisdom.iwcs.quartz.ErrorRepairThread;
 import com.wisdom.iwcs.service.codec.SequenceService;
+import com.wisdom.iwcs.service.task.check.HealthCheck;
+import com.wisdom.iwcs.service.task.check.HealthCheckService;
 import com.wisdom.test.ComparingVersionsConsistent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +41,9 @@ public class Task {
     @Autowired
     ErrorRepairThread errorRepairThread;
     @Autowired
-    com.wisdom.test.ComparingVersionsConsistent comparingVersionsConsistent;
+    ComparingVersionsConsistent comparingVersionsConsistent;
+    @Autowired
+    HealthCheckService healthCheckService;
 
 
 
@@ -66,6 +70,16 @@ public class Task {
     }
 
     /**
+     * 健康检查
+     */
+//    @Scheduled(fixedRateString="6000000",initialDelayString="105")
+    public void healthChck() {
+        logger.info("健康检查开始");
+        healthCheckService.healthCheck();
+        logger.info("健康检查结束");
+    }
+
+    /**
      * 处理任务信息异常
      *
      */
@@ -80,8 +94,10 @@ public class Task {
      * 开机检查版本是否一致
      *
      */
-    //@Scheduled(fixedRateString="6000000",initialDelayString="105")
-    //public void retversionconsistent() {
-    //    comparingVersionsConsistent.compare();logger.info("版本不一致");
-    //}
+    @Scheduled(initialDelay = 10L, fixedDelay = Long.MAX_VALUE)
+    public void retversionconsistent() {
+        logger.info("版本检查开始");
+        comparingVersionsConsistent.compare();
+        logger.info("版本检查结束");
+    }
 }

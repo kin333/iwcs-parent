@@ -30,7 +30,7 @@ public class HealthCheckService {
         String[] names = checkName.split(";");
         for (String name : names) {
             HealthCheck healthCheck = AppContext.getBean(name);
-            if (healthCheck != null) {
+            if (healthCheck == null) {
                 logger.error("健康检查类{}不存在,已跳过", name);
                 continue;
             }

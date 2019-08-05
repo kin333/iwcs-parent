@@ -673,12 +673,12 @@ public class TaskCreateService implements ITaskCreateService {
 
 
     /**
-     * 添加主任务 添加synchronized防止多线程导致的重复提交的问题
+     * 添加主任务
      * @param
      * @return
      */
     @Override
-    public synchronized String mainTaskCommonAdd(String taskTypeCode, String areaCode, Integer priority){
+    public String mainTaskCommonAdd(String taskTypeCode, String areaCode, Integer priority){
         String mainTaskNum = "";
         //创建主任务
         MainTask mainTaskCreate = new MainTask();
