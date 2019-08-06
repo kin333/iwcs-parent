@@ -18,6 +18,7 @@ import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.netty.ElevatorNettyClient;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.callHik.IContinueTaskService;
+import com.wisdom.iwcs.service.test.NettyServerReceiverTestService;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,8 @@ public class ElevatorNotifyService {
     private SubTaskConditionMapper subTaskConditionMapper;
     @Autowired
     private IContinueTaskService iContinueTaskService;
+    @Autowired
+    private NettyServerReceiverTestService nettyServerReceiverTestService;
 
     /**
      * wcs调用
@@ -109,6 +112,8 @@ public class ElevatorNotifyService {
         byte[] arriveCommandBinary= this.notifyEleBinary(reqCode,floor,"00", "01");
         ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
         elevatorNettyClient.sendMsg(arriveCommandBinary);
+
+        nettyServerReceiverTestService.enterEle(reqCode,eleFloor);
     }
 
     /**

@@ -7,6 +7,7 @@ import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.netty.ElevatorNettyClient;
 import com.wisdom.iwcs.netty.LineNettyClient;
+import com.wisdom.iwcs.netty.NettyServer;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
@@ -43,6 +44,7 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
             //启动消息日志
             Thread thread = new Thread(taskLogThreadService);
             thread.start();
+
             LineNettyClient lineNettyClient = LineNettyClient.getInstance();
             Thread lineNettyClientThread = new Thread(lineNettyClient);
             lineNettyClientThread.start();
@@ -50,6 +52,10 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
             ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
             Thread elevatorThread = new Thread(elevatorNettyClient);
             elevatorThread.start();
+
+            Thread serverThread = new Thread(new NettyServer());
+            serverThread.start();
+
 //        Thread thread = new Thread(wcsTaskScheduler);
 //        thread.start();
 //        logger.info("启动任务调度器线程成功");

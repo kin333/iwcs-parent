@@ -15,12 +15,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author george
  * @Date 2019/7/13 15:19
  */
-public class NettyServer extends  Thread{
+public class NettyServer implements Runnable {
     Logger logger = LoggerFactory.getLogger(NettyServer.class);
+
+    private static final NettyServer nettyServer = new NettyServer();
 
     public static String host = "192.168.89.169";
     public static int port = 9876;
     private static Channel ch;
+
 
     /**
      * 保存连接中的channel,key为id
@@ -33,7 +36,7 @@ public class NettyServer extends  Thread{
 
     @Override
     public void run() {
-
+        logger.info("Netty 服务端开始配置");
         /***
          * NioEventLoopGroup 是用来处理I/O操作的多线程事件循环器，
          * Netty提供了许多不同的EventLoopGroup的实现用来处理不同传输协议。 在这个例子中我们实现了一个服务端的应用，
