@@ -178,6 +178,7 @@ public class ElevatorNotifyService {
         }else{
             eleControlTask.setTaskStatus(OUT_ELE);
             eleControlTask.setAgvLeaveDest("1");
+            eleControlTask.setTaskStatus(ELE_TASK_END);
         }
         eleControlTask.setEleTaskCode(reqCode);
         eleControlTaskMapper.updateTaskInfo(eleControlTask);

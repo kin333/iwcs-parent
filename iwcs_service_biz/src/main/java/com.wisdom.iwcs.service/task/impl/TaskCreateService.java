@@ -295,6 +295,7 @@ public class TaskCreateService implements ITaskCreateService {
 
     /**
      * 任务：老化区前往检验点
+     * 优先去检验区，检验区无空，去检验缓存区
      * 参数：计算起点，目标点(上锁),货架(上锁)
      * 前置条件：
      * 后置条件：
@@ -322,24 +323,25 @@ public class TaskCreateService implements ITaskCreateService {
 
         //获取目标空闲点位，如果没有空闲点，任务创建失败
         //检验区先检验缓存区是否有空闲点，后获工作点是否有空闲
-        LockMapBerthCondition cachelockMapBerthCondition = new LockMapBerthCondition();
-        cachelockMapBerthCondition.setBizType(QUAINSPCACHEAREA);
-        cachelockMapBerthCondition.setPodCode(taskCreateRequest.getPodCode());
-        cachelockMapBerthCondition.setMapCode(basePodDetail.getMapCode());
-        BaseMapBerth cacheLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(cachelockMapBerthCondition);
+
+        LockMapBerthCondition worklockMapBerthCondition = new LockMapBerthCondition();
+        worklockMapBerthCondition.setBizType(QUAINSPWORKAREA);
+        worklockMapBerthCondition.setMapCode(basePodDetail.getMapCode());
+        BaseMapBerth workLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(worklockMapBerthCondition);
         String areaCode;
-        if (cacheLockMapBerth != null){
-            targetPoint = cacheLockMapBerth.getBerCode();
-            areaCode = cacheLockMapBerth.getAreaCode();
-        }else {
-            LockMapBerthCondition worklockMapBerthCondition = new LockMapBerthCondition();
-            worklockMapBerthCondition.setBizType(QUAINSPWORKAREA);
-            worklockMapBerthCondition.setMapCode(basePodDetail.getMapCode());
-            BaseMapBerth workLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(worklockMapBerthCondition);
-            if (workLockMapBerth != null){
-                targetPoint = workLockMapBerth.getBerCode();
-                areaCode = workLockMapBerth.getAreaCode();
-            }else{
+        if (workLockMapBerth != null){
+            targetPoint = workLockMapBerth.getBerCode();
+            areaCode = workLockMapBerth.getAreaCode();
+        }else{
+            LockMapBerthCondition cachelockMapBerthCondition = new LockMapBerthCondition();
+            cachelockMapBerthCondition.setBizType(QUAINSPCACHEAREA);
+            cachelockMapBerthCondition.setPodCode(taskCreateRequest.getPodCode());
+            cachelockMapBerthCondition.setMapCode(basePodDetail.getMapCode());
+            BaseMapBerth cacheLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(cachelockMapBerthCondition);
+            if (cacheLockMapBerth != null){
+                targetPoint = cacheLockMapBerth.getBerCode();
+                areaCode = cacheLockMapBerth.getAreaCode();
+            }else {
                 throw new BusinessException("创建任务失败，检验区没有空闲点位！");
             }
         }
