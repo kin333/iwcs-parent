@@ -119,6 +119,8 @@ public class AgingToQuaInspService implements IAgingToQuaInspService {
             subTaskCreate.setEndBercode(agingToQuaInspRequest.getTargetPoint());
             subTaskCreate.setMapCode(endBercode.getMapCode());
             subTaskCreate.setAreaCode(agingToQuaInspRequest.getAreaCode());
+            subTaskCreate.setStartAlias(startBercode.getPointAlias());
+            subTaskCreate.setEndAlias(endBercode.getPointAlias());
             subTaskMapper.insertSelective(subTaskCreate);
 
             //向消息队列发送消息

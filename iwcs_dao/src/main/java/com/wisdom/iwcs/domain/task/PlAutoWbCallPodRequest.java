@@ -26,6 +26,18 @@ public class PlAutoWbCallPodRequest {
      * 库区
      */
     private String areaCode;
+    /**
+     * 目标点点别名
+     */
+    private String endAlias;
+
+    public String getEndAlias() {
+        return endAlias;
+    }
+
+    public void setEndAlias(String endAlias) {
+        this.endAlias = endAlias;
+    }
 
     public String getTaskTypeCode() {
         return taskTypeCode;

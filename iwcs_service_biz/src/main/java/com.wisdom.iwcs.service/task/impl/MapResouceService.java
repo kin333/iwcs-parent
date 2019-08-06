@@ -96,7 +96,8 @@ public class MapResouceService implements IMapResouceService {
         lockStorageDto.setBerCode(emptyPoit.getBerCode());
         lockStorageDto.setPodCode(lockMapBerthCondition.getPodCode());
         lockStorageDto.setLockSource(lockMapBerthCondition.getLockSource());
-        lockMapBerth(lockStorageDto);
+        Result result = lockMapBerth(lockStorageDto);
+        Preconditions.checkBusinessError(result.getReturnCode() != 200,result.getReturnMsg());
         return new Result();
     }
 
@@ -161,8 +162,11 @@ public class MapResouceService implements IMapResouceService {
             return validateResult;
         }
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(lockStorageDto);
+        if (YZConstants.LOCK.equals(baseMapBerth.getInLock())) {
+            return new Result(400, baseMapBerth.getBerCode() + "该储位已被锁定");
+        }
         if(!Strings.isNullOrEmpty(baseMapBerth.getPodCode())) {
-            return new Result(400,"该储位存在货架:"+baseMapBerth.getPodCode()+"，请稍后执行");
+            return new Result(400,baseMapBerth.getBerCode() + "该储位存在货架:"+baseMapBerth.getPodCode()+"，请稍后执行");
         }
         //锁住选中的点位
         lockStorageDto.setVersion(baseMapBerth.getVersion());
@@ -204,8 +208,10 @@ public class MapResouceService implements IMapResouceService {
         //解锁选中的点位
         int count = baseMapBerthMapper.unlockMapBerth(lockStorageDto);
         if(count < 1) {
-            return new Result(400,"该储位在进行其他操作中，请稍后执行");
+            return new Result(400, baseMapBerth.getBerCode() + "该储位在进行其他操作中，请稍后执行解锁");
         }
+        logger.info("点位解锁成功:{} 锁定源为:{} 乐观锁版本号:{}", baseMapBerth.getBerCode(),
+                baseMapBerth.getLockSource(), baseMapBerth.getVersion());
         //更新子任务终点坐标
         String subTaskNum = lockStorageDto.getLockSource();
         BaseMapBerth lockMapBerth = new BaseMapBerth();
@@ -359,9 +365,7 @@ public class MapResouceService implements IMapResouceService {
         lockStorageDto.setPodCode(selectLockMapBerthCondition.getPodCode());
         lockStorageDto.setLockSource(selectLockMapBerthCondition.getLockSource());
         Result lockResult = lockMapBerth(lockStorageDto);
-        if(lockResult.getReturnCode() != 200) {
-            return lockResult;
-        }
+        Preconditions.checkBusinessError(lockResult.getReturnCode() != 200,lockResult.getReturnMsg());
         return new Result(selectBaseMapBerth);
     }
 

@@ -89,7 +89,6 @@ public class BaseLockEmptyMapService {
         LockStorageDto lockStorageDto = new LockStorageDto();
         lockStorageDto.setMapCode(subTask.getMapCode());
         lockStorageDto.setBerCode(subTask.getEndBercode());
-        lockStorageDto.setLockSource("");
         Result result = mapResouceService.unlockMapBerth(lockStorageDto);
         //还原子任务单中的货架号
         subTaskMapper.updateEndCodeBySubTaskCode(subTaskCondition.getSubTaskNum(), new BaseMapBerth());

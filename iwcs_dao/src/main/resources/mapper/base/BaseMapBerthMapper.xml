@@ -54,7 +54,7 @@
         </set>
         where map_code = #{mapCode}
         and ber_code = #{berCode}
-        <if test="version != null and version != ''">
+        <if test="version != null">
             and version = #{version}
         </if>
 

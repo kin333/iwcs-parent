@@ -42,6 +42,18 @@ public class PlToAgingRequest {
      * 子任务单业务属性
      */
     private String subTaskBizProp;
+    /**
+     * 起始点别名
+     */
+    private String startAlias;
+
+    public String getStartAlias() {
+        return startAlias;
+    }
+
+    public void setStartAlias(String startAlias) {
+        this.startAlias = startAlias;
+    }
 
     public String getPodCode() {
         return podCode;

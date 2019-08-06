@@ -84,6 +84,7 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTask.setNeedConfirm(taskRel.getNeedConfirm());
             subTask.setNeedInform(taskRel.getNeedInform());
             subTask.setSubTaskSeq(taskRel.getSubTaskSeq());
+            subTask.setStartAlias(plAutoWbCallPodRequest.getEndAlias());
             //通过地图坐标查询坐标
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plAutoWbCallPodRequest.getTargetPoint());
             subTask.setEndX(endBercode.getCoox().doubleValue());

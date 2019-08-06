@@ -205,6 +205,7 @@ public class CommonService implements ICommonService {
         try {
             JSONObject obj = new JSONObject(hikResponse);
             if (!obj.getString("code").equals("0")) {
+                logger.error("错误报文:{}", hikResponse);
                 throw new BusinessException(obj.getString("message"));
             }
 

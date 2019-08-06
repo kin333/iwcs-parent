@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -285,6 +286,7 @@ public class MainTaskService implements IMainTaskService {
                 MainTask mainTaskTmp = new MainTask();
                 mainTaskTmp.setId(mainTask.getId());
                 mainTaskTmp.setTaskStatus(TaskConstants.mainTaskStatus.MAIN_FINISHED);
+                mainTaskTmp.setDateChg(new Date());
                 mainTaskMapper.updateByPrimaryKeySelective(mainTaskTmp);
                 logger.info("修改主任务状态为9：{}", mainTaskNum);
                 return true;
