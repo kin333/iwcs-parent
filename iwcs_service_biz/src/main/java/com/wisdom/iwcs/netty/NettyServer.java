@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NettyServer extends  Thread{
     Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
-    public static String host = "127.0.0.1";
+    public static String host = "192.168.89.169";
     public static int port = 9876;
     private static Channel ch;
 

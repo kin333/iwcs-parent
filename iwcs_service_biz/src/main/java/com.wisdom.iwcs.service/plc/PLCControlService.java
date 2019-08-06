@@ -50,7 +50,7 @@ public class PLCControlService {
     }
 
     public String dealPlcMsg(PlcRespone plcRespone){
-        logger.info("接收到PLC消息..........."+ plcRespone.getAddress()+":"+plcRespone.getReturnBodyBytes());
+        logger.info("接收到PLC Server消息..........."+ plcRespone.getAddress()+":"+plcRespone.getReturnBodyBytes());
         //按地址和命令类型码处理信息
         String sendAddr = plcRespone.getAddress();
         String commandType = plcRespone.getCommandType();
