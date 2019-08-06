@@ -43,7 +43,5 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast(new NettyServerHexStrToResponseInterceptor());
         //业务处理
         ch.pipeline().addLast(new NettyServerHandler());
-        //返回结果处理
-        ch.pipeline().addLast(new OutBoundHandler());
     }
 }
