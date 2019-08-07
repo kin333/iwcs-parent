@@ -89,7 +89,6 @@ public class PackWbCallPodService implements IPackWbCallPodService {
             LockStorageDto lockStorageDto = new LockStorageDto();
             lockStorageDto.setMapCode(mapCode);
             lockStorageDto.setBerCode(packWbCallPodRequest.getTargetPoint());
-            lockStorageDto.setPodCode(packWbCallPodRequest.getPodCode());
             lockStorageDto.setLockSource(subTaskNum);
             Result result = iMapResouceService.lockMapBerth(lockStorageDto);
             Preconditions.checkBusinessError(result.getReturnCode() != 200,result.getReturnMsg());
