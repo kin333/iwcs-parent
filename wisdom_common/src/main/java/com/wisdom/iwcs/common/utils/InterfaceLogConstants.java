@@ -35,6 +35,11 @@ public class InterfaceLogConstants {
         public final static String GEN_AGV_SCHEDULING_TASK_CODE = "genAgvSchedulingTask";
         public final static String CONTINUE_TASK_CODE = "continueTask";
         public final static String CANCEL_TASK_CODE = "cancelTask";
+        public final static String TASK_CREATE = "taskCreate";
+        public final static String APPLY_RESOURCE = "applyResource";
+        public final static String EXCUTE_TASK = "excuteTask";
+        public final static String RELEASE_RESOURCE = "releaseResource";
+        public final static String TASK_NOTIFY = "/iwcs/taskNotify";
     }
 
     public static final class InterfaceName {
@@ -62,6 +67,11 @@ public class InterfaceLogConstants {
         public final static String GEN_AGV_SCHEDULING_TASK_NAME = "生成任务单";
         public final static String CONTINUE_TASK_NAME = "继续执行任务";
         public final static String CANCEL_TASK_NAME = "取消任务";
+        public final static String TASK_CREATE_DESC = "浪潮搬运任务创建";
+        public final static String APPLY_RESOURCE_DESC = "小车到达检验点回调";
+        public final static String EXCUTE_TASK_DESC = "小车送货架出电梯后回调";
+        public final static String RELEASE_RESOURCE_DESC = "agv接货架出电梯时回调";
+        public final static String TASK_NOTIFY_DESC = "小车移动的回调接口";
     }
 
     public static final class SrcClientCode {
@@ -69,6 +79,7 @@ public class InterfaceLogConstants {
         public final static String SRC_HIK = "HIK";
         public final static String SRC_IWCS = "IWCS";
         public final static String SRC_OUTER = "OUTER";
+        public final static String SRC_INSUPR = "INSUPR";
 
     }
 

@@ -91,6 +91,7 @@ public class HikCallBackController {
      * @return
      */
     @PostMapping("/iwcs/taskNotify")
+    @SystemInterfaceLog(methodCode = TASK_NOTIFY, methodName = TASK_NOTIFY_DESC, methodThansfer = SRC_HIK)
     public HikSyncResponse taskNotify(@RequestBody HikCallBackAgvMove hikCallBackAgvMove) {
         return hikCallbackIwcsService.taskNotify(hikCallBackAgvMove);
     }
@@ -100,6 +101,7 @@ public class HikCallBackController {
      * @return
      */
     @PostMapping("/applyResource")
+    @SystemInterfaceLog(methodCode = APPLY_RESOURCE, methodName = APPLY_RESOURCE_DESC, methodThansfer = SRC_HIK)
     public HikSyncResponse applyResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
         return hikCallbackIwcsService.applyResource(hikReachCheckArea);
     }
@@ -110,6 +112,7 @@ public class HikCallBackController {
      * @return
      */
     @PostMapping("/excuteTask")
+    @SystemInterfaceLog(methodCode = EXCUTE_TASK, methodName = EXCUTE_TASK_DESC, methodThansfer = SRC_HIK)
     public HikSyncResponse excuteTask(@RequestBody HikReachCheckArea hikReachCheckArea) {
         return hikCallbackIwcsService.excuteTask(hikReachCheckArea);
     }
@@ -118,6 +121,7 @@ public class HikCallBackController {
      * @return
      */
     @PostMapping("/releaseResource")
+    @SystemInterfaceLog(methodCode = RELEASE_RESOURCE, methodName = RELEASE_RESOURCE_DESC, methodThansfer = SRC_HIK)
     public HikSyncResponse releaseResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
         return hikCallbackIwcsService.releaseResource(hikReachCheckArea);
     }
