@@ -112,6 +112,7 @@ public class QuaInspToElvBufService implements IQuaInspToElvBufService {
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(quaInspToElvBufRequest.getTargetPoint());
             subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
             subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
+            subTaskCreate.setEndBercode(endBercode.getBerCode());
 
             subTaskCreate.setMapCode(mapCode);
             subTaskCreate.setAreaCode(quaInspToElvBufRequest.getAreaCode());

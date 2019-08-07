@@ -22,8 +22,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.ELEVATORCACHEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPWORKAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PLTOAGING;
+import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.QUAINSPTOELVBUF;
 
 @Service
 public class QuaAutoToAgingService {
@@ -41,15 +43,16 @@ public class QuaAutoToAgingService {
         Result result = new Result();
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setMapCode(mapCode);
-        lockMapBerthCondition.setBizType(QUAINSPWORKAREA);
-        lockMapBerthCondition.setOperateAreaCode(InspurBizConstants.OperateAreaCodeConstants.QUAINSPAREA);
+        lockMapBerthCondition.setBizType(ELEVATORCACHEAREA);
+        lockMapBerthCondition.setOperateAreaCode(InspurBizConstants.OperateAreaCodeConstants.ELEVATORAREA);
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectNotEmptyStorageOfInspectionArea(lockMapBerthCondition);
 
         if(baseMapBerthList.size() > 0) {
             TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
-            taskCreateRequest.setTaskTypeCode(PLTOAGING);
+            taskCreateRequest.setTaskTypeCode(QUAINSPTOELVBUF);
+            taskCreateRequest.setPodCode(baseMapBerthList.get(0).getPodCode());
             taskCreateRequest.setStartPointAlias(baseMapBerthList.get(0).getPointAlias());
-            taskCreateRequest.setSubTaskBizProp(InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST);
+//            taskCreateRequest.setSubTaskBizProp(InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST);
             result = taskCreateService.creatTask(taskCreateRequest);
 
         }

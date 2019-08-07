@@ -31,6 +31,12 @@ public class EleAutoDownWorker implements Runnable{
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     private ITaskCreateService taskCreateService;
+    /**
+     * 用于电梯下楼时楼层选择
+     * 奇数是三楼
+     * 偶数是二楼
+     */
+    private int num = 0;
 
     @Override
     public void run() {
@@ -69,15 +75,27 @@ public class EleAutoDownWorker implements Runnable{
 //        } else {
 //            taskCreateRequest.setTargetPointAlias("A301");
 //        }
-        mapCode = "AB";
-        taskCreateRequest.setTargetPointAlias("A201");
-        boolean result = checkMapCodeEleCache(mapCode, taskCreateRequest);
 
-        if (!result) {
+        if (num % 2 == 0) {
+            mapCode = "AB";
+            taskCreateRequest.setTargetPointAlias("A201");
+            boolean result = checkMapCodeEleCache(mapCode, taskCreateRequest);
+            if (!result) {
+                mapCode = "DD";
+                taskCreateRequest.setTargetPointAlias("A301");
+                checkMapCodeEleCache(mapCode, taskCreateRequest);
+            }
+        } else {
             mapCode = "DD";
             taskCreateRequest.setTargetPointAlias("A301");
-            checkMapCodeEleCache(mapCode, taskCreateRequest);
+            boolean result = checkMapCodeEleCache(mapCode, taskCreateRequest);
+            if (!result) {
+                mapCode = "AB";
+                taskCreateRequest.setTargetPointAlias("A201");
+                checkMapCodeEleCache(mapCode, taskCreateRequest);
+            }
         }
+
 
     }
 

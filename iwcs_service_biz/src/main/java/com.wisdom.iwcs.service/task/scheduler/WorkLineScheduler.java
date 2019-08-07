@@ -32,7 +32,7 @@ public class WorkLineScheduler implements Runnable {
                     QuaAutoToAgingService quaAutoToAgingService = AppContext.getBean("quaAutoToAgingService");
                     quaAutoToAgingService.workLineScheduler(mapCode);
                     logger.debug("产线工作台主任务生成器线程主动睡眠 2 min");
-                    this.wait(60 * 1000 * 2);
+                    this.wait(60 * 1000 * 1);
                 }
 
             } catch (Exception e) {

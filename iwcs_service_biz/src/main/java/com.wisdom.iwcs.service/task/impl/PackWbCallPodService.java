@@ -104,6 +104,7 @@ public class PackWbCallPodService implements IPackWbCallPodService {
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(packWbCallPodRequest.getTargetPoint());
             subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
             subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
+            subTaskCreate.setEndBercode(endBercode.getBerCode());
 
             subTaskCreate.setMapCode(mapCode);
             subTaskCreate.setAreaCode(packWbCallPodRequest.getAreaCode());

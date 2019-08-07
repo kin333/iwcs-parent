@@ -515,8 +515,8 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+//        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //筛选目标点，锁定放在创建子任务中
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
@@ -653,14 +653,16 @@ public class TaskCreateService implements ITaskCreateService {
 
         //一楼包装线体1个点，自动获取目标点
         //校验目标点 有货架或有任务返错
-        BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(PAGEWORKAREA);
+        List<BaseMapBerth> endBaseMapBerths = baseMapBerthMapper.selectByBizTye(PAGEWORKAREA);
+        Preconditions.checkBusinessError(endBaseMapBerths == null || endBaseMapBerths.size() <= 0, "无包装体工作区");
+        BaseMapBerth endBaseMapBerth = endBaseMapBerths.get(0);
         Preconditions.checkBusinessError(!Strings.isNullOrEmpty(endBaseMapBerth.getPodCode()), "包装线货架不能有货架");
         targetPoint = endBaseMapBerth.getBerCode();
         Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), "该目标点有正在执行的任务！");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+//        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //创建任务
         PackWbCallPodRequest packWbCallPodRequest = new PackWbCallPodRequest();
