@@ -123,7 +123,7 @@ application:
     cancelTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/cancelTask
     returnMapOrPodUrl: http://192.168.102.97/rcs/services/rest/hikRpcService/queryPodBerthAndMat
     returnTaskStatus:  http://192.168.102.97/rcs/services/rest/hikRpcService/queryTaskStatus
-    finiTask:  http://192.168.102.97/rcs/services/rest/liftService/finiTask
+    finiTask:  http://192.168.102.97/rcs/services/rest/hikLiftService/finiTask
     tokenCode: 09bd3456991fe1cf2e185de92fa5aab5
     clientCode: INSPUR
   outstock:
