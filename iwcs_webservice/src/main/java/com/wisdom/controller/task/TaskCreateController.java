@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.TASK_CREATE;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.TASK_CREATE_DESC;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_INSUPR;
@@ -22,7 +24,7 @@ import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.S
 @RestController
 @RequestMapping("/api/task")
 public class TaskCreateController {
-    @Autowired
+    @Resource
     private ITaskCreateService taskCreateService;
 
     /**

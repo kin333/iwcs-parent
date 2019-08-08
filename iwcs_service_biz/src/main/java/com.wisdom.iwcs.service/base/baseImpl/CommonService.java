@@ -378,7 +378,7 @@ public class CommonService implements ICommonService {
     public boolean checkPodTask(String podCode){
         boolean bePodTask = false;
         BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
-        if (basePodDetail != null && basePodDetail.getInLock() == 1){
+        if (basePodDetail != null && (basePodDetail.getInLock() == 1 || Strings.isNullOrEmpty(basePodDetail.getPodCode()))){
             bePodTask = true;
         }
         return bePodTask;
@@ -393,7 +393,7 @@ public class CommonService implements ICommonService {
     public boolean checkBerTask(String berCode){
         boolean beNerTask = false;
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
-        if (baseMapBerth != null && baseMapBerth.getInLock() ==1){
+        if (baseMapBerth != null && baseMapBerth.getInLock() == 1 || baseMapBerth.getPodCode() != null){
             beNerTask = true;
         }
         return beNerTask;

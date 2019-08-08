@@ -163,13 +163,13 @@ public class TaskCreateService implements ITaskCreateService {
     }
 
     /**
-     * 任务：工作台点位呼叫空货架
+     * 任务：产线作业区呼叫空货架
      * 参数：目标点(上锁)
      * 后置条件：计算起点，货架(上锁)
      * taskTypeCode: plAutoWbCallPod
      */
     public void plAutoWbCallPodFunction(TaskCreateRequest taskCreateRequest){
-        logger.info("工作台点位呼叫空货架:{}",JSON.toJSONString(taskCreateRequest));
+        logger.info("产线作业区呼叫空货架:{}",JSON.toJSONString(taskCreateRequest));
         String targetPoint = "";
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(taskCreateRequest.getTargetPointAlias()), "请填写点位编号");
         //查询点位坐标
