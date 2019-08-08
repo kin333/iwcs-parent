@@ -49,7 +49,7 @@ public class BaseMapBerth {
     /**
      * 锁定时间
      */
-    @Column(name = "lock_Source_time")
+    @Column(name = "lock_source_time")
     private Date lockSourceTime;
 
     /**
