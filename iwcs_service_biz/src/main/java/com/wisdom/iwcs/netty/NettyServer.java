@@ -21,7 +21,7 @@ public class NettyServer implements Runnable {
     private static final NettyServer nettyServer = new NettyServer();
 
     public static String host = "192.168.89.169";
-    public static int port = 9876;
+    public static int port = 9234;
     private static Channel ch;
 
 
