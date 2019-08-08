@@ -7,9 +7,9 @@ package com.wisdom.iwcs.common.utils;
  */
 public enum FloorMapEnum {
 
-    ONE_FLOOR(1,"DD","一楼"),
+    ONE_FLOOR(1,"CC","一楼"),
     TWO_FLOOR(2,"AB","二楼"),
-    THREE_FLOOR(3,"AA","三楼");
+    THREE_FLOOR(3,"DD","三楼");
 
     FloorMapEnum(Integer mapValue, String type, String name) {
         this.mapValue = mapValue;
