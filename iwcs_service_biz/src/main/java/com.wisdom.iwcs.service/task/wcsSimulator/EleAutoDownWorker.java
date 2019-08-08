@@ -1,6 +1,8 @@
 package com.wisdom.iwcs.service.task.wcsSimulator;
 
+import com.wisdom.iwcs.common.utils.FloorMapEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.YZConstants;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.TaskCreateRequest;
@@ -15,8 +17,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.FloorMapEnum.THREE_FLOOR;
+import static com.wisdom.iwcs.common.utils.FloorMapEnum.TWO_FLOOR;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.PAGECACHEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskWorkType.ELE_DOWN;
+import static com.wisdom.iwcs.common.utils.TaskConstants.pointAlias.PACK_CACHE_THREE;
+import static com.wisdom.iwcs.common.utils.TaskConstants.pointAlias.PACK_CACHE_TWO;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.ELVBUFTOPACKBUF;
 
 /**
@@ -62,36 +68,29 @@ public class EleAutoDownWorker implements Runnable{
 
         TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
         taskCreateRequest.setTaskTypeCode(ELVBUFTOPACKBUF);
-        taskCreateRequest.setSourceFloor("1");
         taskCreateRequest.setEleWorkType(ELE_DOWN);
         String mapCode;
-//        if (System.currentTimeMillis() % 2 == 0) {
-//            mapCode = "AB";
-//        } else {
-//            mapCode = "DD";
-//        }
-//
-//        if ("AB".equals(mapCode)) {
-//        } else {
-//            taskCreateRequest.setTargetPointAlias("A301");
-//        }
 
-        if (num % 2 == 0) {
-            mapCode = "AB";
-            taskCreateRequest.setTargetPointAlias("A201");
+        if (num++ % 2 == 0) {
+            mapCode = TWO_FLOOR.getType();
+            taskCreateRequest.setSourceFloor(TWO_FLOOR.getMapValue().toString());
+            taskCreateRequest.setTargetPointAlias(PACK_CACHE_TWO);
             boolean result = checkMapCodeEleCache(mapCode, taskCreateRequest);
             if (!result) {
-                mapCode = "DD";
-                taskCreateRequest.setTargetPointAlias("A301");
+                mapCode = THREE_FLOOR.getType();
+                taskCreateRequest.setSourceFloor(THREE_FLOOR.getMapValue().toString());
+                taskCreateRequest.setTargetPointAlias(PACK_CACHE_THREE);
                 checkMapCodeEleCache(mapCode, taskCreateRequest);
             }
         } else {
-            mapCode = "DD";
-            taskCreateRequest.setTargetPointAlias("A301");
+            mapCode = THREE_FLOOR.getType();
+            taskCreateRequest.setTargetPointAlias(PACK_CACHE_THREE);
+            taskCreateRequest.setSourceFloor(THREE_FLOOR.getMapValue().toString());
             boolean result = checkMapCodeEleCache(mapCode, taskCreateRequest);
             if (!result) {
-                mapCode = "AB";
-                taskCreateRequest.setTargetPointAlias("A201");
+                mapCode = TWO_FLOOR.getType();
+                taskCreateRequest.setTargetPointAlias(PACK_CACHE_TWO);
+                taskCreateRequest.setSourceFloor(TWO_FLOOR.getMapValue().toString());
                 checkMapCodeEleCache(mapCode, taskCreateRequest);
             }
         }

@@ -384,6 +384,20 @@ public class TaskConstants {
         public final static String DEST_FLOOR = "dest_floor";
     }
 
+    /**
+     * 点位别名
+     */
+    public static final class pointAlias {
+        /**
+         * 二楼包装体缓存区别名
+         */
+        public final static String PACK_CACHE_TWO = "A201";
+        /**
+         * 三楼包装体缓存区别名
+         */
+        public final static String PACK_CACHE_THREE = "A301";
+    }
+
 
 
 

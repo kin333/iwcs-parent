@@ -67,10 +67,8 @@ public class EleAutoUpWorker implements Runnable {
         String podCode = list.get(0).getPodCode();
         String mapCode;
         if ("1002".equals(podCode.substring(0, 4))) {
-            mapCode = "AB";
             taskCreateRequest.setSourceFloor("2");
         } else if ("1003".equals(podCode.substring(0, 4))) {
-            mapCode = "DD";
             taskCreateRequest.setSourceFloor("3");
         } else{
             throw new BusinessException("货架号异常:" + podCode);

@@ -1,13 +1,9 @@
 package com.wisdom.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
-import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
-import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
@@ -15,6 +11,7 @@ import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
+import com.wisdom.iwcs.service.task.scheduler.PackWlCacheWorker;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
@@ -27,15 +24,10 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +63,8 @@ public class TaskTestController {
     EleAutoDownWorker eleAutoDownWorker;
     @Autowired
     EleAutoUpWorker eleAutoUpWorker;
+    @Autowired
+    PackWlCacheWorker packWlCacheWorker;
 
 
 
@@ -259,47 +253,48 @@ public class TaskTestController {
         eleAutoUpThread.start();
         logger.info("启动电梯上楼任务生成器");
 
+        logger.info("开始缓存区去包装区任务生成器");
+        Thread packWlCacheThread = new Thread(packWlCacheWorker);
+        packWlCacheThread.start();
+        logger.info("启动缓存区去包装区任务生成器");
 
-//        logger.info("开始产线工作台任务生成器");
-//        workLineThread2 = new Thread(new WorkLineScheduler("DD"));
-//        workLineThread2.start();
-//        logger.info("启动产线工作台任务生成器成功");
-//
+
+        logger.info("开始产线工作台任务生成器");
+        workLineThread2 = new Thread(new WorkLineScheduler("DD"));
+        workLineThread2.start();
+        logger.info("启动产线工作台任务生成器成功");
+
 //        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-//        quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("DD"));
-//        quaAutoToAgingThread.start();
+        logger.info("开始启动模拟创建检验区货架到电梯缓存区任务调度器线程");
+        quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("DD"));
+        quaAutoToAgingThread.start();
 //        logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
-//
-//        logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-//        quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
-//        quaAutoCallPodThread.start();
-//        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
+        logger.info("启动模拟创建检验区货架到电梯缓存区任务调度器线程成功");
 
-//        logger.info("开始产线工作台任务生成器");
-//        workLineThread1 = new Thread(new WorkLineScheduler("AB"));
-//        workLineThread1.start();
-//        logger.info("启动产线工作台任务生成器成功");
-//
-//        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-//        quaAutoToAgingThread2 = new Thread(new QuaAutoToAgingWorker("AB"));
-//        quaAutoToAgingThread2.start();
-//        logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
-//
-//        logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-//        quaAutoCallPodThread2 = new Thread(new QuaAutoCallPodWorker("AB"));
-//        quaAutoCallPodThread2.start();
-//        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
+        logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
+        quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
+        quaAutoCallPodThread.start();
+        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
 
-//        try {
-//            Thread.sleep(5000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        logger.info("开始产线工作台任务生成器");
+        workLineThread1 = new Thread(new WorkLineScheduler("AB"));
+        workLineThread1.start();
+        logger.info("启动产线工作台任务生成器成功");
 
-//        logger.info("开始启动任务调度器线程");
-//        Thread thread = new Thread(wcsTaskScheduler);
-//        thread.start();
-//        logger.info("启动任务调度器线程成功");
+        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
+        quaAutoToAgingThread2 = new Thread(new QuaAutoToAgingWorker("AB"));
+        quaAutoToAgingThread2.start();
+        logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
+
+        logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
+        quaAutoCallPodThread2 = new Thread(new QuaAutoCallPodWorker("AB"));
+        quaAutoCallPodThread2.start();
+        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
+
+        logger.info("开始启动任务调度器线程");
+        Thread thread = new Thread(wcsTaskScheduler);
+        thread.start();
+        logger.info("启动任务调度器线程成功");
 
         return new Result("启动成功");
     }
@@ -324,146 +319,17 @@ public class TaskTestController {
     }
 
     @GetMapping("/testTaskStart")
-    public void testTaskStart() {
+    public Result testTaskStart() {
         logger.info("开始启动任务调度器线程");
         Thread thread = new Thread(wcsTaskScheduler);
         thread.start();
         logger.info("启动任务调度器线程成功");
+        return new Result();
     }
 
-    /**
-     * 自动生成任务日志
-     */
-    @GetMapping("/taskLogTest")
-    public void taskLogTest() {
-        System.out.println("OK");
-        Thread thread = new Thread(new ConsumerThread(RabbitMQConstants.TASK_LOG_QUEUE, RabbitMQConstants.ROUTEKEY_TASK_LOG, consumerActionInfo -> {
-            String message = consumerActionInfo.getMessage();
-            TaskOperationLog taskOperationLog = JSON.parseObject(message, TaskOperationLog.class);
-            taskOperationLogMapper.insert(taskOperationLog);
-        }));
-        thread.start();
-    }
 
     @GetMapping("/testHikConcurrent")
     public Result testHikConcurrent() {
-//        String jsonStr1 = "{\n" +
-//                "  \"reqCode\": \"H1d10005045\",\n" +
-//                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
-//                "  \"clientCode\": \"wisdom-port\",\n" +
-//                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
-//                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
-//                "  \"taskTyp\": \"F01\",\n" +
-//                "  \"positionCodePath\": [\n" +
-//                "    {\n" +
-//                "      \"positionCode\": \"086750DD120300\",\n" +
-//                "      \"type\": \"00\"\n" +
-//                "    },\n" +
-//                "    {\n" +
-//                "      \"positionCode\": \"076250DD127300\",\n" +
-//                "      \"type\": \"00\"\n" +
-//                "    }\n" +
-//                "  ],\n" +
-//                "  \"podCode\": \"100341\",\n" +
-//                "  \"priority\": \"1\"\n" +
-//                "}";
-//        String jsonStr2 = "{\n" +
-//                "  \"reqCode\": \"H1d10005055\",\n" +
-//                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
-//                "  \"clientCode\": \"wisdom-port\",\n" +
-//                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
-//                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
-//                "  \"taskTyp\": \"F01\",\n" +
-//                "  \"positionCodePath\": [\n" +
-//                "    {\n" +
-//                "      \"positionCode\": \"088500DD120300\",\n" +
-//                "      \"type\": \"00\"\n" +
-//                "    },\n" +
-//                "    {\n" +
-//                "      \"positionCode\": \"076250DD127300\",\n" +
-//                "      \"type\": \"00\"\n" +
-//                "    }\n" +
-//                "  ],\n" +
-//                "  \"podCode\": \"100355\",\n" +
-//                "  \"priority\": \"1\"\n" +
-//                "}\n";
-//        String jsonStr3 = "{\n" +
-//                "  \"reqCode\": \"H1d10005065\",\n" +
-//                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
-//                "  \"clientCode\": \"wisdom-port\",\n" +
-//                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
-//                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
-//                "  \"taskTyp\": \"F01\",\n" +
-//                "  \"positionCodePath\": [\n" +
-//                "    {\n" +
-//                "      \"positionCode\": \"090250DD120300\",\n" +
-//                "      \"type\": \"00\"\n" +
-//                "    },\n" +
-//                "    {\n" +
-//                "      \"positionCode\": \"076250DD127300\",\n" +
-//                "      \"type\": \"00\"\n" +
-//                "    }\n" +
-//                "  ],\n" +
-//                "  \"podCode\": \"100322\",\n" +
-//                "  \"priority\": \"1\"\n" +
-//                "}";
-//        String jsonStr4 = "{\n" +
-//                "  \"reqCode\": \"H1d10005075\",\n" +
-//                "  \"reqTime\":\"2019-04-22 9:35:20\",\n" +
-//                "  \"clientCode\": \"wisdom-port\",\n" +
-//                "  \"tokenCode\":\"782e496221209f5f837edc30b0bbf87b\",\n" +
-//                "  \"interfaceName\": \"genAgvSchedulingTask\",\n" +
-//                "  \"taskTyp\": \"F01\",\n" +
-//                "  \"positionCodePath\": [\n" +
-//                "    {\n" +
-//                "      \"positionCode\": \"092000DD120300\",\n" +
-//                "      \"type\": \"00\"\n" +
-//                "    },\n" +
-//                "    {\n" +
-//                "      \"positionCode\": \"076250DD127300\",\n" +
-//                "      \"type\": \"00\"\n" +
-//                "    }\n" +
-//                "  ],\n" +
-//                "  \"podCode\": \"100328\",\n" +
-//                "  \"priority\": \"1\"\n" +
-//                "}";
-//        String url = "http://192.168.102.97/rcs/services/rest/hikRpcService/genAgvSchedulingTask";
-//
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
-//        HttpEntity<String> requestEntity = new HttpEntity<>(jsonStr1, httpHeaders);
-//        HttpEntity<String> requestEntity2 = new HttpEntity<>(jsonStr2, httpHeaders);
-//        HttpEntity<String> requestEntity3 = new HttpEntity<>(jsonStr3, httpHeaders);
-//        HttpEntity<String> requestEntity4 = new HttpEntity<>(jsonStr4, httpHeaders);
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//        ResponseEntity<String> resp;
-//        ResponseEntity<String> resp2;
-//        ResponseEntity<String> resp3;
-//        ResponseEntity<String> resp4;
-//
-//        System.out.println("开始!");
-//        int i = 0;
-//        while (true) {
-//            i++;
-//            resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-//            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp.getBody());
-//            resp2 = restTemplate.exchange(url, HttpMethod.POST, requestEntity2, String.class);
-//            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp2.getBody());
-//            resp3 = restTemplate.exchange(url, HttpMethod.POST, requestEntity3, String.class);
-//            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp3.getBody());
-//            resp4 = restTemplate.exchange(url, HttpMethod.POST, requestEntity4, String.class);
-//            System.out.println(i + "===>" + System.currentTimeMillis() + ": " + resp4.getBody());
-//            try {
-//                Thread.sleep(10000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            if (i > 5) {
-//                break;
-//            }
-//        }
-//        System.out.println("结束!");
         return new Result();
     }
 
