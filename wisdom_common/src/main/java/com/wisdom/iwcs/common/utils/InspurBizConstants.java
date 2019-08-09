@@ -117,11 +117,11 @@ public class InspurBizConstants {
         /**
          * 自动区优先
          */
-        public final static String AUTO_FIRST = "autoAgingPosFirst ";
+        public final static String AUTO_FIRST = "autoAgingPosFirst";
         /**
          * 手动区优先
          */
-        public final static String MANUAL_FIRST = "manualAgingPosFirst ";
+        public final static String MANUAL_FIRST = "manualAgingPosFirst";
 
 
     }

@@ -22,6 +22,8 @@
         <result column="req_prop3" jdbcType="VARCHAR" property="reqProp3"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="in_param" jdbcType="LONGVARCHAR" property="inParam"/>
+        <result column="out_param" jdbcType="LONGVARCHAR" property="outParam"/>
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.wisdom.iwcs.domain.log.InterfaceLog">
         <!--
@@ -36,7 +38,7 @@
         -->
         id, receive_time, src_client_code, interface_code, interface_name, end_time, time_cost,
         sev_thread_id, sev_thread_name, req_client_type, req_ip, req_code, req_prop1, req_prop2,
-        req_prop3, remark, created_time
+        req_prop3, remark, created_time,in_param, out_param
     </sql>
     <sql id="Blob_Column_List">
         <!--

@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST;
+
 /**
  * 产线工作点去老化区前置条件---目标区域有空储位并锁定一个(自动区模式优先放置自动取,手动模式优先放置手动区)
  * @author han
@@ -48,7 +50,7 @@ public class EmptyPosForAgingPodHandler implements IConditionHandler{
         lockConditionManual.setBizType(InspurBizConstants.BizTypeConstants.AGINGAREAMANUAL);
         lockConditionManual.setLockSource(subTask.getSubTaskNum());
 
-        if (InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST.equals(subTask.getSubTaskBizProp())) {
+        if (AUTO_FIRST.equals(subTask.getSubTaskBizProp())) {
             //自动区优先
             conditionList.add(lockConditionAuto);
             conditionList.add(lockConditionManual);
