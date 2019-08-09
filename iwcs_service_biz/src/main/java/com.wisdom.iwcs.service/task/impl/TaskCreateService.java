@@ -597,14 +597,16 @@ public class TaskCreateService implements ITaskCreateService {
             destFloor = floor.toString();
 
             //根据货架原所在楼层的mapCode筛选目标点，锁定放在创建子任务中
-            LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
-            lockMapBerthCondition.setMapCode(basePodDetail1.getPodProp2());
-            lockMapBerthCondition.setOperateAreaCode(LINEAREA);
-            lockMapBerthCondition.setBizType(LINECACHEAREA);
-            List<BaseMapBerth> lineMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            LockMapBerthCondition lineLockMapBerthCondition = new LockMapBerthCondition();
+            lineLockMapBerthCondition.setMapCode(basePodDetail1.getPodProp2());
+            lineLockMapBerthCondition.setOperateAreaCode(LINEAREA);
+            lineLockMapBerthCondition.setBizType(LINECACHEAREA);
+            List<BaseMapBerth> lineMapBerthList = baseMapBerthMapper.selectEmptyStorage(lineLockMapBerthCondition);
             if (lineMapBerthList.size() < 1 ){
-                lockMapBerthCondition.setOperateAreaCode(AGINGREA);
-                List<BaseMapBerth> agingMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+                LockMapBerthCondition agingLockMapBerthCondition = new LockMapBerthCondition();
+                agingLockMapBerthCondition.setMapCode(basePodDetail1.getPodProp2());
+                agingLockMapBerthCondition.setOperateAreaCode(AGINGREA);
+                List<BaseMapBerth> agingMapBerthList = baseMapBerthMapper.selectEmptyStorage(agingLockMapBerthCondition);
                 Preconditions.checkBusinessError(agingMapBerthList.size() < 1, "货架所在楼层没有空储位了");
                 targetPoint = agingMapBerthList.get(0).getBerCode();
             }else{

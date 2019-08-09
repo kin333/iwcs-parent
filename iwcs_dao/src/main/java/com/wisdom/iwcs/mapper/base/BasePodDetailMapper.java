@@ -163,7 +163,7 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
     /**
      * 根据货架号查询ber_code
      */
-    @Select("select ber_code from base_pod_detail where pod_code = #{podCode} and in_lock = 0 and valid_flag = 1 and delete_flag = 0")
+    @Select("select ber_code from base_pod_detail where pod_code = #{podCode} and in_lock = 0 and valid_flag = 0 and delete_flag = 0")
     String selectBerCodeByPodCode(String podCode);
 
     /**
