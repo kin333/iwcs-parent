@@ -55,7 +55,6 @@
     <if test="taskStatus != null and taskStatus != ''">
       and task_status = #{mainTaskNum}
     </if>
-    order by last_modified_time desc
   </select>
     <select id="selectTaskInfo" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from ele_control_task where task_status != '9' and ele_task_code = #{eleTaskCode}
