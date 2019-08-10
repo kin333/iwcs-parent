@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.netty;
 
+import io.jsonwebtoken.lang.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelInitializer;
@@ -22,6 +23,12 @@ import java.util.concurrent.TimeUnit;
 * @date 2017年10月8日
  */
 public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
+    private ReconnectHandler reconnectHandler;
+
+    public NettyClientInitializer(BaseNettyClient baseNettyClient){
+        Assert.notNull(baseNettyClient,"baseNettyClient can not be null");
+        this.reconnectHandler = new ReconnectHandler(baseNettyClient);
+    }
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -40,6 +47,7 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 //        ch.pipeline().addLast( new IdleStateHandler(0, 4, 0, TimeUnit.SECONDS));
         //拆包\粘包 inbound 拦截器
         ByteBuf buf = Unpooled.copiedBuffer(",".getBytes("UTF-8"));
+        ch.pipeline().addLast(reconnectHandler);
         ch.pipeline().addLast(new DelimiterBasedFrameDecoder(1024,buf));
         ch.pipeline().addLast(new StringEncoder());
         //byte 转为16进制string
