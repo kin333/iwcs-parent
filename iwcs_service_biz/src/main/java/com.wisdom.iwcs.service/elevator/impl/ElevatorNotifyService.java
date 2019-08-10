@@ -212,9 +212,9 @@ public class ElevatorNotifyService {
         String commandBody = "01" + "06" + randomNum + floor + agvStatus + checkPod;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
-        String commandComplete = commandBody + s;
+        String commandComplete = commandBody + s + "2C";
         //写入日志 msg_log
-        this.insertEleMsgLog("01",commandComplete,PLC_SEND,randomNum);
+        this.insertEleMsgLog("01",commandBody,PLC_SEND,randomNum);
 
         return commandComplete;
     }
@@ -234,9 +234,9 @@ public class ElevatorNotifyService {
         String commandBody = "01" + "03" + msgStatus + randomNum ;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
-        String commandComplete = commandBody + s;
+        String commandComplete = commandBody + s + "2C";
         //写入日志 msg_log
-        this.insertEleMsgLog("01",commandComplete,PLC_SEND,randomNum);
+        this.insertEleMsgLog("01",commandBody,PLC_SEND,randomNum);
 
         return commandComplete;
     }

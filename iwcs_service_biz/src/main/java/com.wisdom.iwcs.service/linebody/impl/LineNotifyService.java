@@ -70,6 +70,7 @@ public class LineNotifyService {
 
         //通知线体 是否成功
         byte[] leaveCommandBinary= this.lineMsgReturnCommandBinary(lineBodyReport.getAddress(), lineBodyReport.getDeviceType(), msgStatus, lineBodyReport.getReqCode());
+        //String commandBody = lineBodyReport.getAddress() + lineBodyReport.getDeviceType() + msgStatus + lineBodyReport.getReqCode() + "2C";
         LineNettyClient lineNettyClient = LineNettyClient.getInstance();
         lineNettyClient.sendMsg(leaveCommandBinary);
     }
@@ -125,7 +126,7 @@ public class LineNotifyService {
     }
 
     /**
-     * Agv搬运货架离开线体工作点
+     * Agv搬运货架到达/离开线体工作点
      * @param
      * @return
      */
@@ -136,7 +137,7 @@ public class LineNotifyService {
         String commandBody = msgCode + "03" + randomNum + workPoint + agvTaskType;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
-        String commandComplete = commandBody + s;
+        String commandComplete = commandBody + s + "2C";
 
         //写入line_msg_log
         this.insertLineMsgLog(msgCode,commandComplete,PLC_SEND,randomNum);
@@ -156,7 +157,7 @@ public class LineNotifyService {
         String commandBody = controllerNo + controllerType + msgStatus + randomNum ;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
-        String commandComplete = commandBody + s;
+        String commandComplete = commandBody + s + "2C";
 
         //写入line_msg_log
         this.insertLineMsgLog(controllerNo,commandComplete,PLC_SEND,randomNum);

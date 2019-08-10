@@ -5,6 +5,7 @@ import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.ThirdAppConnectionExecption;
 import com.wisdom.iwcs.domain.codec.BusinessCode;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -26,7 +27,7 @@ public class LineNettyClient implements Runnable {
 
     private static final LineNettyClient lineNettyClient = new LineNettyClient();
 
-    public  String host = "192.168.89.169";
+    public  String host = "192.168.89.209";
     public  int port = 9234;
     private  Channel ch;
     private Bootstrap bootstrap;
@@ -86,9 +87,14 @@ public class LineNettyClient implements Runnable {
 
     public static LineNettyClient getInstance() {
         if(lineNettyClient.bootstrap == null){
-           // lineNettyClient.init();
+            lineNettyClient.init();
         }
         return lineNettyClient;
+    }
+
+    public static void main(String[] args) throws InterruptedException, IOException {
+        System.out.println("客户端成功启动...");
+        LineNettyClient lineNettyClient = LineNettyClient.getInstance();
     }
 
     /**
@@ -97,11 +103,12 @@ public class LineNettyClient implements Runnable {
      */
     public void sendMsg(byte[] msg){
         if(ch.isActive()){
-            ch.writeAndFlush(msg);
+            ByteBuf buf = ch.alloc().buffer(msg.length);
+            buf.writeBytes(msg);
+            ch.writeAndFlush(buf);
         }else{
             throw new ThirdAppConnectionExecption(ApplicationErrorEnum.THRIDAPP_CONNECTION_LOST);
         }
-
     }
     /**
      * 发送消息

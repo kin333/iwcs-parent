@@ -9,6 +9,9 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -33,16 +36,16 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
          * @param initialBytesToStrip 解析的时候需要跳过的字节数
          * @param failFast 为true，当frame长度超过maxFrameLength时立即报TooLongFrameException异常，为false，读取完整个帧再报异常
          */
+        //因为服务端设置的超时时间是5秒，所以设置4秒
+//        ch.pipeline().addLast( new IdleStateHandler(0, 4, 0, TimeUnit.SECONDS));
         //拆包\粘包 inbound 拦截器
-        ByteBuf buf = Unpooled.copiedBuffer(",".getBytes());
+        ByteBuf buf = Unpooled.copiedBuffer(",".getBytes("UTF-8"));
         ch.pipeline().addLast(new DelimiterBasedFrameDecoder(1024,buf));
         ch.pipeline().addLast(new StringEncoder());
         //byte 转为16进制string
         ch.pipeline().addLast(new InboundByteToHexStrInterceptor());
         //16进制返回转为标准基础response类
         ch.pipeline().addLast(new InboundHexStrToResponseInterceptor());
-//        //标准基础response类转为查询返回类
-//        ch.pipeline().addLast(new InboundResponseToPLCSwitchResponseInterceptor());
         //业务处理
         ch.pipeline().addLast(new NettyClientHandler());
     }

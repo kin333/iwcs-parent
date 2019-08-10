@@ -3,6 +3,7 @@ package com.wisdom.iwcs.netty;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.ThirdAppConnectionExecption;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -84,7 +85,7 @@ public class ElevatorNettyClient implements Runnable {
 
     public static ElevatorNettyClient getInstance() {
         if(elevatorNettyClient.bootstrap == null){
-            //elevatorNettyClient.init();
+            elevatorNettyClient.init();
         }
         return elevatorNettyClient;
     }
@@ -95,7 +96,9 @@ public class ElevatorNettyClient implements Runnable {
      */
     public void sendMsg(byte[] msg){
         if(ch.isActive()){
-            ch.writeAndFlush(msg);
+            ByteBuf buf = ch.alloc().buffer(msg.length);
+            buf.writeBytes(msg);
+            ch.writeAndFlush(buf);
         }else{
             throw new ThirdAppConnectionExecption(ApplicationErrorEnum.THRIDAPP_CONNECTION_LOST);
         }
