@@ -6,6 +6,7 @@ import com.wisdom.iwcs.domain.elevator.EleMsgLog;
 import com.wisdom.iwcs.domain.linebody.LineMsgLog;
 import com.wisdom.iwcs.mapper.elevator.EleMsgLogMapper;
 import com.wisdom.iwcs.mapper.linebody.LineMsgLogMapper;
+import com.wisdom.iwcs.netty.NettyServer;
 import com.wisdom.iwcs.service.base.ICommonService;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,6 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.PlcMsgType.PLC_SEN
 
 @Service
 public class NettyServerReceiverTestService {
-
-    ChannelHandlerContext ctx;
 
     @Autowired
     private EleMsgLogMapper eleMsgLogMapper;
@@ -35,7 +34,8 @@ public class NettyServerReceiverTestService {
      */
     public void lineCallEmptyPod(String berCode){
         byte[] lineMsgReturnCommandBinary= this.notifyLineClientBinary(berCode,"01");
-        ctx.writeAndFlush(lineMsgReturnCommandBinary);
+        NettyServer nettyServer = NettyServer.getInstance();
+        nettyServer.sendServerMsg(lineMsgReturnCommandBinary);
     }
 
     /**
@@ -45,7 +45,8 @@ public class NettyServerReceiverTestService {
      */
     public void lineCallPodLeave(String berCode){
         byte[] lineMsgReturnCommandBinary= this.notifyLineClientBinary(berCode,"03");
-        ctx.writeAndFlush(lineMsgReturnCommandBinary);
+        NettyServer nettyServer = NettyServer.getInstance();
+        nettyServer.sendServerMsg(lineMsgReturnCommandBinary);
     }
 
     /**
@@ -56,7 +57,8 @@ public class NettyServerReceiverTestService {
      */
     public void enterEle(String randomNum, String floor){
         byte[] eleMsgReturnCommandBinary= this.notifyEleClientBinary(randomNum,floor);
-        ctx.writeAndFlush(eleMsgReturnCommandBinary);
+        NettyServer nettyServer = NettyServer.getInstance();
+        nettyServer.sendServerMsg(eleMsgReturnCommandBinary);
     }
 
     /**
@@ -69,7 +71,8 @@ public class NettyServerReceiverTestService {
             this.insertEleMsgLog(sendAddr,msgBody,PLC_RECEIVE,reqCode);
         }
         byte[] eleMsgReturnCommandBinary= this.msgReturnCommandBinary(commandType,"01",reqCode);
-        ctx.writeAndFlush(eleMsgReturnCommandBinary);
+        NettyServer nettyServer = NettyServer.getInstance();
+        nettyServer.sendServerMsg(eleMsgReturnCommandBinary);
     }
 
     /**
@@ -84,9 +87,9 @@ public class NettyServerReceiverTestService {
         String commandBody = "01" + "03" + randomNum +"01" + floor + "01" + "02";
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
-        String commandComplete = commandBody + s;
+        String commandComplete = commandBody + s + "2C";
         //写入日志 msg_log
-        this.insertEleMsgLog("01",commandComplete,PLC_SEND,randomNum);
+        this.insertEleMsgLog("01",commandBody,PLC_SEND,randomNum);
 
         return commandComplete;
     }
@@ -108,9 +111,9 @@ public class NettyServerReceiverTestService {
         String commandBody = "01" + "04" + randomNum +"01" + berCode + workType;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
-        String commandComplete = commandBody + s;
+        String commandComplete = commandBody + s + "2C";
         //写入日志 msg_log
-        this.insertLineMsgLog("01",commandComplete,PLC_SEND,randomNum);
+        this.insertLineMsgLog("01",commandBody,PLC_SEND,randomNum);
 
         return commandComplete;
     }
@@ -130,12 +133,12 @@ public class NettyServerReceiverTestService {
         String commandBody = "01" + device + msgStatus + randomNum ;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
-        String commandComplete = commandBody + s;
+        String commandComplete = commandBody + s + "2C";
         //写入日志 msg_log
         if ("06".equals(device)){
-            this.insertEleMsgLog("01",commandComplete,PLC_SEND,randomNum);
+            this.insertEleMsgLog("01",commandBody,PLC_SEND,randomNum);
         }else{
-            this.insertLineMsgLog("01",commandComplete,PLC_SEND,randomNum);
+            this.insertLineMsgLog("01",commandBody,PLC_SEND,randomNum);
         }
         return commandComplete;
     }

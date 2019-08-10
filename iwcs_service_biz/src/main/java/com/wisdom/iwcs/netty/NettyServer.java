@@ -1,6 +1,9 @@
 package com.wisdom.iwcs.netty;
 
+import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.common.utils.exception.ThirdAppConnectionExecption;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -23,7 +26,7 @@ public class NettyServer implements Runnable {
     public static String host = "192.168.89.169";
     public static int port = 9234;
     private static Channel ch;
-
+    private ServerBootstrap b;
 
     /**
      * 保存连接中的channel,key为id
@@ -34,8 +37,7 @@ public class NettyServer implements Runnable {
      */
     private static Map<String, ChannelHandlerContext> curConnectedCtxMap = new ConcurrentHashMap<String, ChannelHandlerContext>();
 
-    @Override
-    public void run() {
+    protected void init() {
         logger.info("Netty 服务端开始配置");
         /***
          * NioEventLoopGroup 是用来处理I/O操作的多线程事件循环器，
@@ -51,7 +53,7 @@ public class NettyServer implements Runnable {
             /**
              * ServerBootstrap 是一个启动NIO服务的辅助启动类 你可以在这个服务中直接使用Channel
              */
-            ServerBootstrap b = new ServerBootstrap();
+            b = new ServerBootstrap();
             /**
              * 这一步是必须的，如果没有设置group将会报java.lang.IllegalStateException: group not
              * set异常
@@ -116,5 +118,32 @@ public class NettyServer implements Runnable {
 
     public static void setCurConnectedCtxMap(Map<String, ChannelHandlerContext> curConnectedCtxMap) {
         NettyServer.curConnectedCtxMap = curConnectedCtxMap;
+    }
+
+    public static NettyServer getInstance() {
+        if(nettyServer.b == null){
+            nettyServer.init();
+        }
+        return nettyServer;
+    }
+
+    /**
+     * 发送消息
+     * @param msg
+     */
+    public void sendServerMsg(byte[] msg){
+        if(ch.isActive()){
+            ByteBuf buf = ch.alloc().buffer(msg.length);
+            buf.writeBytes(msg);
+            ch.writeAndFlush(buf);
+        }else{
+            throw new ThirdAppConnectionExecption(ApplicationErrorEnum.THRIDAPP_CONNECTION_LOST);
+        }
+
+    }
+
+    @Override
+    public void run() {
+        init();
     }
 }
