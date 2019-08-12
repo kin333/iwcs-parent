@@ -42,6 +42,8 @@ public class ApplicationProperties {
 
     private final Warn warn = new Warn();
 
+    private final Netty netty = new Netty();
+
 
 
 
@@ -99,6 +101,10 @@ public class ApplicationProperties {
 
     public Warn getWarn() {
         return warn;
+    }
+
+    public Netty getNetty(){
+        return netty;
     }
 
     public static class Async {
@@ -828,6 +834,86 @@ public class ApplicationProperties {
 
         public void setCheckName(String checkName) {
             this.checkName = checkName;
+        }
+    }
+
+    public static class Netty {
+
+        private final LineClient lineClient = new LineClient();
+        private final ElevatorClient elevatorClient = new ElevatorClient();
+        private final NettyServer nettyServer = new NettyServer();
+
+        public LineClient getLineClient() {
+            return lineClient;
+        }
+
+        public ElevatorClient getElevatorClient() {
+            return elevatorClient;
+        }
+
+        public NettyServer getNettyServer() {
+            return nettyServer;
+        }
+
+        public static class LineClient {
+            private String host;
+            private Integer port;
+
+            public String getHost() {
+                return host;
+            }
+
+            public void setHost(String host) {
+                this.host = host;
+            }
+
+            public Integer getPort() {
+                return port;
+            }
+
+            public void setPort(Integer port) {
+                this.port = port;
+            }
+        }
+        public static class ElevatorClient{
+            private String host;
+            private Integer port;
+
+            public String getHost() {
+                return host;
+            }
+
+            public void setHost(String host) {
+                this.host = host;
+            }
+
+            public Integer getPort() {
+                return port;
+            }
+
+            public void setPort(Integer port) {
+                this.port = port;
+            }
+        }
+        public static class NettyServer{
+            private String host;
+            private Integer port;
+
+            public String getHost() {
+                return host;
+            }
+
+            public void setHost(String host) {
+                this.host = host;
+            }
+
+            public Integer getPort() {
+                return port;
+            }
+
+            public void setPort(Integer port) {
+                this.port = port;
+            }
         }
     }
 }

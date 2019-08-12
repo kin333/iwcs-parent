@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.netty;
 
+import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.ThirdAppConnectionExecption;
 import io.netty.bootstrap.Bootstrap;
@@ -12,6 +13,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,10 +25,13 @@ import java.util.concurrent.TimeUnit;
 public class ElevatorNettyClient extends BaseNettyClient implements Runnable {
    static Logger logger = LoggerFactory.getLogger(ElevatorNettyClient.class);
 
+    @Autowired
+    private ApplicationProperties properties;
+
     private static final ElevatorNettyClient elevatorNettyClient = new ElevatorNettyClient();
 
-    public  String host = "192.168.89.169";
-    public  int port = 9234;
+    public  String host = properties.getNetty().getElevatorClient().getHost();
+    public  int port = properties.getNetty().getElevatorClient().getPort();
     private  Channel ch;
     private Bootstrap bootstrap;
     /**

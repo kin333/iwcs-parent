@@ -654,6 +654,7 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
 
         //一楼包装线体1个点，自动获取目标点
+        //todo 多个要修改
         //校验目标点 有货架或有任务返错
         List<BaseMapBerth> endBaseMapBerths = baseMapBerthMapper.selectByBizTye(PAGEWORKAREA);
         Preconditions.checkBusinessError(endBaseMapBerths == null || endBaseMapBerths.size() <= 0, "无包装体工作区");

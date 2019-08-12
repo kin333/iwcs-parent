@@ -40,6 +40,9 @@ public class InterfaceLogConstants {
         public final static String EXCUTE_TASK = "excuteTask";
         public final static String RELEASE_RESOURCE = "releaseResource";
         public final static String TASK_NOTIFY = "/iwcs/taskNotify";
+
+        public final static String SAVE_INSTOCK = "saveInStock";
+
     }
 
     public static final class InterfaceName {
@@ -72,6 +75,8 @@ public class InterfaceLogConstants {
         public final static String EXCUTE_TASK_DESC = "小车送货架出电梯后回调";
         public final static String RELEASE_RESOURCE_DESC = "agv接货架出电梯时回调";
         public final static String TASK_NOTIFY_DESC = "小车移动的回调接口";
+
+        public final static String SAVE_INSTOCK_DESC = "更新货架空满";
     }
 
     public static final class SrcClientCode {
@@ -80,7 +85,7 @@ public class InterfaceLogConstants {
         public final static String SRC_IWCS = "IWCS";
         public final static String SRC_OUTER = "OUTER";
         public final static String SRC_INSUPR = "INSUPR";
-
+        public final static String SRC_PDA = "PDA";
     }
 
 

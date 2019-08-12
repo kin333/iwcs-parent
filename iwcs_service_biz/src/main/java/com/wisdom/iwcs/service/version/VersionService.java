@@ -104,12 +104,14 @@ public class VersionService {
     }
     public Result versionupdate(@RequestParam("version") Integer version) {
         Version v = versionMapper.selectnewVersion();
-        if (version.intValue() == v.getVersion().intValue()) {
-            return new Result(200, "已是最新版本");
-        }
         String url = v.getUrl();
         String information = v.getInformation();
-
-        return new Result(200, "是否更新","下载地址"+url+"版本信息"+information);
+        Map map = new HashMap();
+        if (version.intValue() == v.getVersion().intValue()) {
+            map.put("url","");
+            return new Result(200, "已是最新版本",map);
+        }
+        map.put("url",url);
+        return new Result(200, "有更新",map);
     }
 }

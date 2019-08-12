@@ -1,5 +1,6 @@
 package com.wisdom.controller.base;
 
+import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
@@ -10,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.SAVE_INSTOCK;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.SAVE_INSTOCK_DESC;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_PDA;
 
 /**
  * 对BasePodDetail的操作
@@ -117,6 +122,7 @@ public class BasePodDetailController {
      * @return
      */
     @PostMapping(value = "/saveInStock")
+    @SystemInterfaceLog(methodCode = SAVE_INSTOCK, methodName = SAVE_INSTOCK_DESC, methodThansfer = SRC_PDA)
     public Result savePodInStock(@RequestBody BasePodDetailDTO basePodDetailDTO) {
         IBasePodDetailService.savePodInStock(basePodDetailDTO);
         return new Result();

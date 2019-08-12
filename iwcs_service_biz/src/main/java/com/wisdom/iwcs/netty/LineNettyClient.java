@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.netty;
 
+import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.ThirdAppConnectionExecption;
@@ -11,6 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.Map;
@@ -25,10 +27,13 @@ import java.util.concurrent.TimeUnit;
 public class LineNettyClient extends BaseNettyClient implements Runnable {
    static Logger logger = LoggerFactory.getLogger(LineNettyClient.class);
 
+    @Autowired
+    private ApplicationProperties properties;
+
     private static final LineNettyClient lineNettyClient = new LineNettyClient();
 
-    public  String host = "192.168.89.209";
-    public  int port = 9234;
+    public  String host = properties.getNetty().getLineClient().getHost();
+    public  int port = properties.getNetty().getLineClient().getPort();
     private  Channel ch;
     private Bootstrap bootstrap;
     /**

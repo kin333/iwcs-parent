@@ -131,6 +131,12 @@ public class ElevatorNotifyService {
         //查询梯控任务
         EleControlTask eleControlTask = eleControlTaskMapper.selectTaskInfo(eleTaskCode);
 
+        //校验plc传入的楼层是否是货架进的楼层
+//        if (Integer.parseInt(floor) != eleControlTask.getSourceFloor()){
+//
+//        }
+        //TODO 不一致处理
+
         //调用rcs继续执行接口 进电梯任务（从检验点到吊箱）
         ContinueTaskRequestDTO continueTaskRequestDTO = new ContinueTaskRequestDTO();
         continueTaskRequestDTO.setTaskCode(eleControlTask.getMainTaskNum());

@@ -22,8 +22,6 @@ public class VersionController {
     @Autowired
 private VersionService versionService;
 
-
-/*private FilePathSevice filePathSevice;*/
     /**
      * 分页查询记录
      *
@@ -36,12 +34,19 @@ private VersionService versionService;
         return new Result(records);
     }
 
+
     @PostMapping("/upload")
     public Result upload(@RequestParam("version") Integer version, @RequestParam("information") String information, @RequestParam("file") MultipartFile file) throws FileNotFoundException {
         return versionService.Upload(version,information,file);
     }
-    @GetMapping(value = "/update")
-    public Result upload(@RequestParam Integer version) {
+
+    /**
+     * 更新版本
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/checkVersion/{version}")
+    public Result upload(@PathVariable Integer version) {
         return versionService.versionupdate(version) ;
     }
 }

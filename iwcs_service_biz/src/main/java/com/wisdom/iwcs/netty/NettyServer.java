@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.netty;
 
+import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.ThirdAppConnectionExecption;
 import io.netty.bootstrap.ServerBootstrap;
@@ -9,6 +10,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,10 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NettyServer implements Runnable {
     Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
+    @Autowired
+    private ApplicationProperties properties;
+
     private static final NettyServer nettyServer = new NettyServer();
 
-    public static String host = "192.168.89.169";
-    public static int port = 9234;
+    public  String host = properties.getNetty().getNettyServer().getHost();
+    public  int port = properties.getNetty().getNettyServer().getPort();
     private static Channel ch;
     private ServerBootstrap b;
 
