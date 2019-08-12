@@ -265,7 +265,7 @@ public class TaskCreateService implements ITaskCreateService {
 
         //创建任务
         PlToAgingRequest plToAgingRequest = new PlToAgingRequest();
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(startPoint);
         plToAgingRequest.setAreaCode(baseMapBerth.getAreaCode());
         plToAgingRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         plToAgingRequest.setPriority(taskCreateRequest.getPriority());
@@ -278,7 +278,7 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth endBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getTargetPointAlias());
             Preconditions.checkBusinessError(endBaseMapBerth == null, "目标点位信息为空");
 
-            Preconditions.checkBusinessError(AGINGREA.equals(endBaseMapBerth.getOperateAreaCode()), "选择的点位不属于老化区");
+            Preconditions.checkBusinessError(!AGINGREA.equals(endBaseMapBerth.getOperateAreaCode()), "选择的点位不属于老化区");
 
             Preconditions.checkBusinessError(iCommonService.checkBerTask(endBaseMapBerth.getBerCode()), "该目标点有正在执行的任务！");
             //加锁

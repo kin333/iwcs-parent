@@ -122,7 +122,7 @@ public class NettyServer implements Runnable {
 
     public static NettyServer getInstance() {
         if(nettyServer.b == null){
-            nettyServer.init();
+            //nettyServer.init();
         }
         return nettyServer;
     }
