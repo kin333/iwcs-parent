@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @Author george
  * @Date 2019/7/13 15:19
  */
-public class LineNettyClient implements Runnable {
+public class LineNettyClient extends BaseNettyClient implements Runnable {
    static Logger logger = LoggerFactory.getLogger(LineNettyClient.class);
 
     private static final LineNettyClient lineNettyClient = new LineNettyClient();
@@ -47,17 +47,20 @@ public class LineNettyClient implements Runnable {
         //第2步 绑定客户端通道
         bootstrap.channel(NioSocketChannel.class);
         //第3步 给NIoSocketChannel初始化handler， 处理读写事件
-        bootstrap.handler(new NettyClientInitializer());
+        bootstrap.handler(new NettyClientInitializer(this));
         //连接到远程节点，阻塞等待直到连接完成
         ChannelFuture f = null;
         doConnect();
     }
+
+    @Override
     protected void doConnect(){
         if (ch != null && ch.isActive()) {
             return;
         }
         try {
             ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
+            channelFuture.addListener(getConnectionListener());
             ch = channelFuture.channel();
             //阻塞，直到channel关闭
             channelFuture.addListener(new ChannelFutureListener() {
@@ -87,7 +90,7 @@ public class LineNettyClient implements Runnable {
 
     public static LineNettyClient getInstance() {
         if(lineNettyClient.bootstrap == null){
-            lineNettyClient.init();
+//            lineNettyClient.init();
         }
         return lineNettyClient;
     }
