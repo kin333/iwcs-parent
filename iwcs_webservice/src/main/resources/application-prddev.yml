@@ -152,6 +152,13 @@ socketIO:
     secret: 0550224055e1848081dba46d8ad325f503fa141b
     tokenValidityInSeconds: 86400
     tokenValidityInSecondsForRememberMe: 86400
-plc:
-  elevatorUrl: http://192.168.89.1
-  lineUrl: http://192.168.89.1
+netty:
+  lineClient:
+    host: 192.168.89.1
+    post: 9234
+  elevatorClient:
+    host: 192.168.89.1
+    post: 9234
+  nettyServer:
+    host: 192.168.89.1
+    post: 9234

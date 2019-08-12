@@ -5,6 +5,7 @@ import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.PlAutoWbCallPodRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
@@ -12,6 +13,7 @@ import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
+import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import com.wisdom.iwcs.service.task.intf.IPlAutoWbCallPodService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.slf4j.Logger;
@@ -48,6 +50,8 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     private ITaskCreateService iTaskCreateService;
+    @Autowired
+    private IMapResouceService iMapResouceService;
 
     /**
      *  呼叫空货架
@@ -90,6 +94,14 @@ public class PlAutoWbCallPodService implements IPlAutoWbCallPodService {
             subTask.setEndX(endBercode.getCoox().doubleValue());
             subTask.setEndY(endBercode.getCooy().doubleValue());
             subTask.setEndBercode(endBercode.getBerCode());
+
+            //目标点上锁
+            LockStorageDto lockStorageDto = new LockStorageDto();
+            lockStorageDto.setMapCode(endBercode.getMapCode());
+            lockStorageDto.setBerCode(endBercode.getBerCode());
+            lockStorageDto.setVersion(endBercode.getVersion());
+            lockStorageDto.setLockSource(subTaskNum);
+            iMapResouceService.lockMapBerth(lockStorageDto);
 
             subTask.setWorkerTaskCode(subTaskNum);
 
