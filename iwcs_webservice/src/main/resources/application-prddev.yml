@@ -64,7 +64,6 @@ liquibase:
 
 server:
   port: 8088
-  address: localhost
   tomcat:
     maxHttpHeaderSize: 66665536
 management:
