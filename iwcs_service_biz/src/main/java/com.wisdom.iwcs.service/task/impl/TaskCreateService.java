@@ -179,7 +179,7 @@ public class TaskCreateService implements ITaskCreateService {
 
         Preconditions.checkBusinessError(!LINEAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体区域");
 
-        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), "该目标点有正在执行的任务！");
+        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), targetPoint + "该目标点有正在执行的任务！");
 
         //校验目标点位和用户登录的点位是否在同一楼层
         //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
@@ -311,7 +311,7 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
         //根据货架号查询起始点
         BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
-        Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号");
+        Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号:" + podCode);
 
         //校验货架点位是否正确
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);

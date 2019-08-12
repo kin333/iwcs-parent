@@ -51,7 +51,7 @@ public class QuaAutoToAgingWorker implements Runnable {
                     this.wait(60 * 1000 * 2);
                 }
 
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 logger.error("创建检验区到老化区主任务调度器线程尝试休眠失败！");
                 e.printStackTrace();
             }

@@ -43,8 +43,8 @@ public class QuaAutoToAgingService {
         Result result = new Result();
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setMapCode(mapCode);
-        lockMapBerthCondition.setBizType(ELEVATORCACHEAREA);
-        lockMapBerthCondition.setOperateAreaCode(InspurBizConstants.OperateAreaCodeConstants.ELEVATORAREA);
+        lockMapBerthCondition.setBizType(QUAINSPWORKAREA);
+        lockMapBerthCondition.setOperateAreaCode(InspurBizConstants.OperateAreaCodeConstants.QUAINSPAREA);
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectNotEmptyStorageOfInspectionArea(lockMapBerthCondition);
 
         if(baseMapBerthList.size() > 0) {

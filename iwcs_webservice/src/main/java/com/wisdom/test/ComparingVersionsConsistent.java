@@ -166,26 +166,26 @@ public class ComparingVersionsConsistent {
      * @param file1
      * @param file2
      */
-    public void compareProperties(String file1, String file2) {
-        Properties upgradeLog = new Properties();
-        Properties service = new Properties();
-        Properties hello = new Properties();
-
-        try {
-            InputStream in = this.getClass().getResourceAsStream("hello.properties");
-            ///加载属性列表
-            hello.load(in);
-            Iterator<String> it = hello.stringPropertyNames().iterator();
-            while(it.hasNext()){
-                String key=it.next();
-                System.out.println(key+":"+hello.getProperty(key));
-            }
-            in.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//    public void compareProperties(String file1, String file2) {
+//        Properties upgradeLog = new Properties();
+//        Properties service = new Properties();
+//        Properties hello = new Properties();
+//
+//        try {
+//            InputStream in = this.getClass().getResourceAsStream("");
+//            ///加载属性列表
+//            hello.load(in);
+//            Iterator<String> it = hello.stringPropertyNames().iterator();
+//            while(it.hasNext()){
+//                String key=it.next();
+//                System.out.println(key+":"+hello.getProperty(key));
+//            }
+//            in.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 //        ArrayList<Property> list1 = ComparingVersionsConsistent.getPropList(file1);
 //        ArrayList<Property> list2 = ComparingVersionsConsistent.getPropList(file2);
@@ -204,7 +204,7 @@ public class ComparingVersionsConsistent {
 //                logger.info("当前版本已是最新！");
 //            }
 //        }//for
-    }
+//    }
     /**
      * 获取文件中k&v
      * @param file
