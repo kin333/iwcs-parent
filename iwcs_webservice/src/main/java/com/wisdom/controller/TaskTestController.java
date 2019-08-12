@@ -12,6 +12,7 @@ import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.PackWlCacheWorker;
+import com.wisdom.iwcs.service.task.scheduler.TestWcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
@@ -45,6 +46,8 @@ public class TaskTestController {
 
     @Autowired
     private WcsTaskScheduler wcsTaskScheduler;
+    @Autowired
+    private TestWcsTaskScheduler testWcsTaskScheduler;
 
 
     @Autowired
@@ -318,10 +321,18 @@ public class TaskTestController {
         return new Result();
     }
 
+    @GetMapping("/taskStart")
+    public Result taskStart() {
+        logger.info("开始启动任务调度器线程");
+        Thread thread = new Thread(wcsTaskScheduler);
+        thread.start();
+        logger.info("启动任务调度器线程成功");
+        return new Result();
+    }
     @GetMapping("/testTaskStart")
     public Result testTaskStart() {
         logger.info("开始启动任务调度器线程");
-        Thread thread = new Thread(wcsTaskScheduler);
+        Thread thread = new Thread(testWcsTaskScheduler);
         thread.start();
         logger.info("启动任务调度器线程成功");
         return new Result();
