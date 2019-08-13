@@ -33,6 +33,9 @@
         <result column="version" jdbcType="INTEGER" property="version"/>
         <result column="lock_source_time" jdbcType="TIMESTAMP" property="podLockSourceTime"/>
     </resultMap>
+    <resultMap id="DtoResultMap" type="com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO" extends="BaseResultMap">
+        <result column="operate_area_code" jdbcType="VARCHAR" property="operateAreaCode"/>
+    </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
@@ -51,46 +54,47 @@
         bpd.pod_prop3, bpd.pod_prop4, bpd.pod_prop5, bpd.valid_flag, bpd.delete_flag, bpd.created_by, bpd.created_time,
         bpd.last_modified_by, bpd.last_modified_time, bpd.in_lock, bpd.lock_source, bpd.in_stock, bpd.version
     </sql>
-    <select id="selectPage" resultMap="BaseResultMap">
+    <select id="selectPage" resultMap="DtoResultMap">
         select
-        <include refid="Base_Column_List"/>
-        from base_pod_detail
+        <include refid="Table_Column_List"/> ,bmb.operate_area_code
+        from base_pod_detail bpd
+        LEFT JOIN base_map_berth bmb ON bpd.ber_code = bmb.ber_code
         where 1=1
         <if test="searchKey != null and searchKey != ''">
             and 1=1
         </if>
         <if test="startTime != null">
-            and UNIX_TIMESTAMP(created_time) >= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
+            and UNIX_TIMESTAMP(bpd.created_time) >= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
         </if>
         <if test="podCode != null and podCode != ''">
-            and pod_code = #{podCode}
+            and bpd.pod_code = #{podCode}
         </if>
         <if test="berCode != null and berCode != ''">
-            and ber_code = #{berCode}
+            and bpd.ber_code = #{berCode}
         </if>
         <if test="areaCode != null and areaCode != ''">
-            and area_code = #{areaCode}
+            and bpd.area_code = #{areaCode}
         </if>
         <if test="mapCode != null and mapCode != ''">
-            and map_code = #{mapCode}
+            and bpd.map_code = #{mapCode}
         </if>
         <if test="stgTypeCode != null and stgTypeCode != ''">
-            and stg_type_code = #{stgTypeCode}
+            and bpd.stg_type_code = #{stgTypeCode}
         </if>
         <if test="inLock != null and inLock != ''">
-            and in_lock = #{inLock}
+            and bpd.in_lock = #{inLock}
         </if>
         <if test="lockSource != null and lockSource != ''">
-            and lock_source = #{lockSource}
+            and bpd.lock_source = #{lockSource}
         </if>
         <if test="inStock != null and inStock != ''">
-            and in_stock = #{inStock}
+            and bpd.in_stock = #{inStock}
         </if>
 
         <if test="endTime != null">
-            and UNIX_TIMESTAMP(created_time) &lt;= (#{endTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
+            and UNIX_TIMESTAMP(bpd.created_time) &lt;= (#{endTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
         </if>
-        order by last_modified_time desc
+        order by bpd.last_modified_time desc
     </select>
 
     <update id="deleteLogicByPodCodes">

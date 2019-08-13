@@ -54,6 +54,13 @@ public class QuaAutoCallPodWorker implements Runnable {
             } catch (InterruptedException e) {
                 logger.error("创建老化区货架到检验区主任务调度器线程尝试休眠失败！");
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    this.wait(30 * 1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

@@ -82,8 +82,10 @@ public class ConsumerThread implements Runnable {
                     logger.info("队列名称:{} routeKey:{} 信息:{}", queueName, envelope.getRoutingKey() , message);
                     //调用消费者活动
                     consumerAction.action(new ConsumerActionInfo(message, queueName));
-                    //返回确认状态
-                    channel.basicAck(envelope.getDeliveryTag(), false);
+                    if (TASK_LOG_QUEUE.equals(queueName)) {
+                        //返回确认状态
+                        channel.basicAck(envelope.getDeliveryTag(), false);
+                    }
                     if (!queueName.contains("_")) {
                         return;
                     }

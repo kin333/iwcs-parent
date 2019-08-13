@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
-
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class BasePodDetailService implements IBasePodDetailService {
@@ -245,12 +243,10 @@ public class BasePodDetailService implements IBasePodDetailService {
         String sortMyBatisByString = gridPageRequest.getSortMybatisString();
         PageHelper.startPage(gridPageRequest.getPageNum(), gridPageRequest.getPageSize(), sortMyBatisByString);
 
-        List<BasePodDetail> list = basePodDetailMapper.selectPage(map);
+        List<BasePodDetailDTO> list = basePodDetailMapper.selectPage(map);
 
-        PageInfo<BasePodDetail> pageInfo = new PageInfo<>(list);
-        PageInfo<BasePodDetailDTO> pageInfoFinal = new PageInfo<>(basePodDetailMapStruct.toDto(list));
-        pageInfoFinal.setTotal(pageInfo.getTotal());
-        mGridReturnData.setPageInfo(pageInfoFinal);
+        PageInfo<BasePodDetailDTO> pageInfo = new PageInfo<>(list);
+        mGridReturnData.setPageInfo(pageInfo);
 
         return mGridReturnData;
     }

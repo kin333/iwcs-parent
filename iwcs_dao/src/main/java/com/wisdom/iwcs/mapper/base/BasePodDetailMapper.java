@@ -27,7 +27,7 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      * @param map condition
      * @return list
      */
-    List<BasePodDetail> selectPage(Map map);
+    List<BasePodDetailDTO> selectPage(Map map);
 
     /**
      * 根据货架编号逻辑删除信息

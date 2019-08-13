@@ -661,7 +661,7 @@ public class TaskCreateService implements ITaskCreateService {
         BaseMapBerth endBaseMapBerth = endBaseMapBerths.get(0);
         Preconditions.checkBusinessError(!Strings.isNullOrEmpty(endBaseMapBerth.getPodCode()), "包装线货架不能有货架");
         targetPoint = endBaseMapBerth.getBerCode();
-        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), "该目标点有正在执行的任务！");
+        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), targetPoint + "该目标点有正在执行的任务！");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
 //        String userAreaCode = SecurityUtils.getCurrentAreaCode();

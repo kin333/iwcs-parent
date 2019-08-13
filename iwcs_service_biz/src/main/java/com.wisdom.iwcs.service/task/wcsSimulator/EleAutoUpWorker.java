@@ -43,6 +43,13 @@ public class EleAutoUpWorker implements Runnable {
                     this.wait(15 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        this.wait(30 * 1000);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         }

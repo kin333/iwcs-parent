@@ -37,6 +37,13 @@ public class WorkLineScheduler implements Runnable {
             } catch (InterruptedException e) {
                 logger.error("产线工作台主任务生成器线程尝试休眠失败！");
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    this.wait(30 * 1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

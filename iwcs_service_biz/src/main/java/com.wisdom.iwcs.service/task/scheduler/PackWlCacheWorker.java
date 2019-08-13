@@ -32,12 +32,21 @@ public class PackWlCacheWorker implements Runnable {
 
     @Override
     public void run() {
-        synchronized (this) {
-            try {
-                autoTask();
-                this.wait(30 * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        while (true) {
+            synchronized (this) {
+                try {
+                    autoTask();
+                    this.wait(30 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        this.wait(30 * 1000);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
         }
 

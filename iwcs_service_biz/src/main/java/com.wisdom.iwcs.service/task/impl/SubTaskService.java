@@ -280,10 +280,10 @@ public class SubTaskService {
                 }
             }
         });
-        //将子任务条件表中的条件状态改为已符合
-        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.PRE_CONDITION.getCode());
         //将子任务的状态改为正在执行
         subTaskMapper.updateTaskStatusByNum(subTask.getSubTaskNum(), SubTaskStatusEnum.Executing.getStatusCode());
+        //将子任务条件表中的条件状态改为已符合
+        subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.PRE_CONDITION.getCode());
 
         logger.info("子任务{}前置条件已全部满足", subTask.getSubTaskNum());
 
@@ -393,10 +393,10 @@ public class SubTaskService {
                 if (!resultFlag.get()) {
                     return false;
                 }
-                //将子任务条件表中的条件状态改为已符合
-                subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.POST_CONDITION.getCode());
                 //将子任务的状态改为已结束
                 finishTask(subTask.getSubTaskNum());
+                //将子任务条件表中的条件状态改为已符合
+                subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.POST_CONDITION.getCode());
                 logger.info("子任务{}后置条件已全部满足", subTask.getSubTaskNum());
                 //向消息队列发送消息
                 String message = "子任务后置条件已全部满足,主任务号:" + subTask.getMainTaskNum();

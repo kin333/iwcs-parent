@@ -4,6 +4,7 @@ import com.github.crab2died.annotation.ExcelField;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTOChangeConverter.ChangeInLockConverter;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTOChangeConverter.ChangeInStockConverter;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTOChangeConverter.ChangeLockSourceConverter;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -180,6 +181,19 @@ public class BasePodDetailDTO {
      */
     @Column(name = "version")
     private Integer version;
+
+    /**
+     * 货架当前所属区域
+     */
+    private String operateAreaCode;
+
+    public String getOperateAreaCode() {
+        return operateAreaCode;
+    }
+
+    public void setOperateAreaCode(String operateAreaCode) {
+        this.operateAreaCode = operateAreaCode;
+    }
 
     public Integer getVersion() {
         return version;
