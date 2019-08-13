@@ -103,6 +103,8 @@ public class PToPService implements IPToPService {
             subTaskCreate.setStartBercode(pToPRequest.getStartPoint());
             subTaskCreate.setMapCode(startBercode.getMapCode());
             subTaskCreate.setAreaCode(pToPRequest.getAreaCode());
+            subTaskCreate.setStartAlias(startBercode.getPointAlias());
+            subTaskCreate.setEndAlias(endBercode.getPointAlias());
             subTaskMapper.insertSelective(subTaskCreate);
 
             //向消息队列发送消息

@@ -112,11 +112,13 @@ public class ElevatorTaskService implements IElevatorTaskService {
             BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(elevatorTaskRequest.getStartPoint());
             subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
             subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
+            subTaskCreate.setStartAlias(startBercode.getPointAlias());
 
             //计算目标通过地图坐标查询坐标
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(elevatorTaskRequest.getTargetPoint());
             subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
             subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
+            subTaskCreate.setStartAlias(endBercode.getPointAlias());
 
             //货架上锁
             BasePodDetail basePodDetail = new BasePodDetail();

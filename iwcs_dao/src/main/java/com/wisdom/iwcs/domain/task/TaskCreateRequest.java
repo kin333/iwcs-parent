@@ -28,6 +28,11 @@ public class TaskCreateRequest {
     private String subTaskBizProp;
 
     /**
+     * 起始点编号
+     */
+    private String startPointAlias;
+
+    /**
      * 目标点位编号
      */
     private String targetPointAlias;
@@ -36,11 +41,6 @@ public class TaskCreateRequest {
      * 货架号
      */
     private String podCode;
-
-    /**
-     * 起始点编号
-     */
-    private String startPointAlias;
 
     /**
      * 任务优先级 不填
@@ -53,7 +53,7 @@ public class TaskCreateRequest {
     private String pTopTaskSubTaskType;
 
     /**
-     *
+     * 库区
      */
     private String areaCode;
 

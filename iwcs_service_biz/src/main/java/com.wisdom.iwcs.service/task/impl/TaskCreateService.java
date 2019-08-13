@@ -179,7 +179,7 @@ public class TaskCreateService implements ITaskCreateService {
 
         Preconditions.checkBusinessError(!LINEAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体区域");
 
-        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), targetPoint + "该目标点有正在执行的任务！");
+        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), baseMapBerth.getPointAlias() + " 该目标点有正在执行的任务或已经有货架！");
 
         //校验目标点位和用户登录的点位是否在同一楼层
         //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
@@ -261,7 +261,7 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
 
         //更改货架空满状态
-        basePodDetailMapper.updatePodInStock(podCode,NOT_EMPTY_POD);
+        basePodDetailMapper.updateInStock(podCode,NOT_EMPTY_POD);
 
         //创建任务
         PlToAgingRequest plToAgingRequest = new PlToAgingRequest();
@@ -271,16 +271,17 @@ public class TaskCreateService implements ITaskCreateService {
         plToAgingRequest.setPriority(taskCreateRequest.getPriority());
         plToAgingRequest.setPodCode(podCode);
         plToAgingRequest.setStartPoint(startPoint);
+        plToAgingRequest.setStartPointAlias(taskCreateRequest.getStartPointAlias());
 
         //手动选择目标点
         if (MANUAL_FIRST.equals(taskCreateRequest.getSubTaskBizProp())){
             //查询点位坐标，并上锁
-            BaseMapBerth endBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(taskCreateRequest.getTargetPointAlias());
+            BaseMapBerth endBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(targetPointAlias);
             Preconditions.checkBusinessError(endBaseMapBerth == null, "目标点位信息为空");
 
             Preconditions.checkBusinessError(!AGINGREA.equals(endBaseMapBerth.getOperateAreaCode()), "选择的点位不属于老化区");
 
-            Preconditions.checkBusinessError(iCommonService.checkBerTask(endBaseMapBerth.getBerCode()), "该目标点有正在执行的任务！");
+            Preconditions.checkBusinessError(iCommonService.checkBerTask(endBaseMapBerth.getBerCode()), targetPointAlias + " 该目标点有正在执行的任务或已经有货架！");
             //加锁
             LockStorageDto lockStorageDto = new LockStorageDto();
             lockStorageDto.setMapCode(endBaseMapBerth.getMapCode());
@@ -288,7 +289,7 @@ public class TaskCreateService implements ITaskCreateService {
             lockStorageDto.setVersion(endBaseMapBerth.getVersion());
             baseMapBerthMapper.lockMapBerth(lockStorageDto);
             plToAgingRequest.setTargetPoint(endBaseMapBerth.getBerCode());
-            plToAgingRequest.setStartAlias(taskCreateRequest.getStartPointAlias());
+            plToAgingRequest.setTargetPointAlias(taskCreateRequest.getStartPointAlias());
         }
         plToAgingRequest.setSubTaskBizProp(taskCreateRequest.getSubTaskBizProp());
         iPlToAgingService.plagingToQuaInsp(plToAgingRequest);
@@ -306,12 +307,15 @@ public class TaskCreateService implements ITaskCreateService {
     public void agingToQuaInspFunction(TaskCreateRequest taskCreateRequest){
         logger.info("老化区前往检验点:{}",JSON.toJSONString(taskCreateRequest));
         String podCode = taskCreateRequest.getPodCode();
+        String startPoint = "";
         String targetPoint = "";
+        String targetPointAlias = "";
 
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
         //根据货架号查询起始点
         BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
         Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号:" + podCode);
+        startPoint = basePodDetail.getBerCode();
 
         //校验货架点位是否正确
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
@@ -333,6 +337,7 @@ public class TaskCreateService implements ITaskCreateService {
         String areaCode;
         if (workLockMapBerth != null){
             targetPoint = workLockMapBerth.getBerCode();
+            targetPointAlias = workLockMapBerth.getPointAlias();
             areaCode = workLockMapBerth.getAreaCode();
         }else{
             LockMapBerthCondition cachelockMapBerthCondition = new LockMapBerthCondition();
@@ -342,20 +347,21 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth cacheLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(cachelockMapBerthCondition);
             if (cacheLockMapBerth != null){
                 targetPoint = cacheLockMapBerth.getBerCode();
+                targetPointAlias = workLockMapBerth.getPointAlias();
                 areaCode = cacheLockMapBerth.getAreaCode();
             }else {
                 throw new BusinessException("创建任务失败，检验区没有空闲点位！");
             }
         }
 
-        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), "该目标点有正在执行的任务！");
+        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), targetPointAlias+" 该目标点有正在执行的任务或已经有货架！");
         //创建任务
         AgingToQuaInspRequest agingToQuaInspRequest = new AgingToQuaInspRequest();
         agingToQuaInspRequest.setTaskTypeCode(taskCreateRequest.getTaskTypeCode());
         agingToQuaInspRequest.setPriority(taskCreateRequest.getPriority());
         agingToQuaInspRequest.setPodCode(podCode);
         agingToQuaInspRequest.setAreaCode(areaCode);
-        agingToQuaInspRequest.setStartPoint(basePodDetail.getBerCode());
+        agingToQuaInspRequest.setStartPoint(startPoint);
         agingToQuaInspRequest.setTargetPoint(targetPoint);
         agingToQuaInspRequest.setMapCode(basePodDetail.getMapCode());
         iAgingToQuaInspService.agingToQuaInsp(agingToQuaInspRequest);
@@ -661,7 +667,7 @@ public class TaskCreateService implements ITaskCreateService {
         BaseMapBerth endBaseMapBerth = endBaseMapBerths.get(0);
         Preconditions.checkBusinessError(!Strings.isNullOrEmpty(endBaseMapBerth.getPodCode()), "包装线货架不能有货架");
         targetPoint = endBaseMapBerth.getBerCode();
-        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), targetPoint + "该目标点有正在执行的任务！");
+        Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), endBaseMapBerth.getPointAlias()+"该目标点有正在执行的任务或已经有货架！");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
 //        String userAreaCode = SecurityUtils.getCurrentAreaCode();

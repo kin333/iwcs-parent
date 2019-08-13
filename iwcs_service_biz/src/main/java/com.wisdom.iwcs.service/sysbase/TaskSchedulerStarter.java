@@ -49,12 +49,12 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
             Thread lineNettyClientThread = new Thread(lineNettyClient);
             lineNettyClientThread.start();
 
-            ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
-            Thread elevatorThread = new Thread(elevatorNettyClient);
-            elevatorThread.start();
-
-            Thread serverThread = new Thread(new NettyServer());
-            serverThread.start();
+//            ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
+//            Thread elevatorThread = new Thread(elevatorNettyClient);
+//            elevatorThread.start();
+//
+//            Thread serverThread = new Thread(new NettyServer());
+//            serverThread.start();
 
 //        Thread thread = new Thread(wcsTaskScheduler);
 //        thread.start();

@@ -107,7 +107,8 @@ public class PlToAgingService implements IPlToAgingService {
             subTaskCreate.setMapCode(startBercode.getMapCode());
             subTaskCreate.setAreaCode(plToAgingRequest.getAreaCode());
             subTaskCreate.setSubTaskBizProp(plToAgingRequest.getSubTaskBizProp());
-            subTaskCreate.setStartAlias(plToAgingRequest.getStartAlias());
+            subTaskCreate.setStartAlias(plToAgingRequest.getStartPointAlias());
+            subTaskCreate.setEndAlias(plToAgingRequest.getTargetPointAlias());
             subTaskMapper.insertSelective(subTaskCreate);
 
             //向消息队列发送消息

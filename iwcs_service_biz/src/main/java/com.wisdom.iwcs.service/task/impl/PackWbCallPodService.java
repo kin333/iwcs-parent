@@ -97,13 +97,15 @@ public class PackWbCallPodService implements IPackWbCallPodService {
             BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(packWbCallPodRequest.getStartPoint());
             subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
             subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
-            subTaskCreate.setStartBercode(packWbCallPodRequest.getStartPoint());
+            subTaskCreate.setStartBercode(startBercode.getBerCode());
+            subTaskCreate.setStartAlias(startBercode.getPointAlias());
 
             //计算目标通过地图坐标查询坐标
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(packWbCallPodRequest.getTargetPoint());
             subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
             subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
             subTaskCreate.setEndBercode(endBercode.getBerCode());
+            subTaskCreate.setEndAlias(endBercode.getPointAlias());
 
             subTaskCreate.setMapCode(mapCode);
             subTaskCreate.setAreaCode(packWbCallPodRequest.getAreaCode());

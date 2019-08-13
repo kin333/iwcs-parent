@@ -73,6 +73,12 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     String selectBerCodeByPodCode(String pointAlias);
 
     /**
+     * 根据berCode查地码别名
+     */
+    @Select("select point_alias from base_map_berth where delete_flag = 0  and  ber_code= #{pointAlias,jdbcType=VARCHAR}")
+    String selectAliasByBerCode(String berCode);
+
+    /**
      * 根据地图编号获取地码列表
      * @param mapCode
      * @return

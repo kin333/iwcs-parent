@@ -42,18 +42,16 @@ public class PlToAgingRequest {
      * 子任务单业务属性
      */
     private String subTaskBizProp;
+
     /**
      * 起始点别名
      */
-    private String startAlias;
+    private String startPointAlias;
 
-    public String getStartAlias() {
-        return startAlias;
-    }
-
-    public void setStartAlias(String startAlias) {
-        this.startAlias = startAlias;
-    }
+    /**t
+     * 终点别名
+     */
+    private String targetPointAlias;
 
     public String getPodCode() {
         return podCode;
@@ -109,5 +107,21 @@ public class PlToAgingRequest {
 
     public void setSubTaskBizProp(String subTaskBizProp) {
         this.subTaskBizProp = subTaskBizProp;
+    }
+
+    public String getStartPointAlias() {
+        return startPointAlias;
+    }
+
+    public void setStartPointAlias(String startPointAlias) {
+        this.startPointAlias = startPointAlias;
+    }
+
+    public String getTargetPointAlias() {
+        return targetPointAlias;
+    }
+
+    public void setTargetPointAlias(String targetPointAlias) {
+        this.targetPointAlias = targetPointAlias;
     }
 }

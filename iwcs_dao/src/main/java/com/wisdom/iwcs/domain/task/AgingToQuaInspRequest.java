@@ -37,6 +37,9 @@ public class AgingToQuaInspRequest {
      */
     private String targetPoint;
 
+    /**
+     * 地图编号
+     */
     private String mapCode;
 
     public String getPodCode() {
