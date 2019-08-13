@@ -314,13 +314,6 @@
         </set>
         where lock_source = #{subTaskName}
     </update>
-    <update id="updatePodInStock">
-        update base_pod_detail
-        <set>
-            in_stock  = 1
-        </set>
-        where pod_code = #{podCode}
-    </update>
     <update id="updateInStock">
         update base_pod_detail
         <set>
