@@ -246,58 +246,80 @@ public class TaskTestController {
     @GetMapping("/testMainTask")
     public Result testMainTask(){
 
-        logger.info("开始电梯下楼任务生成器");
-        Thread eleAutoThread = new Thread(eleAutoDownWorker);
-        eleAutoThread.start();
-        logger.info("启动电梯下楼任务生成器");
-
-        logger.info("开始电梯上楼任务生成器");
-        Thread eleAutoUpThread = new Thread(eleAutoUpWorker);
-        eleAutoUpThread.start();
-        logger.info("启动电梯上楼任务生成器");
-
-        logger.info("开始缓存区去包装区任务生成器");
-        Thread packWlCacheThread = new Thread(packWlCacheWorker);
-        packWlCacheThread.start();
-        logger.info("启动缓存区去包装区任务生成器");
+        int time = 1000;
+        try {
 
 
-        logger.info("开始产线工作台任务生成器");
-        workLineThread2 = new Thread(new WorkLineScheduler("DD"));
-        workLineThread2.start();
-        logger.info("启动产线工作台任务生成器成功");
+            logger.info("开始电梯下楼任务生成器");
+            Thread eleAutoThread = new Thread(eleAutoDownWorker);
+            eleAutoThread.start();
+            logger.info("启动电梯下楼任务生成器");
+
+            Thread.sleep(time);
+
+            logger.info("开始电梯上楼任务生成器");
+            Thread eleAutoUpThread = new Thread(eleAutoUpWorker);
+            eleAutoUpThread.start();
+            logger.info("启动电梯上楼任务生成器");
+
+            Thread.sleep(time);
+
+            logger.info("开始缓存区去包装区任务生成器");
+            Thread packWlCacheThread = new Thread(packWlCacheWorker);
+            packWlCacheThread.start();
+            logger.info("启动缓存区去包装区任务生成器");
+
+            Thread.sleep(time);
+
+            logger.info("开始产线工作台任务生成器");
+            workLineThread2 = new Thread(new WorkLineScheduler("DD"));
+            workLineThread2.start();
+            logger.info("启动产线工作台任务生成器成功");
+
+            Thread.sleep(time);
 
 //        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-        logger.info("开始启动模拟创建检验区货架到电梯缓存区任务调度器线程");
-        quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("DD"));
-        quaAutoToAgingThread.start();
+            logger.info("开始启动模拟创建检验区货架到电梯缓存区任务调度器线程");
+            quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("DD"));
+            quaAutoToAgingThread.start();
 //        logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
-        logger.info("启动模拟创建检验区货架到电梯缓存区任务调度器线程成功");
+            logger.info("启动模拟创建检验区货架到电梯缓存区任务调度器线程成功");
 
-        logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-        quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
-        quaAutoCallPodThread.start();
-        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
+            Thread.sleep(time);
 
-        logger.info("开始产线工作台任务生成器");
-        workLineThread1 = new Thread(new WorkLineScheduler("AB"));
-        workLineThread1.start();
-        logger.info("启动产线工作台任务生成器成功");
+            logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
+            quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
+            quaAutoCallPodThread.start();
+            logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
 
-        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-        quaAutoToAgingThread2 = new Thread(new QuaAutoToAgingWorker("AB"));
-        quaAutoToAgingThread2.start();
-        logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
+            Thread.sleep(time);
 
-        logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-        quaAutoCallPodThread2 = new Thread(new QuaAutoCallPodWorker("AB"));
-        quaAutoCallPodThread2.start();
-        logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
+            logger.info("开始产线工作台任务生成器");
+            workLineThread1 = new Thread(new WorkLineScheduler("AB"));
+            workLineThread1.start();
+            logger.info("启动产线工作台任务生成器成功");
 
-        logger.info("开始启动任务调度器线程");
-        Thread thread = new Thread(wcsTaskScheduler);
-        thread.start();
-        logger.info("启动任务调度器线程成功");
+            Thread.sleep(time);
+
+            logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
+            quaAutoToAgingThread2 = new Thread(new QuaAutoToAgingWorker("AB"));
+            quaAutoToAgingThread2.start();
+            logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
+            quaAutoCallPodThread2 = new Thread(new QuaAutoCallPodWorker("AB"));
+            quaAutoCallPodThread2.start();
+            logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
+
+            logger.info("开始启动任务调度器线程");
+            Thread thread = new Thread(wcsTaskScheduler);
+            thread.start();
+            logger.info("启动任务调度器线程成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return new Result("启动成功");
     }

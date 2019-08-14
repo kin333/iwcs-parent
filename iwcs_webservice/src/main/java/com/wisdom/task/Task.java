@@ -46,13 +46,6 @@ public class Task {
     HealthCheckService healthCheckService;
 
 
-
-    //	@Scheduled(cron="0 0/1 * * * ?")
-    public void XXXTask() {
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-    }
-
     /**
      * 每月1号0点执行
      */
@@ -83,12 +76,12 @@ public class Task {
      * 处理任务信息异常
      *
      */
-    @Scheduled(fixedRateString="60000",initialDelayString="100")
+    @Scheduled(fixedRateString="600000",initialDelayString="2000")
     public void disposeError() {
-//        logger.info("错误处理定时器准备执行");
-//        Thread thread = new Thread(errorRepairThread);
-//        thread.start();
-//        logger.info("错误处理定时器开始执行");
+        logger.info("错误处理定时器准备执行");
+        Thread thread = new Thread(errorRepairThread);
+        thread.start();
+        logger.info("错误处理定时器开始执行");
     }
     /**
      * 开机检查版本是否一致

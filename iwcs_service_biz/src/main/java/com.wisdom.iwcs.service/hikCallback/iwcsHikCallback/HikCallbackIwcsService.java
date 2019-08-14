@@ -5,6 +5,7 @@ import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.CreateRouteKeyUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
@@ -27,6 +28,7 @@ import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -278,6 +280,18 @@ public class HikCallbackIwcsService {
             }
             logger.info("子任务{}在更新货架的地码编号{}时成功 ", hikCallBackAgvMove.getTaskCode(),
                     hikCallBackAgvMove.getWbCode());
+
+            //检查走出储位时回调是否执行
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+            Preconditions.checkBusinessError(baseMapBerth == null, hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+            if (hikCallBackAgvMove.getPodCode().equals(baseMapBerth.getPodCode())) {
+                logger.info("子任务{}开始修复走出储位回调未执行成功情况,清空地码{}的货架编号", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getWbCode());
+                BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
+                tmpBaseMapBerth.setId(baseMapBerth.getId());
+                tmpBaseMapBerth.setPodCode("");
+                //更新储位信息,加货架号,解锁
+                baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
+            }
 
             transactionManager.commit(status);
         } catch (Exception e) {

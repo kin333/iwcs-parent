@@ -64,7 +64,7 @@ public class PackWlCacheWorker implements Runnable {
 
         //如果目标点有货架,则跳过
         BaseMapBerth baseMapBerth = mapBerthList.get(0);
-        if (!StringUtils.isEmpty(baseMapBerth.getPodCode()) && YZConstants.LOCK.equals(baseMapBerth.getInLock())) {
+        if (StringUtils.isNotEmpty(baseMapBerth.getPodCode()) || YZConstants.LOCK.equals(baseMapBerth.getInLock())) {
             return;
         }
         TaskCreateRequest taskCreateRequest = new TaskCreateRequest();

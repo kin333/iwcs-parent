@@ -147,6 +147,7 @@ public class ErrorRepairThread implements Runnable {
         BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(subTask.getPodCode());
         if (basePodDetail == null) {
             logger.error("子任务{}的货架号{}异常",subTask.getSubTaskNum(), subTask.getPodCode());
+            return;
         }
         if (subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
             BasePodDetail tmpBasePodDetail = new BasePodDetail();
