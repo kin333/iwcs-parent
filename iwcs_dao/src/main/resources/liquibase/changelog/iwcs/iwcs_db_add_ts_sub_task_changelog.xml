@@ -145,4 +145,12 @@
         <dropColumn tableName="ts_sub_task" columnName="dest_floor"/>
         <dropColumn tableName="ts_sub_task" columnName="elevator_work_type"/>
     </changeSet>
+    <changeSet id="201908131524-1" author="han">
+        <dropIndex tableName="ts_sub_task" indexName="idx_subTaskNum"/>
+    </changeSet>
+    <changeSet id="201908131524-2" author="han">
+        <createIndex tableName="ts_sub_task" indexName="idx_subTaskNum" unique="false">
+            <column name="sub_task_num"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
