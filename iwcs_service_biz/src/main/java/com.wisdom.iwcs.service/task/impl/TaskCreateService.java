@@ -142,7 +142,7 @@ public class TaskCreateService implements ITaskCreateService {
                 packWbCallPodFunction(taskCreateRequest);
                 break;
             case PACKTOPLORAGING:
-                //packToPlorAgingFunction(taskCreateRequest);
+                elevatorTaskFunction(taskCreateRequest);
                 break;
             case PTOPWITHOUTPODCHECK:
                 pTopFunction(taskCreateRequest);
@@ -394,6 +394,9 @@ public class TaskCreateService implements ITaskCreateService {
 
         //初始化入库
         if (!Strings.isNullOrEmpty(taskCreateRequest.getpTopTaskSubTaskType()) && INIT_STORAGE.equals(taskCreateRequest.getpTopTaskSubTaskType())){
+            //更新楼层
+
+
             //筛选目标点，锁定放在创建子任务中
             LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
             lockMapBerthCondition.setMapCode(startBaseMapBerth.getMapCode());

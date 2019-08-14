@@ -107,11 +107,13 @@ public class VersionService {
         String url = v.getUrl();
         String information = v.getInformation();
         Map map = new HashMap();
-        if (version.intValue() == v.getVersion().intValue()) {
+        if (version >= v.getVersion()) {
             map.put("url","");
-            return new Result(200, "已是最新版本",map);
+            return new Result(400, "已是最新版本",map);
+        }else{
+            map.put("url",url);
+            return new Result(200, "有更新",map);
         }
-        map.put("url",url);
-        return new Result(200, "有更新",map);
+
     }
 }

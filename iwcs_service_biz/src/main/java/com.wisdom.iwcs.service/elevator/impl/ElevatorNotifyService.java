@@ -135,6 +135,8 @@ public class ElevatorNotifyService {
 //        if (Integer.parseInt(floor) != eleControlTask.getSourceFloor()){
 //
 //        }
+
+        //是否有货 接->有货，送->无货
         //TODO 不一致处理
 
         //调用rcs继续执行接口 进电梯任务（从检验点到吊箱）
