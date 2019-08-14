@@ -145,7 +145,6 @@ public class TaskCreateService implements ITaskCreateService {
                 //packToPlorAgingFunction(taskCreateRequest);
                 break;
             case PTOPWITHOUTPODCHECK:
-                taskCreateRequest.setPriority(mainTaskType.getPriority());
                 pTopFunction(taskCreateRequest);
                 break;
             default:
@@ -387,18 +386,6 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
 
         BaseMapBerth startBaseMapBerth = new BaseMapBerth();
-        if (!Strings.isNullOrEmpty(podCode)){
-            Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
-            //非初始化入库 校验货架点位是否正确
-            Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
-            Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
-
-            //根据货架号查询起始点
-            BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
-            Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号");
-
-            startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
-        }
         if (!Strings.isNullOrEmpty(startPointAlias)){
             startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
             Preconditions.checkBusinessError(startBaseMapBerth == null, "根据起点点位编号获取点位信息为空");
@@ -416,6 +403,18 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
             targetPoint = baseMapBerth.getBerCode();
         }else{
+            if (!Strings.isNullOrEmpty(podCode)){
+                Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
+                //非初始化入库 校验货架点位是否正确
+                Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
+                Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
+                //根据货架号查询起始点
+                BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+                Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号");
+
+                startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
+            }
+
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "目标点不能为空");
             //查询点位是否有任务或有货架，无，上锁
             BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(targetPointAlias);

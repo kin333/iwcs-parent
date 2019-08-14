@@ -52,7 +52,7 @@ public class TaskConstants {
          */
         public final static String PACKTOPLORAGING = "packToPlorAging";
         /**
-         * 点到点（暂时与上面的点到点一个意思）
+         * 初始化货架用（暂时与上面的点到点一个意思）
          */
         public final static String PTOPWITHOUTPODCHECK = "pTopWithoutPodCheck";
     }
