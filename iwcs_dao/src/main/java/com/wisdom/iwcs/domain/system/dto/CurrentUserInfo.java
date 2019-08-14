@@ -18,6 +18,17 @@ public class CurrentUserInfo extends SUser {
     private Integer departmentId;
     private String departmentName;
     private String currentCompanyName;
+    private String workAddress;
+    private String wechat;
+
+
+    public String getWorkAddress() { return workAddress; }
+
+    public void setWorkAddress(String workAddress) { this.workAddress = workAddress; }
+
+    public String getWechat() { return wechat; }
+
+    public void setWechat(String wechat) { this.wechat = wechat;}
 
     public Integer getCurrentCompanyId() {
         return currentCompanyId;

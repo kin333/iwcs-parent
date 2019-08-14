@@ -82,7 +82,8 @@ public class SUserService {
 
         currentUserInfo.setEmail(user.getEmail());
         currentUserInfo.setMobile(user.getMobile());
-
+        currentUserInfo.setWechat(user.getWechat());
+        currentUserInfo.setWorkAddress(user.getWorkAddress());
 
         currentUserInfo.setSuperAdmin(SecurityUtils.isSuperAdmin());
         //获取权限
