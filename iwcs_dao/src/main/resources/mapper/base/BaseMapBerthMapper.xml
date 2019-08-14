@@ -59,6 +59,24 @@
         </if>
 
     </update>
+    <update id="lockMapBerthByBercode">
+        update base_map_berth
+        <set>
+            in_lock = 1,
+            version = ifnull(version,0) + 1,
+            <if test="lockSource != null and lockSource != ''">
+                lock_source = #{lockSource},
+            </if>
+            <if test="podCode != null and podCode != ''">
+                pod_code = #{podCode},
+            </if>
+        </set>
+        where ber_code = #{berCode}
+        <if test="version != null">
+            and version = #{version}
+        </if>
+
+    </update>
     <update id="unlockMapBerth">
         update base_map_berth
         set in_lock = 0,lock_source = ''

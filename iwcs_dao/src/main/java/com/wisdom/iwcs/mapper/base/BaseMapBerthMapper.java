@@ -50,6 +50,8 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
 
     int lockMapBerth(LockStorageDto lockStorageDto);
 
+    int lockMapBerthByBercode(LockStorageDto lockStorageDto);
+
     int unlockMapBerth(LockStorageDto lockStorageDto);
 
     List<BaseMapBerth> selectEmptyStorage(LockMapBerthCondition lockMapBerthCondition);

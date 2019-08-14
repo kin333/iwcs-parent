@@ -161,7 +161,7 @@ public class MapResouceService implements IMapResouceService {
         if (validateResult.getReturnCode() != 200){
             return validateResult;
         }
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectBerData(lockStorageDto);
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(lockStorageDto.getBerCode());
         if (YZConstants.LOCK.equals(baseMapBerth.getInLock())) {
             return new Result(400, baseMapBerth.getBerCode() + "该储位已被锁定");
         }
@@ -170,7 +170,7 @@ public class MapResouceService implements IMapResouceService {
         }
         //锁住选中的点位
         lockStorageDto.setVersion(baseMapBerth.getVersion());
-        int count = baseMapBerthMapper.lockMapBerth(lockStorageDto);
+        int count = baseMapBerthMapper.lockMapBerthByBercode(lockStorageDto);
         if(count < 1) {
             return new Result(400,"该储位在进行其他操作中，请稍后执行");
         }
