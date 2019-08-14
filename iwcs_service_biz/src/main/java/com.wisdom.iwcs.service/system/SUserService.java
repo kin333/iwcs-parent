@@ -789,6 +789,7 @@ public class SUserService {
         modifyUser.setRealName(sUser.getRealName());
         modifyUser.setEmail(sUser.getEmail());
         modifyUser.setMobile(sUser.getMobile());
+        modifyUser.setWechat(sUser.getWechat());
         sUserMapper.updateByPrimaryKeySelective(modifyUser);
 
         return new Result();
