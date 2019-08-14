@@ -57,7 +57,9 @@ public class QuaAutoCallPodWorker implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
-                    this.wait(30 * 1000);
+                    synchronized (this) {
+                        this.wait(30 * 1000);
+                    }
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }

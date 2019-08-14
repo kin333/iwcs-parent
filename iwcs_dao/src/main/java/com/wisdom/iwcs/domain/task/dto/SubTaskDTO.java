@@ -341,6 +341,34 @@ public class SubTaskDTO {
     @Column(name = "end_alias")
     private String endAlias;
 
+
+    /**
+     * 起点是否是自动选中,0:否 1:是
+     */
+    @Column(name = "start_bercode_auto")
+    private String startBercodeAuto;
+    /**
+     * 终点是否是自动选中,0:否 1:是
+     */
+    @Column(name = "end_bercode_auto")
+    private String endBercodeAuto;
+
+    public String getStartBercodeAuto() {
+        return startBercodeAuto;
+    }
+
+    public void setStartBercodeAuto(String startBercodeAuto) {
+        this.startBercodeAuto = startBercodeAuto;
+    }
+
+    public String getEndBercodeAuto() {
+        return endBercodeAuto;
+    }
+
+    public void setEndBercodeAuto(String endBercodeAuto) {
+        this.endBercodeAuto = endBercodeAuto;
+    }
+
     public String getStartAlias() {
         return startAlias;
     }

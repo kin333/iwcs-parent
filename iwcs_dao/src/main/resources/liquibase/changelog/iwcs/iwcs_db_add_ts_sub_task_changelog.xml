@@ -153,4 +153,11 @@
             <column name="sub_task_num"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="201908141634" author="han">
+        <addColumn tableName="ts_sub_task">
+            <column name="start_bercode_auto" type="VARCHAR(2)" defaultValue="" remarks="起点是否是自动选中,0:否 1:是"/>
+            <column name="end_bercode_auto" type="VARCHAR(2)" defaultValue="" remarks="终点是否是自动选中,0:否 1:是"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
