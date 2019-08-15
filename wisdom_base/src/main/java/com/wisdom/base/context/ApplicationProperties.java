@@ -44,9 +44,6 @@ public class ApplicationProperties {
 
     private final Netty netty = new Netty();
 
-
-
-
     public Async getAsync() {
         return async;
     }
@@ -744,6 +741,64 @@ public class ApplicationProperties {
         }
     }
 
+    public static class Netty {
+
+        private String lineClientHost;
+        private String lineClientPort;
+        private String elevatorClientHost;
+        private String elevatorClientPort;
+        private String nettyServerHost;
+        private String nettyServerPort;
+
+        public String getLineClientHost() {
+            return lineClientHost;
+        }
+
+        public void setLineClientHost(String lineClientHost) {
+            this.lineClientHost = lineClientHost;
+        }
+
+        public String getLineClientPort() {
+            return lineClientPort;
+        }
+
+        public void setLineClientPort(String lineClientPort) {
+            this.lineClientPort = lineClientPort;
+        }
+
+        public String getElevatorClientHost() {
+            return elevatorClientHost;
+        }
+
+        public void setElevatorClientHost(String elevatorClientHost) {
+            this.elevatorClientHost = elevatorClientHost;
+        }
+
+        public String getElevatorClientPort() {
+            return elevatorClientPort;
+        }
+
+        public void setElevatorClientPort(String elevatorClientPort) {
+            this.elevatorClientPort = elevatorClientPort;
+        }
+
+        public String getNettyServerHost() {
+            return nettyServerHost;
+        }
+
+        public void setNettyServerHost(String nettyServerHost) {
+            this.nettyServerHost = nettyServerHost;
+        }
+
+        public String getNettyServerPort() {
+            return nettyServerPort;
+        }
+
+        public void setNettyServerPort(String nettyServerPort) {
+            this.nettyServerPort = nettyServerPort;
+        }
+    }
+
     public static class Outstock {
 
         private boolean noticeOutstockProcess;
@@ -834,86 +889,6 @@ public class ApplicationProperties {
 
         public void setCheckName(String checkName) {
             this.checkName = checkName;
-        }
-    }
-
-    public static class Netty {
-
-        private final LineClient lineClient = new LineClient();
-        private final ElevatorClient elevatorClient = new ElevatorClient();
-        private final NettyServer nettyServer = new NettyServer();
-
-        public LineClient getLineClient() {
-            return lineClient;
-        }
-
-        public ElevatorClient getElevatorClient() {
-            return elevatorClient;
-        }
-
-        public NettyServer getNettyServer() {
-            return nettyServer;
-        }
-
-        public static class LineClient {
-            private String host;
-            private Integer port;
-
-            public String getHost() {
-                return host;
-            }
-
-            public void setHost(String host) {
-                this.host = host;
-            }
-
-            public Integer getPort() {
-                return port;
-            }
-
-            public void setPort(Integer port) {
-                this.port = port;
-            }
-        }
-        public static class ElevatorClient{
-            private String host;
-            private Integer port;
-
-            public String getHost() {
-                return host;
-            }
-
-            public void setHost(String host) {
-                this.host = host;
-            }
-
-            public Integer getPort() {
-                return port;
-            }
-
-            public void setPort(Integer port) {
-                this.port = port;
-            }
-        }
-        public static class NettyServer{
-            private String host;
-            private Integer port;
-
-            public String getHost() {
-                return host;
-            }
-
-            public void setHost(String host) {
-                this.host = host;
-            }
-
-            public Integer getPort() {
-                return port;
-            }
-
-            public void setPort(Integer port) {
-                this.port = port;
-            }
         }
     }
 }

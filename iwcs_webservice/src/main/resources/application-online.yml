@@ -2,8 +2,8 @@
 mysql:
   #    host: localhost
   #    port: 3306
-  host: 192.168.102.136
-  port: 32768
+  host: 192.168.0.101
+  port: 3306
 #  qinghengHost: 58.56.21.226
 #  qinghengPort: 8835
 
@@ -11,7 +11,7 @@ spring:
   datasource:
     druid:
       name: default
-      url: jdbc:mysql://${mysql.host}:${mysql.port}/iwcs_prd_dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&allowMultiQueries=true
+      url: jdbc:mysql://${mysql.host}:${mysql.port}/inspur?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&allowMultiQueries=true
       username: root
       password: root
       type: com.alibaba.druid.pool.DruidDataSource
@@ -127,9 +127,9 @@ application:
     genAgvSchedulingTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/genAgvSchedulingTask
     continueTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/continueTask
     cancelTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/cancelTask
-    returnMapOrPodUrl: http://192.168.102.97/rcs/services/rest/hikRpcService/queryPodBerthAndMat
-    returnTaskStatus:  http://192.168.102.97/rcs/services/rest/hikRpcService/queryTaskStatus
-    finiTask:  http://192.168.102.97/rcs/services/rest/hikLiftService/finiTask
+    returnMapOrPodUrl: http://192.168.0.101/rcs/services/rest/hikRpcService/queryPodBerthAndMat
+    returnTaskStatus:  http://192.168.0.101/rcs/services/rest/hikRpcService/queryTaskStatus
+    finiTask:  http://192.168.0.101/rcs/services/rest/hikLiftService/finiTask
     tokenCode: 09bd3456991fe1cf2e185de92fa5aab5
     clientCode: INSPUR
   outstock:
@@ -137,7 +137,7 @@ application:
     allowHandOutstockSupplyCall: true
     forceKeepOutstockProcess: true
   rabbitmq:
-    host: 192.168.102.97
+    host: 192.168.0.101
     port: 5672
     username: admin
     password: admin

@@ -30,8 +30,8 @@ public class ElevatorNettyClient extends BaseNettyClient implements Runnable {
 
     private static final ElevatorNettyClient elevatorNettyClient = new ElevatorNettyClient();
 
-    public  String host = properties.getNetty().getElevatorClient().getHost();
-    public  int port = properties.getNetty().getElevatorClient().getPort();
+    public  String host = "192.168.102.97";
+    public  int port = 9234;
     private  Channel ch;
     private Bootstrap bootstrap;
     /**

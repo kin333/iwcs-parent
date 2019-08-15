@@ -13,6 +13,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,13 +29,10 @@ import java.util.concurrent.TimeUnit;
 public class LineNettyClient extends BaseNettyClient implements Runnable {
    static Logger logger = LoggerFactory.getLogger(LineNettyClient.class);
 
-    @Autowired
-    private ApplicationProperties properties;
-
     private static final LineNettyClient lineNettyClient = new LineNettyClient();
 
-    public  String host = properties.getNetty().getLineClient().getHost();
-    public  int port = properties.getNetty().getLineClient().getPort();
+    public  String host = "192.168.102.97";
+    public  int port = 9234;
     private  Channel ch;
     private Bootstrap bootstrap;
     /**

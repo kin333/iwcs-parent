@@ -37,6 +37,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityP
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskWorkType.ELE_DOWN;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.*;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.pTopTaskSubTaskTypeConstants.INIT_STORAGE;
@@ -604,6 +605,9 @@ public class TaskCreateService implements ITaskCreateService {
             BasePodDetail basePodDetail1 = basePodDetailMapper.selectByPodCode(podCode);
             Integer floor = FloorMapEnum.returnMapValueByType(basePodDetail1.getPodProp2());
             destFloor = floor.toString();
+
+            //更改货架空满状态
+            basePodDetailMapper.updateInStock(podCode,EMPTY_POD);
 
             //根据货架原所在楼层的mapCode筛选目标点，锁定放在创建子任务中
             LockMapBerthCondition lineLockMapBerthCondition = new LockMapBerthCondition();

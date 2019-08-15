@@ -28,8 +28,8 @@ public class NettyServer implements Runnable {
 
     private static final NettyServer nettyServer = new NettyServer();
 
-    public  String host = properties.getNetty().getNettyServer().getHost();
-    public  int port = properties.getNetty().getNettyServer().getPort();
+    public  String host = "192.168.102.97";
+    public  int port = 9234;
     private static Channel ch;
     private ServerBootstrap b;
 
