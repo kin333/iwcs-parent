@@ -274,7 +274,7 @@
     </select>
     <select id="selectByInLock" resultMap="BaseResultMap">
         select  <include refid="Base_Column_List"/> from base_pod_detail
-        where map_code = '' or map_code is null
+        where valid_flag = '0' or valid_flag = 0
     </select>
     <select id="selectByLockPodConfigtion" resultMap="BaseResultMap">
         select <include refid="Table_Column_List"/> from base_pod_detail bpd
