@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.AgingAreaPriorityProp.AUTO_FIRST;
-import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.YES;
+import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.NO;
 
 /**
  * 产线工作点去老化区前置条件---目标区域有空储位并锁定一个(自动区模式优先放置自动取,手动模式优先放置手动区)
@@ -42,7 +42,7 @@ public class EmptyPosForAgingPodHandler implements IConditionHandler{
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
 
         //检查终点是否为自动选中
-        if (YES.equals(subTask.getEndBercodeAuto())) {
+        if (NO.equals(subTask.getEndBercodeAuto())) {
             Preconditions.checkBusinessError(StringUtils.isBlank(subTask.getEndBercode()),subTaskNum + "子任务终点未自动选中");
             return true;
         }
@@ -87,7 +87,7 @@ public class EmptyPosForAgingPodHandler implements IConditionHandler{
         //自动选择终点的情况
         String subTaskNum = subTaskCondition.getSubTaskNum();
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
-        if (YES.equals(subTask.getEndBercodeAuto())) {
+        if (NO.equals(subTask.getEndBercodeAuto())) {
             return true;
         }
         return baseLockEmptyMapService.rollbackConditionService(subTaskCondition);
