@@ -143,8 +143,8 @@
     <if test="subTaskNum != null and subTaskNum != ''">
       and sub_task_num = #{subTaskNum}
     </if>
-    <if test="subTaskTyp != null and subTaskTyp != ''">
-      and sub_task_type = #{subTaskTyp}
+    <if test="subTaskType != null and subTaskType != ''">
+      and sub_task_typ = #{subTaskType}
     </if>
     <if test="mainTaskNum != null and mainTaskNum != ''">
       and main_task_num = #{mainTaskNum}
