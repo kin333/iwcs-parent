@@ -69,8 +69,12 @@ public class VersionService {
                 e.printStackTrace();
                 return new Result(0, "传入的文件类型错误");
             }
-            String uploadPath = ResourceUtils.getURL("classpath:").getPath() + "static/";
-
+            Version oldVersionInfo = versionMapper.selectnewVersion();
+            if (oldVersionInfo.getVersion() >= version) {
+                return new Result(400, "该版本不是最新版本");
+            }
+            String path = ResourceUtils.getURL("iwcs_webservice/src/main/webapp").getPath() + "static/apk/";
+            String uploadPath = path.substring(1, path.length());
             String newName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + "." + suffixName;
             String caselsh = fileName.substring(0, fileName.lastIndexOf("."));
             String newfileName = caselsh + newName;
@@ -79,13 +83,11 @@ public class VersionService {
             VersionDto versionDto = new VersionDto();
             versionDto.setVersion(version);
             versionDto.setInformation(" ");
-            versionDto.setUrl("http://localhost:8088/" + newfileName);
-            int count = versionMapper.insert(versionDto);
+            versionDto.setUrl(uploadPath + newfileName);
+            int count = versionMapper.updateVersion(versionDto);
             if (count == 0) {
-                return new Result(0, "添加到数据库中失败");
+                return new Result(0, "更新数据失败");
             }
-
-            /*  String fullFilePath = request.getSession().getServletContext().getRealPath("/");*/
             try {
                 // 该方法是对文件写入的封装，在util类中，导入该包即可使用，后面会给出方法
                 FileUtil.fileupload(file.getBytes(), uploadPath, newfileName);
@@ -96,7 +98,8 @@ public class VersionService {
                 return new Result(0, "上传文件失败");
             }
 
-        }return new Result(200, "上传成功");
+        }
+        return new Result(200, "上传成功");
 
     }
     public Result versionupdate(@RequestParam("version") Integer version) {

@@ -14,5 +14,6 @@ public interface VersionMapper {
     List<Version> selectVersionPage(Map map);
     int insert(VersionDto versionDto);
     Version selectnewVersion();
-
+    // 更新版本
+    int updateVersion(VersionDto versionDto);
 }

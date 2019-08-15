@@ -32,7 +32,6 @@ public class LokeResourceController {
      */
     @PutMapping("/updateByPrimaryKey")
     public Result updateByPrimaryKey(@RequestBody List<BaseMapBerthDTO> BaseMapBerthDTOList){
-        //System.out.println("hhhhh!!!:"+ BaseMapBerthDTOList.size());
         LokeResourceService.updateBatchLock(BaseMapBerthDTOList);
         return new Result();
     }

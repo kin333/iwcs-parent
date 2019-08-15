@@ -36,11 +36,13 @@ public class LokeResourceService {
         recordList.forEach(record -> {
             if(records.get(0).getInLock()==1){
                 record.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.LOCK.getCode()));
+                record.setLockSource(LockUtils.getLockSourceCode());
             }
             else{
                 record.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
+                record.setLockSource(" ");
             }
-            record.setLockSource(LockUtils.getLockSourceCode());
+
         });
         int num = baseMapBerthMapper.updateLockSource(recordList);
         return num;
