@@ -5,6 +5,7 @@ import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.PToPRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
@@ -106,6 +107,13 @@ public class PToPService implements IPToPService {
             subTaskCreate.setStartAlias(startBercode.getPointAlias());
             subTaskCreate.setEndAlias(endBercode.getPointAlias());
             subTaskMapper.insertSelective(subTaskCreate);
+
+            //更新目标点位锁的锁源
+            LockStorageDto lockStorageDto = new LockStorageDto();
+            lockStorageDto.setLockSource(subTaskNum);
+            lockStorageDto.setVersion(endBercode.getVersion());
+            lockStorageDto.setBerCode(endBercode.getBerCode());
+            baseMapBerthMapper.lockMapBerthByBercode(lockStorageDto);
 
             //向消息队列发送消息
             String message = "点到点任务创建完成,主任务号:" + mainTaskNum;

@@ -271,7 +271,7 @@ public class TaskCreateService implements ITaskCreateService {
         plToAgingRequest.setPodCode(podCode);
         plToAgingRequest.setStartPoint(startPoint);
         plToAgingRequest.setStartPointAlias(taskCreateRequest.getStartPointAlias());
-
+        plToAgingRequest.setEndBercodeAuto("1");
         //手动选择目标点
         if (MANUAL_FIRST.equals(taskCreateRequest.getSubTaskBizProp())){
             //查询点位坐标，并上锁
@@ -287,8 +287,10 @@ public class TaskCreateService implements ITaskCreateService {
             lockStorageDto.setBerCode(endBaseMapBerth.getBerCode());
             lockStorageDto.setVersion(endBaseMapBerth.getVersion());
             baseMapBerthMapper.lockMapBerth(lockStorageDto);
+
             plToAgingRequest.setTargetPoint(endBaseMapBerth.getBerCode());
             plToAgingRequest.setTargetPointAlias(taskCreateRequest.getStartPointAlias());
+            plToAgingRequest.setEndBercodeAuto("0");
         }
         plToAgingRequest.setSubTaskBizProp(taskCreateRequest.getSubTaskBizProp());
         iPlToAgingService.plagingToQuaInsp(plToAgingRequest);
@@ -346,7 +348,7 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth cacheLockMapBerth = iMapResouceService.caculateInspectionWorkAreaEmptyPoint(cachelockMapBerthCondition);
             if (cacheLockMapBerth != null){
                 targetPoint = cacheLockMapBerth.getBerCode();
-                targetPointAlias = workLockMapBerth.getPointAlias();
+                targetPointAlias = cacheLockMapBerth.getPointAlias();
                 areaCode = cacheLockMapBerth.getAreaCode();
             }else {
                 throw new BusinessException("创建任务失败，检验区没有空闲点位！");
@@ -383,7 +385,7 @@ public class TaskCreateService implements ITaskCreateService {
         String startPoint = "";
         String targetPoint = "";
 
-        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode) && Strings.isNullOrEmpty(startPointAlias), "货架号和起始点坐标不能为空");
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(startPointAlias), "起始点不能为空");
 
         BaseMapBerth startBaseMapBerth = new BaseMapBerth();
         if (!Strings.isNullOrEmpty(startPointAlias)){
@@ -394,8 +396,13 @@ public class TaskCreateService implements ITaskCreateService {
 
         //初始化入库
         if (!Strings.isNullOrEmpty(taskCreateRequest.getpTopTaskSubTaskType()) && INIT_STORAGE.equals(taskCreateRequest.getpTopTaskSubTaskType())){
-            //更新楼层
-
+            Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
+            //校验货架号是否为未初始化货架
+            BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+            Preconditions.checkBusinessError(basePodDetail==null, "初始化货架：IWCS中未查找到该货架");
+            Preconditions.checkBusinessError(basePodDetail.getValidFlag()==1, "该货架已初始化");
+            //更新货架原始楼层
+            basePodDetailMapper.updateSourceMapByPodCode(podCode,startBaseMapBerth.getMapCode());
 
             //筛选目标点，锁定放在创建子任务中
             LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
@@ -406,17 +413,8 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
             targetPoint = baseMapBerth.getBerCode();
         }else{
-            if (!Strings.isNullOrEmpty(podCode)){
-                Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
-                //非初始化入库 校验货架点位是否正确
-                Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
-                Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
-                //根据货架号查询起始点
-                BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
-                Preconditions.checkBusinessError(basePodDetail == null, "未查询到该货架号");
-
-                startBaseMapBerth = baseMapBerthMapper.selectOneByBercode(basePodDetail.getBerCode());
-            }
+            podCode = startBaseMapBerth.getPodCode();
+            Preconditions.checkBusinessError(podCode == null, "根据起点点位编号获取货架信息为空");
 
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(targetPointAlias), "目标点不能为空");
             //查询点位是否有任务或有货架，无，上锁

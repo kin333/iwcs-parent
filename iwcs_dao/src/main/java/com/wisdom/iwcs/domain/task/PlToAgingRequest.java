@@ -53,6 +53,11 @@ public class PlToAgingRequest {
      */
     private String targetPointAlias;
 
+    /**
+     * 终点选取规则
+     */
+    private String endBercodeAuto;
+
     public String getPodCode() {
         return podCode;
     }
@@ -123,5 +128,13 @@ public class PlToAgingRequest {
 
     public void setTargetPointAlias(String targetPointAlias) {
         this.targetPointAlias = targetPointAlias;
+    }
+
+    public String getEndBercodeAuto() {
+        return endBercodeAuto;
+    }
+
+    public void setEndBercodeAuto(String endBercodeAuto) {
+        this.endBercodeAuto = endBercodeAuto;
     }
 }

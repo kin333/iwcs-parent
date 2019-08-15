@@ -5,6 +5,7 @@ import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.PlToAgingRequest;
 import com.wisdom.iwcs.domain.task.SubTask;
@@ -95,6 +96,13 @@ public class PlToAgingService implements IPlToAgingService {
                 subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
                 subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
                 subTaskCreate.setEndBercode(endBercode.getBerCode());
+
+                //更新目标点位锁的锁源
+                LockStorageDto lockStorageDto = new LockStorageDto();
+                lockStorageDto.setLockSource(subTaskNum);
+                lockStorageDto.setVersion(endBercode.getVersion());
+                lockStorageDto.setBerCode(endBercode.getBerCode());
+                baseMapBerthMapper.lockMapBerthByBercode(lockStorageDto);
             }
 
             BasePodDetail basePodDetail = new BasePodDetail();

@@ -355,4 +355,12 @@
             where  pod_code= #{item.podCode}
         </foreach>
     </update>
+    <update id="updateSourceMapByPodCode">
+            update base_pod_detail
+            <set>
+                pod_prop2 = #{mapCode},
+                valid_flag = 0
+            </set>
+            where pod_code = #{podCode}
+    </update>
 </mapper>

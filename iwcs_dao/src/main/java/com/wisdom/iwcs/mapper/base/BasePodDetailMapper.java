@@ -189,4 +189,9 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
     int updateCleanMapInfo();
 
     int updatePodLockSource(List<BasePodDetail> BasePodDetailList);
+
+    /**
+     * 更新货架原始楼层，更改货架 初始化状态
+     */
+    int updateSourceMapByPodCode(@Param("podCode") String podCode,@Param("mapCode") String mapCode);
 }
