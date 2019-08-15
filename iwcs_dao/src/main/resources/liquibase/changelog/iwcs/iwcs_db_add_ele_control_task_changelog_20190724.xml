@@ -62,4 +62,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="201908151021" author="han">
+        <createIndex tableName="ele_control_task" indexName="idx_mainTaskNum">
+            <column name="main_task_num"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

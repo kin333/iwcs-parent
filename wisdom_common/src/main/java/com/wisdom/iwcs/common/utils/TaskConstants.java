@@ -69,6 +69,20 @@ public class TaskConstants {
     }
 
     /**
+     * 子任务类型
+     */
+    public static final class subTaskType {
+        /**
+         * 点到点
+         */
+        public final static String HIK_P2P = "hikp2p";
+        /**
+         * 电梯子任务
+         */
+        public final static String ELE_TASK = "eleTask";
+    }
+
+    /**
      * 主任务状态值
      */
     public static final class mainTaskStatus {

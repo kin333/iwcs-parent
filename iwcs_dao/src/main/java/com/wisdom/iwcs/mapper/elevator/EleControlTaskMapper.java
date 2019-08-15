@@ -35,4 +35,6 @@ public interface EleControlTaskMapper extends MyMapperAndIds<EleControlTask> {
      * @return
      */
     EleControlTask selectByMainTaskNum(String mainTaskNum);
+
+    int updateByMainTaskNum(EleControlTask eleControlTask);
 }

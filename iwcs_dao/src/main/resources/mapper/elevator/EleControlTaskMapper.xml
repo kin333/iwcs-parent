@@ -88,4 +88,15 @@
         select <include refid="Base_Column_List" /> from ele_control_task
         where main_task_num = #{mainTaskNum}
     </select>
+    
+    <update id="updateByMainTaskNum">
+        update ele_control_task
+        <set>
+            <if test="taskStatus != null and taskStatus != ''">
+                task_status = #{taskStatus},
+            </if>
+        </set>
+        where 1=1
+        main_task_num = #{mainTaskNum}
+    </update>
 </mapper>

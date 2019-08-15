@@ -1,6 +1,5 @@
 package com.wisdom.iwcs.service.task.wcsSimulator;
 
-import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.TaskConstants;
@@ -13,7 +12,6 @@ import com.wisdom.iwcs.domain.task.TaskCreateRequest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
-import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +22,7 @@ import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.ELEVATORCACHEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPWORKAREA;
-import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PLTOAGING;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.ELEVATORAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.QUAINSPTOELVBUF;
 
 @Service
@@ -47,7 +45,13 @@ public class QuaAutoToAgingService {
         lockMapBerthCondition.setOperateAreaCode(InspurBizConstants.OperateAreaCodeConstants.QUAINSPAREA);
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectNotEmptyStorageOfInspectionArea(lockMapBerthCondition);
 
-        if(baseMapBerthList.size() > 0) {
+        //筛选目标点
+        LockMapBerthCondition eleCacheMapBerthCondition = new LockMapBerthCondition();
+        eleCacheMapBerthCondition.setMapCode(mapCode);
+        eleCacheMapBerthCondition.setOperateAreaCode(ELEVATORAREA);
+        eleCacheMapBerthCondition.setBizType(ELEVATORCACHEAREA);
+        List<BaseMapBerth> eleCacheList = baseMapBerthMapper.selectEmptyStorage(eleCacheMapBerthCondition);
+        if(baseMapBerthList.size() > 0 && eleCacheList.size() > 0) {
             TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
             taskCreateRequest.setTaskTypeCode(QUAINSPTOELVBUF);
             taskCreateRequest.setPodCode(baseMapBerthList.get(0).getPodCode());

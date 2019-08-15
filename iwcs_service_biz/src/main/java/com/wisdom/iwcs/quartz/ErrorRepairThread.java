@@ -7,12 +7,14 @@ import com.wisdom.iwcs.common.utils.NetWorkUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.task.EleControlTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.HikFindTaskCallback;
 import com.wisdom.iwcs.domain.task.dto.HikFindTaskStatus;
 import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +32,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskStatus.ELE_TASK_END;
+
 /**
  * 错误修复线程
  */
@@ -46,6 +50,8 @@ public class ErrorRepairThread implements Runnable {
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     BasePodDetailMapper basePodDetailMapper;
+    @Autowired
+    EleControlTaskMapper eleControlTaskMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -163,6 +169,17 @@ public class ErrorRepairThread implements Runnable {
                 logger.info("异常处理:子任务{}更新货架{}部分信息成功", subTask.getSubTaskNum(), subTask.getPodCode());
             }
         }
+
+        //如果是电梯任务,还需要修改电梯任务表
+        if (TaskConstants.subTaskType.ELE_TASK.equals(subTask.getSubTaskNum())) {
+            logger.info("子任务{}为电梯任务,开始修改电梯任务状态值", subTask.getSubTaskNum());
+            EleControlTask eleControlTask = new EleControlTask();
+            eleControlTask.setMainTaskNum(subTask.getMainTaskNum());
+            eleControlTask.setTaskStatus(ELE_TASK_END);
+            eleControlTaskMapper.updateByMainTaskNum(eleControlTask);
+        }
+
+
     }
 
     /**
