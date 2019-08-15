@@ -36,8 +36,8 @@ private VersionService versionService;
 
 
     @PostMapping("/upload")
-    public Result upload(@RequestParam("version") Integer version, @RequestParam("information") String information, @RequestParam("file") MultipartFile file) throws FileNotFoundException {
-        return versionService.Upload(version,information,file);
+    public Result upload(@RequestParam("file") MultipartFile file) throws FileNotFoundException {
+        return versionService.Upload(file);
     }
 
     /**

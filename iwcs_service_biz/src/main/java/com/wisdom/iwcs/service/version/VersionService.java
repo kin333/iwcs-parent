@@ -56,16 +56,13 @@ public class VersionService {
 
         return mGridReturnData;
     }
-    public Result Upload(Integer version, String information, MultipartFile file) throws FileNotFoundException {
-        if(version==null){
-            return new Result(0,"输入的版本号为空");
-        }
-        if(information.length()==0){
-            return new Result(0,"输入的版本信息为空");
-        }
+    public Result Upload(MultipartFile file) throws FileNotFoundException {
+
         if(!file.isEmpty()){
             String fileName = file.getOriginalFilename();
             String suffixName = fileName.substring(fileName.lastIndexOf(".")+1);
+            String prefix = fileName.substring(0,fileName.lastIndexOf("."));
+            Integer version = Integer.valueOf(prefix.substring(prefix.lastIndexOf("_") + 1));
             try {
                 FileUtil.filter(suffixName);
             } catch (Exception e) {
@@ -81,7 +78,7 @@ public class VersionService {
 
             VersionDto versionDto = new VersionDto();
             versionDto.setVersion(version);
-            versionDto.setInformation(information);
+            versionDto.setInformation(" ");
             versionDto.setUrl("http://localhost:8088/" + newfileName);
             int count = versionMapper.insert(versionDto);
             if (count == 0) {

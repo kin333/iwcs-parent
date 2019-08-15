@@ -22,7 +22,7 @@
   </select>
     <insert id="insert" parameterType="com.wisdom.iwcs.domain.version.VersionDto" >
         insert into iwcs_prd_dev.version (version,information,url)
-        values (#{version,jdbcType=INTEGER}, #{information,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR}})    </insert>
+        values (#{version,jdbcType=INTEGER}, #{information,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR})    </insert>
     <select id="selectnewVersion" resultType="com.wisdom.iwcs.domain.version.Version">
       select  version,information,url
      from iwcs_prd_dev.version where id = (SELECT max(id) FROM iwcs_prd_dev.version)
