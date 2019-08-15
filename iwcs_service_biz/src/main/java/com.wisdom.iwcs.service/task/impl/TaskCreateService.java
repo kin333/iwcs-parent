@@ -421,6 +421,9 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(targetPointAlias);
             Preconditions.checkBusinessError(endBaseMapBerth == null, "根据目标点位编号获取点位信息为空");
             targetPoint = endBaseMapBerth.getBerCode();
+
+            Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), endBaseMapBerth.getPointAlias() + " 该目标点有正在执行的任务或已经有货架！");
+
             //TODO 查询模板，两个点是否允许搬运
             TaskPointBlackRule taskPointBlackRule = new TaskPointBlackRule();
             taskPointBlackRule.setStartOperateArea(startBaseMapBerth.getOperateAreaCode());

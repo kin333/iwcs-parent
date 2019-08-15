@@ -42,6 +42,11 @@ public class UserJWTController {
     @Autowired
     private IBaseWhAreaService iBaseWhAreaService;
 
+    /**
+     * 网页用
+     * @param
+     * @return
+     */
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> authorize(@Valid @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
 
@@ -73,6 +78,37 @@ public class UserJWTController {
 //        	return new ResponseEntity<>("{\"name\":\"wang\"}", HttpStatus.UNAUTHORIZED);
 //            return new ResponseEntity<>(exception.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Result login(@Valid @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDTO.getUsername() + "," + loginDTO.getAreaCode(), loginDTO.getPassword());
+
+        //如果选择了库区，判断是否存在库区是否存在用户
+        if(!Strings.isNullOrEmpty(loginDTO.getAreaCode())){
+            iBaseWhAreaService.checkWhAreaAndUser(loginDTO);
+        }
+
+        try {
+            Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            boolean rememberMe = (loginDTO.isRememberMe() == null) ? false : loginDTO.isRememberMe();
+            String jwt = "Bearer " + tokenProvider.createToken(authentication, rememberMe);
+            response.addHeader(JWTConfigurer.AUTHORIZATION_HEADER, jwt);
+            response.addHeader(JWTConfigurer.ACCESS_CONTROL_EXPOSE_HEAEDERS, "Authorization");
+
+            TokenUser tokenUser = (TokenUser) authentication.getPrincipal();
+            User user = new User();
+            user.setCompanyCode(String.valueOf(tokenUser.getCurrentCompanyId()));
+            user.setUserId(String.valueOf(tokenUser.getUserId()));
+            String socketToken = tokenUtil.createToken(user, rememberMe);
+
+            return new Result(new JWTToken(jwt, socketToken));
+        } catch (AuthenticationException exception) {
+            return new Result(400, "登录失败");
         }
     }
 

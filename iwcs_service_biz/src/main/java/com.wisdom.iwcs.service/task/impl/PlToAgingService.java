@@ -90,13 +90,14 @@ public class PlToAgingService implements IPlToAgingService {
             subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
             subTaskCreate.setStartY(startBercode.getCooy().doubleValue());
 
+            subTaskCreate.setEndBercodeAuto("1");
             if (MANUAL_FIRST.equals(plToAgingRequest.getSubTaskBizProp())){
                 //计算目标通过地图坐标查询坐标
                 BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(plToAgingRequest.getTargetPoint());
                 subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
                 subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
                 subTaskCreate.setEndBercode(endBercode.getBerCode());
-
+                subTaskCreate.setEndBercodeAuto("0");
                 //更新目标点位锁的锁源
                 LockStorageDto lockStorageDto = new LockStorageDto();
                 lockStorageDto.setLockSource(subTaskNum);
