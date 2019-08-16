@@ -253,9 +253,9 @@ public class TaskCreateService implements ITaskCreateService {
         }
 
         //当前货架所在楼层，对比用户登录楼层权限,如果不在一个楼层创建失败
-//        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
-//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-//        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //校验货架点位是否正确
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
@@ -329,8 +329,8 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(iCommonService.checkPodTask(podCode), "该货架正在执行任务！");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-//        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //获取目标空闲点位，如果没有空闲点，任务创建失败
         //检验区先检验缓存区是否有空闲点，后获工作点是否有空闲
@@ -448,8 +448,8 @@ public class TaskCreateService implements ITaskCreateService {
         }
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-//        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //创建任务
         PToPRequest ptopRequest = new PToPRequest();
@@ -528,8 +528,8 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(!isPointAgreement, "货架所在位置不正确，请现场确认修改");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-//        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //筛选目标点，锁定放在创建子任务中
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
@@ -680,8 +680,8 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), endBaseMapBerth.getPointAlias()+"该目标点有正在执行的任务或已经有货架！");
 
         //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-//        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //创建任务
         PackWbCallPodRequest packWbCallPodRequest = new PackWbCallPodRequest();

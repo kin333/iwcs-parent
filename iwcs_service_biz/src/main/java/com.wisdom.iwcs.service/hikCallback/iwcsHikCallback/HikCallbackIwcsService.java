@@ -352,12 +352,6 @@ public class HikCallbackIwcsService {
             String berCode = baseConnectionPointMapper.selectCheckBerCodeByMapCode(baseMapBerth.getMapCode());
             //通知检查点货架到检查点了
             elevatorNotifyService.notifyEleCheckPod(eleControlTask.getEleTaskCode(), berCode, SOURCE_FLOOR);
-
-            //更新电梯任务,已经通知电梯点了
-//            EleControlTask tmpEleControlTask = new EleControlTask();
-//            tmpEleControlTask.setId(eleControlTask.getId());
-//            tmpEleControlTask.setWcsNotifyEntrySource(YES);
-//            eleControlTaskMapper.updateByPrimaryKeySelective(tmpEleControlTask);
         }
 
         //如果检查点通过,则返回正确
