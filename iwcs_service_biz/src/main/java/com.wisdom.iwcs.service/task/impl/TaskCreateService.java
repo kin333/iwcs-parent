@@ -143,6 +143,7 @@ public class TaskCreateService implements ITaskCreateService {
                 packWbCallPodFunction(taskCreateRequest);
                 break;
             case PACKTOPLORAGING:
+                taskCreateRequest.setTaskTypeCode(ELVBUFTOPACKBUF);
                 elevatorTaskFunction(taskCreateRequest);
                 break;
             case PTOPWITHOUTPODCHECK:
@@ -182,7 +183,7 @@ public class TaskCreateService implements ITaskCreateService {
         Preconditions.checkBusinessError(iCommonService.checkBerTask(targetPoint), baseMapBerth.getPointAlias() + " 该目标点有正在执行的任务或已经有货架！");
 
         //校验目标点位和用户登录的点位是否在同一楼层
-        //Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
+//        Preconditions.checkBusinessError(baseMapBerth.getAreaCode() != SecurityUtils.getCurrentAreaCode(), "请选择点位楼层创建任务");
 
         PlAutoWbCallPodRequest plAutoWbCallPodRequest = new PlAutoWbCallPodRequest();
         plAutoWbCallPodRequest.setPriority(taskCreateRequest.getPriority());
@@ -250,9 +251,11 @@ public class TaskCreateService implements ITaskCreateService {
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "该点位未查找到货架，任务创建失败！");
             startPoint = basePodDetailMapper.selectBerCodeByPodCode(podCode);
         }
+
         //当前货架所在楼层，对比用户登录楼层权限,如果不在一个楼层创建失败
-        //String userAreaCode = SecurityUtils.getCurrentAreaCode();
-        //Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+//        BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+//        String userAreaCode = SecurityUtils.getCurrentAreaCode();
+//        Preconditions.checkBusinessError(!userAreaCode.equals(basePodDetail.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //校验货架点位是否正确
         Boolean isPointAgreement = iCommonService.checkPodPointAgreement(podCode);
