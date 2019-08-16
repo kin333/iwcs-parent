@@ -1,9 +1,9 @@
 # 开发 profile :连接aliyun数据库，用于开发连接用，对应禅道demo-aliyun
 mysql:
-  #    host: localhost
-  #    port: 3306
-  host: 192.168.102.136
-  port: 32768
+      host: localhost
+      port: 3306
+#  host: 192.168.102.136
+#  port: 32768
 #  qinghengHost: 58.56.21.226
 #  qinghengPort: 8835
 
@@ -11,7 +11,7 @@ spring:
   datasource:
     druid:
       name: default
-      url: jdbc:mysql://${mysql.host}:${mysql.port}/iwcs_dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false
+      url: jdbc:mysql://${mysql.host}:${mysql.port}/sys?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&allowMultiQueries=true
       username: root
       password: root
       type: com.alibaba.druid.pool.DruidDataSource
@@ -48,6 +48,14 @@ spring:
       enabled: false
   aop:
     proxy-target-class: true
+  rabbitmq:
+    publisher-confirms: true #支持发布确认
+    publisher-returns: true  #支持发布返回
+    listener:
+      simple:
+        acknowledge-mode: manual #采用手动应答, 开启ACK
+        concurrency: 1 #指定最小的消费者数量
+        max-concurrency: 1 #指定最大的消费者数量
 
 
 liquibase:
@@ -56,7 +64,6 @@ liquibase:
 
 server:
   port: 8088
-  address: localhost
   tomcat:
     maxHttpHeaderSize: 66665536
 management:
@@ -104,6 +111,13 @@ application:
     endpoint: http://192.168.102.61:8080
   wbcode:
     openWbCode: true
+  netty:
+    lineClientHost: 192.168.102.97
+    lineClientPort: 9234
+    elevatorClientHost: 192.168.102.97
+    elevatorClientPort: 9234
+    nettyServerHost: 192.168.102.97
+    nettyServerPort: 9234
   hikParam:
     returnPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/returnPod
     getOutPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/getOutPod
@@ -113,20 +127,25 @@ application:
     genAgvSchedulingTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/genAgvSchedulingTask
     continueTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/continueTask
     cancelTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/cancelTask
-    returnMapOrPodUrl: http://192.168.102.97/rcs/services/rest/hikRpcService/queryPodBerthAndMat
-    returnTaskStatus:  http://192.168.102.97/rcs/services/rest/hikRpcService/queryTaskStatus
-    tokenCode: dc9293d5bc047d238e0e439fbb5556c5
-    clientCode: IWCS
+    returnMapOrPodUrl: http://192.168.102.99/rcs/services/rest/hikRpcService/queryPodBerthAndMat
+    returnTaskStatus:  http://192.168.102.99/rcs/services/rest/hikRpcService/queryTaskStatus
+    finiTask:  http://192.168.102.99/rcs/services/rest/hikLiftService/finiTask
+    tokenCode: 09bd3456991fe1cf2e185de92fa5aab5
+    clientCode: INSPUR
   outstock:
     noticeOutstockProcess: true
     allowHandOutstockSupplyCall: true
     forceKeepOutstockProcess: true
   rabbitmq:
-    host: 192.168.102.138
+    host: 192.168.102.99
     port: 5672
-    username: tony
-    password: tony
+    username: admin
+    password: admin
     virtualHost: /
+  warn:
+    checkName: name1;name2
+
+
 mybatis:
   type-handlers-package: org.apache.ibatis.type.LocalDateTypeHandler
 

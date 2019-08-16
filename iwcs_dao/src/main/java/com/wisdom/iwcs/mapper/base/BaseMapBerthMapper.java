@@ -155,4 +155,6 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     BaseMapBerth selectEmptyPosByOperateAreaCode(@Param("mapCode") String mapCode,@Param("operateAreaCode")  String operateAreaCode);
 
     List<BaseMapBerth> selectByBizTye(String bizType);
+
+    List<BaseMapBerth> selectLikeBizTye(String bizType);
 }

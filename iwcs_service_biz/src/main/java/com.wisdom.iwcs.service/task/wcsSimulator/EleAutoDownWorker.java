@@ -1,9 +1,8 @@
 package com.wisdom.iwcs.service.task.wcsSimulator;
 
-import com.wisdom.iwcs.common.utils.FloorMapEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
-import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.YZConstants;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.TaskCreateRequest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
@@ -21,8 +20,6 @@ import static com.wisdom.iwcs.common.utils.FloorMapEnum.THREE_FLOOR;
 import static com.wisdom.iwcs.common.utils.FloorMapEnum.TWO_FLOOR;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.PAGECACHEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskWorkType.ELE_DOWN;
-import static com.wisdom.iwcs.common.utils.TaskConstants.pointAlias.PACK_CACHE_THREE;
-import static com.wisdom.iwcs.common.utils.TaskConstants.pointAlias.PACK_CACHE_TWO;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.ELVBUFTOPACKBUF;
 
 /**
@@ -81,22 +78,18 @@ public class EleAutoDownWorker implements Runnable{
         if (num++ % 2 == 0) {
             mapCode = TWO_FLOOR.getType();
             taskCreateRequest.setSourceFloor(TWO_FLOOR.getMapValue().toString());
-            taskCreateRequest.setTargetPointAlias(PACK_CACHE_TWO);
             boolean result = checkMapCodeEleCache(mapCode, taskCreateRequest);
             if (!result) {
                 mapCode = THREE_FLOOR.getType();
                 taskCreateRequest.setSourceFloor(THREE_FLOOR.getMapValue().toString());
-                taskCreateRequest.setTargetPointAlias(PACK_CACHE_THREE);
                 checkMapCodeEleCache(mapCode, taskCreateRequest);
             }
         } else {
             mapCode = THREE_FLOOR.getType();
-            taskCreateRequest.setTargetPointAlias(PACK_CACHE_THREE);
             taskCreateRequest.setSourceFloor(THREE_FLOOR.getMapValue().toString());
             boolean result = checkMapCodeEleCache(mapCode, taskCreateRequest);
             if (!result) {
                 mapCode = TWO_FLOOR.getType();
-                taskCreateRequest.setTargetPointAlias(PACK_CACHE_TWO);
                 taskCreateRequest.setSourceFloor(TWO_FLOOR.getMapValue().toString());
                 checkMapCodeEleCache(mapCode, taskCreateRequest);
             }
@@ -107,12 +100,16 @@ public class EleAutoDownWorker implements Runnable{
 
     private boolean checkMapCodeEleCache(String mapCode, TaskCreateRequest taskCreateRequest) {
         //检查指定楼层对应的空货架是否有货架
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByBizTye(PAGECACHEAREA + mapCode).get(0);
+        List<BaseMapBerth> berthList = baseMapBerthMapper.selectByBizTye(PAGECACHEAREA + mapCode);
+
+        Preconditions.checkBusinessError(berthList.size() <= 0, "对应楼层无指定的包装体缓存区");
+        BaseMapBerth baseMapBerth = berthList.get(0);
 
         if (StringUtils.isEmpty(baseMapBerth.getPodCode()) && YZConstants.UNLOCK.equals(baseMapBerth.getInLock())) {
             List<BaseMapBerth> list = baseMapBerthMapper.selectHavePodByBizType(mapCode, InspurBizConstants.BizTypeConstants.ELEVATORCACHEAREA);
             if (list != null && list.size() > 0) {
                 taskCreateRequest.setPodCode(list.get(0).getPodCode());
+                taskCreateRequest.setTargetPointAlias(baseMapBerth.getPointAlias());
                 logger.info("开始生成电梯下楼任务");
                 taskCreateService.creatTask(taskCreateRequest);
                 return true;

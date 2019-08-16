@@ -332,4 +332,9 @@
         where 1=1
         and biz_type = #{bizType}
     </select>
+    <select id="selectLikeBizTye" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/> from base_map_berth
+        where 1=1
+        and biz_type LIKE CONCAT('%',#{bizType},'%')
+    </select>
 </mapper>

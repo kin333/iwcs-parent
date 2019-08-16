@@ -14,9 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.PAGECACHEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.PAGEWORKAREA;
-import static com.wisdom.iwcs.common.utils.TaskConstants.pointAlias.PACK_CACHE_THREE;
-import static com.wisdom.iwcs.common.utils.TaskConstants.pointAlias.PACK_CACHE_TWO;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PACKWBCALLPOD;
 
 /**
@@ -70,36 +69,20 @@ public class PackWlCacheWorker implements Runnable {
         TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
         taskCreateRequest.setTaskTypeCode(PACKWBCALLPOD);
 
-        if (count % 2 == 0) {
-            //查找二楼包装体缓存区是否有货架
-            BaseMapBerth packageCahceTwo = baseMapBerthMapper.selectByPointAlias(PACK_CACHE_TWO);
-            if (StringUtils.isNotBlank(packageCahceTwo.getPodCode())) {
-                taskCreateRequest.setStartPointAlias(PACK_CACHE_TWO);
-                taskCreateService.creatTask(taskCreateRequest);
-                count++;
-                return;
-            }
-            //查找三楼包装体缓存区是否有货架
-            BaseMapBerth packageCahceThree = baseMapBerthMapper.selectByPointAlias(PACK_CACHE_THREE);
-            if (StringUtils.isNotBlank(packageCahceThree.getPodCode())) {
-                taskCreateRequest.setStartPointAlias(PACK_CACHE_THREE);
-                taskCreateService.creatTask(taskCreateRequest);
-            }
+        //查找起点(包装体缓存区)
+        List<BaseMapBerth> berthList = baseMapBerthMapper.selectLikeBizTye(PAGECACHEAREA);
+
+        Preconditions.checkBusinessError(berthList.size() <= 0, "无包装体缓存区");
+        BaseMapBerth packageCahce;
+        if (berthList.size() <= 1) {
+            packageCahce = berthList.get(0);
         } else {
-            //查找三楼包装体缓存区是否有货架
-            BaseMapBerth packageCahceThree = baseMapBerthMapper.selectByPointAlias(PACK_CACHE_THREE);
-            if (StringUtils.isNotBlank(packageCahceThree.getPodCode())) {
-                count++;
-                taskCreateRequest.setStartPointAlias(PACK_CACHE_THREE);
-                taskCreateService.creatTask(taskCreateRequest);
-                return;
-            }
-            //查找二楼包装体缓存区是否有货架
-            BaseMapBerth packageCahceTwo = baseMapBerthMapper.selectByPointAlias(PACK_CACHE_TWO);
-            if (StringUtils.isNotBlank(packageCahceTwo.getPodCode())) {
-                taskCreateRequest.setStartPointAlias(PACK_CACHE_TWO);
-                taskCreateService.creatTask(taskCreateRequest);
-            }
+            packageCahce = berthList.get(count++ % 2);
+        }
+
+        if (StringUtils.isNotBlank(packageCahce.getPodCode())) {
+            taskCreateRequest.setStartPointAlias(packageCahce.getPointAlias());
+            taskCreateService.creatTask(taskCreateRequest);
         }
     }
 }
