@@ -114,8 +114,12 @@ public class HikCallbackIwcsService {
         //更新子任务的执行AGV和实际任务状态以及实际任务开始时间
         subTaskMapper.updateRobotCodeByBerCode(subTask);
 
+        subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         //向消息队列发送消息
         String message = "子任务回调:子任务已开始搬运";
+        if (subTask != null && subTask.getStartBercode() != null && !subTask.getStartBercode().equals(hikCallBackAgvMove.getWbCode())) {
+            message += " (任务起始点异常, 子任务起始点为:{" + subTask.getStartBercode() + "},实际起始点为:{" + hikCallBackAgvMove.getWbCode() + "})";
+        }
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_START,message));
     }
 

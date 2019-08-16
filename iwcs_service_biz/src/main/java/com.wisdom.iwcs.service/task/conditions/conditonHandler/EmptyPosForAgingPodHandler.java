@@ -84,7 +84,7 @@ public class EmptyPosForAgingPodHandler implements IConditionHandler{
 
     @Override
     public boolean rollbackCondition(SubTaskCondition subTaskCondition) {
-        //自动选择终点的情况
+        //是否为自动选择终点
         String subTaskNum = subTaskCondition.getSubTaskNum();
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
         if (NO.equals(subTask.getEndBercodeAuto())) {

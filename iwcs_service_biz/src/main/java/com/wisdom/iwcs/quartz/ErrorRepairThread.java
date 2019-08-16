@@ -118,6 +118,7 @@ public class ErrorRepairThread implements Runnable {
                 && subTask.getPodCode().equals(startMapBerth.getPodCode())) {
             BaseMapBerth baseMapBerth = new BaseMapBerth();
             //解锁这个储位
+            baseMapBerth.setId(startMapBerth.getId());
             baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
             baseMapBerth.setLockSource("");
             baseMapBerth.setPodCode("");
@@ -126,7 +127,9 @@ public class ErrorRepairThread implements Runnable {
             if (rows > 0) {
                 logger.info("异常处理:子任务{}解锁起始地码{}成功", subTask.getSubTaskNum(), subTask.getStartBercode());
             }
-            logger.info("异常处理:子任务{}没有解锁起始地码{}", subTask.getSubTaskNum(), subTask.getStartBercode());
+            else {
+                logger.info("异常处理:子任务{}没有解锁起始地码{}", subTask.getSubTaskNum(), subTask.getStartBercode());
+            }
         }
 
         //3. 更新终点地码
@@ -135,6 +138,7 @@ public class ErrorRepairThread implements Runnable {
                 && !subTask.getPodCode().equals(endMapBerth.getPodCode())) {
             BaseMapBerth baseMapBerth = new BaseMapBerth();
             //解锁这个储位
+            baseMapBerth.setId(endMapBerth.getId());
             baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
             baseMapBerth.setPodCode(subTask.getPodCode());
             baseMapBerth.setLockSource("");

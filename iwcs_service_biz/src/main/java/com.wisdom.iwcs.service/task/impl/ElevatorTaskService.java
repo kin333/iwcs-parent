@@ -118,7 +118,7 @@ public class ElevatorTaskService implements IElevatorTaskService {
             BaseMapBerth endBercode = baseMapBerthMapper.selectOneByBercode(elevatorTaskRequest.getTargetPoint());
             subTaskCreate.setEndX(endBercode.getCoox().doubleValue());
             subTaskCreate.setEndY(endBercode.getCooy().doubleValue());
-            subTaskCreate.setStartAlias(endBercode.getPointAlias());
+            subTaskCreate.setEndAlias(endBercode.getPointAlias());
 
             //货架上锁
             BasePodDetail basePodDetail = new BasePodDetail();
