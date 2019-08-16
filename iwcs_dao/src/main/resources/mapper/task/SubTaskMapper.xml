@@ -302,4 +302,13 @@
     and send_time &lt;= DATE_SUB(NOW(),INTERVAL 5 MINUTE)
   </select>
 
+  <select id="selectByTaskStatus" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from ts_sub_task
+    where task_status != #{taskStatus}
+    and send_time is not null
+    and send_time &lt;= DATE_SUB(NOW(),INTERVAL 5 MINUTE)
+  </select>
+
 </mapper>

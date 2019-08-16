@@ -335,7 +335,7 @@ public class MapResouceService implements IMapResouceService {
     public Result lockEmptyStorageByBizTypeList(List<LockMapBerthCondition> baseMapBerthList) {
 
         LockMapBerthCondition selectLockMapBerthCondition = new LockMapBerthCondition();
-        BaseMapBerth selectBaseMapBerth = new BaseMapBerth();
+        BaseMapBerth selectBaseMapBerth = null;
 
         for (LockMapBerthCondition lockMapBerthCondition:baseMapBerthList) {
             //校验参数是否缺失
@@ -357,6 +357,9 @@ public class MapResouceService implements IMapResouceService {
                 selectBaseMapBerth = selectBaseMapBerths.get(0);
                 break;
             }
+        }
+        if (selectBaseMapBerth == null) {
+            return new Result(400, "找不到空闲储位!");
         }
         //锁住选中的储位
         LockStorageDto lockStorageDto = new LockStorageDto();

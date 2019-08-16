@@ -11,6 +11,7 @@ import com.wisdom.iwcs.domain.task.EleControlTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.HikFindTaskCallback;
 import com.wisdom.iwcs.domain.task.dto.HikFindTaskStatus;
+import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
@@ -63,7 +64,8 @@ public class ErrorRepairThread implements Runnable {
     private void errorRepair() {
 
         //查找异常的子任务,查找已经下发超过五分钟但是未完成的任务
-        List<SubTask> subTaskList = subTaskMapper.selectUnusualTask(TaskConstants.workTaskStatus.END);
+//        List<SubTask> subTaskList = subTaskMapper.selectUnusualTask(TaskConstants.workTaskStatus.END);
+        List<SubTask> subTaskList = subTaskMapper.selectByTaskStatus(SubTaskStatusEnum.Finished.getStatusCode());
         if (subTaskList == null || subTaskList.size() <= 0) {
             logger.info("没有发现异常,异常处理器自动退出");
             return;

@@ -98,4 +98,6 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
     int updateByMainTaskNumAndSubTaskType(SubTask subTask);
 
     List<SubTask> selectUnusualTask(String endStatus);
+
+    List<SubTask> selectByTaskStatus(String taskStatus);
 }
