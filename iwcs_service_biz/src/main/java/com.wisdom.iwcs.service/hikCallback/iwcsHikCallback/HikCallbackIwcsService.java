@@ -355,7 +355,7 @@ public class HikCallbackIwcsService {
         }
 
         //如果检查点通过,则返回正确
-//        if (YES.equals(eleControlTask.getPlcNotifyEntrySource())) {
+        if (YES.equals(eleControlTask.getPlcNotifyEntrySource())) {
             logger.info("电梯{}的检验点检查完成", hikReachCheckArea.getSrcPosCode());
             //清空储位货架
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(subTask.getStartBercode());
@@ -366,8 +366,8 @@ public class HikCallbackIwcsService {
             baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
             logger.info("地码{}已清空货架{}", subTask.getStartBercode(), baseMapBerth.getPodCode());
             return new HikSyncResponse();
-//        }
-//        return new HikSyncResponse("99", "检查点未完成检查");
+        }
+        return new HikSyncResponse("99", "检查点未完成检查");
     }
 
     /**

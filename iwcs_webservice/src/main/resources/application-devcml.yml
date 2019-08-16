@@ -112,11 +112,11 @@ application:
   wbcode:
     openWbCode: true
   netty:
-    lineClientHost: 192.168.102.97
+    lineClientHost: 192.168.89.169
     lineClientPort: 9234
-    elevatorClientHost: 192.168.102.97
+    elevatorClientHost: 192.168.89.169
     elevatorClientPort: 9234
-    nettyServerHost: 192.168.102.97
+    nettyServerHost: 192.168.89.169
     nettyServerPort: 9234
   hikParam:
     returnPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/returnPod

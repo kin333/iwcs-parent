@@ -45,13 +45,13 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
             Thread thread = new Thread(taskLogThreadService);
             thread.start();
 
-            LineNettyClient lineNettyClient = LineNettyClient.getInstance();
-            Thread lineNettyClientThread = new Thread(lineNettyClient);
-            lineNettyClientThread.start();
+//            LineNettyClient lineNettyClient = LineNettyClient.getInstance();
+//            Thread lineNettyClientThread = new Thread(lineNettyClient);
+//            lineNettyClientThread.start();
 
-//            ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
-//            Thread elevatorThread = new Thread(elevatorNettyClient);
-//            elevatorThread.start();
+            ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
+            Thread elevatorThread = new Thread(elevatorNettyClient);
+            elevatorThread.start();
 //
 //            Thread serverThread = new Thread(new NettyServer());
 //            serverThread.start();

@@ -59,7 +59,7 @@ public class CheckEleArrivedService {
      */
     public void notifyAgv(String eleTaskCode, String instantLocation, String subTaskNum) {
         while (true) {
-//            if (checkEleArrived(eleTaskCode)) {
+            if (checkEleArrived(eleTaskCode)) {
                 TempdateRelatedContext template = templateRelatedServer.getRequestInfo();
                 HikFiniTask hikFiniTask = new HikFiniTask();
                 hikFiniTask.setClientCode(template.getClientCode());
@@ -72,13 +72,13 @@ public class CheckEleArrivedService {
                 String jsonStr = JSON.toJSONString(hikFiniTask);
                 notifyHikEleArrived(jsonStr);
                 break;
-//            } else {
-//                try {
-//                    Thread.sleep(5 * 1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            } else {
+                try {
+                    Thread.sleep(5 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
