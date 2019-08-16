@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
@@ -9,6 +10,7 @@ import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.elevator.Elevator;
 import com.wisdom.iwcs.domain.elevator.ElevatorReport;
 import com.wisdom.iwcs.domain.elevator.ElevatorTaskRequest;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.EleControlTask;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
@@ -22,6 +24,7 @@ import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.intf.IElevatorTaskService;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
@@ -129,6 +132,10 @@ public class ElevatorTaskService implements IElevatorTaskService {
             subTaskCreate.setStartBercode(elevatorTaskRequest.getStartPoint());
             subTaskCreate.setEndBercode(elevatorTaskRequest.getTargetPoint());
             subTaskMapper.insertSelective(subTaskCreate);
+
+            //向消息队列发送消息
+            String message = "电梯任务创建完成,主任务号:" + mainTaskNum;
+            RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
 
             //添加子任务条件
             iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);

@@ -146,8 +146,9 @@ public class ErrorRepairThread implements Runnable {
             int rows = baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
             if (rows > 0) {
                 logger.info("异常处理:子任务{}解锁终点地码{}成功", subTask.getSubTaskNum(), subTask.getEndBercode());
+            } else {
+                logger.info("异常处理:子任务{}没有解锁终点地码{}", subTask.getSubTaskNum(), subTask.getEndBercode());
             }
-            logger.info("异常处理:子任务{}没有解锁终点地码{}", subTask.getSubTaskNum(), subTask.getEndBercode());
         }
 
         if (StringUtils.isEmpty(subTask.getPodCode())) {
@@ -167,10 +168,14 @@ public class ErrorRepairThread implements Runnable {
             tmpBasePodDetail.setBerCode(subTask.getEndBercode());
             tmpBasePodDetail.setMapCode(subTask.getMapCode());
             tmpBasePodDetail.setLastModifiedTime(new Date());
+            tmpBasePodDetail.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
+            tmpBasePodDetail.setLockSource("");
             //更新货架信息表
             int rows = basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
             if (rows > 0) {
                 logger.info("异常处理:子任务{}更新货架{}部分信息成功", subTask.getSubTaskNum(), subTask.getPodCode());
+            } else {
+                logger.info("异常处理:子任务{}更新货架{}信息失败", subTask.getSubTaskNum(), subTask.getPodCode());
             }
         }
 
