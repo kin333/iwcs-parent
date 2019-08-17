@@ -113,7 +113,7 @@ public class ElevatorNotifyService {
         ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
         elevatorNettyClient.sendMsg(arriveCommandBinary);
 
-        nettyServerReceiverTestService.enterEle(reqCode,eleFloor);
+//        nettyServerReceiverTestService.enterEle(reqCode,floor);
     }
 
     /**
@@ -203,8 +203,8 @@ public class ElevatorNotifyService {
 
         //通知电梯 任务楼层的AGV离开
         byte[] arriveCommandBinary= this.notifyEleBinary(reqCode,floor, "01","00");
-        ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
-        elevatorNettyClient.sendMsg(arriveCommandBinary);
+//        ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
+//        elevatorNettyClient.sendMsg(arriveCommandBinary);
     }
 
     /**

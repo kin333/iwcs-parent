@@ -80,6 +80,13 @@
             <if test="callEleArrFloor != null and callEleArrFloor != ''">
                 call_ele_arr_floor = #{callEleArrFloor,jdbcType=VARCHAR},
             </if>
+            <if test="wcsNotifyEntrySource != null and wcsNotifyEntrySource != ''">
+                wcs_notify_entry_source = #{wcsNotifyEntrySource,jdbcType=VARCHAR},
+            </if>
+            <if test="wcsNotifyEntryDest != null and wcsNotifyEntryDest != ''">
+                wcs_notify_entry_dest = #{wcsNotifyEntryDest,jdbcType=VARCHAR},
+            </if>
+
         </set>
         where ele_task_code = #{eleTaskCode}
     </update>

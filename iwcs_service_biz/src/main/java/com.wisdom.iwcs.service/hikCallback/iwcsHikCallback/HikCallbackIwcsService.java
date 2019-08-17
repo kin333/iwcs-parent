@@ -346,7 +346,7 @@ public class HikCallbackIwcsService {
         SubTask subTask = subTaskMapper.selectBySubTaskNum(hikReachCheckArea.getTaskDetailKey());
         EleControlTask eleControlTask = eleControlTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
         //检查是否已经通知检查点了
-        if (NO.equals(eleControlTask.getWcsNotifyEntrySource())) {
+        if (!YES.equals(eleControlTask.getWcsNotifyEntrySource())) {
             logger.info("小车已到达电梯{}对应的检验点", hikReachCheckArea.getSrcPosCode());
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikReachCheckArea.getSrcPosCode());
             String berCode = baseConnectionPointMapper.selectCheckBerCodeByMapCode(baseMapBerth.getMapCode());

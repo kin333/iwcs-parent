@@ -26,12 +26,12 @@ public interface BaseConnectionPointMapper extends DeleteLogicMapper<BaseConnect
      * 更加mapCode查询电梯交接点
      * 每个mapCode只能有一个电梯交接点
      */
-    @Select("select ber_code from base_connection_point where map_code = {mapCode}")
+    @Select("select ber_code from base_connection_point where map_code = #{mapCode}")
     String selectBerCodeByMapCode(String mapCode);
     /**
      * 查询某个楼层的电梯检查点
      * 每个mapCode只能有一个电梯交接点
      */
-    @Select("select ber_code from base_connection_point where map_code = {mapCode} and connection_point_type = '1'")
+    @Select("select ber_code from base_connection_point where map_code = #{mapCode} and connection_point_type = '1'")
     String selectCheckBerCodeByMapCode(String mapCode);
 }
