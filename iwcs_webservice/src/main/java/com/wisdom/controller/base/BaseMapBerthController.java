@@ -1,5 +1,6 @@
 package com.wisdom.controller.base;
 
+import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
@@ -11,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.GET_ALLTORAGE_INFO;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.GET_ALLTORAGE_INFO_DESC;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_PDA;
 
 /**
  * 对BaseMapBerth的操作
@@ -110,6 +115,7 @@ public class BaseMapBerthController {
      * @return
      */
     @PostMapping(value = "/getAlltorageInfo")
+    @SystemInterfaceLog(methodCode = GET_ALLTORAGE_INFO,methodName = GET_ALLTORAGE_INFO_DESC,methodThansfer = SRC_PDA)
     public Result selectAlltorageInfo(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
         List<BaseMapBerthDTO> baseMapBerths = IBaseMapBerthService.selectAlltorageInfo(baseMapBerthDTO);
         return new Result(baseMapBerths);

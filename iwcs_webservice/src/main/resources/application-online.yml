@@ -63,7 +63,7 @@ liquibase:
   enabled: true
 
 server:
-  port: 8088
+  port: 8888
   tomcat:
     maxHttpHeaderSize: 66665536
 management:

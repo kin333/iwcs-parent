@@ -42,6 +42,8 @@ public class InterfaceLogConstants {
         public final static String TASK_NOTIFY = "/iwcs/taskNotify";
 
         public final static String SAVE_INSTOCK = "saveInStock";
+        public final static String SELECT_WHAREA_LIST = "selectWhAreaList";
+        public final static String GET_ALLTORAGE_INFO = "getAlltorageInfo";
 
     }
 
@@ -77,6 +79,8 @@ public class InterfaceLogConstants {
         public final static String TASK_NOTIFY_DESC = "小车移动的回调接口";
 
         public final static String SAVE_INSTOCK_DESC = "更新货架空满";
+        public final static String SELECT_WHAREA_LIST_DESC = "拉取库区列表";
+        public final static String GET_ALLTORAGE_INFO_DESC = "提供PDA查询储位信息";
     }
 
     public static final class SrcClientCode {

@@ -1,5 +1,6 @@
 package com.wisdom.controller.base;
 
+import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
@@ -14,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.SELECT_WHAREA_LIST;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.SELECT_WHAREA_LIST_DESC;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_PDA;
 
 /**
  * 对BaseWhArea的操作
@@ -114,6 +119,7 @@ public class BaseWhAreaController {
      * @return
      */
     @GetMapping(value = "/selectWhAreaList")
+    @SystemInterfaceLog(methodCode = SELECT_WHAREA_LIST, methodName = SELECT_WHAREA_LIST_DESC, methodThansfer = SRC_PDA)
     public Result selectWhAreaList() {
         List<BaseWhAreaDTO> baseWhAreaDTOList = IBaseWhAreaService.selectWhAreaList();
         return new Result(baseWhAreaDTOList);
