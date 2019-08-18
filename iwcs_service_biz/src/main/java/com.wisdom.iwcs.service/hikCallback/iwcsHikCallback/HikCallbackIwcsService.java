@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.hikCallback.iwcsHikCallback;
 
+import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.RabbitMQUtil;
@@ -25,6 +26,7 @@ import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.task.BaseConnectionPointMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
+import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
 import lombok.Data;
@@ -43,8 +45,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.LINEWORKAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.eleFloor.SOURCE_FLOOR;
 import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.NO;
 import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.YES;
@@ -71,6 +75,8 @@ public class HikCallbackIwcsService {
     EleControlTaskMapper eleControlTaskMapper;
     @Autowired
     BaseConnectionPointMapper baseConnectionPointMapper;
+    @Autowired
+    private LineNotifyService lineNotifyService;
 
     public HikSyncResponse taskNotify(HikCallBackAgvMove hikCallBackAgvMove) {
         switch (hikCallBackAgvMove.getMethod()) {
@@ -192,6 +198,12 @@ public class HikCallbackIwcsService {
         resPosEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
         String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
+
+        //查询线体关联点 如果是，通知线体已经离开
+        String lineConnectionPoint = baseConnectionPointMapper.selectConnectionPointByMapCodeBerCode(baseMapBerth.getBerCode(),baseMapBerth.getMapCode());
+        if (lineConnectionPoint != null){
+            lineNotifyService.agvStatusIne(lineConnectionPoint,"02");
+        }
     }
 
     /**
@@ -216,6 +228,11 @@ public class HikCallbackIwcsService {
         //更新储位信息,加货架号,解锁
         baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
         logger.info("子任务{}解锁地码{}成功", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getPodCode());
+
+        //如果是线体工作区储位,同时通知线体已经到达
+        if(!Strings.isNullOrEmpty(baseMapBerth.getPointAlias()) && LINEAREA.equals(baseMapBerth.getOperateAreaCode()) && LINEWORKAREA.equals(baseMapBerth.getBizType())){
+            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(),"01");
+        }
     }
 
     private void publicCheckSubTask(HikCallBackAgvMove hikCallBackAgvMove, SubTask subTask) {

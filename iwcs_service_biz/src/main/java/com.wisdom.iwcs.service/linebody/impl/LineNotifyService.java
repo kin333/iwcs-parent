@@ -70,7 +70,6 @@ public class LineNotifyService {
 
         //通知线体 是否成功
         byte[] leaveCommandBinary= this.lineMsgReturnCommandBinary(lineBodyReport.getAddress(), lineBodyReport.getDeviceType(), msgStatus, lineBodyReport.getReqCode());
-        //String commandBody = lineBodyReport.getAddress() + lineBodyReport.getDeviceType() + msgStatus + lineBodyReport.getReqCode() + "2C";
         LineNettyClient lineNettyClient = LineNettyClient.getInstance();
         lineNettyClient.sendMsg(leaveCommandBinary);
     }
@@ -85,6 +84,7 @@ public class LineNotifyService {
         String msgStatus = "01";
         //接收到信号，拆分，获取点位
         String workPoint = lineBodyReport.getWorkPoint();
+
         //查询这点有货架没
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(workPoint);
         if (Strings.isNullOrEmpty(baseMapBerth.getPodCode())){
@@ -115,7 +115,7 @@ public class LineNotifyService {
      * @param workPoint, agvTaskType
      * @return
      */
-    public void agvStatusine(String workPoint, String agvTaskType){
+    public void agvStatusIne(String workPoint, String agvTaskType){
         //通过工作点查询那个地址
         String msgCode = lineBodyMapper.selectMsgCode(workPoint);
         //通知线体
