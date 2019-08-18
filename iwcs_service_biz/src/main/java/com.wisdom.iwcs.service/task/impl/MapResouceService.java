@@ -146,7 +146,7 @@ public class MapResouceService implements IMapResouceService {
      * @return
      */
     public BaseMapBerth distanceRule(List<BaseMapBerth> baseMapBerthList) {
-        Optional<BaseMapBerth> minMapBerth = baseMapBerthList.stream().min((a,b) -> a.getCoox().compareTo(b.getCoox()));
+        Optional<BaseMapBerth> minMapBerth = baseMapBerthList.stream().max((a,b) -> a.getCoox().compareTo(b.getCoox()));
         return minMapBerth.get();
     }
 
