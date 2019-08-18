@@ -181,4 +181,14 @@ public class LineNotifyService {
         lineMsgLog.setReqCode(reqCode);
         lineMsgLogMapper.insertSelective(lineMsgLog);
     }
+
+    /**
+     * 发送消息test
+     */
+    public void testSend(){
+        //通知线体 成功
+        byte[] leaveCommandBinary= this.lineMsgReturnCommandBinary("01", "05", "01", "01");
+        LineNettyClient lineNettyClient = LineNettyClient.getInstance();
+        lineNettyClient.sendMsg(leaveCommandBinary);
+    }
 }

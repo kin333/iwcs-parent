@@ -45,20 +45,20 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
             Thread thread = new Thread(taskLogThreadService);
             thread.start();
 
+//            Thread taskthread = new Thread(wcsTaskScheduler);
+//            taskthread.start();
+//            logger.info("启动任务调度器线程成功");
+
 //            LineNettyClient lineNettyClient = LineNettyClient.getInstance();
 //            Thread lineNettyClientThread = new Thread(lineNettyClient);
 //            lineNettyClientThread.start();
-
-            ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
-            Thread elevatorThread = new Thread(elevatorNettyClient);
-            elevatorThread.start();
+////
+//            ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
+//            Thread elevatorThread = new Thread(elevatorNettyClient);
+//            elevatorThread.start();
 //
 //            Thread serverThread = new Thread(new NettyServer());
 //            serverThread.start();
-
-//        Thread thread = new Thread(wcsTaskScheduler);
-//        thread.start();
-//        logger.info("启动任务调度器线程成功");
 //
 //        logger.info("开始产线工作台任务生成器");
 //        Thread workLineThread = new Thread(workLineScheduler, "超级线程" + UUID.randomUUID().toString().substring(0, 4));

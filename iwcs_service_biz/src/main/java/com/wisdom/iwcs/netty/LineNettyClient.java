@@ -31,8 +31,8 @@ public class LineNettyClient extends BaseNettyClient implements Runnable {
 
     private static final LineNettyClient lineNettyClient = new LineNettyClient();
 
-    public  String host = "192.168.102.97";
-    public  int port = 9234;
+    public  String host = "192.168.0.12";
+    public  int port = 6000;
     private  Channel ch;
     private Bootstrap bootstrap;
     /**
@@ -66,7 +66,7 @@ public class LineNettyClient extends BaseNettyClient implements Runnable {
             ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
             channelFuture.addListener(getConnectionListener());
             ch = channelFuture.channel();
-            //阻塞，直到channel关闭
+             //阻塞，直到channel关闭
             channelFuture.addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture futureListener) throws Exception {
@@ -99,10 +99,10 @@ public class LineNettyClient extends BaseNettyClient implements Runnable {
         return lineNettyClient;
     }
 
-    public static void main(String[] args) throws InterruptedException, IOException {
-        System.out.println("客户端成功启动...");
-        LineNettyClient lineNettyClient = LineNettyClient.getInstance();
-    }
+//    public static void main(String[] args) throws InterruptedException, IOException {
+//        System.out.println("客户端成功启动...");
+//        LineNettyClient lineNettyClient = LineNettyClient.getInstance();
+//    }
 
     /**
      * 发送消息

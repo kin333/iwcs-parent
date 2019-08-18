@@ -16,6 +16,7 @@ public class InboundHexStrToResponseInterceptor extends ChannelInboundHandlerAda
         if(msg instanceof String){
             String msgStr = (String) msg;
             PlcRespone plcRespone = new PlcRespone();
+            logger.info("接收到PLC Server消息..........."+msgStr);
             //01 03 01 02 03 04 01 01 01,
             String address = msgStr.substring(0, 2);
             String deviceType = msgStr.substring(2,4);

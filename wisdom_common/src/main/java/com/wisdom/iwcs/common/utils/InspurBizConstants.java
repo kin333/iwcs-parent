@@ -70,6 +70,11 @@ public class InspurBizConstants {
         public final static String LINECACHEAREA = "lineCacheArea";
 
         /**
+         * 线体缓存区
+         */
+        public final static String LINEWORKAREA = "lineWorkArea";
+
+        /**
          * 电梯缓存区
          */
         public final static String ELEVATORCACHEAREA = "elevatorCacheArea";

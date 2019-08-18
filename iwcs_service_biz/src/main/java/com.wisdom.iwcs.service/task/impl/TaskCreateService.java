@@ -402,9 +402,8 @@ public class TaskCreateService implements ITaskCreateService {
         if (!Strings.isNullOrEmpty(taskCreateRequest.getpTopTaskSubTaskType()) && INIT_STORAGE.equals(taskCreateRequest.getpTopTaskSubTaskType())){
             Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
             //校验货架号是否为未初始化货架
-            BasePodDetail basePodDetail = basePodDetailMapper.selectPodByPodCode(podCode);
+            BasePodDetail basePodDetail = basePodDetailMapper.selectUnInitPodByPodCode(podCode);
             Preconditions.checkBusinessError(basePodDetail==null, "初始化货架：IWCS中未查找到该货架");
-            Preconditions.checkBusinessError(basePodDetail.getValidFlag()==1, "该货架已初始化");
             //更新货架原始楼层
             basePodDetailMapper.updateSourceMapByPodCode(podCode,startBaseMapBerth.getMapCode());
 
@@ -417,6 +416,10 @@ public class TaskCreateService implements ITaskCreateService {
             BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
             targetPoint = baseMapBerth.getBerCode();
         }else{
+            //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
+            String userAreaCode = SecurityUtils.getCurrentAreaCode();
+            Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
+
             podCode = startBaseMapBerth.getPodCode();
             Preconditions.checkBusinessError(podCode == null, "根据起点点位编号获取货架信息为空");
 
@@ -446,10 +449,6 @@ public class TaskCreateService implements ITaskCreateService {
             lockStorageDto.setVersion(endBaseMapBerth.getVersion());
             baseMapBerthMapper.lockMapBerth(lockStorageDto);
         }
-
-        //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败
-        String userAreaCode = SecurityUtils.getCurrentAreaCode();
-        Preconditions.checkBusinessError(!userAreaCode.equals(startBaseMapBerth.getAreaCode()), "用户登录的楼层不能创建该货架任务");
 
         //创建任务
         PToPRequest ptopRequest = new PToPRequest();

@@ -9,6 +9,7 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
+import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.PackWlCacheWorker;
@@ -68,7 +69,15 @@ public class TaskTestController {
     EleAutoUpWorker eleAutoUpWorker;
     @Autowired
     PackWlCacheWorker packWlCacheWorker;
+    @Autowired
+    LineNotifyService lineNotifyService;
 
+    @GetMapping("/sendLineNotify")
+    public Result sendLineNotify() {
+        logger.info("发送线体调试通知");
+        lineNotifyService.testSend();
+        return new Result();
+    }
 
 
     @GetMapping("/startWcsTaskScheduler")

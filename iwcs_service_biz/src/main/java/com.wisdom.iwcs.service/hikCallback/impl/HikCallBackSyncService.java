@@ -459,7 +459,7 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
             basePodDetailMapper.insertList(insertBasePodDetailList);
             basePodBincodeMapper.insertList(insertPodBincodeList);
             baseBincodeDetailMapper.insertList(insertBincodeDetailList);
-            basePodLayerStkMapper.insertList(insertBasePodLayerStkList);
+            //basePodLayerStkMapper.insertList(insertBasePodLayerStkList);
         }
         if (deleteLogicPodCodes.size() != 0) {
             basePodMapper.deleteLogicByPodCodes(deleteLogicPodCodes, DELETED.getStatus());
