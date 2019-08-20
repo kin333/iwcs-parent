@@ -178,6 +178,7 @@
     <if test="subTaskBizProp != null and subTaskBizProp != ''">
       and sub_task_biz_prop = #{subTaskBizProp}
     </if>
+    order by create_date desc, task_status asc
   </select>
     <select id="selectByMainTaskNum" resultMap="BaseResultMap">
         select

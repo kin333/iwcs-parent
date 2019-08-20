@@ -55,7 +55,7 @@
     <if test="areaCode != null and areaCode != ''">
       and area_code = #{areaCode}
     </if>
-
+    order by create_date desc, task_status asc
   </select>
 
   <select id="selectByMainTaskNum" resultMap="BaseResultMap">

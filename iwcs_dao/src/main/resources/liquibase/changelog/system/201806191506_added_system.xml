@@ -22,6 +22,10 @@
         <sqlFile path="liquibase/init_insert/system/s_authority.sql"/>
     </changeSet>
 
+    <changeSet id="s_authority_iwcs_init" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_authority_iwcs.sql"/>
+    </changeSet>
+
     <changeSet author="devin (generated)" id="1529391343830-59">
         <createTable tableName="s_depart" remarks="组织架构表">
             <column autoIncrement="true" name="id" type="INT">
