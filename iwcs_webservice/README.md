@@ -1,7 +1,7 @@
 # iwcs_webservice
 
 
-iwcs管理系统--webservice层，对外提供接口
+iwcs管理系统--webservice层，对外提供接口,美国浪潮项目
 
 
 
