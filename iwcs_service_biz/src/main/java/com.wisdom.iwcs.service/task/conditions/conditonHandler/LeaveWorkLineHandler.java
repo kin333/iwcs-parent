@@ -39,8 +39,8 @@ public class LeaveWorkLineHandler implements IConditionHandler {
             throw new BusinessException(subTask.getStartBercode() + "地码不存在");
         }
         if (TaskConstants.workTaskStatus.END.equals(subTask.getWorkTaskStatus())) {
-            logger.info("通知线体,小车已经离开{} ",baseMapBerth.getPointAlias());
-            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.LEAVE);
+//            logger.info("通知线体,小车已经离开{} ",baseMapBerth.getPointAlias());
+//            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.LEAVE);
             return true;
         }
         return false;

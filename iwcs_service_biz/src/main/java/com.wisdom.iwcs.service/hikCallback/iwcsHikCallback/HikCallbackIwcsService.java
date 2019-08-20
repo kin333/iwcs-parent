@@ -45,6 +45,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAAUTOPOINT;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAMANUALPOINT;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.LINEWORKAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
@@ -198,6 +200,14 @@ public class HikCallbackIwcsService {
         resPosEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
         String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
+
+        String bizSecondAreaCode = baseMapBerth.getBizSecondAreaCode();
+        //如果离开的是线体工作区,则发送线体离开消息
+        if (LINEAREA.equals(baseMapBerth.getOperateAreaCode())
+                && (LINEAREAAUTOPOINT.equals(bizSecondAreaCode) || LINEAREAMANUALPOINT.equals(bizSecondAreaCode))) {
+            logger.info("通知线体,小车已经离开{} ",baseMapBerth.getPointAlias());
+            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.LEAVE);
+        }
     }
 
     /**
