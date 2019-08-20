@@ -408,7 +408,7 @@ public class TaskCreateService implements ITaskCreateService {
             BasePodDetail basePodDetail = basePodDetailMapper.selectUnInitPodByPodCode(podCode);
             Preconditions.checkBusinessError(basePodDetail==null, "初始化货架：IWCS中未查找到该货架");
             //更新货架原始楼层
-            basePodDetailMapper.updateSourceMapByPodCode(podCode,startBaseMapBerth.getMapCode());
+            basePodDetailMapper.updateSourceMapByPodCode(podCode,startBaseMapBerth.getMapCode(), startBaseMapBerth.getAreaCode());
 
             //筛选目标点，锁定放在创建子任务中
             LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();

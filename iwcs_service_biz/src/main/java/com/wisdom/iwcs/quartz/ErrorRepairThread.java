@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskStatus.ELE_TASK_END;
+import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ELE_TASK;
 
 /**
  * 错误修复线程
@@ -100,6 +101,10 @@ public class ErrorRepairThread implements Runnable {
                 if (!TaskConstants.workTaskStatus.END.equals(subTask.getWorkTaskStatus())) {
                     manageErrorTask(subTask);
                 }
+            } else if (ELE_TASK.equals(subTask.getSubTaskTyp())) {
+                //电梯任务特殊处理
+                logger.info("电梯子任务{}开始处理异常,结果为:{}", hikFindTaskCallback.getTaskCode(), hikFindTaskCallback.toString());
+
             }
         }
     }
@@ -179,7 +184,7 @@ public class ErrorRepairThread implements Runnable {
         }
 
         //如果是电梯任务,还需要修改电梯任务表
-        if (TaskConstants.subTaskType.ELE_TASK.equals(subTask.getSubTaskNum())) {
+        if (ELE_TASK.equals(subTask.getSubTaskNum())) {
             logger.info("子任务{}为电梯任务,开始修改电梯任务状态值", subTask.getSubTaskNum());
             EleControlTask eleControlTask = new EleControlTask();
             eleControlTask.setMainTaskNum(subTask.getMainTaskNum());
