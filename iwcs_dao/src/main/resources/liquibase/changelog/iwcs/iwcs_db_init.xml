@@ -997,5 +997,13 @@
             <column name="sub_task_num"/>
         </createIndex>
     </changeSet>
+    
+    <changeSet id="201908190806" author="han">
+        <dropDefaultValue tableName="base_pod_detail" columnName="valid_flag"/>
+    </changeSet>
+    
+    <changeSet id="201908191810" author="han">
+        <addDefaultValue tableName="base_pod_detail" columnName="valid_flag" defaultValueNumeric="1"/>
+    </changeSet>
 
 </databaseChangeLog>

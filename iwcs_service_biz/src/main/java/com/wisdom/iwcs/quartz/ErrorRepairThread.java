@@ -111,26 +111,23 @@ public class ErrorRepairThread implements Runnable {
     private void manageErrorTask(SubTask subTask) {
         logger.info("异常处理类开始工作");
         //1. 更新子任务的任务状态
-        subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
-        subTaskMapper.updateRobotCodeByBerCode(subTask);
+        subTaskMapper.updateTaskStatusByNum(subTask.getSubTaskNum(), TaskConstants.subTaskStatus.SUB_FINISHED);
 
         //2. 更新起点地码
         BaseMapBerth startMapBerth = baseMapBerthMapper.selectOneByBercode(subTask.getStartBercode());
         if (subTask.getSubTaskNum().equals(startMapBerth.getLockSource())
                 && subTask.getPodCode().equals(startMapBerth.getPodCode())) {
             BaseMapBerth baseMapBerth = new BaseMapBerth();
-            //解锁这个储位
+            //清空这个储位
             baseMapBerth.setId(startMapBerth.getId());
-            baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
-            baseMapBerth.setLockSource("");
             baseMapBerth.setPodCode("");
             //更新储位信息,加货架号,解锁
             int rows = baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
             if (rows > 0) {
-                logger.info("异常处理:子任务{}解锁起始地码{}成功", subTask.getSubTaskNum(), subTask.getStartBercode());
+                logger.info("异常处理:子任务{}更新起始地码{}成功", subTask.getSubTaskNum(), subTask.getStartBercode());
             }
             else {
-                logger.info("异常处理:子任务{}没有解锁起始地码{}", subTask.getSubTaskNum(), subTask.getStartBercode());
+                logger.info("异常处理:子任务{}没有更新起始地码{}", subTask.getSubTaskNum(), subTask.getStartBercode());
             }
         }
 
