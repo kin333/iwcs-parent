@@ -1006,4 +1006,15 @@
         <addDefaultValue tableName="base_pod_detail" columnName="valid_flag" defaultValueNumeric="1"/>
     </changeSet>
 
+
+    <changeSet id="201908201645-1" author="han">
+        <addDefaultValue tableName="base_pod_detail" columnName="in_stock" defaultValueNumeric="0"/>
+    </changeSet>
+    <changeSet id="201908201645-2" author="han">
+        <addDefaultValue tableName="base_pod_detail" columnName="in_lock" defaultValueNumeric="0"/>
+    </changeSet>
+    <changeSet id="201908201645-3" author="han">
+        <addDefaultValue tableName="base_map_berth" columnName="in_lock" defaultValueNumeric="0"/>
+    </changeSet>
+
 </databaseChangeLog>
