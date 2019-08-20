@@ -28,6 +28,7 @@ import static com.wisdom.iwcs.common.utils.DeleteFlagEnum.NOT_DELETED;
 import static com.wisdom.iwcs.common.utils.ValidFlagEnum.NOT_VALID;
 import static com.wisdom.iwcs.common.utils.ValidFlagEnum.VALID;
 import static com.wisdom.iwcs.common.utils.WhTypeEnum.INTELLIGENCE;
+import static com.wisdom.iwcs.common.utils.YZConstants.UNLOCK;
 import static com.wisdom.iwcs.common.utils.podUtils.PodConstants.BinCargoCapacityStatus.EMPTY_BIN;
 import static com.wisdom.iwcs.common.utils.syncUtils.PodDirectionEnum.*;
 import static com.wisdom.iwcs.common.utils.syncUtils.ResolveSyncContentsConstants.*;
@@ -665,6 +666,7 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
                             baseMapBerth.setValidFlag(VALID.getStatus());
                             baseMapBerth.setDeleteFlag(NOT_DELETED.getStatus());
                             baseMapBerth.setCreatedTime(new Date());
+                            baseMapBerth.setInLock(UNLOCK);
                             insertBaseMapBerthList.add(baseMapBerth);
                         }
                         if (updateBerCodeList.contains(berCode)){

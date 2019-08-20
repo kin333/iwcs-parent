@@ -198,12 +198,6 @@ public class HikCallbackIwcsService {
         resPosEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
         String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
-
-        //查询线体关联点 如果是，通知线体已经离开
-        String lineConnectionPoint = baseConnectionPointMapper.selectConnectionPointByMapCodeBerCode(baseMapBerth.getBerCode(),baseMapBerth.getMapCode());
-        if (lineConnectionPoint != null){
-            lineNotifyService.agvStatusIne(lineConnectionPoint,"02");
-        }
     }
 
     /**
@@ -228,11 +222,6 @@ public class HikCallbackIwcsService {
         //更新储位信息,加货架号,解锁
         baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
         logger.info("子任务{}解锁地码{}成功", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getPodCode());
-
-        //如果是线体工作区储位,同时通知线体已经到达
-        if(!Strings.isNullOrEmpty(baseMapBerth.getPointAlias()) && LINEAREA.equals(baseMapBerth.getOperateAreaCode()) && LINEWORKAREA.equals(baseMapBerth.getBizType())){
-            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(),"01");
-        }
     }
 
     private void publicCheckSubTask(HikCallBackAgvMove hikCallBackAgvMove, SubTask subTask) {

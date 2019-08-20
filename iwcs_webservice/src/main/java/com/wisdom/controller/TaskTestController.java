@@ -79,6 +79,20 @@ public class TaskTestController {
         return new Result();
     }
 
+    @GetMapping("/notifyOneLineInfoTest/{agvTaskType}")
+    public Result notifyOneLineInfoTest(@PathVariable String agvTaskType) {
+        logger.info("通知1线体 {}",agvTaskType);
+        lineNotifyService.notifyOneLineTest(agvTaskType);
+        return new Result();
+    }
+
+    @GetMapping("/notifyTwoLineInfoTest/{agvTaskType}")
+    public Result notifyTwoLineInfoTest(@PathVariable String agvTaskType) {
+        logger.info("通知2线体 {}",agvTaskType);
+        lineNotifyService.notifyTwoLineTest(agvTaskType);
+        return new Result();
+    }
+
 
     @GetMapping("/startWcsTaskScheduler")
     public Result startWcsTaskScheduler() {

@@ -70,7 +70,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     System.out.println("sub task is going to wait " + waitLock);
                     if (! isRunnable()) {
                         logger.info("Task {}, subtask: {} is gonging to wait 10*1000, go...", subTask.getMainTaskNum(), subTask.getSubTaskNum());
-                        waitLock.wait(60 * 1000 * 1);
+                        waitLock.wait(10 * 1000 * 1);
                         logger.info("Task thread start!");
                     } else{
                         logger.info("Task {}, subtask: {} become runnable, go...", subTask.getMainTaskNum(), subTask.getSubTaskNum());
@@ -92,7 +92,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     System.out.println("sub task is going to wait " + waitLock);
                     if (! postRunnable()) {
                         logger.info("子任务{}后置条件检查未符合,30s后重试", subTask.getSubTaskNum());
-                        waitLock.wait(20 * 1000);
+                        waitLock.wait(5 * 1000);
                     } else{
                         //通知主任务的时机，待定......
                         logger.info("子任务{}后置条件检查符合条件,通知结束", subTask.getSubTaskNum());

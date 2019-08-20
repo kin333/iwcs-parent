@@ -12,23 +12,23 @@
   </sql>
     <select id="selectVersionPage"  resultMap="BaseResultMap">
     select  <include refid="Base_Column_List"/>
-     from iwcs_prd_dev.version
+     from version
     </select>
     <select id="selectinformation" parameterType="java.lang.Integer" resultType="java.lang.String">
     select
       information
-    from iwcs_prd_dev.version
+    from version
     where version = #{version,jdbcType=INTEGER}
   </select>
     <insert id="insert" parameterType="com.wisdom.iwcs.domain.version.VersionDto" >
-        insert into iwcs_prd_dev.version (version,information,url)
+        insert into version (version,information,url)
         values (#{version,jdbcType=INTEGER}, #{information,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR})    </insert>
     <select id="selectnewVersion" resultType="com.wisdom.iwcs.domain.version.Version">
       select  version,information,url
-     from iwcs_prd_dev.version where id = (SELECT max(id) FROM iwcs_prd_dev.version)
+     from version where id = (SELECT max(id) FROM iwcs_prd_dev.version)
     </select>
     <update id="updateVersion" parameterType="com.wisdom.iwcs.domain.version.VersionDto">
-        update iwcs_prd_dev.version
+        update version
             set version = #{version,jdbcType=INTEGER},
                  url = #{url,jdbcType=VARCHAR}
             where id = 1

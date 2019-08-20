@@ -134,7 +134,7 @@ public class LineNotifyService {
         //获取随机码
         String randomNum = iCommonService.randomHexString(8);
         //写死询命令
-        String commandBody = msgCode + "03" + randomNum + workPoint + agvTaskType;
+        String commandBody = msgCode + "05" + randomNum + workPoint + agvTaskType;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
         String commandComplete = commandBody + s + "2C";
@@ -190,5 +190,21 @@ public class LineNotifyService {
         byte[] leaveCommandBinary= this.lineMsgReturnCommandBinary("01", "05", "01", "01");
         LineNettyClient lineNettyClient = LineNettyClient.getInstance();
         lineNettyClient.sendMsg(leaveCommandBinary);
+    }
+
+    /**
+     * 发送消息test
+     */
+    public void notifyOneLineTest(String agvTaskType){
+        //通知线体 成功
+        agvStatusIne("01",agvTaskType);
+    }
+
+    /**
+     * 发送消息test
+     */
+    public void notifyTwoLineTest(String agvTaskType){
+        //通知线体 成功
+        agvStatusIne("02",agvTaskType);
     }
 }

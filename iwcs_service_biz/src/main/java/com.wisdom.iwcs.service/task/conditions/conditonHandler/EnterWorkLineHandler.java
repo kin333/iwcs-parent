@@ -8,6 +8,8 @@ import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class EnterWorkLineHandler implements IConditionHandler {
+
+    private final Logger logger = LoggerFactory.getLogger(EnterWorkLineHandler.class);
     @Autowired
     LineNotifyService lineNotifyService;
     @Autowired
@@ -35,7 +39,8 @@ public class EnterWorkLineHandler implements IConditionHandler {
             throw new BusinessException(subTask.getStartBercode() + "-地码不存在");
         }
         if (TaskConstants.workTaskStatus.END.equals(subTask.getWorkTaskStatus())) {
-//            lineNotifyService.agvStatusine(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.ENTER);
+            logger.info("通知线体,小车已经到达{} ",baseMapBerth.getPointAlias());
+            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.ENTER);
             return true;
         }
         return false;

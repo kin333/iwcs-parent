@@ -58,29 +58,29 @@ public class PLCControlService {
         String reqCode = msgBody.substring(4,8);
         if (commandType.equals("03")){
             //TODO 电梯状态
-            ElevatorReport elevatorReport = new ElevatorReport();
-            String elevatorStatus = msgBody.substring(12,14);
-            String floor = msgBody.substring(14,16);
-            String allowEnterEle = msgBody.substring(16,18);
-            String isInStock = msgBody.substring(18,20);
-            if (allowEnterEle.equals("01") && isInStock.equals("02")){
-                logger.info("电梯通知{}：允许进入电梯"+ plcRespone.getAddress()+":"+allowEnterEle);
-                elevatorNotifyService.eleNotifyCheckResult(elevatorReport);
-            }else{
-                logger.info("电梯通知{}：不允许进去电梯"+ plcRespone.getAddress()+":"+allowEnterEle);
-            }
-            EleControlTask eleControlTask = new EleControlTask();
-            eleControlTask.setEleTaskCode(reqCode);
-
-            eleControlTaskMapper.updateTaskInfo(eleControlTask);
-
-            //更新电梯状态
-            Elevator elevator = new Elevator();
-            elevator.setEleStatus(elevatorStatus.substring(1,2));
-            elevator.setStatusUpdateTime(new Date());
-            elevator.setCurrentFloor(Integer.valueOf(floor));
-            elevator.setFloorUpdateTime(new Date());
-            elevatorMapper.updateElevatorInfo(elevator);
+//            ElevatorReport elevatorReport = new ElevatorReport();
+//            String elevatorStatus = msgBody.substring(12,14);
+//            String floor = msgBody.substring(14,16);
+//            String allowEnterEle = msgBody.substring(16,18);
+//            String isInStock = msgBody.substring(18,20);
+//            if (allowEnterEle.equals("01") && isInStock.equals("02")){
+//                logger.info("电梯通知{}：允许进入电梯"+ plcRespone.getAddress()+":"+allowEnterEle);
+//                elevatorNotifyService.eleNotifyCheckResult(elevatorReport);
+//            }else{
+//                logger.info("电梯通知{}：不允许进去电梯"+ plcRespone.getAddress()+":"+allowEnterEle);
+//            }
+//            EleControlTask eleControlTask = new EleControlTask();
+//            eleControlTask.setEleTaskCode(reqCode);
+//
+//            eleControlTaskMapper.updateTaskInfo(eleControlTask);
+//
+//            //更新电梯状态
+//            Elevator elevator = new Elevator();
+//            elevator.setEleStatus(elevatorStatus.substring(1,2));
+//            elevator.setStatusUpdateTime(new Date());
+//            elevator.setCurrentFloor(Integer.valueOf(floor));
+//            elevator.setFloorUpdateTime(new Date());
+//            elevatorMapper.updateElevatorInfo(elevator);
 
             //insert line_msg_log
             EleMsgLog eleMsgLog = new EleMsgLog();
