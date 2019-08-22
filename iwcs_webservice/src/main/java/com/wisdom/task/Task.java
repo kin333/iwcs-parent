@@ -76,7 +76,7 @@ public class Task {
      * 处理任务信息异常
      *
      */
-    @Scheduled(fixedRateString="600000",initialDelayString="2000")
+//    @Scheduled(fixedRateString="600000",initialDelayString="2000")
     public void disposeError() {
         logger.info("错误处理定时器准备执行");
         Thread thread = new Thread(errorRepairThread);
