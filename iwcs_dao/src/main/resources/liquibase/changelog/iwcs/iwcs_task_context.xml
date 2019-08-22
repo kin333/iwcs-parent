@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="201908221719" author="han">
+        <createTable tableName="task_context" remarks="主任务上下文(子任务数据共享)">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="main_task_num" remarks="主任务编号" type="VARCHAR(32)" defaultValue=""/>
+            <column name="context" remarks="上下文json" type="VARCHAR(2000)" defaultValue=""/>
+            <column name="version" remarks="版本号" type="INT" defaultValueNumeric="0"/>
+            <column name="create_time" remarks="创建时间" type="DATETIME(3)"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="DATETIME(3)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="201908221730" author="han">
+        <createIndex tableName="task_context" indexName="idx_main_task_num" unique="true">
+            <column name="main_task_num"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
