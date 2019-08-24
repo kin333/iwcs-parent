@@ -4,6 +4,8 @@ import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
+import com.wisdom.iwcs.domain.upstream.mes.StartRecyle;
+import com.wisdom.iwcs.service.task.impl.MesRequestService;
 import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.START_RECYLE;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.TASK_CREATE;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.MOVE_TASK_CREATE;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.START_RECYLE_DESC;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.EMPTYRECYCLETASK;
 
@@ -27,6 +31,8 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.EMPTYRECYC
 public class EmptyRecyleTaskController {
     @Autowired
     TaskCreateService taskCreateService;
+    @Autowired
+    MesRequestService mesRequestService;
 
     /**
      * 创建自动产线供料、回收任务
@@ -39,6 +45,17 @@ public class EmptyRecyleTaskController {
         for (CreateTaskRequest createTaskRequest : data) {
             taskCreateService.emptyRecyleTask(createTaskRequest, EMPTYRECYCLETASK);
         }
+        return new MesResult(mesBaseRequest.getReqcode());
+    }
+
+    /**
+     * 通知可出空料框
+     */
+    @PostMapping("/startRecyle")
+    @SystemInterfaceLog(methodCode = START_RECYLE, methodName = START_RECYLE_DESC, methodThansfer = SRC_MES)
+    public MesResult startRecyle(@RequestBody MesBaseRequest<StartRecyle> mesBaseRequest) {
+        StartRecyle data = mesBaseRequest.getData();
+        mesRequestService.startRecyle(data);
         return new MesResult(mesBaseRequest.getReqcode());
     }
 }
