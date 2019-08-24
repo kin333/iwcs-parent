@@ -125,5 +125,15 @@ public class HikCallBackController {
     public HikSyncResponse releaseResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
         return hikCallbackIwcsService.releaseResource(hikReachCheckArea);
     }
+    /**
+     * 滚筒Agv回调
+     * @return
+     */
+    @PostMapping("/roller/notify")
+    @SystemInterfaceLog(methodCode = ROLLER_NOTIFY, methodName = ROLLER_NOTIFY_DESC, methodThansfer = SRC_HIK)
+    public HikSyncResponse rollerNotify(@RequestBody HikCallBackAgvMove hikCallBackAgvMove) {
+        return hikCallbackIwcsService.rollerNotify(hikCallBackAgvMove);
+    }
+
 
 }

@@ -12,12 +12,14 @@ import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Mes系统请求的业务逻辑
  * @author han
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class MesRequestService {
     @Autowired
     TaskContextMapper taskContextMapper;

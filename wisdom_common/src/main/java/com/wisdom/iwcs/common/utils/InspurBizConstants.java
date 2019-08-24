@@ -180,6 +180,23 @@ public class InspurBizConstants {
          */
         public final static String APPLY_RESOURCE = "applyResource";
 
+        /**
+         * 滚筒AGV开始移动
+         */
+        public final static String MOVE_START = "moveStart";
+        /**
+         * 滚筒AGV到达终点
+         */
+        public final static String MOVE_END = "moveEnd";
+        /**
+         * 滚筒AGV开始滚动
+         */
+        public final static String ROLL_START = "rollStart";
+        /**
+         * 滚筒AGV结束滚动
+         */
+        public final static String ROLL_END = "rollEnd";
+
     }
 
     /**

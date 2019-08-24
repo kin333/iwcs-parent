@@ -401,4 +401,53 @@ public class HikCallbackIwcsService {
 
         return new HikSyncResponse();
     }
+
+    /**
+     * 滚筒AGV回调
+     * @param hikCallBackAgvMove
+     * @return
+     */
+    public HikSyncResponse rollerNotify(HikCallBackAgvMove hikCallBackAgvMove) {
+        switch (hikCallBackAgvMove.getMethod()) {
+            //滚筒AGV开始移动
+            case InspurBizConstants.HikCallbackMethod.MOVE_START:
+                moveStart(hikCallBackAgvMove); break;
+            //滚筒AGV到达终点
+            case InspurBizConstants.HikCallbackMethod.MOVE_END:
+                moveEnd(hikCallBackAgvMove); break;
+            //滚筒AGV开始滚动
+            case InspurBizConstants.HikCallbackMethod.ROLL_START:
+                RollStart(hikCallBackAgvMove); break;
+            //滚筒AGV结束滚动
+            case InspurBizConstants.HikCallbackMethod.ROLL_END:
+                RollEnd(hikCallBackAgvMove); break;
+            default: break;
+        }
+        return new HikSyncResponse();
+    }
+
+    /**
+     * 滚筒AGV开始移动
+     */
+    private void moveStart(HikCallBackAgvMove hikCallBackAgvMove) {
+
+    }
+    /**
+     * 滚筒AGV到达终点
+     */
+    private void moveEnd(HikCallBackAgvMove hikCallBackAgvMove) {
+
+    }
+    /**
+     * 滚筒AGV开始滚动
+     */
+    private void RollStart(HikCallBackAgvMove hikCallBackAgvMove) {
+
+    }
+    /**
+     * 滚筒AGV结束滚动
+     */
+    private void RollEnd(HikCallBackAgvMove hikCallBackAgvMove) {
+
+    }
 }
