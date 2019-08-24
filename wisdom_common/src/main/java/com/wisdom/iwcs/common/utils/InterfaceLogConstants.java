@@ -44,6 +44,9 @@ public class InterfaceLogConstants {
         public final static String SAVE_INSTOCK = "saveInStock";
         public final static String SELECT_WHAREA_LIST = "selectWhAreaList";
         public final static String GET_ALLTORAGE_INFO = "getAlltorageInfo";
+        public final static String SUPPLY_UNLOADWB_NOTIFY = "supplyUnloadWbNotify";
+        public final static String START_SUPLLY_AND_RECYLE = "startSupllyAndRecyle";
+        public final static String START_RECYLE = "startRecyle";
 
     }
 
@@ -73,6 +76,7 @@ public class InterfaceLogConstants {
         public final static String CONTINUE_TASK_NAME = "继续执行任务";
         public final static String CANCEL_TASK_NAME = "取消任务";
         public final static String TASK_CREATE_DESC = "浪潮搬运任务创建";
+        public final static String MOVE_TASK_CREATE = "美国浪潮移载式AGV搬运任务创建";
         public final static String APPLY_RESOURCE_DESC = "小车到达检验点回调";
         public final static String EXCUTE_TASK_DESC = "小车送货架出电梯后回调";
         public final static String RELEASE_RESOURCE_DESC = "agv接货架出电梯时回调";
@@ -81,6 +85,9 @@ public class InterfaceLogConstants {
         public final static String SAVE_INSTOCK_DESC = "更新货架空满";
         public final static String SELECT_WHAREA_LIST_DESC = "拉取库区列表";
         public final static String GET_ALLTORAGE_INFO_DESC = "提供PDA查询储位信息";
+        public final static String SUPPLY_UNLOADWB_NOTIFY_DESC = "通知AGV接料点目的地";
+        public final static String START_SUPLLY_AND_RECYLE_DESC = "接料点通知供料及回收空框信息";
+        public final static String START_RECYLE_DESC = "通知可出空料框";
     }
 
     public static final class SrcClientCode {
@@ -89,6 +96,7 @@ public class InterfaceLogConstants {
         public final static String SRC_IWCS = "IWCS";
         public final static String SRC_OUTER = "OUTER";
         public final static String SRC_INSUPR = "INSUPR";
+        public final static String SRC_MES = "MES";
         public final static String SRC_PDA = "PDA";
     }
 

@@ -139,4 +139,12 @@ public class TaskContext {
     public void setLastModifiedTime(Date lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
     }
+
+    public TaskContext() {
+    }
+
+    public TaskContext(Long id, String context) {
+        this.id = id;
+        this.context = context;
+    }
 }

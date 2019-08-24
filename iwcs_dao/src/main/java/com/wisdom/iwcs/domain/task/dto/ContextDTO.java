@@ -19,7 +19,7 @@ public class ContextDTO {
      * 供料数量
      */
     @ColumnName("startGetNum")
-    private String supplyLoadNum;
+    private Integer supplyLoadNum;
     /**
      * 接料点1
      */
@@ -34,20 +34,26 @@ public class ContextDTO {
      * 接料点1接料数量
      */
     @ColumnName("endSendNum")
-    private String supplyUnLoadWbFirstCount;
+    private Integer supplyUnLoadWbFirstCount;
     /**
      * 接料点2接料数量
      */
     @ColumnName("endSendNumTwo")
-    private String supplyUnLoadWbSecondCount;
+    private Integer supplyUnLoadWbSecondCount;
     /**
      * 空框回收数量
      */
     @ColumnName("emptyRecyleNum")
-    private String emptyRecyleNum;
+    private Integer emptyRecyleNum;
     /**
      * 回收点
      */
     @ColumnName("emptyRecyleWb")
     private String emptyRecyleWb;
+
+    /**
+     * 空料箱回收上箱点编码
+     */
+    @ColumnName("srcWbCode")
+    private String srcWbCode;
 }

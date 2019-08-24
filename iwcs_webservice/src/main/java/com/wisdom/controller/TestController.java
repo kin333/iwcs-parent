@@ -4,6 +4,7 @@ import com.wisdom.iwcs.common.utils.JSONUtils;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
+import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.service.common.IPodCal;
 import com.wisdom.iwcs.service.message.NotificationService;
 import com.wisdom.iwcs.service.notice.NoticeUserMsgService;
@@ -34,7 +35,7 @@ public class TestController {
     }
 
     @GetMapping(value = "/testPodCa")
-    public Result testPodCalImpl() {
+    public Result testPodCalImpl(MesBaseRequest<Object> mesBaseRequest) {
         List<String> listPodcode = podCal.calPodByPodFliterCondition("sss", "sss", "ssss", 10);
         return new Result(listPodcode);
     }

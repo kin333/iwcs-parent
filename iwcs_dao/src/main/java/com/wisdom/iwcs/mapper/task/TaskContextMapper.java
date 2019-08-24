@@ -19,4 +19,18 @@ public interface TaskContextMapper extends MyMapperAndIds<TaskContext> {
      * @return list
      */
     List<TaskContext> selectPage(Map map);
+
+    /**
+     * 通过主任务号修改
+     * @param taskContext
+     * @return
+     */
+    int updateByMainTaskNum(TaskContext taskContext);
+
+    /**
+     * 根据主单号查询
+     * @param mainTaskNum
+     * @return
+     */
+    TaskContext selectByMainTaskNum(String mainTaskNum);
 }

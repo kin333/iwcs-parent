@@ -55,6 +55,16 @@ public class TaskConstants {
          * 初始化货架用（暂时与上面的点到点一个意思）
          */
         public final static String PTOPWITHOUTPODCHECK = "pTopWithoutPodCheck";
+        /**
+         * 自动产线供料、回收任务
+         */
+        public final static String SUPPLYANDRECYCLE = "supplyAndRecycle";
+        /**
+         * 回收空料箱任务
+         */
+        public final static String EMPTYRECYCLETASK = "emptyRecycleTask";
+
+
     }
 
     /**
@@ -410,6 +420,19 @@ public class TaskConstants {
          * 三楼包装体缓存区别名
          */
         public final static String PACK_CACHE_THREE = "A301";
+    }
+    /**
+     * AGV释放标志
+     */
+    public static final class agvRelease {
+        /**
+         * 不释放
+         */
+        public final static String HOLD = "hold";
+        /**
+         * 释放
+         */
+        public final static String RELEASE = "release";
     }
 
 

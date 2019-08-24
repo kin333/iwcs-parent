@@ -4,9 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.FloorMapEnum;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
+import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
+import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
+import com.wisdom.iwcs.common.utils.taskUtils.TaskPriorityEnum;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.BaseWhArea;
@@ -14,7 +18,11 @@ import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.elevator.Elevator;
 import com.wisdom.iwcs.domain.elevator.ElevatorTaskRequest;
+import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.dto.ContextDTO;
+import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
+import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.base.BaseWhAreaMapper;
@@ -22,8 +30,11 @@ import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.base.ICommonService;
+import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +52,9 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstant
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.pTopTaskSubTaskTypeConstants.INIT_STORAGE;
+import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.*;
+import static com.wisdom.iwcs.domain.upstream.mes.MesResult.NG;
 
 /**
  * 任务创建
@@ -96,6 +109,14 @@ public class TaskCreateService implements ITaskCreateService {
     private EleControlTaskMapper eleControlTaskMapper;
     @Autowired
     private BaseConnectionPointMapper baseConnectionPointMapper;
+    @Autowired
+    private TaskRelMapper taskRelMapper;
+    @Autowired
+    private SubTaskMapper subTaskMapper;
+    @Autowired
+    private ITaskCreateService iTaskCreateService;
+    @Autowired
+    private TaskContextMapper taskContextMapper;
 
     /**
      * 创建任务
@@ -745,5 +766,138 @@ public class TaskCreateService implements ITaskCreateService {
             subTaskConditionMapper.insertSelective(subTaskCondition);
         }
     }
+
+    /**
+     * 创建基础滚筒AGV移动任务
+     * @param createTaskRequest
+     * @return
+     */
+    public MesResult rollerTaskCreate(CreateTaskRequest createTaskRequest, String mainTaskType) {
+        //1.参数校验
+        publicCheckIsBlank(createTaskRequest);
+
+        //2.创建主任务
+        String mainTaskNum = createTaskRequest.getTaskCode();
+        MainTask mainTaskCreate = new MainTask();
+        mainTaskCreate.setMainTaskNum(mainTaskNum);
+        mainTaskCreate.setCreateDate(new Date());
+        mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(createTaskRequest.getTaskPri()));
+        mainTaskCreate.setMainTaskTypeCode(mainTaskType);
+        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskMapper.insertSelective(mainTaskCreate);
+
+        //3.创建子任务
+        List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(mainTaskType);
+        TaskRel taskRel = taskRelList.get(0);
+        SubTask subTaskCreate = new SubTask();
+        String subTaskNum = CodeBuilder.codeBuilder("S");
+        subTaskCreate.setMainTaskNum(mainTaskNum);
+        subTaskCreate.setSubTaskNum(subTaskNum);
+        subTaskCreate.setSubTaskTyp(taskRel.getSubTaskTypeCode());
+        subTaskCreate.setCreateDate(new Date());
+        subTaskCreate.setMainTaskSeq(taskRel.getSubTaskSeq());
+        subTaskCreate.setMainTaskType(taskRel.getMainTaskTypeCode());
+        subTaskCreate.setThirdType(taskRel.getThirdType());
+        subTaskCreate.setSendStatus(SUB_NOT_ISSUED);
+        subTaskCreate.setTaskStatus(SUB_NOT_ISSUED);
+        subTaskCreate.setWorkerTaskCode(subTaskNum);
+        subTaskCreate.setEndBercode(createTaskRequest.getSupplyLoadWb() != null ? createTaskRequest.getSupplyLoadWb(): createTaskRequest.getSrcWbCode());
+        subTaskMapper.insertSelective(subTaskCreate);
+
+        //4.创建子任务前置后置条件
+        iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
+
+        //5.创建子任务共享数据区域--任务上下文
+        TaskContext taskContext = new TaskContext();
+        taskContext.setMainTaskNum(mainTaskNum);
+        taskContext.setCreateTime(new Date());
+        taskContextMapper.insertSelective(taskContext);
+
+        //6.向消息队列发送消息
+        MainTaskType tmpMainTaskType = mainTaskTypeMapper.selectByMainTaskTypeCode(mainTaskType);
+        String message = tmpMainTaskType.getMainTaskTypeName() + "任务创建完成,主任务号:" + mainTaskNum;
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
+
+        return new MesResult();
+    }
+
+    /**
+     * 创建自动产线供料、回收任务时独有的创建动作
+     * @param createTaskRequest
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public MesResult supplyAndRecycle(CreateTaskRequest createTaskRequest, String mainTaskType) {
+        //参数校验
+        if (StringUtils.isBlank(createTaskRequest.getSupplyLoadWb())) {
+            throw new MesBusinessException(createTaskRequest.getTaskCode(), "供料点点位不能为空");
+        }
+        if (createTaskRequest.getSupplyLoadNum() == null) {
+            throw new MesBusinessException(createTaskRequest.getTaskCode(), "供料点数量不能为空");
+        }
+
+        //公用的任务创建流程
+        rollerTaskCreate(createTaskRequest, mainTaskType);
+        //生成context列的数据信息
+        ContextDTO contextDTO = new ContextDTO();
+        contextDTO.setSupplyLoadWb(createTaskRequest.getSupplyLoadWb());
+        contextDTO.setSupplyLoadNum(createTaskRequest.getSupplyLoadNum());
+        String contextJson = TaskContextUtils.objectToJson(contextDTO);
+        //更新task_context表
+        TaskContext taskContext = new TaskContext();
+        taskContext.setMainTaskNum(createTaskRequest.getTaskCode());
+        taskContext.setContext(contextJson);
+        taskContextMapper.updateByMainTaskNum(taskContext);
+
+        return new MesResult();
+    }
+    /**
+     * 创建自动化产线空箱回收任务时独有的创建动作
+     * @param createTaskRequest
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public MesResult emptyRecyleTask(CreateTaskRequest createTaskRequest, String mainTaskType) {
+        //参数校验
+        if (StringUtils.isBlank(createTaskRequest.getSrcWbCode())) {
+            throw new MesBusinessException(createTaskRequest.getTaskCode(), "空料箱回收上箱点编码不能为空");
+        }
+        if (StringUtils.isBlank(createTaskRequest.getTargetEmptyRecyleWb())) {
+            throw new MesBusinessException(createTaskRequest.getTaskCode(), "空框回收下箱点不能为空");
+        }
+        if (createTaskRequest.getEmptyRecyleNum() == null) {
+            throw new MesBusinessException(createTaskRequest.getTaskCode(), "空框回收数量不能为空");
+        }
+
+        //公用的任务创建流程
+        rollerTaskCreate(createTaskRequest, mainTaskType);
+        //生成context列的数据信息
+        ContextDTO contextDTO = new ContextDTO();
+        contextDTO.setSrcWbCode(createTaskRequest.getSrcWbCode());
+        contextDTO.setEmptyRecyleWb(createTaskRequest.getTargetEmptyRecyleWb());
+        contextDTO.setEmptyRecyleNum(createTaskRequest.getEmptyRecyleNum());
+        String contextJson = TaskContextUtils.objectToJson(contextDTO);
+        //更新task_context表
+        TaskContext taskContext = new TaskContext();
+        taskContext.setMainTaskNum(createTaskRequest.getTaskCode());
+        taskContext.setContext(contextJson);
+        taskContextMapper.updateByMainTaskNum(taskContext);
+
+        return new MesResult();
+    }
+
+    /**
+     * Mes公用的参数检查
+     * @param createTaskRequest
+     */
+    public void publicCheckIsBlank(CreateTaskRequest createTaskRequest) {
+        if (StringUtils.isBlank(createTaskRequest.getTaskCode())) {
+            throw new MesBusinessException(createTaskRequest.getTaskCode(), "任务号不能为空");
+        }
+        if (StringUtils.isBlank(createTaskRequest.getTaskPri())) {
+            throw new MesBusinessException(createTaskRequest.getTaskCode(), "优先级不能为空");
+        }
+    }
+
 
 }

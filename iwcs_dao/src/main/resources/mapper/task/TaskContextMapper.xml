@@ -30,6 +30,18 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
-    order by last_modified_time desc
+  </select>
+
+  <update id="updateByMainTaskNum">
+    update task_context
+    <set>
+      context = #{context}
+    </set>
+    where main_task_num = #{mainTaskNum}
+  </update>
+
+  <select id="selectByMainTaskNum" resultMap="BaseResultMap">
+  select <include refid="Base_Column_List" /> from task_context
+    where main_task_num = #{mainTaskNum}
   </select>
 </mapper>
