@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Data
 public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable {
     protected AtomicBoolean waitLock = new AtomicBoolean(false);
+    protected AtomicBoolean reExecFlag = new AtomicBoolean(false);
     private String topicTag;
     private int taskStatus;
 
@@ -25,6 +26,7 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
 
     @Override
     public void run() {
+        reExecFlag.set(false);
         /**
          * 订阅消费者
          */
@@ -38,6 +40,19 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
          *  Run task
          */
         process();
+        while (reExecFlag.get()) {
+            /**
+             * Handle pre-conditions
+             */
+            preConditions();
+
+            /**
+             *  Run task
+             */
+            process();
+        }
+
+
 
         /**
          * Some post works after the task finished.

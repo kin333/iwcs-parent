@@ -4,7 +4,6 @@ package com.wisdom.iwcs.service.task.subtask.impl;
 import com.rabbitmq.client.Channel;
 import com.wisdom.base.context.AppContext;
 import com.wisdom.base.quartz.SpringContextUtils;
-import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
@@ -104,9 +103,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
                 e.printStackTrace();
             }
         }
-
         // 锁定的资源
-
 
     }
 
@@ -117,22 +114,25 @@ public class SubTaskWorker extends AbstractTaskWorker {
                 try {
                     IwcsPublicService iwcsPublicService = (IwcsPublicService) SpringContextUtils.getBean("iwcsPublicService");
                     iwcsPublicService.sendInfoBySubTaskNum(subTask.getSubTaskNum());
+                    reExecFlag.set(false);
                     break;
                 } catch (Exception e) {
                     //向消息队列发送消息
                     String message = "子任务下发失败,主任务号:" + subTask.getMainTaskNum() + ",错误信息:" + e.getMessage();
                     RabbitMQPublicService.failureTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.SEND_FAILURE,message));
-
                     logger.error("子任务下发失败{},原因:{},准备回滚前置条件", subTask.getSubTaskNum(), e.getMessage());
                     SubTaskService subTaskService = (SubTaskService) SpringContextUtils.getBean("subTaskService");
-                    boolean rollBackTime = subTaskService.rollbackPreCondition(subTask.getSubTaskNum());
+                    boolean rollBackPreConResult = subTaskService.rollbackPreCondition(subTask.getSubTaskNum());
+                    logger.warn("子任务下发失败{}，将子任务重新执行标志设置为true");
+                    reExecFlag.set(true);
                     e.printStackTrace();
-                    try {
-                        waitLock.wait(1000 * 3);
-                    } catch (InterruptedException e1) {
-                        logger.error("子任务发送失败后，尝试休眠失败{}", subTask.getSubTaskNum());
-                        e1.printStackTrace();
-                    }
+                    break;
+//                    try {
+//                        waitLock.wait(1000 * 3);
+//                    } catch (InterruptedException e1) {
+//                        logger.error("子任务发送失败后，尝试休眠失败{}", subTask.getSubTaskNum());
+//                        e1.printStackTrace();
+//                    }
                 }
             }
         }

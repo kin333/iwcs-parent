@@ -1,11 +1,7 @@
 package com.wisdom.iwcs.service.task.scheduler;
 
 
-import com.alibaba.fastjson.JSON;
 import com.wisdom.base.context.AppContext;
-import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
-import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
-import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
@@ -18,10 +14,12 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
 public class WcsTaskScheduler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(WcsTaskScheduler.class);
+    protected AtomicBoolean waitLock = new AtomicBoolean(false);
 
     @Autowired
     TaskOperationLogMapper taskOperationLogMapper;
@@ -56,7 +54,6 @@ public class WcsTaskScheduler implements Runnable {
             } else {
                 logger.debug("主任务{}已经在调度器中，跳过", t.getMainTaskNum());
             }
-
         });
 
 
@@ -67,9 +64,9 @@ public class WcsTaskScheduler implements Runnable {
     public void run() {
         // 检查主任务列表，拿到所有可以执行的主任务列表，判断主任务是否可以执行，以主任务当前的子任务是否可以执行为标准
         while (true) {
-            this.dispatchMaintask();
             try {
                 synchronized (this) {
+                    this.dispatchMaintask();
                     logger.info("主任务调度器线程主动随眠60*1000*1");
                     this.wait(30 * 1000 * 1);
                 }
