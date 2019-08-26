@@ -10,6 +10,8 @@ import com.wisdom.iwcs.domain.upstream.mes.StartSupllyAndRecyle;
 import com.wisdom.iwcs.domain.upstream.mes.SupplyInfoNotify;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class MesRequestService {
+    private final Logger logger = LoggerFactory.getLogger(MesRequestService.class);
     @Autowired
     TaskContextMapper taskContextMapper;
 
@@ -31,6 +34,7 @@ public class MesRequestService {
      * @return
      */
     public MesResult supplyUnloadWbNotify(SupplyInfoNotify supplyInfoNotify) {
+        logger.info("接收到Mes通知AGV接料点目的地的请求,请求体:{}", supplyInfoNotify);
         //1.参数校验
         if (StringUtils.isBlank(supplyInfoNotify.getTaskCode())) {
             throw new MesBusinessException(supplyInfoNotify.getTaskCode(), "任务号不能为空");
@@ -54,6 +58,7 @@ public class MesRequestService {
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
 
+        logger.info("Mes通知AGV接料点目的地的请求处理结束,任务编号:{}", supplyInfoNotify.getTaskCode());
         return new MesResult();
     }
 
@@ -63,6 +68,7 @@ public class MesRequestService {
      * @return
      */
     public MesResult startSupllyAndRecyle(StartSupllyAndRecyle startSupllyAndRecyle) {
+        logger.info("接收到Mes接料点通知供料及回收空框信息的请求,请求体:{}", startSupllyAndRecyle);
         //1.参数校验
         if (StringUtils.isBlank(startSupllyAndRecyle.getTaskCode())) {
             throw new MesBusinessException(startSupllyAndRecyle.getTaskCode(), "任务号不能为空");
@@ -89,6 +95,7 @@ public class MesRequestService {
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
 
+        logger.info("Mes接料点通知供料及回收空框信息的请求处理结束,任务编号:{}", startSupllyAndRecyle.getTaskCode());
         return new MesResult();
     }
 
@@ -98,6 +105,7 @@ public class MesRequestService {
      * @return
      */
     public MesResult startRecyle(StartRecyle startRecyle) {
+        logger.info("接收到Mes通知可出空料框的请求,请求体:{}", startRecyle);
         //1.参数校验
         if (StringUtils.isBlank(startRecyle.getTaskCode())) {
             throw new MesBusinessException(startRecyle.getTaskCode(), "任务号不能为空");
@@ -105,6 +113,7 @@ public class MesRequestService {
 
         //校验回收点和回收数量是否匹配
 
+        logger.info("Mes通知可出空料框的请求处理结束,任务编号:{}", startRecyle.getTaskCode());
         return new MesResult();
     }
 }

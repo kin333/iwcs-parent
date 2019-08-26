@@ -2,6 +2,7 @@ package com.wisdom.iwcs.domain.upstream.mes;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 接料点通知供料及回收空箱信息类
@@ -9,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class StartSupllyAndRecyle {
     /**
      * 唯一任务号，必填项

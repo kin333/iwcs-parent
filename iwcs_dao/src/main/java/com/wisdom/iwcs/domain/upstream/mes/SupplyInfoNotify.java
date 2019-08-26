@@ -2,6 +2,7 @@ package com.wisdom.iwcs.domain.upstream.mes;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 通知AGV接料点目的地信息类
@@ -9,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class SupplyInfoNotify {
     /**
      * 唯一任务号，必填项

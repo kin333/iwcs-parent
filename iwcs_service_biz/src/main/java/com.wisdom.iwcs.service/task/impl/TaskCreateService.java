@@ -828,6 +828,7 @@ public class TaskCreateService implements ITaskCreateService {
      */
     @Transactional(rollbackFor = Exception.class)
     public MesResult supplyAndRecycle(CreateTaskRequest createTaskRequest, String mainTaskType) {
+        logger.info("自动产线供料、回收任务{}开始创建任务", createTaskRequest.getTaskCode());
         //参数校验
         if (StringUtils.isBlank(createTaskRequest.getSupplyLoadWb())) {
             throw new MesBusinessException(createTaskRequest.getTaskCode(), "供料点点位不能为空");
@@ -849,6 +850,7 @@ public class TaskCreateService implements ITaskCreateService {
         taskContext.setContext(contextJson);
         taskContextMapper.updateByMainTaskNum(taskContext);
 
+        logger.info("自动产线供料、回收任务{}创建任务结束", createTaskRequest.getTaskCode());
         return new MesResult();
     }
     /**
@@ -858,6 +860,7 @@ public class TaskCreateService implements ITaskCreateService {
      */
     @Transactional(rollbackFor = Exception.class)
     public MesResult emptyRecyleTask(CreateTaskRequest createTaskRequest, String mainTaskType) {
+        logger.info("自动产线回收任务{}开始创建任务", createTaskRequest.getTaskCode());
         //参数校验
         if (StringUtils.isBlank(createTaskRequest.getSrcWbCode())) {
             throw new MesBusinessException(createTaskRequest.getTaskCode(), "空料箱回收上箱点编码不能为空");
@@ -883,6 +886,7 @@ public class TaskCreateService implements ITaskCreateService {
         taskContext.setContext(contextJson);
         taskContextMapper.updateByMainTaskNum(taskContext);
 
+        logger.info("自动产线回收任务{}创建任务结束", createTaskRequest.getTaskCode());
         return new MesResult();
     }
 

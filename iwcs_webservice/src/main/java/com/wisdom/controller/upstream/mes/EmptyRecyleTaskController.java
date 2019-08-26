@@ -35,7 +35,7 @@ public class EmptyRecyleTaskController {
     MesRequestService mesRequestService;
 
     /**
-     * 创建自动产线供料、回收任务
+     * 创建自动产线回收任务
      * @return
      */
     @PostMapping
