@@ -435,6 +435,16 @@ public class TaskConstants {
         public final static String RELEASE = "release";
     }
 
+    /**
+     * 主任务执行顺序
+     */
+    public static final class mainTaskSeq {
+        /**
+         * 第一个执行
+         */
+        public final static Integer ONE = 1;
+    }
+
 
 
 
