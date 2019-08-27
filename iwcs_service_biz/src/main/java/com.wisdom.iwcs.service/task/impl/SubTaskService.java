@@ -350,16 +350,18 @@ public class SubTaskService {
         } else {
             //非第一个子任务的情况下，根据最后一个执行的子任务创建下一子任务
             List<SubTask> subtasksSortedBySeqAsc = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).collect(Collectors.toList());
-
-            Optional<SubTask> nextUnFinishedSubtask = subtasksSortedBySeqAsc.stream().filter(s -> !TaskConstants.subTaskStatus.SUB_FINISHED.equals(s.getTaskStatus())).findFirst();
-            if (nextUnFinishedSubtask.isPresent()) {
-                return nextUnFinishedSubtask.get();
+            Optional<SubTask> nextUnFinishedSubtaskOpt = subtasksSortedBySeqAsc.stream().filter(s -> !TaskConstants.subTaskStatus.SUB_FINISHED.equals(s.getTaskStatus())).findFirst();
+            if (nextUnFinishedSubtaskOpt.isPresent()) {
+                SubTask nextUnfishedTask = nextUnFinishedSubtaskOpt.get();
+                logger.info("主任务{}存在未完成的子任务，下一待执行子任务号{}", mainTaskNum, nextUnfishedTask.getSubTaskNum());
+                return nextUnfishedTask;
             } else {
+                //没有已创建的待执行子任务，动态创建下一子任务： 根据
                 Optional<SubTask> lastFinishedSubtaskOpt = subtasksSortedBySeqAsc.stream().max(Comparator.comparing(SubTask::getSubTaskSeq));
                 if (lastFinishedSubtaskOpt.isPresent()) {
                     SubTask lastFinishedSubtask = lastFinishedSubtaskOpt.get();
                     //TODO 替换子任务模板号
-                    logger.info("主任务最后一个执行完成的子任务编号{}，任务模板号{}", lastFinishedSubtask.getSubTaskNum(), lastFinishedSubtask.getSubTaskNum());
+                    logger.info("主任务最后一个执行完成的子任务编号{}，任务模板号{}", lastFinishedSubtask.getSubTaskNum(), "");
 
                 } else {
                     logger.error("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");

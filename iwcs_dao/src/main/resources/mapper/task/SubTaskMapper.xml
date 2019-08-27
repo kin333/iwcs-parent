@@ -112,6 +112,7 @@
     <result column="start_alias" jdbcType="VARCHAR" property="startAlias"/>
     <result column="start_bercode_auto" jdbcType="VARCHAR" property="startBercodeAuto"/>
     <result column="end_bercode_auto" jdbcType="VARCHAR" property="endBercodeAuto"/>
+    <result column="templ_code" jdbcType="VARCHAR" property="templCode"/>
 
 
 
@@ -126,7 +127,7 @@
       third_end_method, point_access, sequence, cancel_flag, cancel_id, cancel_type, date_chg, group_id, loop_exec,
       priority, task_status, map_code, pod_code, pod_dir, start_bercode, start_x, start_y, end_bercode, end_x, end_y,
       end_remark, worker_task_code, area_code, sub_task_biz_prop, robot_code, work_task_status, task_start_time,
-      task_leave_time, task_end_time, send_time,start_alias,end_alias, start_bercode_auto, end_bercode_auto
+    task_leave_time, task_end_time, send_time,start_alias,end_alias, start_bercode_auto, end_bercode_auto,templ_code
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task
@@ -177,6 +178,9 @@
     </if>
     <if test="subTaskBizProp != null and subTaskBizProp != ''">
       and sub_task_biz_prop = #{subTaskBizProp}
+    </if>
+    <if test="templCode != null and templCode != ''">
+      and templ_code = #{templCode}
     </if>
     order by create_date desc, task_status asc
   </select>

@@ -326,6 +326,11 @@ public class SubTask {
      */
     @Column(name = "end_bercode_auto")
     private String endBercodeAuto;
+    /**
+     * 任务模板code
+     */
+    @Column(name = "templ_code")
+    private String templCode;
 
     public String getStartBercodeAuto() {
         return startBercodeAuto;
@@ -1111,5 +1116,13 @@ public class SubTask {
 
     public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
+    }
+
+    public String getTemplCode() {
+        return templCode;
+    }
+
+    public void setTemplCode(String templCode) {
+        this.templCode = templCode;
     }
 }

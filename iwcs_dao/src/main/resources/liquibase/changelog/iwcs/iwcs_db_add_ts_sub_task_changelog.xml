@@ -160,4 +160,10 @@
             <column name="end_bercode_auto" type="VARCHAR(2)" defaultValue="" remarks="终点是否是自动选中,0:否 1:是"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201908270924-1" author="ted">
+        <addColumn tableName="ts_sub_task">
+            <column name="templ_code" type="VARCHAR(50)" defaultValue="" remarks="任务模板code"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
