@@ -1,7 +1,9 @@
 package com.wisdom.iwcs.domain.task;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "ts_task_rel")
 public class TaskRel {
@@ -138,6 +140,13 @@ public class TaskRel {
      */
     @Column(name = "point_access")
     private String pointAccess;
+    /**
+     * 下一步任务路由（任务tmpcode,多个分号分隔）
+     */
+    @Column(name = "next_task_router")
+    private String nextTaskRouter;
+
+
 
     /**
      * @return id
@@ -547,5 +556,13 @@ public class TaskRel {
      */
     public void setPointAccess(String pointAccess) {
         this.pointAccess = pointAccess == null ? null : pointAccess.trim();
+    }
+
+    public String getNextTaskRouter() {
+        return nextTaskRouter;
+    }
+
+    public void setNextTaskRouter(String nextTaskRouter) {
+        this.nextTaskRouter = nextTaskRouter;
     }
 }

@@ -8,6 +8,7 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
@@ -33,10 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -328,6 +326,56 @@ public class SubTaskService {
         List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
         subTasks = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).filter(t -> !TaskConstants.subTaskStatus.SUB_FINISHED.equals(t.getTaskStatus())).collect(Collectors.toList());
         if (subTasks != null && subTasks.size() != 0) {
+            return subTasks.get(0);
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
+     * 判断是否有未创建的下一子任务单,动态创建下一子任务
+     *
+     * @param mainTaskNum
+     * @return
+     */
+    public SubTask dynamicCreateNextSubtask(String mainTaskNum) {
+        logger.info("开始尝试获取/创建下一子任务，主任务号{}", mainTaskNum);
+
+        //获取当前主任务最后一个执行完成的子任务，并根据子任务查找到其配置的下一任务路由
+        List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
+        //如果子任务单未空，需要创建第一个子任务
+        if (subTasks.isEmpty()) {
+
+        } else {
+            //非第一个子任务的情况下，根据最后一个执行的子任务创建下一子任务
+            List<SubTask> subtasksSortedBySeqAsc = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).collect(Collectors.toList());
+
+            Optional<SubTask> nextUnFinishedSubtask = subtasksSortedBySeqAsc.stream().filter(s -> !TaskConstants.subTaskStatus.SUB_FINISHED.equals(s.getTaskStatus())).findFirst();
+            if (nextUnFinishedSubtask.isPresent()) {
+                return nextUnFinishedSubtask.get();
+            } else {
+                Optional<SubTask> lastFinishedSubtaskOpt = subtasksSortedBySeqAsc.stream().max(Comparator.comparing(SubTask::getSubTaskSeq));
+                if (lastFinishedSubtaskOpt.isPresent()) {
+                    SubTask lastFinishedSubtask = lastFinishedSubtaskOpt.get();
+                    //TODO 替换子任务模板号
+                    logger.info("主任务最后一个执行完成的子任务编号{}，任务模板号{}", lastFinishedSubtask.getSubTaskNum(), lastFinishedSubtask.getSubTaskNum());
+
+                } else {
+                    logger.error("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");
+                    throw new BusinessException("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");
+                }
+
+
+            }
+
+
+        }
+        //根据任务路由查找对应的子任务创建条件
+
+        //按顺序校验子任务的创建条件是否满足，若满足，则创建子任务
+        subTasks = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).collect(Collectors.toList());
+        if (subTasks != null && !subTasks.isEmpty()) {
             return subTasks.get(0);
         } else {
             return null;

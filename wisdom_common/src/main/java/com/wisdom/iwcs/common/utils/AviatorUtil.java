@@ -192,9 +192,10 @@ class MinFunction extends AbstractVariadicFunction {
 
 class RoundUpFunction extends AbstractFunction {
 
+    @Override
     public AviatorObject call(Map<String, Object> env, AviatorObject arg) {
         AviatorDecimal returnDecimal = (AviatorDecimal) arg;
-        BigDecimal returnBigDecimal = returnDecimal.toDecimal();
+        BigDecimal returnBigDecimal = returnDecimal.toDecimal(env);
         returnBigDecimal = returnBigDecimal.setScale(0, BigDecimal.ROUND_HALF_UP);
         return new AviatorDecimal(returnBigDecimal);
     }
@@ -210,7 +211,7 @@ class RoundCeilingFunction extends AbstractFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject arg) {
         AviatorDecimal returnDecimal = (AviatorDecimal) arg;
-        BigDecimal returnBigDecimal = returnDecimal.toDecimal();
+        BigDecimal returnBigDecimal = returnDecimal.toDecimal(env);
         returnBigDecimal = returnBigDecimal.setScale(0, BigDecimal.ROUND_CEILING);
         return new AviatorDecimal(returnBigDecimal);
     }
@@ -226,7 +227,7 @@ class RoundFloorFunction extends AbstractFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject arg) {
         AviatorDecimal returnDecimal = (AviatorDecimal) arg;
-        BigDecimal returnBigDecimal = returnDecimal.toDecimal();
+        BigDecimal returnBigDecimal = returnDecimal.toDecimal(env);
         returnBigDecimal = returnBigDecimal.setScale(0, BigDecimal.ROUND_FLOOR);
         return new AviatorDecimal(returnBigDecimal);
     }
@@ -243,8 +244,8 @@ class CeilCoefficientFunction extends AbstractFunction {
     public AviatorObject call(Map<String, Object> env, AviatorObject arg, AviatorObject ceilCoefficient) {
         AviatorDecimal returnDecimal = (AviatorDecimal) arg;
         AviatorDecimal ceilCoefficientDecimal = (AviatorDecimal) ceilCoefficient;
-        BigDecimal returnBigDecimal = returnDecimal.toDecimal();
-        BigDecimal ceilCoefficientBigDecimal = ceilCoefficientDecimal.toDecimal();
+        BigDecimal returnBigDecimal = returnDecimal.toDecimal(env);
+        BigDecimal ceilCoefficientBigDecimal = ceilCoefficientDecimal.toDecimal(env);
         if (returnBigDecimal.compareTo(new BigDecimal(0)) < 0) {
             if (returnBigDecimal.divideAndRemainder(new BigDecimal(1))[1].abs().compareTo(ceilCoefficientBigDecimal) < 0) {
                 returnBigDecimal = returnBigDecimal.setScale(0, BigDecimal.ROUND_CEILING);

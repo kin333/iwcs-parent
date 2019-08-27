@@ -28,6 +28,7 @@
     <result column="third_start_method" jdbcType="VARCHAR" property="thirdStartMethod" />
     <result column="third_end_method" jdbcType="VARCHAR" property="thirdEndMethod" />
     <result column="point_access" jdbcType="VARCHAR" property="pointAccess" />
+      <result column="next_task_router" jdbcType="VARCHAR" property="nextTaskRouter"/>
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -35,8 +36,8 @@
     -->
     id, templ_code, main_task_type_code, main_task_seq, sub_task_type_code, task_group_item_id, 
     task_group_code, sub_task_seq, group_seq, create_date, remark, need_confirm, need_inform, 
-    need_trigger, trigger_type, condition_handler, third_invoke_type, third_type, app_code, 
-    third_url, third_start_method, third_end_method, point_access
+    need_trigger, trigger_type, condition_handler, third_invoke_type, third_type, app_code,
+      third_url, third_start_method, third_end_method, point_access,next_task_router
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_task_rel

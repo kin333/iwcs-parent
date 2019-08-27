@@ -3,7 +3,6 @@ package com.wisdom.iwcs.service.task.maintask;
 
 import com.rabbitmq.client.Channel;
 import com.wisdom.base.context.AppContext;
-import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
@@ -129,6 +128,7 @@ public class MainTaskWorker extends AbstractTaskWorker {
     private SubTask getCurrentPendingSubtask() {
         SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
         SubTask nextSubtask = subTaskService.getCurrentPendingSubtask(mainTask.getMainTaskNum());
+
         return nextSubtask;
     }
 

@@ -31,4 +31,11 @@
             <column name="point_access" remarks="如：固定点、线路、呼叫路径、关联点、主叫号、策略配置、电梯等待位、关联区域" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
+
+
+    <changeSet id="201908261553-1" author="ted">
+        <addColumn tableName="ts_task_rel">
+            <column name="next_task_router" remarks="下一步任务路由（任务tmpcode,多个分号分隔）" type="VARCHAR(255)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
