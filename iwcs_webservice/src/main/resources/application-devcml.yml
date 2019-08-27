@@ -144,6 +144,8 @@ application:
     virtualHost: /
   warn:
     checkName: name1;name2
+  mesParam:
+    arriveDestWbWaitPortUrl: http://192.168.102.99/api/wisdom/agvHandlingTask/arriveDestWbWaitPort
 
 
 mybatis:

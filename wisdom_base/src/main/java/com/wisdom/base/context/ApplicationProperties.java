@@ -44,6 +44,8 @@ public class ApplicationProperties {
 
     private final Netty netty = new Netty();
 
+    private final MesParam mesParam = new MesParam();
+
     public Async getAsync() {
         return async;
     }
@@ -103,6 +105,8 @@ public class ApplicationProperties {
     public Netty getNetty(){
         return netty;
     }
+
+    public MesParam getMesParam(){return mesParam;}
 
     public static class Async {
 
@@ -796,6 +800,18 @@ public class ApplicationProperties {
 
         public void setNettyServerPort(String nettyServerPort) {
             this.nettyServerPort = nettyServerPort;
+        }
+    }
+
+    public static class MesParam{
+        private String arriveDestWbWaitPortUrl;
+
+        public String getArriveDestWbWaitPortUrl() {
+            return arriveDestWbWaitPortUrl;
+        }
+
+        public void setArriveDestWbWaitPortUrl(String arriveDestWbWaitPortUrl) {
+            this.arriveDestWbWaitPortUrl = arriveDestWbWaitPortUrl;
         }
     }
 

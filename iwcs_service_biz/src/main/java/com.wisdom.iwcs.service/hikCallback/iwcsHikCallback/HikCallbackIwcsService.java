@@ -38,6 +38,7 @@ import sun.awt.SubRegionShowable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAAUTOPOINT;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAMANUALPOINT;
@@ -381,6 +382,12 @@ public class HikCallbackIwcsService {
         //向消息队列发送消息
 //        String message = "子任务回调:子任务已结束";
 //        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
+
+        //校验是否时机械臂等待点，是，通知MES AGV到达等待点
+        List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getMapCode(),hikCallBackAgvMove.getWbCode());
+        if (point.size() > 0){
+            //调用子任务
+        }
 
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getMapDataCode());
         //发送释放储位消息
