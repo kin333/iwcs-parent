@@ -6,7 +6,8 @@ package com.wisdom.iwcs.common.utils.constant;
  */
 public enum CondtionTriger {
     PRE_CONDITION("pre", "前置条件"),
-    POST_CONDITION("after","后置条件");
+    POST_CONDITION("after", "后置条件"),
+    CREATED_CONDITION("created", "创建条件");
 
 
     CondtionTriger(String code, String name) {

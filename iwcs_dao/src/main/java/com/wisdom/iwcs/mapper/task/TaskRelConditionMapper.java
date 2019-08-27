@@ -27,6 +27,14 @@ public interface TaskRelConditionMapper extends MyMapperAndIds<TaskRelCondition>
     List<TaskRelCondition> selectByMainTaskTypeCodeAndSubCode(@Param("mainTaskTypeCode") String mainTaskTypeCode,@Param("subTaskTypeCode") String subTaskTypeCode);
 
     /**
+     * 根据模板编号搜索条件
+     *
+     * @param templCode
+     * @return
+     */
+    List<TaskRelCondition> selectByTemplCodeAndConType(@Param("templCode") String templCode, @Param("conditonTriger") String conditonTriger);
+
+    /**
      * 根据子任务编号查询
      */
     TaskRelCondition selectBySubCode(String subTaskTypeCode);

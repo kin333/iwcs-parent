@@ -9,7 +9,6 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
-import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
@@ -19,12 +18,16 @@ import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
+import com.wisdom.iwcs.domain.task.TaskRel;
+import com.wisdom.iwcs.domain.task.TaskRelCondition;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.mapper.task.TaskRelMapper;
+import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
@@ -67,6 +70,9 @@ public class SubTaskService {
     TransactionTemplate transactionTemplate;
     @Autowired
     TaskRelMapper taskRelMapper;
+    @Autowired
+    TaskRelConditionMapper taskRelConditionMapper;
+
     @Autowired
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
@@ -360,7 +366,6 @@ public class SubTaskService {
      */
     public SubTask dynamicCreateNextSubtask(String mainTaskNum) {
         logger.info("开始尝试获取/创建下一子任务，主任务号{}", mainTaskNum);
-
         //获取当前主任务最后一个执行完成的子任务，并根据子任务查找到其配置的下一任务路由
         List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
         //如果子任务单未空，需要创建第一个子任务
@@ -379,28 +384,52 @@ public class SubTaskService {
                 Optional<SubTask> lastFinishedSubtaskOpt = subtasksSortedBySeqAsc.stream().max(Comparator.comparing(SubTask::getSubTaskSeq));
                 if (lastFinishedSubtaskOpt.isPresent()) {
                     SubTask lastFinishedSubtask = lastFinishedSubtaskOpt.get();
-                    //TODO 替换子任务模板号
-                    logger.info("主任务最后一个执行完成的子任务编号{}，任务模板号{}", lastFinishedSubtask.getSubTaskNum(), "");
+                    logger.info("主任务最后一个执行完成的子任务编号{}，任务模板号{}", lastFinishedSubtask.getSubTaskNum(), lastFinishedSubtask.getTemplCode());
+                    String templCode = lastFinishedSubtask.getTemplCode();
+                    //获取最后一个子任务在模板中配置的下游任务列表
+                    TaskRel lastFinishedSubtaskTaskRel = taskRelMapper.selectByTemplCode(templCode);
+                    String nextTaskRouter = lastFinishedSubtaskTaskRel.getNextTaskRouter();
+                    String[] nextTaskRouters = nextTaskRouter.split(";");
+                    String finalNextSubtaskTemplCode;
+                    if (nextTaskRouters.length > 0) {
 
-                } else {
-                    logger.error("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");
-                    throw new BusinessException("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");
+                        //有下一步,遍历检查下一步创建条件是否满足
+                        for (int i = 0; i < nextTaskRouters.length; i++) {
+                            String tmpTemplCode = nextTaskRouters[i];
+                            List<TaskRelCondition> taskRelConditions = taskRelConditionMapper.selectByTemplCodeAndConType(tmpTemplCode, CondtionTriger.CREATED_CONDITION.getCode());
+                            if (taskRelConditions.isEmpty()) {
+                                //没有创建前置条件直接创建
+                                finalNextSubtaskTemplCode = tmpTemplCode;
+                                break;
+                            } else {
+                                //判断前置条件是否满足
+                                taskRelConditions.stream().forEachOrdered(t -> {
+                                    String conditonHandler = t.getConditonHandler();
+                                    IConditionHandler iConditionHandler = (IConditionHandler) ApplicationContextUtils.getBean(conditonHandler);
+//                                    iConditionHandler.handleCondition()
+                                });
+
+
+                            }
+
+                        }
+                    } else {
+                        //没有下一步
+
+                    }
                 }
+                //根据下游任务模板号查询并依次判断创建条件是否满足，找到第一个满足的任务模板，并根据模板配置信息及上下文创建子任务单
+//                } else {
+//                    logger.error("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");
+//                    throw new BusinessException("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");
+//                }
 
 
             }
 
 
         }
-        //根据任务路由查找对应的子任务创建条件
 
-        //按顺序校验子任务的创建条件是否满足，若满足，则创建子任务
-        subTasks = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).collect(Collectors.toList());
-        if (subTasks != null && !subTasks.isEmpty()) {
-            return subTasks.get(0);
-        } else {
-            return null;
-        }
     }
 
 

@@ -61,6 +61,13 @@
         and  sub_task_seq = #{subTaskSeq}
         LIMIT 1
     </select>
+    <select id="selectByTemplCodeAndConType" resultType="com.wisdom.iwcs.domain.task.TaskRelCondition">
+        select
+        <include refid="Base_Column_List"/>
+        from ts_task_rel_condition
+        where templ_code = #{templCode,jdbcType=VARCHAR} and
+        conditon_triger = #{conditonTriger}
+    </select>
     <select id="selectByTemplCode" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from ts_task_rel_condition
         where templ_code = #{templCode}

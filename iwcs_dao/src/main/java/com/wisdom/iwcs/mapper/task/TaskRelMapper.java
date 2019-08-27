@@ -1,13 +1,12 @@
 package com.wisdom.iwcs.mapper.task;
 
 
-import java.util.List;
-import java.util.Map;
-
-import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Generator
@@ -26,9 +25,10 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
     List<TaskRel> selectByMainTaskType(String mainTaskTypeCode);
 
     /**
-     * 根据templatecode查询
-     * @param templateCode
+     * 根据模板编号搜索控制
+     *
+     * @param templCode
      * @return
      */
-    TaskRel selectByTemplateCode(String templateCode);
+    TaskRel selectByTemplCode(String templCode);
 }
