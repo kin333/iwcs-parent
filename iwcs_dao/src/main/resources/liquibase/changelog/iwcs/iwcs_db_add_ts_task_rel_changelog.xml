@@ -32,6 +32,12 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="201908261817" author="han">
+        <addColumn tableName="ts_task_rel">
+            <column name="outflow" type="VARCHAR(200)" remarks="流出子任务" defaultValue=""/>
+        </addColumn>
+    </changeSet>
+
 
     <changeSet id="201908261553-1" author="ted">
         <addColumn tableName="ts_task_rel">
