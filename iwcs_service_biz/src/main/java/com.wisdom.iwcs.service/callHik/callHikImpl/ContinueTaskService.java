@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.CONTINUE_TASK_CODE;
 
@@ -41,7 +42,7 @@ public class ContinueTaskService implements IContinueTaskService {
         String reqTime = formatter.format(new Date());
 
         continueTaskDTo.setReqTime(reqTime);
-        continueTaskDTo.setReqCode(String.valueOf(System.currentTimeMillis()));
+        continueTaskDTo.setReqCode(UUID.randomUUID().toString().replace("-", ""));
         continueTaskDTo.setClientCode(applicationProperties.getHikParam().getClientCode());
         continueTaskDTo.setTokenCode(applicationProperties.getHikParam().getTokenCode());
         continueTaskDTo.setInterfaceName(CONTINUE_TASK_CODE);

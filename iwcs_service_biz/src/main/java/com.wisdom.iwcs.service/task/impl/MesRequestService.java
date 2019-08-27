@@ -2,19 +2,22 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
+import com.wisdom.iwcs.domain.control.ContinueTaskRequestDTO;
+import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
-import com.wisdom.iwcs.domain.upstream.mes.MesResult;
-import com.wisdom.iwcs.domain.upstream.mes.StartRecyle;
-import com.wisdom.iwcs.domain.upstream.mes.StartSupllyAndRecyle;
-import com.wisdom.iwcs.domain.upstream.mes.SupplyInfoNotify;
+import com.wisdom.iwcs.domain.upstream.mes.*;
+import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
+import com.wisdom.iwcs.service.callHik.IContinueTaskService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Mes系统请求的业务逻辑
@@ -26,6 +29,10 @@ public class MesRequestService {
     private final Logger logger = LoggerFactory.getLogger(MesRequestService.class);
     @Autowired
     TaskContextMapper taskContextMapper;
+    @Autowired
+    private SubTaskMapper subTaskMapper;
+    @Autowired
+    private IContinueTaskService iContinueTaskService;
 
 
     /**
@@ -114,6 +121,26 @@ public class MesRequestService {
         //校验回收点和回收数量是否匹配
 
         logger.info("Mes通知可出空料框的请求处理结束,任务编号:{}", startRecyle.getTaskCode());
+        return new MesResult();
+    }
+
+    /**
+     * 通知Agv可从等待点前往终点
+     * @param  conWaitToDestWbRequest
+     * @return 
+     */
+    public MesResult conWaitToDestWb(ConWaitToDestWbRequest conWaitToDestWbRequest) {
+        //通过主任务号查子任务号 = rcs主任务号
+        //确保一个主任务只有一个子任务
+        List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(conWaitToDestWbRequest.getTaskCode());
+        if (subTasks.size() > 0){
+            String subTaskNum = subTasks.get(0).getSubTaskNum();
+            ContinueTaskRequestDTO continueTaskRequestDTO = new ContinueTaskRequestDTO();
+            continueTaskRequestDTO.setTaskCode(subTaskNum);
+            iContinueTaskService.continueTask(continueTaskRequestDTO);
+        }else{
+            return new MesResult("NG","失败");
+        }
         return new MesResult();
     }
 }
