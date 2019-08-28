@@ -56,4 +56,11 @@
             <column name="elevator_work_type" remarks="电梯任务作业类型up/down" type="VARCHAR(32)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201908281701" author="han">
+        <addColumn tableName="ts_main_task">
+            <column name="static_via_paths" type="VARCHAR(50)" remarks="静态站点集合" defaultValue=""/>
+            <column name="static_pod_code" type="VARCHAR(50)" remarks="静态载具" defaultValue=""/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

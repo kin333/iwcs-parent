@@ -161,6 +161,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="201908281659" author="han">
+        <addColumn tableName="ts_sub_task">
+            <column name="end_map_code" type="VARCHAR(20)" remarks="终点地图" defaultValue=""/>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="201908270924-1" author="ted">
         <addColumn tableName="ts_sub_task">
             <column name="templ_code" type="VARCHAR(50)" defaultValue="" remarks="任务模板code"/>

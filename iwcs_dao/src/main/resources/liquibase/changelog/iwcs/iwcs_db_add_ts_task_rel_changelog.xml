@@ -44,4 +44,20 @@
             <column name="next_task_router" remarks="下一步任务路由（任务tmpcode,多个分号分隔）" type="VARCHAR(255)"></column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201908281652" author="han">
+        <addColumn tableName="ts_task_rel">
+            <column name="action_type" type="VARCHAR(20)" remarks="任务动作类型 MOVE:移动任务;STAY:非移动任务" defaultValue=""/>
+            <column name="start_point_access" type="VARCHAR(50)" remarks="起点获取方式" defaultValue=""/>
+            <column name="start_point_access_value" type="VARCHAR(50)" remarks="起点获取方式的value值" defaultValue=""/>
+            <column name="pod_access" type="VARCHAR(50)" remarks="载具获取方式" defaultValue=""/>
+            <column name="pod_access_value" type="VARCHAR(50)" remarks="载具获取方式的value值" defaultValue=""/>
+            <column name="end_point_access" type="VARCHAR(50)" remarks="终点获取方式" defaultValue=""/>
+            <column name="end_point_access_value" type="VARCHAR(50)" remarks="终点获取方式的value值" defaultValue=""/>
+            <column name="robot_access" type="VARCHAR(50)" remarks="三方执行者获取方式" defaultValue=""/>
+            <column name="robot_access_value" type="VARCHAR(50)" remarks="三方执行者获取方式的value值" defaultValue=""/>
+            <column name="worker_task_code_access" type="VARCHAR(50)" remarks="三方执行id获取方式" defaultValue=""/>
+            <column name="worker_task_code_access_value" type="VARCHAR(50)" remarks="三方执行id获取方式的value值" defaultValue=""/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
