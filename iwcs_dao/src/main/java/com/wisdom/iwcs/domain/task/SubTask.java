@@ -327,6 +327,19 @@ public class SubTask {
     @Column(name = "end_bercode_auto")
     private String endBercodeAuto;
     /**
+     * 终点地图
+     */
+    @Column(name = "end_map_code")
+    private String endMapCode;
+
+    public String getEndMapCode() {
+        return endMapCode;
+    }
+
+    public void setEndMapCode(String endMapCode) {
+        this.endMapCode = endMapCode;
+    }
+    /**
      * 任务模板code
      */
     @Column(name = "templ_code")

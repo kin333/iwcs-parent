@@ -28,7 +28,18 @@
     <result column="third_start_method" jdbcType="VARCHAR" property="thirdStartMethod" />
     <result column="third_end_method" jdbcType="VARCHAR" property="thirdEndMethod" />
     <result column="point_access" jdbcType="VARCHAR" property="pointAccess" />
-      <result column="next_task_router" jdbcType="VARCHAR" property="nextTaskRouter"/>
+    <result column="outflow" jdbcType="VARCHAR" property="outflow" />
+    <result column="action_type" jdbcType="VARCHAR" property="actionType" />
+    <result column="start_point_access" jdbcType="VARCHAR" property="startPointAccess" />
+    <result column="start_point_access_value" jdbcType="VARCHAR" property="startPointAccessValue" />
+    <result column="pod_access" jdbcType="VARCHAR" property="podAccess" />
+    <result column="pod_access_value" jdbcType="VARCHAR" property="podAccessValue" />
+    <result column="end_point_access" jdbcType="VARCHAR" property="endPointAccess" />
+    <result column="end_point_access_value" jdbcType="VARCHAR" property="endPointAccessValue" />
+    <result column="robot_access" jdbcType="VARCHAR" property="robotAccess" />
+    <result column="robot_access_value" jdbcType="VARCHAR" property="robotAccessValue" />
+    <result column="worker_task_code_access" jdbcType="VARCHAR" property="workerTaskCodeAccess" />
+    <result column="worker_task_code_access_value" jdbcType="VARCHAR" property="workerTaskCodeAccessValue" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -37,7 +48,10 @@
     id, templ_code, main_task_type_code, main_task_seq, sub_task_type_code, task_group_item_id, 
     task_group_code, sub_task_seq, group_seq, create_date, remark, need_confirm, need_inform, 
     need_trigger, trigger_type, condition_handler, third_invoke_type, third_type, app_code,
-      third_url, third_start_method, third_end_method, point_access,next_task_router
+      third_url, third_start_method, third_end_method, point_access,outflow, action_type,
+    start_point_access, start_point_access_value, pod_access, pod_access_value, end_point_access,
+    end_point_access_value, robot_access, robot_access_value, worker_task_code_access,
+    worker_task_code_access_value
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_task_rel
@@ -57,4 +71,9 @@
         select <include refid="Base_Column_List" /> from ts_task_rel
       where main_task_type_code = #{mainTaskTypeCode,jdbcType=VARCHAR}
     </select>
+
+  <select id="selectByTemplateCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel
+    where templ_code = #{templateCode}
+  </select>
 </mapper>

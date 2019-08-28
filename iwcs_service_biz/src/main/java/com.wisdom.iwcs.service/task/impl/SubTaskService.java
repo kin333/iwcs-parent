@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Strings;
 import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
@@ -11,18 +12,27 @@ import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
+import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
+import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
+import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
+import com.wisdom.iwcs.service.task.conditions.pod.IGetPodStrategic;
+import com.wisdom.iwcs.service.task.conditions.point.IGetPointStrategic;
+import com.wisdom.iwcs.service.task.conditions.robot.IGetRobotStrategic;
+import com.wisdom.iwcs.service.task.conditions.workercode.IGetWorkerCodeStrategic;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +48,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
+
 @Service
 public class SubTaskService {
     private final Logger logger = LoggerFactory.getLogger(SubTaskService.class);
@@ -52,6 +64,10 @@ public class SubTaskService {
     PlatformTransactionManager transactionManager;
     @Autowired
     TransactionTemplate transactionTemplate;
+    @Autowired
+    TaskRelMapper taskRelMapper;
+    @Autowired
+    BaseMapBerthMapper baseMapBerthMapper;
 
     @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
@@ -457,5 +473,83 @@ public class SubTaskService {
 
 
         return resultFlag.get();
+    }
+
+    /**
+     * 动态生成任务
+     */
+    public void autoCreateSubTask(String templateCode, String mainTaskNum) {
+        TaskRel taskRel = taskRelMapper.selectByTemplateCode(templateCode);
+        SubTask subTask = new SubTask();
+        //添加基础数据
+        String subTaskNum = CodeBuilder.codeBuilder("S");
+        subTask.setSubTaskNum(subTaskNum);
+        subTask.setMainTaskNum(mainTaskNum);
+        subTask.setSubTaskTyp(taskRel.getSubTaskTypeCode());
+        subTask.setMainTaskSeq(taskRel.getSubTaskSeq());
+        subTask.setMainTaskType(taskRel.getMainTaskTypeCode());
+        subTask.setCreateDate(new Date());
+        subTask.setThirdType(taskRel.getThirdType());
+        subTask.setAppCode(taskRel.getAppCode());
+        subTask.setThirdInvokeType(taskRel.getThirdInvokeType());
+        subTask.setThirdUrl(taskRel.getThirdUrl());
+        subTask.setThirdStartMethod(taskRel.getThirdStartMethod());
+        subTask.setThirdEndMethod(taskRel.getThirdEndMethod());
+        subTask.setTaskStatus(SUB_NOT_ISSUED);
+        subTask.setSendStatus(SUB_NOT_ISSUED);
+        subTask.setNeedTrigger(taskRel.getNeedTrigger());
+        subTask.setNeedConfirm(taskRel.getNeedConfirm());
+        subTask.setNeedInform(taskRel.getNeedInform());
+        subTask.setSubTaskSeq(taskRel.getSubTaskSeq());
+        subTask.setNeedTrigger(taskRel.getNeedTrigger());
+        subTask.setNeedInform(taskRel.getNeedInform());
+        subTask.setNeedConfirm(taskRel.getNeedConfirm());
+        subTask.setWorkerTaskCode(subTaskNum);
+        //添加任务起始点
+        if (StringUtils.isNotBlank(taskRel.getStartPointAccess())) {
+            IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
+            String startPoint = getPointStrategic.getPoint(mainTaskNum , taskRel.getStartPointAccessValue());
+            subTask.setStartBercode(startPoint);
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(startPoint);
+            subTask.setMapCode(baseMapBerth.getMapCode());
+            subTask.setStartAlias(baseMapBerth.getPointAlias());
+            subTask.setStartX(baseMapBerth.getCoox().doubleValue());
+            subTask.setStartY(baseMapBerth.getCooy().doubleValue());
+        }
+        //添加任务终点
+        if (StringUtils.isNotBlank(taskRel.getEndPointAccess())) {
+            IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getEndPointAccess());
+            String endPoint = getPointStrategic.getPoint(mainTaskNum, taskRel.getEndPointAccessValue());
+            subTask.setEndBercode(endPoint);
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endPoint);
+            subTask.setEndMapCode(baseMapBerth.getMapCode());
+            subTask.setEndAlias(baseMapBerth.getPointAlias());
+            subTask.setEndX(baseMapBerth.getCoox().doubleValue());
+            subTask.setEndY(baseMapBerth.getCooy().doubleValue());
+        }
+        //添加货架
+        if (StringUtils.isNotBlank(taskRel.getPodAccess())) {
+            IGetPodStrategic getPointStrategic = AppContext.getBean(taskRel.getPodAccess());
+            String podCode = getPointStrategic.getPod(mainTaskNum, taskRel.getPodAccessValue());
+            subTask.setPodCode(podCode);
+        }
+        //添加机器人编号
+        if (StringUtils.isNotBlank(taskRel.getRobotAccess())) {
+            IGetRobotStrategic getPointStrategic = AppContext.getBean(taskRel.getRobotAccess());
+            String robotCode = getPointStrategic.getRobotCode(mainTaskNum, taskRel.getRobotAccessValue());
+            subTask.setRobotCode(robotCode);
+        }
+        //添加任务编号(下发给Hik的任务编号)
+        if (StringUtils.isNotBlank(taskRel.getWorkerTaskCodeAccess())) {
+            IGetWorkerCodeStrategic getPointStrategic = AppContext.getBean(taskRel.getWorkerTaskCodeAccess());
+            String workerCode = getPointStrategic.getWorkerCode(mainTaskNum, taskRel.getWorkerTaskCodeAccessValue());
+            subTask.setWorkerTaskCode(workerCode);
+        }
+
+        subTaskMapper.insertSelective(subTask);
+
+        //向消息队列发送消息
+        String message = templateCode + "任务创建完成,主任务号:" + mainTaskNum;
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
     }
 }

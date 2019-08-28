@@ -140,6 +140,173 @@ public class TaskRelDTO {
     private String pointAccess;
 
     /**
+     * 流出子任务
+     */
+    private String outflow;
+
+    /**
+     * 任务动作类型 MOVE:移动任务;STAY:非移动任务
+     */
+    @Column(name = "action_type")
+    private String actionType;
+
+    /**
+     * 起点获取方式
+     */
+    @Column(name = "start_point_access")
+    private String startPointAccess;
+
+    /**
+     * 起点获取方式的value值
+     */
+    @Column(name = "start_point_access_value")
+    private String startPointAccessValue;
+
+    /**
+     * 载具获取方式
+     */
+    @Column(name = "pod_access")
+    private String podAccess;
+
+    /**
+     * 载具获取方式的value值
+     */
+    @Column(name = "pod_access_value")
+    private String podAccessValue;
+
+    /**
+     * 终点获取方式
+     */
+    @Column(name = "end_point_access")
+    private String endPointAccess;
+
+    /**
+     * 终点获取方式的value值
+     */
+    @Column(name = "end_point_access_value")
+    private String endPointAccessValue;
+
+    /**
+     * 三方执行者获取方式
+     */
+    @Column(name = "robot_access")
+    private String robotAccess;
+
+    /**
+     * 三方执行者获取方式的value值
+     */
+    @Column(name = "robot_access_value")
+    private String robotAccessValue;
+
+    /**
+     * 三方执行id获取方式
+     */
+    @Column(name = "worker_task_code_access")
+    private String workerTaskCodeAccess;
+
+    /**
+     * 三方执行id获取方式的value值
+     */
+    @Column(name = "worker_task_code_access_value")
+    private String workerTaskCodeAccessValue;
+
+    public String getOutflow() {
+        return outflow;
+    }
+
+    public void setOutflow(String outflow) {
+        this.outflow = outflow;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
+    }
+
+    public String getStartPointAccess() {
+        return startPointAccess;
+    }
+
+    public void setStartPointAccess(String startPointAccess) {
+        this.startPointAccess = startPointAccess;
+    }
+
+    public String getStartPointAccessValue() {
+        return startPointAccessValue;
+    }
+
+    public void setStartPointAccessValue(String startPointAccessValue) {
+        this.startPointAccessValue = startPointAccessValue;
+    }
+
+    public String getPodAccess() {
+        return podAccess;
+    }
+
+    public void setPodAccess(String podAccess) {
+        this.podAccess = podAccess;
+    }
+
+    public String getPodAccessValue() {
+        return podAccessValue;
+    }
+
+    public void setPodAccessValue(String podAccessValue) {
+        this.podAccessValue = podAccessValue;
+    }
+
+    public String getEndPointAccess() {
+        return endPointAccess;
+    }
+
+    public void setEndPointAccess(String endPointAccess) {
+        this.endPointAccess = endPointAccess;
+    }
+
+    public String getEndPointAccessValue() {
+        return endPointAccessValue;
+    }
+
+    public void setEndPointAccessValue(String endPointAccessValue) {
+        this.endPointAccessValue = endPointAccessValue;
+    }
+
+    public String getRobotAccess() {
+        return robotAccess;
+    }
+
+    public void setRobotAccess(String robotAccess) {
+        this.robotAccess = robotAccess;
+    }
+
+    public String getRobotAccessValue() {
+        return robotAccessValue;
+    }
+
+    public void setRobotAccessValue(String robotAccessValue) {
+        this.robotAccessValue = robotAccessValue;
+    }
+
+    public String getWorkerTaskCodeAccess() {
+        return workerTaskCodeAccess;
+    }
+
+    public void setWorkerTaskCodeAccess(String workerTaskCodeAccess) {
+        this.workerTaskCodeAccess = workerTaskCodeAccess;
+    }
+
+    public String getWorkerTaskCodeAccessValue() {
+        return workerTaskCodeAccessValue;
+    }
+
+    public void setWorkerTaskCodeAccessValue(String workerTaskCodeAccessValue) {
+        this.workerTaskCodeAccessValue = workerTaskCodeAccessValue;
+    }
+
+    /**
      * @return id
      */
     public Long getId() {

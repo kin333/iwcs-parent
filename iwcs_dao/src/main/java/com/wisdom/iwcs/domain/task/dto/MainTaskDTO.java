@@ -118,6 +118,33 @@ public class MainTaskDTO {
     private String elevatorWorkType;
 
   /**
+   * 静态站点集合
+   */
+  @Column(name = "static_via_paths")
+  private String staticViaPaths;
+  /**
+   * 静态载具
+   */
+  @Column(name = "static_pod_code")
+  private String staticPodCode;
+
+  public String getStaticViaPaths() {
+    return staticViaPaths;
+  }
+
+  public void setStaticViaPaths(String staticViaPaths) {
+    this.staticViaPaths = staticViaPaths;
+  }
+
+  public String getStaticPodCode() {
+    return staticPodCode;
+  }
+
+  public void setStaticPodCode(String staticPodCode) {
+    this.staticPodCode = staticPodCode;
+  }
+
+  /**
    * @return id
    */
   public Long getId() {
