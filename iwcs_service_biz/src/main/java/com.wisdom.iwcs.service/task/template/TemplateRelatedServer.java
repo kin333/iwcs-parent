@@ -2,14 +2,15 @@ package com.wisdom.iwcs.service.task.template;
 
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
+import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
+import com.wisdom.iwcs.domain.task.TaskContext;
+import com.wisdom.iwcs.domain.task.dto.BaseContextInfo;
+import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
-import com.wisdom.iwcs.mapper.task.MainTaskMapper;
-import com.wisdom.iwcs.mapper.task.SubTaskMapper;
-import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
-import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
+import com.wisdom.iwcs.mapper.task.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,8 @@ public class TemplateRelatedServer {
     TaskRelConditionMapper taskRelConditionMapper;
     @Autowired
     ApplicationProperties applicationProperties;
+    @Autowired
+    TaskContextMapper taskContextMapper;
 
     /**
      * 根据子任务编号,把子任务的信息插入到子任务对应的发送消息体中
@@ -100,6 +103,9 @@ public class TemplateRelatedServer {
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
         checkNull(mainTask, "子任务无对应主任务:" + subTaskNum);
 
+        //查询基础信息
+        TempdateRelatedContext tempdateRelatedContext = getRequestInfo();
+
         //4.向发送消息体中插入消息
         while(true) {
             String[] values = gainTemplateValue(sendTemplate);
@@ -123,7 +129,6 @@ public class TemplateRelatedServer {
                     param = declaredMethod.invoke(mainTask);
                 } else if (TEMP_RELATED_CONTEXT.equals(values[1])) {
                     //向模板中加入请求要求数据
-                    TempdateRelatedContext tempdateRelatedContext = getRequestInfo();
                     Method declaredMethod = TempdateRelatedContext.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(tempdateRelatedContext);
                 } else {
@@ -195,6 +200,43 @@ public class TemplateRelatedServer {
         tempdateRelatedContext.setClientCode(applicationProperties.getHikParam().getClientCode());
         tempdateRelatedContext.setTokenCode(applicationProperties.getHikParam().getTokenCode());
         return tempdateRelatedContext;
+    }
+
+    /**
+     * 获取子任务对应的所有的上下文信息
+     * @param subTaskNum
+     * @return
+     */
+    public BaseContextInfo getAllContext(String subTaskNum) {
+        BaseContextInfo baseContextInfo = new BaseContextInfo();
+        //1.查询子任务信息
+        if (StringUtils.isEmpty(subTaskNum)) {
+            throw new BusinessException("tempateIntoInfo()的参数不能为空");
+        }
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
+        checkNull(subTask, "子任务不存在:" + subTaskNum);
+        baseContextInfo.setSubTask(subTask);
+
+        //2.查询子任务对应的主任务信息
+        if (StringUtils.isEmpty(subTask.getMainTaskNum())) {
+            throw new BusinessException("数据异常: 子任务无主任务编号");
+        }
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+        checkNull(mainTask, "子任务无对应主任务:" + subTaskNum);
+        baseContextInfo.setMainTask(mainTask);
+
+        //3.查询基础信息
+        TempdateRelatedContext tempdateRelatedContext = getRequestInfo();
+        baseContextInfo.setTempdateRelatedContext(tempdateRelatedContext);
+
+        //4.查询任务上下文表的context信息
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+        checkNull(mainTask, "子任务无对应的上下文信息:" + subTaskNum);
+        String context = taskContext.getContext();
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        baseContextInfo.setContextDTO(contextDTO);
+
+        return baseContextInfo;
     }
 
 }
