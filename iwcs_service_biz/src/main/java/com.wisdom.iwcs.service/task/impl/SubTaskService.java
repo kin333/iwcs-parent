@@ -18,6 +18,7 @@ import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.TaskRel;
+import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
@@ -508,7 +509,7 @@ public class SubTaskService {
         //添加任务起始点
         if (StringUtils.isNotBlank(taskRel.getStartPointAccess())) {
             IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
-            String startPoint = getPointStrategic.getPoint(mainTaskNum , taskRel.getStartPointAccessValue());
+            String startPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum , taskRel.getStartPointAccessValue(), taskRel));
             subTask.setStartBercode(startPoint);
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(startPoint);
             subTask.setMapCode(baseMapBerth.getMapCode());
@@ -519,7 +520,7 @@ public class SubTaskService {
         //添加任务终点
         if (StringUtils.isNotBlank(taskRel.getEndPointAccess())) {
             IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getEndPointAccess());
-            String endPoint = getPointStrategic.getPoint(mainTaskNum, taskRel.getEndPointAccessValue());
+            String endPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum, taskRel.getEndPointAccessValue(), taskRel));
             subTask.setEndBercode(endPoint);
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endPoint);
             subTask.setEndMapCode(baseMapBerth.getMapCode());
@@ -530,19 +531,19 @@ public class SubTaskService {
         //添加货架
         if (StringUtils.isNotBlank(taskRel.getPodAccess())) {
             IGetPodStrategic getPointStrategic = AppContext.getBean(taskRel.getPodAccess());
-            String podCode = getPointStrategic.getPod(mainTaskNum, taskRel.getPodAccessValue());
+            String podCode = getPointStrategic.getPod(new AutoCreateBaseInfo(mainTaskNum, taskRel.getPodAccessValue(), taskRel));
             subTask.setPodCode(podCode);
         }
         //添加机器人编号
         if (StringUtils.isNotBlank(taskRel.getRobotAccess())) {
             IGetRobotStrategic getPointStrategic = AppContext.getBean(taskRel.getRobotAccess());
-            String robotCode = getPointStrategic.getRobotCode(mainTaskNum, taskRel.getRobotAccessValue());
+            String robotCode = getPointStrategic.getRobotCode(new AutoCreateBaseInfo(mainTaskNum, taskRel.getRobotAccessValue()));
             subTask.setRobotCode(robotCode);
         }
         //添加任务编号(下发给Hik的任务编号)
         if (StringUtils.isNotBlank(taskRel.getWorkerTaskCodeAccess())) {
             IGetWorkerCodeStrategic getPointStrategic = AppContext.getBean(taskRel.getWorkerTaskCodeAccess());
-            String workerCode = getPointStrategic.getWorkerCode(mainTaskNum, taskRel.getWorkerTaskCodeAccessValue());
+            String workerCode = getPointStrategic.getWorkerCode(new AutoCreateBaseInfo(mainTaskNum, taskRel.getWorkerTaskCodeAccessValue()));
             subTask.setWorkerTaskCode(workerCode);
         }
 
