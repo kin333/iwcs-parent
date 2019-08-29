@@ -72,7 +72,7 @@
       where main_task_type_code = #{mainTaskTypeCode,jdbcType=VARCHAR}
     </select>
 
-  <select id="selectByTemplateCode" resultMap="BaseResultMap">
+  <select id="selectByTemplCode" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_task_rel
     where templ_code = #{templateCode}
   </select>

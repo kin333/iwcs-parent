@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 
 import java.util.HashMap;
 
-@Component
+@Component("relCreateConditionHandler")
 public class RelConditionHandler implements IRelConditionHandler {
     private final Logger logger = LoggerFactory.getLogger(EnterWorkLineHandler.class);
     @Autowired
@@ -26,7 +26,7 @@ public class RelConditionHandler implements IRelConditionHandler {
         BaseContextInfo baseContextInfo = templateRelatedServer.getMainTaskContext(maintaskNum);
         HashMap<String, Object> env = new HashMap<>();
         env.put("bci", baseContextInfo);
-        String createConditionExpress = taskRelCondition.getRemark();
+        String createConditionExpress = taskRelCondition.getConExpression();
         if (StringUtils.isBlank(createConditionExpress)) {
             return true;
         } else {

@@ -13,19 +13,13 @@ import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
-import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.domain.task.SubTaskCondition;
-import com.wisdom.iwcs.domain.task.TaskRel;
-import com.wisdom.iwcs.domain.task.TaskRelCondition;
+import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
-import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
-import com.wisdom.iwcs.mapper.task.SubTaskMapper;
-import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
-import com.wisdom.iwcs.mapper.task.TaskRelMapper;
+import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -76,6 +70,8 @@ public class SubTaskService {
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     TaskCreateService taskCreateService;
+    @Autowired
+    MainTaskMapper mainTaskMapper;
 
     @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
@@ -345,14 +341,14 @@ public class SubTaskService {
         return true;
     }
 
-
+    @Transactional
     public SubTask getCurrentPendingSubtask(String mainTaskNum) {
         List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
         subTasks = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).filter(t -> !TaskConstants.subTaskStatus.SUB_FINISHED.equals(t.getTaskStatus())).collect(Collectors.toList());
         if (subTasks != null && subTasks.size() != 0) {
             return subTasks.get(0);
         } else {
-            return null;
+            return dynamicCreateNextSubtask(mainTaskNum);
         }
 
     }
@@ -367,9 +363,26 @@ public class SubTaskService {
         logger.info("开始尝试获取/创建下一子任务，主任务号{}", mainTaskNum);
         //获取当前主任务最后一个执行完成的子任务，并根据子任务查找到其配置的下一任务路由
         List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
+        String finalNextSubtaskTemplCode = "";
+        if (TaskConstants.mainTaskStatus.MAIN_FINISHED.equals(mainTask.getTaskStatus())) {
+            logger.warn("主任务状态值为一结束，主任务号{}，不应再调用获取、生成下一步子任务方法", mainTaskNum);
+            return null;
+        }
         //如果子任务单未空，需要创建第一个子任务
         if (subTasks.isEmpty()) {
-
+            String mainTaskTypeCode = mainTask.getMainTaskTypeCode();
+            logger.info("当前主任务类型编号为{}", mainTaskTypeCode);
+            //获取第一个子任务模板编号
+            List<TaskRel> taskRels = taskRelMapper.selectByMainTaskType(mainTaskTypeCode);
+            if (taskRels.isEmpty()) {
+                logger.warn("{}主任务类型下未配置子任务", mainTaskTypeCode);
+                return null;
+            } else {
+                Optional<TaskRel> firstTaskRel = taskRels.stream().sorted(Comparator.comparing(TaskRel::getSubTaskSeq)).findFirst();
+                finalNextSubtaskTemplCode = firstTaskRel.get().getTemplCode();
+                return autoCreateSubTask(finalNextSubtaskTemplCode, mainTaskNum);
+            }
         } else {
             //非第一个子任务的情况下，根据最后一个执行的子任务创建下一子任务
             List<SubTask> subtasksSortedBySeqAsc = subTasks.stream().sorted(Comparator.comparing(SubTask::getSubTaskSeq)).collect(Collectors.toList());
@@ -390,7 +403,6 @@ public class SubTaskService {
                     TaskRel lastFinishedSubtaskTaskRel = taskRelMapper.selectByTemplCode(templCode);
                     String nextTaskRouter = lastFinishedSubtaskTaskRel.getOutflow();
                     String[] nextTaskRouters = nextTaskRouter.split(";");
-                    String finalNextSubtaskTemplCode = "";
                     if (nextTaskRouters.length > 0) {
 
                         //有下一步,遍历检查下一步创建条件是否满足
@@ -413,7 +425,6 @@ public class SubTaskService {
                                         createConAllMet.set(false);
                                         return;
                                     }
-//                                    iConditionHandler.handleCondition()
                                 });
                                 if (createConAllMet.get()) {
                                     finalNextSubtaskTemplCode = tmpTemplCode;
@@ -422,10 +433,17 @@ public class SubTaskService {
                             }
 
                         }
-                        autoCreateSubTask(finalNextSubtaskTemplCode, mainTaskNum);
+
+                        //
+                        if (StringUtils.isNotBlank(finalNextSubtaskTemplCode)) {
+                            return autoCreateSubTask(finalNextSubtaskTemplCode, mainTaskNum);
+                        } else {
+                            return null;
+                        }
+
                     } else {
                         //没有下一步
-
+                        return null;
                     }
                 }
             }

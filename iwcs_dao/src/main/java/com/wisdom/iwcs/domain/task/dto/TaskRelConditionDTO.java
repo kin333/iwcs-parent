@@ -1,7 +1,9 @@
 package com.wisdom.iwcs.domain.task.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "ts_task_rel_condition")
 public class TaskRelConditionDTO {
@@ -78,13 +80,13 @@ public class TaskRelConditionDTO {
      * 条件表达式
      */
     @Column(name = "con_expression")
-    private Integer conExpression;
+    private String conExpression;
 
-    public Integer getConExpression() {
+    public String getConExpression() {
         return conExpression;
     }
 
-    public void setConExpression(Integer conExpression) {
+    public void setConExpression(String conExpression) {
         this.conExpression = conExpression;
     }
 

@@ -103,7 +103,7 @@ public class MainTaskWorker extends AbstractTaskWorker {
                 //TODO 是否需要做线程相关处理、事件监听等。待定
             } catch (Exception e) {
                 logger.error("调度器出错，主任务{}执行出错", mainTask.getMainTaskNum());
-                logger.error("错误信息:" + e.getMessage());
+                logger.error("错误信息:" + e);
 
             }
         }
@@ -121,14 +121,13 @@ public class MainTaskWorker extends AbstractTaskWorker {
 
 
     /**
-     * 获取当前待执行子任务（当前正在执行或）
+     * 获取当前待执行子任务（当前正在执行,若没有，尝试动态创建下一步子任务）
      *
      * @return
      */
     private SubTask getCurrentPendingSubtask() {
         SubTaskService subTaskService = (SubTaskService) AppContext.getBean("subTaskService");
         SubTask nextSubtask = subTaskService.getCurrentPendingSubtask(mainTask.getMainTaskNum());
-
         return nextSubtask;
     }
 
