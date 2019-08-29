@@ -8,6 +8,8 @@ import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.service.common.IPodCal;
 import com.wisdom.iwcs.service.message.NotificationService;
 import com.wisdom.iwcs.service.notice.NoticeUserMsgService;
+import com.wisdom.iwcs.service.task.impl.SubTaskService;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,8 @@ public class TestController {
     NotificationService notificationService;
     @Autowired
     NoticeUserMsgService noticeUserMsgService;
+    @Autowired
+    SubTaskService subTaskService;
     @Autowired
     IPodCal podCal;
 
@@ -51,6 +55,12 @@ public class TestController {
         String s = TaskContextUtils.objectToJson(contextDTO);
         System.out.println(s);
         return new Result(s);
+    }
+
+    @GetMapping("/testAutoCreate/{mainTaskNum}")
+    public Result testAutoCreate(@PathVariable String mainTaskNum) {
+        subTaskService.autoCreateSubTask("testTemp", mainTaskNum);
+        return new Result();
     }
 
 

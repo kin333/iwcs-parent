@@ -236,7 +236,31 @@ public class TemplateRelatedServer {
         checkNull(mainTask, "子任务无对应的上下文信息:" + subTaskNum);
         String context = taskContext.getContext();
         PublicContextDTO publicContextDTO = JSONObject.parseObject(context, PublicContextDTO.class);
-//        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        baseContextInfo.setPublicContextDTO(publicContextDTO);
+
+        return baseContextInfo;
+    }
+
+    /**
+     * 根据主任务号查询对应的上下文信息
+     * @param mainTaskNum
+     * @return
+     */
+    public BaseContextInfo getMainTaskContext(String mainTaskNum) {
+        BaseContextInfo baseContextInfo = new BaseContextInfo();
+        //1.查询子任务对应的主任务信息
+        if (StringUtils.isEmpty(mainTaskNum)) {
+            throw new BusinessException("数据异常: 子任务无主任务编号");
+        }
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
+        checkNull(mainTask, "无对应主任务:" + mainTaskNum);
+        baseContextInfo.setMainTask(mainTask);
+
+        //2.查询任务上下文表的context信息
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(mainTaskNum);
+        checkNull(mainTask, "无对应的上下文信息:" + mainTaskNum);
+        String context = taskContext.getContext();
+        PublicContextDTO publicContextDTO = JSONObject.parseObject(context, PublicContextDTO.class);
         baseContextInfo.setPublicContextDTO(publicContextDTO);
 
         return baseContextInfo;
