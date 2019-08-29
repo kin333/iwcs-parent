@@ -41,14 +41,19 @@ public class ContextDTO {
     @ColumnName("endSendNumTwo")
     private Integer supplyUnLoadWbSecondCount;
     /**
-     * 空框回收数量
+     * 空框回收数量1
      */
-    @ColumnName("emptyRecyleNum")
+    @ColumnName("emptyRecycleNum")
     private Integer emptyRecyleNum;
+    /**
+     * 空框回收数量2
+     */
+    @ColumnName("emptyRecycleNumTwo")
+    private Integer emptyRecyleNumTwo;
     /**
      * 回收点
      */
-    @ColumnName("emptyRecyleWb")
+    @ColumnName("emptyRecycleWb")
     private String emptyRecyleWb;
 
     /**

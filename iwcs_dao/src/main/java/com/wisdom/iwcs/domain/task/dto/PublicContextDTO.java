@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.domain.task.dto;
 
+import com.wisdom.base.annotation.ColumnName;
 import lombok.Data;
 
 /**
@@ -33,13 +34,17 @@ public class PublicContextDTO {
      */
     private Integer endSendNumTwo;
     /**
-     * 空框回收数量
+     * 空框回收数量1
      */
-    private Integer emptyRecyleNum;
+    private Integer emptyRecycleNum;
+    /**
+     * 空框回收数量2
+     */
+    private Integer emptyRecycleNumTwo;
     /**
      * 回收点
      */
-    private String emptyRecyleWb;
+    private String emptyRecycleWb;
 
     /**
      * 空料箱回收上箱点编码

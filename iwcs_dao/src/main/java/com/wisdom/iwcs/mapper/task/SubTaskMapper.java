@@ -100,4 +100,6 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
     List<SubTask> selectUnusualTask(String endStatus);
 
     List<SubTask> selectByTaskStatus(String taskStatus);
+
+    int updateJsonData(@Param("subTaskNum") String subTaskNum,@Param("jsonData") String jsonData);
 }

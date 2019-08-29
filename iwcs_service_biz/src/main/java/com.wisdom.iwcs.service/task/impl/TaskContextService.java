@@ -1,11 +1,15 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskContext;
+import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
 import com.wisdom.iwcs.domain.task.dto.TaskContextDTO;
+import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.mapstruct.task.TaskContextMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -30,6 +34,9 @@ public class TaskContextService {
     private final TaskContextMapper taskContextMapper;
 
     private final TaskContextMapStruct taskContextMapStruct;
+
+    @Autowired
+    SubTaskMapper subTaskMapper;
 
     @Autowired
     public TaskContextService(TaskContextMapStruct taskContextMapStruct, TaskContextMapper taskContextMapper) {
@@ -233,5 +240,17 @@ public class TaskContextService {
         mGridReturnData.setPageInfo(pageInfoFinal);
 
         return mGridReturnData;
+    }
+
+    /**
+     * 获取context对象
+     * @param subTaskNum
+     * @return
+     */
+    public PublicContextDTO getPublicContext(String subTaskNum) {
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+        String context = taskContext.getContext();
+        return JSONObject.parseObject(context, PublicContextDTO.class);
     }
 }

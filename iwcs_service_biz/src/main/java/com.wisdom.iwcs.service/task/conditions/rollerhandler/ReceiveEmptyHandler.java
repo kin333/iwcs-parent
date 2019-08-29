@@ -13,13 +13,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 /**
- * 接满料箱前置条件
+ * 收空料箱任务前置条件
  * @author han
  */
 @Component
-public class ReceiveFullHandler implements IConditionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(ReceiveFullHandler.class);
+public class ReceiveEmptyHandler implements IConditionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(SecondReceiveAndSendHanlder.class);
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -35,12 +36,12 @@ public class ReceiveFullHandler implements IConditionHandler {
 
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
-        hikRollerData.setRcvFull(publicContextDTO.getStartGetNum().toString());
+        hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNum().toString());
         String jsonString = JSONObject.toJSONString(hikRollerData);
 
         //更新数据库
         subTaskMapper.updateJsonData(subTaskCondition.getSubTaskNum(), jsonString);
-        logger.info("子任务{}接满料箱data生成结束,生成data为:{}", subTaskCondition.getSubTaskNum(), jsonString);
+        logger.info("子任务{}收空料箱data生成结束,生成data为:{}", subTaskCondition.getSubTaskNum(), jsonString);
 
         return true;
     }
@@ -49,10 +50,10 @@ public class ReceiveFullHandler implements IConditionHandler {
     public boolean rollbackCondition(SubTaskCondition subTaskCondition) {
         int rows = subTaskMapper.updateJsonData(subTaskCondition.getSubTaskNum(), "");
         if (rows <= 0) {
-            logger.info("子任务{}接满料箱前置条件回滚失败", subTaskCondition.getSubTaskNum());
+            logger.info("子任务{}收空料箱前置条件回滚失败", subTaskCondition.getSubTaskNum());
             return false;
         }
-        logger.info("子任务{}接满料箱前置条件回滚成功", subTaskCondition.getSubTaskNum());
+        logger.info("子任务{}收空料箱前置条件回滚成功", subTaskCondition.getSubTaskNum());
         return true;
     }
 }

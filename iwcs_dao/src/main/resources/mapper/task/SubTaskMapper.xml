@@ -320,4 +320,12 @@
     and send_time &lt;= DATE_SUB(NOW(),INTERVAL 5 MINUTE)
   </select>
 
+  <update id="updateJsonData">
+    update ts_sub_task
+    <set>
+      json_data = #{jsonData}
+    </set>
+    where sub_task_num = #{subTaskNum}
+  </update>
+
 </mapper>
