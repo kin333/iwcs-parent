@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.task.template;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
@@ -9,6 +10,7 @@ import com.wisdom.iwcs.domain.task.SubTaskTyp;
 import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.BaseContextInfo;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
+import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
 import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
 import com.wisdom.iwcs.mapper.task.*;
 import org.apache.commons.lang3.StringUtils;
@@ -233,8 +235,9 @@ public class TemplateRelatedServer {
         TaskContext taskContext = taskContextMapper.selectByMainTaskNum(subTask.getMainTaskNum());
         checkNull(mainTask, "子任务无对应的上下文信息:" + subTaskNum);
         String context = taskContext.getContext();
-        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
-        baseContextInfo.setContextDTO(contextDTO);
+        PublicContextDTO publicContextDTO = JSONObject.parseObject(context, PublicContextDTO.class);
+//        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        baseContextInfo.setPublicContextDTO(publicContextDTO);
 
         return baseContextInfo;
     }

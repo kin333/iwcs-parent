@@ -17,6 +17,6 @@ public class BaseContextInfo {
 
     private SubTask subTask;
 
-    private ContextDTO contextDTO;
+    private PublicContextDTO publicContextDTO;
 
 }

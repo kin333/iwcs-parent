@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.conditions.point;
 
 import com.alibaba.fastjson.JSONArray;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
@@ -23,7 +24,11 @@ public class StaticViaPathsStrategic implements IGetPointStrategic {
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(autoCreateBaseInfo.getMainTaskNum());
         String staticViaPaths = mainTask.getStaticViaPaths();
         List<String> points = JSONArray.parseArray(staticViaPaths, String.class);
+        int index = Integer.valueOf(autoCreateBaseInfo.getValue()) - 1;
+        if (index > points.size()) {
+            throw new BusinessException("站点集合数值超长");
+        }
         //返回需要的指定站点
-        return points.get(Integer.valueOf(autoCreateBaseInfo.getValue()));
+        return points.get(index);
     }
 }
