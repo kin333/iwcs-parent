@@ -47,6 +47,6 @@ public interface BaseConnectionPointMapper extends DeleteLogicMapper<BaseConnect
      * 查询机械臂等待点
      * 线体每个作业点只能有一个关联点(通知线体小车已经搬走货架)
      */
-    @Select("select connection_point_code from base_connection_point where ber_code = #{berCode} and map_code = #{mapCode} and connection_point_type = '4'")
-    List<String> selectPointByMapCodeBerCode(@Param("berCode") String berCode, @Param("mapCode") String mapCode);
+    @Select("select connection_point_code from base_connection_point where ber_code = #{berCode} and connection_point_type = '4'")
+    List<String> selectPointByMapCodeBerCode(@Param("berCode") String berCode);
 }

@@ -384,7 +384,7 @@ public class HikCallbackIwcsService {
 //        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
 
         //校验是否时机械臂等待点，是，通知MES AGV到达等待点
-        List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getMapCode(),hikCallBackAgvMove.getWbCode());
+        List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getWbCode());
         if (point.size() > 0){
             //调用子任务
         }

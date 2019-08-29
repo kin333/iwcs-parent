@@ -22,6 +22,7 @@ import com.wisdom.iwcs.domain.elevator.ElevatorTaskRequest;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
+import com.wisdom.iwcs.domain.upstream.mes.AgvHandlingTaskCreateRequest;
 import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
@@ -927,13 +928,57 @@ public class TaskCreateService implements ITaskCreateService {
      * @param createTaskRequest
      */
     public void publicCheckIsBlank(CreateTaskRequest createTaskRequest) {
-        if (StringUtils.isBlank(createTaskRequest.getTaskCode())) {
+        if (Strings.isNullOrEmpty(createTaskRequest.getTaskCode())) {
             throw new MesBusinessException(createTaskRequest.getTaskCode(), "任务号不能为空");
         }
-        if (StringUtils.isBlank(createTaskRequest.getTaskPri())) {
+        if (Strings.isNullOrEmpty(createTaskRequest.getTaskPri())) {
             throw new MesBusinessException(createTaskRequest.getTaskCode(), "优先级不能为空");
         }
     }
 
+    /**
+     * US_Inspur
+     * 工产线、测试区、叉车AGV搬运任务
+     * @param agvHandlingTaskCreateRequest
+     * @return MesResult
+     */
+    @Override
+    public MesResult agvHandlingTaskCreate(AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest){
+        String srcBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getSrcWb());
+        if (Strings.isNullOrEmpty(srcBerCode)) {
+            throw new MesBusinessException(agvHandlingTaskCreateRequest.getSrcWb()+"该起始点在地图中未找到对应的地码！");
+        }
+        String destBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getSrcWb());
+        if (Strings.isNullOrEmpty(destBerCode)) {
+            throw new MesBusinessException(agvHandlingTaskCreateRequest.getSrcWb()+"该目标点在地图中未找到对应的地码！");
+        }
 
+        //查询终点是否有关联点
+        List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(destBerCode);
+        String mainTaskTypeCode = "USpTop";
+        if (point.size() > 0){
+            mainTaskTypeCode = "USpTopWait";
+        }
+        //2.创建主任务
+        String mainTaskNum = agvHandlingTaskCreateRequest.getTaskCode();
+        MainTask mainTaskCreate = new MainTask();
+        mainTaskCreate.setCreateDate(new Date());
+        mainTaskCreate.setMainTaskNum(mainTaskNum);
+        mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(agvHandlingTaskCreateRequest.getTaskPri()));
+        mainTaskCreate.setMainTaskTypeCode(mainTaskTypeCode);
+        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskCreate.setStaticPodCode(agvHandlingTaskCreateRequest.getPodCode());
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(srcBerCode,destBerCode));
+        mainTaskCreate.setStaticViaPaths(jsonString);
+        mainTaskMapper.insertSelective(mainTaskCreate);
+
+        //创建子任务共享数据区域--任务上下文
+        TaskContext taskContext = new TaskContext();
+        taskContext.setMainTaskNum(mainTaskNum);
+        taskContext.setCreateTime(new Date());
+        taskContextMapper.insertSelective(taskContext);
+
+        return new MesResult();
+    }
 }

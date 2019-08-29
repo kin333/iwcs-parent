@@ -1,10 +1,12 @@
 package com.wisdom.controller.upstream.mes;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
+import com.wisdom.iwcs.domain.upstream.mes.AgvHandlingTaskCreateRequest;
 import com.wisdom.iwcs.domain.upstream.mes.ConWaitToDestWbRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.service.task.impl.MesRequestService;
+import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +28,23 @@ import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.S
 @RequestMapping("/api/wisdom/agvHandlingTask")
 public class AgvHandlingTaskController {
     @Autowired
-    MesRequestService mesRequestService;
+    private MesRequestService mesRequestService;
+    @Autowired
+    private ITaskCreateService iTaskCreateService;
+
+    /**
+     * 通知Agv可从等待点前往终点
+     * @param
+     * @return
+     */
+    @PostMapping
+    @SystemInterfaceLog(methodCode = CONWAIT_TO_DESTWB, methodName = CONWAIT_TO_DESTWB_DESC, methodThansfer = SRC_MES)
+    public MesResult createTask(@RequestBody MesBaseRequest<AgvHandlingTaskCreateRequest> mesBaseRequest) {
+        AgvHandlingTaskCreateRequest data = mesBaseRequest.getData();
+        iTaskCreateService.agvHandlingTaskCreate(data);
+        return new MesResult(mesBaseRequest.getReqcode());
+    }
+
 
     /**
      * 通知Agv可从等待点前往终点
