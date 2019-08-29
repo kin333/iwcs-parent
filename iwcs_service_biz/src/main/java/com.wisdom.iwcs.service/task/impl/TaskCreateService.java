@@ -863,6 +863,10 @@ public class TaskCreateService implements ITaskCreateService {
         if (createTaskRequest.getSupplyLoadNum() == null) {
             throw new MesBusinessException(createTaskRequest.getTaskCode(), "供料点数量不能为空");
         }
+        //将点位信息转换为berCode
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSupplyLoadWb());
+        Preconditions.checkMesBusinessError(baseMapBerth == null, createTaskRequest.getSupplyLoadWb() + "找不到别名对应的地图编码");
+        createTaskRequest.setSupplyLoadWb(baseMapBerth.getBerCode());
 
         //写入站点集合
         String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getSupplyLoadWb()));
@@ -901,9 +905,13 @@ public class TaskCreateService implements ITaskCreateService {
         if (createTaskRequest.getEmptyRecyleNum() == null) {
             throw new MesBusinessException(createTaskRequest.getTaskCode(), "空框回收数量不能为空");
         }
+        //将点位信息转换为berCode
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getTargetEmptyRecyleWb());
+        Preconditions.checkMesBusinessError(baseMapBerth == null, createTaskRequest.getTargetEmptyRecyleWb() + "找不到别名对应的地图编码");
+        createTaskRequest.setTargetEmptyRecyleWb(baseMapBerth.getBerCode());
 
         //写入站点集合
-        String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getSupplyLoadWb()));
+        String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getTargetEmptyRecyleWb()));
         createTaskRequest.setStaticViaPaths(jsonString);
         //公用的任务创建流程
         rollerTaskCreate(createTaskRequest, mainTaskType);

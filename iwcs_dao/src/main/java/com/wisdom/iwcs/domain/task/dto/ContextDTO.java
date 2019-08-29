@@ -2,6 +2,7 @@ package com.wisdom.iwcs.domain.task.dto;
 
 import com.wisdom.base.annotation.ColumnName;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 /**
  * 美国浪潮使用的,
@@ -72,4 +73,20 @@ public class ContextDTO {
      */
     @ColumnName("currentEmptyNum")
     private String currentEmptyNum;
+
+    /**
+     * 第一个目标点位是否就绪
+     */
+    @ColumnName("endBerCodeReady")
+    private Boolean endBerCodeReady;
+    /**
+     * 第二个目标点位是否就绪
+     */
+    @ColumnName("endBerCodeTwoReady")
+    private Boolean endBerCodeTwoReady;
+    /**
+     * 回收点位是否就绪
+     */
+    @ColumnName("emptyRecycleReady")
+    private Boolean emptyRecycleReady;
 }

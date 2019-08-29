@@ -36,4 +36,10 @@ public final class Preconditions {
             throw new BusinessException(QHErrorEnum);
         }
     }
+
+    public static void checkMesBusinessError(boolean error, String errorMsg) {
+        if (error) {
+            throw new MesBusinessException(errorMsg);
+        }
+    }
 }

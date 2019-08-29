@@ -33,6 +33,11 @@ public class FirstReceiveAndSendHanlder implements IConditionHandler {
         //查找接料信息
         PublicContextDTO publicContextDTO = taskContextService.getPublicContext(subTaskCondition.getSubTaskNum());
 
+        if (publicContextDTO.getEndBerCodeReady() == null) {
+            logger.info("子任务{}第一个送料点未准备就绪", subTaskCondition.getSubTaskNum());
+            return false;
+        }
+
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
         hikRollerData.setSendFull(publicContextDTO.getEndSendNum().toString());

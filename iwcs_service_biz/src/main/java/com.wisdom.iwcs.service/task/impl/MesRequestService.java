@@ -1,12 +1,15 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.control.ContinueTaskRequestDTO;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.upstream.mes.*;
+import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.service.callHik.IContinueTaskService;
@@ -33,6 +36,8 @@ public class MesRequestService {
     private SubTaskMapper subTaskMapper;
     @Autowired
     private IContinueTaskService iContinueTaskService;
+    @Autowired
+    BaseMapBerthMapper baseMapBerthMapper;
 
 
     /**
@@ -51,6 +56,17 @@ public class MesRequestService {
         }
         if (supplyInfoNotify.getSupplyUnLoadWbFirstCount() == null) {
             throw new MesBusinessException(supplyInfoNotify.getTaskCode(), "第一个接料点的接料数不能为空");
+        }
+
+        //将点位信息转换为berCode
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(supplyInfoNotify.getSupplyUnLoadWbFirst());
+        Preconditions.checkMesBusinessError(baseMapBerth == null, supplyInfoNotify.getSupplyUnLoadWbFirst() + "找不到别名对应的地图编码");
+        supplyInfoNotify.setSupplyUnLoadWbFirst(baseMapBerth.getBerCode());
+
+        if (StringUtils.isNotBlank(supplyInfoNotify.getSupplyUnLoadWbSecond())) {
+            baseMapBerth = baseMapBerthMapper.selectByPointAlias(supplyInfoNotify.getSupplyUnLoadWbSecond());
+            Preconditions.checkMesBusinessError(baseMapBerth == null, supplyInfoNotify.getSupplyUnLoadWbSecond() + "找不到别名对应的地图编码");
+            supplyInfoNotify.setSupplyUnLoadWbSecond(baseMapBerth.getBerCode());
         }
 
         //2.获取原context
@@ -86,6 +102,14 @@ public class MesRequestService {
 
         //校验送料点和送料数量
 
+        //将点位信息转换为berCode
+        if (StringUtils.isNotBlank(startSupllyAndRecyle.getEmptyRecyleWb())) {
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(startSupllyAndRecyle.getEmptyRecyleWb());
+            Preconditions.checkMesBusinessError(baseMapBerth == null, startSupllyAndRecyle.getEmptyRecyleWb() + "找不到别名对应的地图编码");
+            startSupllyAndRecyle.setEmptyRecyleWb(baseMapBerth.getBerCode());
+        }
+
+
         //2.获取原context
         TaskContext taskContext = taskContextMapper.selectByMainTaskNum(startSupllyAndRecyle.getTaskCode());
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(taskContext.getContext(), ContextDTO.class);
@@ -98,6 +122,11 @@ public class MesRequestService {
             contextDTO.setEmptyRecyleNum(startSupllyAndRecyle.getEmptyRecyleNum());
         } else {
             contextDTO.setEmptyRecyleNum(contextDTO.getEmptyRecyleNum() + startSupllyAndRecyle.getEmptyRecyleNum());
+        }
+        if (contextDTO.getEndBerCodeReady() == null) {
+            contextDTO.setEndBerCodeReady(true);
+        } else {
+            contextDTO.setEndBerCodeTwoReady(true);
         }
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
@@ -117,8 +146,16 @@ public class MesRequestService {
         if (StringUtils.isBlank(startRecyle.getTaskCode())) {
             throw new MesBusinessException(startRecyle.getTaskCode(), "任务号不能为空");
         }
-
         //校验回收点和回收数量是否匹配
+
+        //2.获取原context
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(startRecyle.getTaskCode());
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(taskContext.getContext(), ContextDTO.class);
+
+        //3.修改标记位
+        contextDTO.setEmptyRecycleReady(true);
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
 
         logger.info("Mes通知可出空料框的请求处理结束,任务编号:{}", startRecyle.getTaskCode());
         return new MesResult();

@@ -59,4 +59,16 @@ public class PublicContextDTO {
      * 当前空料箱数量
      */
     private String currentEmptyNum;
+    /**
+     * 第一个目标点位是否就绪
+     */
+    private Boolean endBerCodeReady;
+    /**
+     * 第二个目标点位是否就绪
+     */
+    private Boolean endBerCodeTwoReady;
+    /**
+     * 回收点位是否就绪
+     */
+    private Boolean emptyRecycleReady;
 }

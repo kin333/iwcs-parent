@@ -33,6 +33,11 @@ public class SendEmptyHandler implements IConditionHandler {
         //查找接料信息
         PublicContextDTO publicContextDTO = taskContextService.getPublicContext(subTaskCondition.getSubTaskNum());
 
+        if (publicContextDTO.getEmptyRecycleReady() == null) {
+            logger.info("子任务{}回收点未准备就绪", subTaskCondition.getSubTaskNum());
+            return false;
+        }
+
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
         Integer sum = publicContextDTO.getEmptyRecycleNumTwo() + publicContextDTO.getEmptyRecycleNum();
