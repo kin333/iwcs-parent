@@ -358,6 +358,19 @@ public class SubTaskDTO {
      */
     @Column(name = "end_map_code")
     private String endMapCode;
+    /**
+     * json格式的子任务请求的data数据
+     */
+    @Column(name = "json_data")
+    private String jsonData;
+
+    public String getJsonData() {
+        return jsonData;
+    }
+
+    public void setJsonData(String jsonData) {
+        this.jsonData = jsonData;
+    }
 
     public String getEndMapCode() {
         return endMapCode;

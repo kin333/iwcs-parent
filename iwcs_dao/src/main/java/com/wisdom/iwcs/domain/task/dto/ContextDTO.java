@@ -56,4 +56,15 @@ public class ContextDTO {
      */
     @ColumnName("srcWbCode")
     private String srcWbCode;
+
+    /**
+     * 当前满料箱数量
+     */
+    @ColumnName("currentFullNum")
+    private String currentFullNum;
+    /**
+     * 当前空料箱数量
+     */
+    @ColumnName("currentEmptyNum")
+    private String currentEmptyNum;
 }

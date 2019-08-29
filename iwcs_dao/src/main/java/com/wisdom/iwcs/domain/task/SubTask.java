@@ -344,6 +344,19 @@ public class SubTask {
      */
     @Column(name = "templ_code")
     private String templCode;
+    /**
+     * json格式的子任务请求的data数据
+     */
+    @Column(name = "json_data")
+    private String jsonData;
+
+    public String getJsonData() {
+        return jsonData;
+    }
+
+    public void setJsonData(String jsonData) {
+        this.jsonData = jsonData;
+    }
 
     public String getStartBercodeAuto() {
         return startBercodeAuto;

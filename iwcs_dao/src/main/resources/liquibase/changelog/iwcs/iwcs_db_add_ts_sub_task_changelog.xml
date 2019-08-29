@@ -172,4 +172,10 @@
             <column name="templ_code" type="VARCHAR(50)" defaultValue="" remarks="任务模板code"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201908291530" author="han">
+        <addColumn tableName="ts_sub_task">
+            <column name="json_data" type="VARCHAR(500)" defaultValue="" remarks="json格式的子任务请求的data数据"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

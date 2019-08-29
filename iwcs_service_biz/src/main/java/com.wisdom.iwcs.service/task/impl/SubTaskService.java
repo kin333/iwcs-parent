@@ -481,7 +481,7 @@ public class SubTaskService {
     /**
      * 动态生成任务
      */
-    public void autoCreateSubTask(String templateCode, String mainTaskNum) {
+    public SubTask autoCreateSubTask(String templateCode, String mainTaskNum) {
         TaskRel taskRel = taskRelMapper.selectByTemplateCode(templateCode);
         SubTask subTask = new SubTask();
         //添加基础数据
@@ -559,5 +559,7 @@ public class SubTaskService {
 
         //创建子任务前置后置条件
         taskCreateService.addSubTaskCondition(templateCode, subTaskNum);
+
+        return subTask;
     }
 }

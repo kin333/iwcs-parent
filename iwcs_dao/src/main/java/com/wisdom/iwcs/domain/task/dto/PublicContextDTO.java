@@ -45,4 +45,13 @@ public class PublicContextDTO {
      * 空料箱回收上箱点编码
      */
     private String srcWbCode;
+
+    /**
+     * 当前满料箱数量
+     */
+    private String currentFullNum;
+    /**
+     * 当前空料箱数量
+     */
+    private String currentEmptyNum;
 }
