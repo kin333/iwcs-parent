@@ -3,7 +3,6 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.common.base.Strings;
 import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
@@ -17,22 +16,21 @@ import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.TaskRel;
-import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
-import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.TaskRelCondition;
+import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskConditionMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
-import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
+import com.wisdom.iwcs.service.task.conditions.conditonHandler.IRelConditionHandler;
 import com.wisdom.iwcs.service.task.conditions.pod.IGetPodStrategic;
 import com.wisdom.iwcs.service.task.conditions.point.IGetPointStrategic;
 import com.wisdom.iwcs.service.task.conditions.robot.IGetRobotStrategic;
@@ -50,6 +48,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
@@ -383,14 +382,15 @@ public class SubTaskService {
                 //没有已创建的待执行子任务，动态创建下一子任务： 根据
                 Optional<SubTask> lastFinishedSubtaskOpt = subtasksSortedBySeqAsc.stream().max(Comparator.comparing(SubTask::getSubTaskSeq));
                 if (lastFinishedSubtaskOpt.isPresent()) {
+                    //根据下游任务模板号查询并依次判断创建条件是否满足，找到第一个满足的任务模板，并根据模板配置信息及上下文创建子任务单
                     SubTask lastFinishedSubtask = lastFinishedSubtaskOpt.get();
                     logger.info("主任务最后一个执行完成的子任务编号{}，任务模板号{}", lastFinishedSubtask.getSubTaskNum(), lastFinishedSubtask.getTemplCode());
                     String templCode = lastFinishedSubtask.getTemplCode();
                     //获取最后一个子任务在模板中配置的下游任务列表
                     TaskRel lastFinishedSubtaskTaskRel = taskRelMapper.selectByTemplCode(templCode);
-                    String nextTaskRouter = lastFinishedSubtaskTaskRel.getNextTaskRouter();
+                    String nextTaskRouter = lastFinishedSubtaskTaskRel.getOutflow();
                     String[] nextTaskRouters = nextTaskRouter.split(";");
-                    String finalNextSubtaskTemplCode;
+                    String finalNextSubtaskTemplCode = "";
                     if (nextTaskRouters.length > 0) {
 
                         //有下一步,遍历检查下一步创建条件是否满足
@@ -402,33 +402,37 @@ public class SubTaskService {
                                 finalNextSubtaskTemplCode = tmpTemplCode;
                                 break;
                             } else {
+                                AtomicReference<Boolean> createConAllMet = new AtomicReference<>(new Boolean(true));
                                 //判断前置条件是否满足
                                 taskRelConditions.stream().forEachOrdered(t -> {
+                                    logger.info("检查子任务模板{}是否满足");
                                     String conditonHandler = t.getConditonHandler();
-                                    IConditionHandler iConditionHandler = (IConditionHandler) ApplicationContextUtils.getBean(conditonHandler);
+                                    IRelConditionHandler iRelConditionHandler = (IRelConditionHandler) ApplicationContextUtils.getBean(conditonHandler);
+                                    boolean met = iRelConditionHandler.handleCondition(mainTaskNum, t);
+                                    if (!met) {
+                                        createConAllMet.set(false);
+                                        return;
+                                    }
 //                                    iConditionHandler.handleCondition()
                                 });
-
-
+                                if (createConAllMet.get()) {
+                                    finalNextSubtaskTemplCode = tmpTemplCode;
+                                    break;
+                                }
                             }
 
                         }
+                        autoCreateSubTask(finalNextSubtaskTemplCode, mainTaskNum);
                     } else {
                         //没有下一步
 
                     }
                 }
-                //根据下游任务模板号查询并依次判断创建条件是否满足，找到第一个满足的任务模板，并根据模板配置信息及上下文创建子任务单
-//                } else {
-//                    logger.error("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");
-//                    throw new BusinessException("动态创建子任务数据异常，主任务" + mainTaskNum + "找不到最后一个执行完结的子任务");
-//                }
-
-
             }
 
 
         }
+        return null;
 
     }
 
@@ -511,7 +515,7 @@ public class SubTaskService {
      * 动态生成任务
      */
     public SubTask autoCreateSubTask(String templateCode, String mainTaskNum) {
-        TaskRel taskRel = taskRelMapper.selectByTemplateCode(templateCode);
+        TaskRel taskRel = taskRelMapper.selectByTemplCode(templateCode);
         SubTask subTask = new SubTask();
         //添加基础数据
         String subTaskNum = CodeBuilder.codeBuilder("S");

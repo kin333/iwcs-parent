@@ -31,4 +31,5 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
      * @return
      */
     TaskRel selectByTemplCode(String templCode);
+
 }
