@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.FloorMapEnum;
 import com.wisdom.iwcs.common.utils.Result;
@@ -41,6 +42,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.websocket.PongMessage;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -804,28 +808,30 @@ public class TaskCreateService implements ITaskCreateService {
         mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(createTaskRequest.getTaskPri()));
         mainTaskCreate.setMainTaskTypeCode(mainTaskType);
         mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskCreate.setStaticPodCode(createTaskRequest.getStaticPodCode());
+        mainTaskCreate.setStaticViaPaths(createTaskRequest.getStaticViaPaths());
         mainTaskMapper.insertSelective(mainTaskCreate);
 
-        //3.创建子任务
-        List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(mainTaskType);
-        TaskRel taskRel = taskRelList.get(0);
-        SubTask subTaskCreate = new SubTask();
-        String subTaskNum = CodeBuilder.codeBuilder("S");
-        subTaskCreate.setMainTaskNum(mainTaskNum);
-        subTaskCreate.setSubTaskNum(subTaskNum);
-        subTaskCreate.setSubTaskTyp(taskRel.getSubTaskTypeCode());
-        subTaskCreate.setCreateDate(new Date());
-        subTaskCreate.setMainTaskSeq(taskRel.getSubTaskSeq());
-        subTaskCreate.setMainTaskType(taskRel.getMainTaskTypeCode());
-        subTaskCreate.setThirdType(taskRel.getThirdType());
-        subTaskCreate.setSendStatus(SUB_NOT_ISSUED);
-        subTaskCreate.setTaskStatus(SUB_NOT_ISSUED);
-        subTaskCreate.setWorkerTaskCode(subTaskNum);
-        subTaskCreate.setEndBercode(createTaskRequest.getSupplyLoadWb() != null ? createTaskRequest.getSupplyLoadWb(): createTaskRequest.getSrcWbCode());
-        subTaskMapper.insertSelective(subTaskCreate);
-
-        //4.创建子任务前置后置条件
-        iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
+//        //3.创建子任务
+//        List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(mainTaskType);
+//        TaskRel taskRel = taskRelList.get(0);
+//        SubTask subTaskCreate = new SubTask();
+//        String subTaskNum = CodeBuilder.codeBuilder("S");
+//        subTaskCreate.setMainTaskNum(mainTaskNum);
+//        subTaskCreate.setSubTaskNum(subTaskNum);
+//        subTaskCreate.setSubTaskTyp(taskRel.getSubTaskTypeCode());
+//        subTaskCreate.setCreateDate(new Date());
+//        subTaskCreate.setMainTaskSeq(taskRel.getSubTaskSeq());
+//        subTaskCreate.setMainTaskType(taskRel.getMainTaskTypeCode());
+//        subTaskCreate.setThirdType(taskRel.getThirdType());
+//        subTaskCreate.setSendStatus(SUB_NOT_ISSUED);
+//        subTaskCreate.setTaskStatus(SUB_NOT_ISSUED);
+//        subTaskCreate.setWorkerTaskCode(subTaskNum);
+//        subTaskCreate.setEndBercode(createTaskRequest.getSupplyLoadWb() != null ? createTaskRequest.getSupplyLoadWb(): createTaskRequest.getSrcWbCode());
+//        subTaskMapper.insertSelective(subTaskCreate);
+//
+//        //4.创建子任务前置后置条件
+//        iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
 
         //5.创建子任务共享数据区域--任务上下文
         TaskContext taskContext = new TaskContext();
@@ -834,9 +840,9 @@ public class TaskCreateService implements ITaskCreateService {
         taskContextMapper.insertSelective(taskContext);
 
         //6.向消息队列发送消息
-        MainTaskType tmpMainTaskType = mainTaskTypeMapper.selectByMainTaskTypeCode(mainTaskType);
-        String message = tmpMainTaskType.getMainTaskTypeName() + "任务创建完成,主任务号:" + mainTaskNum;
-        RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
+//        MainTaskType tmpMainTaskType = mainTaskTypeMapper.selectByMainTaskTypeCode(mainTaskType);
+//        String message = tmpMainTaskType.getMainTaskTypeName() + "任务创建完成,主任务号:" + mainTaskNum;
+//        RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
 
         return new MesResult();
     }
@@ -857,6 +863,9 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException(createTaskRequest.getTaskCode(), "供料点数量不能为空");
         }
 
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getSupplyLoadWb()));
+        createTaskRequest.setStaticViaPaths(jsonString);
         //公用的任务创建流程
         rollerTaskCreate(createTaskRequest, mainTaskType);
         //生成context列的数据信息
@@ -892,6 +901,9 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException(createTaskRequest.getTaskCode(), "空框回收数量不能为空");
         }
 
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getSupplyLoadWb()));
+        createTaskRequest.setStaticViaPaths(jsonString);
         //公用的任务创建流程
         rollerTaskCreate(createTaskRequest, mainTaskType);
         //生成context列的数据信息

@@ -43,4 +43,12 @@ public class CreateTaskRequest {
      * 空框回收数量，选填项
      */
     private Integer emptyRecyleNum;
+    /**
+     * 静态站点集合
+     */
+    private String staticViaPaths;
+    /**
+     * 静态载具
+     */
+    private String staticPodCode;
 }
