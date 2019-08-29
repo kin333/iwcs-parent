@@ -487,7 +487,6 @@ public class SubTaskService {
         subTask.setSubTaskNum(subTaskNum);
         subTask.setMainTaskNum(mainTaskNum);
         subTask.setSubTaskTyp(taskRel.getSubTaskTypeCode());
-        subTask.setMainTaskSeq(taskRel.getSubTaskSeq());
         subTask.setMainTaskType(taskRel.getMainTaskTypeCode());
         subTask.setCreateDate(new Date());
         subTask.setThirdType(taskRel.getThirdType());
@@ -501,11 +500,13 @@ public class SubTaskService {
         subTask.setNeedTrigger(taskRel.getNeedTrigger());
         subTask.setNeedConfirm(taskRel.getNeedConfirm());
         subTask.setNeedInform(taskRel.getNeedInform());
-        subTask.setSubTaskSeq(taskRel.getSubTaskSeq());
         subTask.setNeedTrigger(taskRel.getNeedTrigger());
         subTask.setNeedInform(taskRel.getNeedInform());
         subTask.setNeedConfirm(taskRel.getNeedConfirm());
         subTask.setWorkerTaskCode(subTaskNum);
+        //添加子任务顺便
+        List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(mainTaskNum);
+        subTask.setSubTaskSeq(subTaskList.size() + 1);
         //添加任务起始点
         if (StringUtils.isNotBlank(taskRel.getStartPointAccess())) {
             IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
