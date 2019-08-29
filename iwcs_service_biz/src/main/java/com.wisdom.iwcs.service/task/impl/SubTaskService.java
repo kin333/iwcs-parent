@@ -69,6 +69,8 @@ public class SubTaskService {
     TaskRelMapper taskRelMapper;
     @Autowired
     BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    TaskCreateService taskCreateService;
 
     @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
@@ -553,5 +555,9 @@ public class SubTaskService {
         //向消息队列发送消息
         String message = templateCode + "任务创建完成,主任务号:" + mainTaskNum;
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
+
+
+        //创建子任务前置后置条件
+        taskCreateService.addSubTaskCondition(templateCode, subTaskNum);
     }
 }

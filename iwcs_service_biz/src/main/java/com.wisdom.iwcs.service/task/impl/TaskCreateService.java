@@ -766,6 +766,26 @@ public class TaskCreateService implements ITaskCreateService {
             subTaskConditionMapper.insertSelective(subTaskCondition);
         }
     }
+    /**
+     * 添加子任务条件
+     * @param
+     * @return
+     */
+    public void addSubTaskCondition(String templCode, String subTaskNum){
+        //通过主任务编号和子任务编号查询
+        List<TaskRelCondition> taskRelConditionList = taskRelConditionMapper.selectByTemplCode(templCode);
+        for (TaskRelCondition taskRelCondition: taskRelConditionList){
+            SubTaskCondition subTaskCondition = new SubTaskCondition();
+            subTaskCondition.setSubTaskNum(subTaskNum);
+            subTaskCondition.setSubscribeEvent(taskRelCondition.getSubscribeEvent());
+            subTaskCondition.setConditonTriger(taskRelCondition.getConditonTriger());
+            subTaskCondition.setConditonHandler(taskRelCondition.getConditonHandler());
+            subTaskCondition.setCreateDate(new Date());
+            subTaskConditionMapper.insertSelective(subTaskCondition);
+        }
+    }
+
+
 
     /**
      * 创建基础滚筒AGV移动任务

@@ -60,4 +60,8 @@
         and  sub_task_seq = #{subTaskSeq}
         LIMIT 1
     </select>
+    <select id="selectByTemplCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_task_rel_condition
+        where templ_code = #{templCode}
+    </select>
 </mapper>

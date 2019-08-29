@@ -38,4 +38,6 @@ public interface TaskRelConditionMapper extends MyMapperAndIds<TaskRelCondition>
      * @return
      */
     TaskRelCondition selectByMainTaskTypeAndPriority(@Param("mainTaskType") String mainTaskType,@Param("subTaskSeq") Integer subTaskSeq);
+
+    List<TaskRelCondition> selectByTemplCode(String templCode);
 }
