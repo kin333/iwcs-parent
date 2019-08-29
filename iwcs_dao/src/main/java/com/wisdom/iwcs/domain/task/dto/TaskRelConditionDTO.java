@@ -74,6 +74,20 @@ public class TaskRelConditionDTO {
     @Column(name = "sub_task_seq")
     private Integer subTaskSeq;
 
+    /**
+     * 条件表达式
+     */
+    @Column(name = "con_expression")
+    private Integer conExpression;
+
+    public Integer getConExpression() {
+        return conExpression;
+    }
+
+    public void setConExpression(Integer conExpression) {
+        this.conExpression = conExpression;
+    }
+
     public Integer getSubTaskSeq() {
         return subTaskSeq;
     }

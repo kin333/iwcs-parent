@@ -31,9 +31,9 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="201908261831" author="han">
+    <changeSet id="201908291521" author="han">
         <addColumn tableName="ts_task_rel_condition">
-            <column name="create_condition" type="VARCHAR(200)" remarks="创建任务的条件" defaultValue=""/>
+            <column name="con_expression" type="VARCHAR(200)" remarks="条件表达式" defaultValue=""/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

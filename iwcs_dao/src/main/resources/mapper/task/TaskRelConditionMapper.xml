@@ -17,13 +17,14 @@
         <result column="conditon_triger" jdbcType="VARCHAR" property="conditonTriger" />
         <result column="subscribe_event" jdbcType="VARCHAR" property="subscribeEvent" />
         <result column="sub_task_seq" jdbcType="INTEGER" property="subTaskSeq" />
+        <result column="con_expression" jdbcType="INTEGER" property="conExpression" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, templ_code, main_task_type_code, sub_task_type_code, conditon_handler, create_date,
-        point_access, date_chg, remark, conditon_triger, subscribe_event, sub_task_seq
+        point_access, date_chg, remark, conditon_triger, subscribe_event, sub_task_seq, con_expression
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from ts_task_rel_condition
