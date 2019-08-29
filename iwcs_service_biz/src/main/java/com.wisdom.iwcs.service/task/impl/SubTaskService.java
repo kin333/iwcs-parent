@@ -557,6 +557,7 @@ public class SubTaskService {
         subTask.setNeedInform(taskRel.getNeedInform());
         subTask.setNeedConfirm(taskRel.getNeedConfirm());
         subTask.setWorkerTaskCode(subTaskNum);
+        subTask.setTemplCode(templateCode);
         //添加子任务顺便
         List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(mainTaskNum);
         subTask.setSubTaskSeq(subTaskList.size() + 1);
