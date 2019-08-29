@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_HIK;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
+
 /**
  * iwcs的公共服务
  * @author han
@@ -56,7 +59,7 @@ public class IwcsPublicService {
      * 根据子任务单号获取最新子任务信息,并将任务消息体取出并完善,然后发送给第三方
      * @param subTaskNum
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void sendInfoBySubTaskNum(String subTaskNum) {
         logger.info("子任务{}开始下发process ", subTaskNum);
         // 1. 从数据库获取子任务单
@@ -76,12 +79,14 @@ public class IwcsPublicService {
         logger.debug("子任务{}开始完善任务消息体", subTaskNum);
         SubTaskTyp subTaskTyp = subTaskTypMapper.selectByTypeCode(subTask.getSubTaskTyp());
         String resultBody;
-        if (InterfaceLogConstants.SrcClientCode.SRC_HIK.equals(subTaskTyp.getWorkerType())) {
+        if (SRC_HIK.equals(subTaskTyp.getWorkerType())) {
             //如果执行者类型是海康,则调用海康的接口
             resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
             iCommonService.handleHikResponseAndThrowException(resultBody);
-        } if ("TEST".equals(subTaskTyp.getWorkerType())) {
-            logger.info("子任务{}多任务测试类型成功", subTaskNum);
+        } if (SRC_MES.equals(subTaskTyp.getWorkerType())) {
+            logger.info("MES发送任务:{}", jsonStr);
+//            resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
+//            iCommonService.handleMesResponse(resultBody);
         }
         SubTask tmpSubask = new SubTask();
         tmpSubask.setId(subTask.getId());

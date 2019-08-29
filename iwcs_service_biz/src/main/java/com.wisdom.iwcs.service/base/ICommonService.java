@@ -146,4 +146,10 @@ public interface ICommonService {
      * @return
      */
     boolean checkBerTask(String berCode);
+
+    /**
+     * 统一处理Mes请求
+     * @param mesResponse
+     */
+    void handleMesResponse(String mesResponse);
 }

@@ -9,6 +9,7 @@ import com.wisdom.iwcs.common.utils.podUtils.PodTaskLockEnum;
 import com.wisdom.iwcs.domain.base.*;
 import com.wisdom.iwcs.domain.base.dto.WbcodeSameTypeTaskDTO;
 import com.wisdom.iwcs.domain.task.WbAgvTask;
+import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.base.*;
 import com.wisdom.iwcs.mapper.stock.StockMapper;
 import com.wisdom.iwcs.mapper.task.WbAgvTaskMapper;
@@ -397,6 +398,24 @@ public class CommonService implements ICommonService {
             beNerTask = true;
         }
         return beNerTask;
+    }
+
+    /**
+     * 统一处理Mes请求
+     * @param mesResponse
+     */
+    @Override
+    public void handleMesResponse(String mesResponse) {
+        try {
+            JSONObject obj = new JSONObject(mesResponse);
+            if (!obj.getString("code").equals(MesResult.OK)) {
+                logger.error("错误报文:{}", mesResponse);
+                throw new BusinessException(obj.getString("message"));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
 
