@@ -307,7 +307,7 @@ public class BaseMapBerthService implements IBaseMapBerthService{
         String pointAlias = baseMapBerthDTOList.get(0).getPointAlias();
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(pointAlias);
         if (baseMapBerth != null) {
-            return 1;
+            return 500;
         }
         return baseMapBerthMapper.updateListByBerCode(baseMapBerthDTOList);
     }

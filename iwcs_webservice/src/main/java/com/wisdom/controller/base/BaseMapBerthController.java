@@ -127,7 +127,7 @@ public class BaseMapBerthController {
         if (changeRow <= 0) {
             return new Result(400, "此次修改没有更新任何数据");
         }
-        if (changeRow == 1) {
+        if (changeRow == 500) {
             return new Result(400, "该点位编号已经存在");
         }
         return new Result();
