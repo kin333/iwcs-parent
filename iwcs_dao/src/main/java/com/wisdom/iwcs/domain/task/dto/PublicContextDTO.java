@@ -38,7 +38,7 @@ public class PublicContextDTO {
      */
     private Integer emptyRecycleNum;
     /**
-     * 空框回收总数量1
+     * 空框回收数量1
      */
     private Integer emptyRecycleNumOne;
     /**

@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.conditions.rollerhandler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.hikSync.HikRollerData;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
@@ -12,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.naming.ldap.PagedResultsControl;
 
 /**
  * 第二个送慢料箱收空料箱任务前置条件
@@ -41,8 +44,11 @@ public class SecondReceiveAndSendHanlder implements IConditionHandler {
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
         hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
-        hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNumTwo().toString());
+        Preconditions.checkBusinessError(publicContextDTO.getEndSendNumTwo() == null, "数据异常: 下料数量缺失,子任务号:" + subTaskCondition.getSubTaskNum());
         hikRollerData.setSendFull(publicContextDTO.getEndSendNumTwo().toString());
+        if (publicContextDTO.getEmptyRecycleNumTwo() != null) {
+            hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNumTwo().toString());
+        }
         String jsonString = JSONObject.toJSONString(hikRollerData);
 
         //更新数据库

@@ -96,9 +96,6 @@ public class MesRequestService {
         if (StringUtils.isBlank(startSupllyAndRecyle.getTaskCode())) {
             throw new MesBusinessException(startSupllyAndRecyle.getTaskCode(), "任务号不能为空");
         }
-        if (StringUtils.isBlank(startSupllyAndRecyle.getEmptyRecyleWb()) && startSupllyAndRecyle.getEmptyRecyleNum() == null) {
-            return new MesResult();
-        }
 
         //校验送料点和送料数量
 
@@ -115,20 +112,31 @@ public class MesRequestService {
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(taskContext.getContext(), ContextDTO.class);
 
         //3.更新context的json字符串
-        if (StringUtils.isNotBlank(startSupllyAndRecyle.getEmptyRecyleWb())) {
-            contextDTO.setEmptyRecyleWb(startSupllyAndRecyle.getEmptyRecyleWb());
-        }
-        if (contextDTO.getEmptyRecyleNum() == null) {
-            contextDTO.setEmptyRecyleNum(startSupllyAndRecyle.getEmptyRecyleNum());
+        if (StringUtils.isBlank(startSupllyAndRecyle.getEmptyRecyleWb()) && startSupllyAndRecyle.getEmptyRecyleNum() == null) {
+            //如果没有传回收点
+            if (contextDTO.getEndBerCodeReady() == null) {
+                contextDTO.setEndBerCodeReady(true);
+            } else {
+                contextDTO.setEndBerCodeTwoReady(true);
+            }
         } else {
-            contextDTO.setEmptyRecyleNum(contextDTO.getEmptyRecyleNum() + startSupllyAndRecyle.getEmptyRecyleNum());
-        }
-        if (contextDTO.getEndBerCodeReady() == null) {
-            contextDTO.setEndBerCodeReady(true);
-            contextDTO.setEmptyRecyleNumOne(startSupllyAndRecyle.getEmptyRecyleNum());
-        } else {
-            contextDTO.setEndBerCodeTwoReady(true);
-            contextDTO.setEmptyRecyleNumTwo(startSupllyAndRecyle.getEmptyRecyleNum());
+            //如果有传回收点,更新回收点点位和数量
+            if (StringUtils.isNotBlank(startSupllyAndRecyle.getEmptyRecyleWb())) {
+                contextDTO.setEmptyRecyleWb(startSupllyAndRecyle.getEmptyRecyleWb());
+            }
+            if (contextDTO.getEmptyRecyleNum() == null) {
+                contextDTO.setEmptyRecyleNum(startSupllyAndRecyle.getEmptyRecyleNum());
+            } else {
+                contextDTO.setEmptyRecyleNum(contextDTO.getEmptyRecyleNum() + startSupllyAndRecyle.getEmptyRecyleNum());
+            }
+            //更新MES的滚筒状态
+            if (contextDTO.getEndBerCodeReady() == null) {
+                contextDTO.setEndBerCodeReady(true);
+                contextDTO.setEmptyRecyleNumOne(startSupllyAndRecyle.getEmptyRecyleNum());
+            } else {
+                contextDTO.setEndBerCodeTwoReady(true);
+                contextDTO.setEmptyRecyleNumTwo(startSupllyAndRecyle.getEmptyRecyleNum());
+            }
         }
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
