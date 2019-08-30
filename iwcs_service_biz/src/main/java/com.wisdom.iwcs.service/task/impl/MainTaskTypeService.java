@@ -10,6 +10,7 @@ import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.dto.MainTaskTypeAndAreaCode;
 import com.wisdom.iwcs.domain.task.MainTaskType;
+import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.dto.MainTaskTypeDTO;
 import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskTypeMapStruct;
@@ -240,4 +241,20 @@ public class MainTaskTypeService {
         List<MainTaskTypeAndAreaCode> mainTaskType = mainTaskTypeMapper.selectTaskTypeWithAreaCode(areaCode);
         return mainTaskType;
     }
+
+    /**
+     * 根据主任务code删除
+     */
+    public int deleteMainTaskType(TaskModal taskModal) {
+        int num = mainTaskTypeMapper.deleteMainTaskType(taskModal);
+        return num;
+    }
+
+
+    public MainTaskType selectMainTypeByMainCode(MainTaskType mainCode){
+
+        MainTaskType mainTaskTypeDTO = mainTaskTypeMapper.selectMainTypeByMainCode(mainCode);
+        return mainTaskTypeDTO;
+    }
+
 }

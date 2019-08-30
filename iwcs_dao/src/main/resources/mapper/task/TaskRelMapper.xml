@@ -76,4 +76,25 @@
     select <include refid="Base_Column_List" /> from ts_task_rel
     where templ_code = #{templateCode}
   </select>
+
+
+  <select id="selectPageByGroup" resultType="com.wisdom.iwcs.domain.task.TaskModal">
+    select m.main_task_type_code as mainTaskCode,sub.sub_task_typ_code as subTaskCode,
+     m.main_task_type_name as mainTaskName, sub.sub_task_typ_name as subTaskName
+     from ts_main_task_type as m left join ts_task_rel as t
+    on m.main_task_type_code = t.main_task_type_code left join ts_sub_task_typ as sub
+    on t.sub_task_type_code = sub.sub_task_typ_code
+  </select>
+
+  <select id="selectByMainCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel where main_task_type_code = #{mainCode}
+  </select>
+  <select id="selectBySubCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel where
+    sub_task_type_code = #{searchSubCode} and  main_task_type_code = #{searchMainCode}
+  </select>
+
+  <select id="selectDataByTemplCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel where templ_code = #{templCode}
+  </select>
 </mapper>

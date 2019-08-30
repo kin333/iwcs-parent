@@ -2,6 +2,7 @@ package com.wisdom.iwcs.mapper.task;
 
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
+import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import org.springframework.stereotype.Repository;
 
@@ -31,5 +32,14 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
      * @return
      */
     TaskRel selectByTemplCode(String templCode);
+
+
+    List<TaskRel> selectPageByGroup();
+
+    List<TaskRel> selectByMainCode(String mainCode);
+
+    List<TaskRel> selectBySubCode(TaskModal taskModal);
+
+    TaskRel selectDataByTemplCode(TaskRel templCode);
 
 }

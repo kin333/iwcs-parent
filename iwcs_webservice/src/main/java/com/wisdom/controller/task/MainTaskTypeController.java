@@ -7,6 +7,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.dto.MainTaskTypeAndAreaCode;
 import com.wisdom.iwcs.domain.task.MainTaskType;
+import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.dto.MainTaskTypeDTO;
 import com.wisdom.iwcs.mapstruct.task.MainTaskTypeMapStruct;
 import com.wisdom.iwcs.service.task.impl.MainTaskTypeService;
@@ -129,5 +130,24 @@ public class MainTaskTypeController {
     public Result selectAllTaskType(@PathVariable String areaCode) {
         List<MainTaskTypeAndAreaCode> mainTaskType = mainTaskTypeService.selectAllTaskType(areaCode);
         return new Result(mainTaskType);
+    }
+
+    /**
+     * 根据主任务code删除
+     */
+    @PostMapping("/deleteMainTaskType")
+    public Result deleteMainTaskType(@RequestBody TaskModal taskModal){
+        mainTaskTypeService.deleteMainTaskType(taskModal);
+        return new Result();
+    }
+
+    /**
+     * 根据主任务类型号查询
+     */
+    @PostMapping("/getMainTypeByMainCode")
+    public Result selectMainTypeByMainCode(@RequestBody MainTaskType mainCode) {
+
+        MainTaskType mainTaskTypeDTO = mainTaskTypeService.selectMainTypeByMainCode(mainCode);
+        return new Result(mainTaskTypeDTO);
     }
 }

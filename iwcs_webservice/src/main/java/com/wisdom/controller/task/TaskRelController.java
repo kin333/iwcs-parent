@@ -5,10 +5,13 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.TaskModal;
+import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
 import com.wisdom.iwcs.service.task.impl.TaskRelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -116,5 +119,20 @@ public class TaskRelController {
         TaskRelService.updateByPrimaryKey(TaskRelDTO);
 
         return new Result();
+    }
+
+    @PostMapping("/getPageByGroup")
+    public Result selectPageByGroup() {
+        return new Result(TaskRelService.selectByGroup());
+    }
+
+    @PostMapping("/getDataByTaskCode")
+    public Result selectDataByTaskCode(@RequestBody TaskModal data) {
+        return new Result(TaskRelService.selectDataByTaskCode(data));
+    }
+    @PostMapping("/getDataByTemplCode")
+    public Result selectDataByTemplCode(@RequestBody TaskRel templCode) {
+        TaskRel taskRel = TaskRelService.selectDataByTemplCode(templCode);
+        return new Result(taskRel);
     }
 }

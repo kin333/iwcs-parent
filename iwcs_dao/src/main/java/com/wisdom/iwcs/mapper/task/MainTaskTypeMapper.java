@@ -4,6 +4,7 @@ package com.wisdom.iwcs.mapper.task;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.base.dto.MainTaskTypeAndAreaCode;
 import com.wisdom.iwcs.domain.task.MainTaskType;
+import com.wisdom.iwcs.domain.task.TaskModal;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,5 +28,9 @@ public interface MainTaskTypeMapper extends MyMapperAndIds<MainTaskType> {
     List<MainTaskType> selectAllTaskType();
 
     List<MainTaskTypeAndAreaCode> selectTaskTypeWithAreaCode(String areaCode);
+
+    MainTaskType selectMainTypeByMainCode(MainTaskType mainCode);
+
+    int deleteMainTaskType(TaskModal taskModal);
 
 }

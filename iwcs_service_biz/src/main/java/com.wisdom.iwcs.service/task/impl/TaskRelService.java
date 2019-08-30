@@ -8,6 +8,7 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
@@ -197,6 +198,28 @@ public class TaskRelService {
 //        return TaskRelMapper.deleteLogicByIds(String.join(",", ids));
 //    }
 
+
+    public List<TaskRel> selectByGroup() {
+        return TaskRelMapper.selectPageByGroup();
+    }
+
+    public List<TaskRel> selectDataByTaskCode(TaskModal taskData) {
+        List<TaskRel> taskRelList = null;
+        if (taskData.getTaskType().equals("main")) {
+            taskRelList = TaskRelMapper.selectByMainCode(taskData.getSearchMainCode());
+        } else if (taskData.getTaskType().equals("sub")) {
+            taskRelList = TaskRelMapper.selectBySubCode(taskData);
+        }
+        return taskRelList;
+    }
+
+    /**
+     * 通过任务模板编号查询信息
+     */
+    public TaskRel selectDataByTemplCode(TaskRel templCode){
+        TaskRel taskRel = TaskRelMapper.selectDataByTemplCode(templCode);
+        return taskRel;
+    }
     /**
      * 根据条件分页查询
      *

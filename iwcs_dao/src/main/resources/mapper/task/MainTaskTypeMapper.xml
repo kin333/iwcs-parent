@@ -71,4 +71,12 @@
     where wrtt.area_code = #{areaCode}
   </select>
 
+  <select id="selectMainTypeByMainCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_main_task_type where main_task_type_code = #{mainTaskTypeCode}
+  </select>
+
+  <delete id="deleteMainTaskType">
+    delete from ts_main_task_type where main_task_type_code = #{searchMainCode}
+  </delete>
+
 </mapper>
