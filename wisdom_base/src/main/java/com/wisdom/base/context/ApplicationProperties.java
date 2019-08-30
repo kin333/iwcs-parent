@@ -805,6 +805,9 @@ public class ApplicationProperties {
 
     public static class MesParam{
         private String arriveDestWbWaitPortUrl;
+        private String arriveSrcWbUrl;
+        private String leaveSrcWbUrl;
+        private String arriveDestWbUrl;
 
         public String getArriveDestWbWaitPortUrl() {
             return arriveDestWbWaitPortUrl;
@@ -812,6 +815,30 @@ public class ApplicationProperties {
 
         public void setArriveDestWbWaitPortUrl(String arriveDestWbWaitPortUrl) {
             this.arriveDestWbWaitPortUrl = arriveDestWbWaitPortUrl;
+        }
+
+        public String getArriveSrcWbUrl() {
+            return arriveSrcWbUrl;
+        }
+
+        public void setArriveSrcWbUrl(String arriveSrcWbUrl) {
+            this.arriveSrcWbUrl = arriveSrcWbUrl;
+        }
+
+        public String getLeaveSrcWbUrl() {
+            return leaveSrcWbUrl;
+        }
+
+        public void setLeaveSrcWbUrl(String leaveSrcWbUrl) {
+            this.leaveSrcWbUrl = leaveSrcWbUrl;
+        }
+
+        public String getArriveDestWbUrl() {
+            return arriveDestWbUrl;
+        }
+
+        public void setArriveDestWbUrl(String arriveDestWbUrl) {
+            this.arriveDestWbUrl = arriveDestWbUrl;
         }
     }
 

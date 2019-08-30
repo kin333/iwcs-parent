@@ -50,6 +50,11 @@ public class InterfaceLogConstants {
         public final static String ROLLER_NOTIFY = "rollerNotify";
         public final static String CONWAIT_TO_DESTWB = "conWaitToDestWb";
 
+        public final static String ARRIVE_SRC_WB = "arriveSrcWb";
+        public final static String LEAVE_SRC_WB = "leaveSrcWb";
+        public final static String ARRIVE_DEST_WB_WAIT_PORT = "arriveDestWbWaitPort";
+        public final static String ARRIVE_DEST_WB = "arriveDestWb";
+
     }
 
     public static final class InterfaceName {
@@ -92,6 +97,11 @@ public class InterfaceLogConstants {
         public final static String START_RECYLE_DESC = "通知可出空料框";
         public final static String ROLLER_NOTIFY_DESC = "滚筒Agv回调";
         public final static String CONWAIT_TO_DESTWB_DESC = "通知Agv可从等待点前往终点";
+
+        public final static String ARRIVE_SRC_WB_DESC = "AGV到达起点";
+        public final static String LEAVE_SRC_WB_DESC = "AGV离开起点";
+        public final static String ARRIVE_DEST_WB_WAIT_PORT_DESC = "AGV到达（机械臂）等待点";
+        public final static String ARRIVE_DEST_WB_DESC = "AGV到达终点";
     }
 
     public static final class SrcClientCode {

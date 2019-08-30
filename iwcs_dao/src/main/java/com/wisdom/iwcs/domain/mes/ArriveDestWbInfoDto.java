@@ -4,21 +4,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Agv到达等待点
+ * AGV到达终点
  * @Author george
- * @Date 2019/8/27 11:10
+ * @Date 2019/8/30 10:35 
  */
 @Getter
 @Setter
-public class ArriveDestWbWaitPortInfoDTO {
+public class ArriveDestWbInfoDto {
+
     /**
      * 唯一任务号，必填项
      */
     private String taskCode;
     /**
-     * 等待点
+     * 搬运任务起点
      */
-    private String waitPort;
+    private String destWb;
     /**
      * AGV编号
      */

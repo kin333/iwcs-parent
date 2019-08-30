@@ -118,6 +118,11 @@ application:
     elevatorClientPort: 9234
     nettyServerHost: 192.168.102.95
     nettyServerPort: 9234
+  MesParam:
+    arriveSrcWbUrl: http://192.168.102.95/api/wisdom/agvHandlingTask/arriveSrcWb
+    leaveSrcWbUrl: http://192.168.102.95/api/wisdom/agvHandlingTask/leaveSrcWb
+    arriveDestWbWaitPortUrl: http://192.168.102.95/api/wisdom/agvHandlingTask/arriveDestWbWaitPort
+    arriveDestWbUrl: http://192.168.102.95/api/wisdom/agvHandlingTask/arriveDestWb
   hikParam:
     returnPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/returnPod
     getOutPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/getOutPod
