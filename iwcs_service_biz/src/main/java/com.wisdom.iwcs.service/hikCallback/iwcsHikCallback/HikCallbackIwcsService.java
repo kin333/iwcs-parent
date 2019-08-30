@@ -498,11 +498,6 @@ public class HikCallbackIwcsService {
      */
     private void moveStart(HikCallBackAgvMove hikCallBackAgvMove) {
         taskStartBaseChange(hikCallBackAgvMove);
-        //根据子任务号查询这个子任务是否是主任务的第一个子任务,如果是,则不需要通知MES
-        SubTask subTask = subTaskMapper.selectBySubTaskNum(hikCallBackAgvMove.getTaskCode());
-        if (!ONE.equals(subTask.getMainTaskSeq())) {
-            //通知MES系统
-        }
     }
     /**
      * 滚筒AGV到达终点
@@ -510,7 +505,7 @@ public class HikCallbackIwcsService {
     private void moveEnd(HikCallBackAgvMove hikCallBackAgvMove) {
         taskFinishedBaseChange(hikCallBackAgvMove);
 
-        //通知MES系统
+
     }
     /**
      * 滚筒AGV开始滚动
@@ -518,7 +513,7 @@ public class HikCallbackIwcsService {
     private void rollStart(HikCallBackAgvMove hikCallBackAgvMove) {
         taskStartBaseChange(hikCallBackAgvMove);
 
-        //通知MES系统
+
     }
     /**
      * 滚筒AGV结束滚动
@@ -526,6 +521,5 @@ public class HikCallbackIwcsService {
     private void rollEnd(HikCallBackAgvMove hikCallBackAgvMove) {
         taskFinishedBaseChange(hikCallBackAgvMove);
 
-        //通知MES系统
     }
 }
