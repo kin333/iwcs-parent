@@ -3,6 +3,7 @@ package com.wisdom.iwcs.mapper.task;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.system.ViewData;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import org.apache.ibatis.annotations.Param;
@@ -57,11 +58,12 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
 
     /**
      * 根据主任务单号设置优先级
-     * @param subTaskNum
+     * @param subTaskList
      * @param priority
      * @return
      */
-    int updatePriority(@Param("subTaskNum")String subTaskNum,@Param("priority") Integer priority);
+
+    int updatePriority(@Param("subTaskList") List<String> subTaskList,@Param("priority") Integer priority);
 
     /**
      * 根据任务编号更新机器人编号,和状态
@@ -102,4 +104,27 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
     List<SubTask> selectByTaskStatus(String taskStatus);
 
     int updateJsonData(@Param("subTaskNum") String subTaskNum,@Param("jsonData") String jsonData);
+
+
+
+    /**
+     * 查询未开始的子任务数量
+     */
+    Integer selectUnStartSubTaskCount();
+    /**
+     * 查询执行中的子任务数量
+     */
+    Integer selectStartSubTaskCount();
+    /**
+     * 查询已结束的子任务数量
+     */
+    Integer selectEndSubTaskCount();
+    /**
+     * 获取每个时间段子任务数量
+     */
+    List<ViewData> getViewData();
+    /**
+     * 查询时间段执行中的
+     */
+    List<ViewData> getSubStartViewData();
 }

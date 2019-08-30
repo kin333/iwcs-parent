@@ -370,4 +370,15 @@
             </set>
             where pod_code = #{podCode}
     </update>
+
+    <select id="selectPodCount" resultType="java.lang.Integer">
+        select count(*) from base_pod_detail where valid_flag = '1' or valid_flag = 1
+    </select>
+
+    <select id="selectUnLockPodCount" resultType="java.lang.Integer">
+        select count(*) from base_pod_detail where in_lock = '0' or in_lock = 0
+    </select>
+    <select id="selectUnStockCount" resultType="java.lang.Integer">
+        select count(*) from base_pod_detail where in_stock = '0' or in_stock = 0
+    </select>
 </mapper>

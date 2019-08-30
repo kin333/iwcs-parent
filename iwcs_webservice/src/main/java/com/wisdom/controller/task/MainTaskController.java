@@ -127,7 +127,8 @@ public class MainTaskController {
      * @return
      */
     @PostMapping("/setPriority")
-    public Result setPriority(@RequestBody MainTaskDTO mainTask) {
+    public Result setPriority(@RequestBody List<MainTaskDTO> mainTask) {
         return mainTaskService.setPriority(mainTask);
     }
+
 }

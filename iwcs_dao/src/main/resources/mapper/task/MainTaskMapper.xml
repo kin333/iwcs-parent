@@ -74,13 +74,12 @@
     </select>
 
 
-  <update id="updatePriority">
-    update ts_main_task
-    <set>
-      priority = #{priority}
-    </set>
-    where main_task_num = #{mainTaskNum}
-  </update>
+    <update id="updatePriority">
+        update ts_main_task set priority = #{priority} where main_task_num in
+        <foreach collection="mainTaskList" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
 
     <update id="updateMainTaskEleByMainTaskNum">
         update ts_main_task
@@ -91,4 +90,27 @@
         </set>
         where main_task_num = #{mainTaskNum}
     </update>
+
+  <select id="selectUnStartMainTaskCount" resultType="java.lang.Integer">
+        select count(*) from ts_main_task where task_status = '0' or task_status = 0
+  </select>
+  <select id="selectStartMainTaskCount" resultType="java.lang.Integer">
+        select count(*) from ts_main_task where task_status = '1' or task_status = 1
+   </select>
+  <select id="selectEndMainTaskCount" resultType="java.lang.Integer">
+        select count(*) from ts_main_task where task_status = '9' or task_status = 9
+  </select>
+  <select id="getMainViewData" resultType="com.wisdom.iwcs.domain.system.ViewData">
+      select COUNT(DISTINCT id) AS dateList,
+      FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s') as hours
+      FROM ts_main_task WHERE task_status = 9 or task_status = '9'
+      GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s');
+  </select>
+
+  <select id="getMainStartViewData" resultType="com.wisdom.iwcs.domain.system.ViewData">
+      select COUNT(DISTINCT id) AS dateList,
+      FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s') as hours
+      FROM ts_main_task WHERE task_status = 1 or task_status = '1'
+      GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s');
+  </select>
 </mapper>

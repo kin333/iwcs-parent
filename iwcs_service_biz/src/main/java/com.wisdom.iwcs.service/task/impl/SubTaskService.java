@@ -457,19 +457,22 @@ public class SubTaskService {
     }
 
 
-    public Result setPriority(SubTaskDTO subTaskDTO) {
-        String subTaskNum = subTaskDTO.getSubTaskNum();
-        Integer priority = subTaskDTO.getPriority();
+    public Result setPriority(List<SubTaskDTO> subTaskDTO) {
+        List<String> subTaskList = new ArrayList<>();
+        String subTaskNum = subTaskDTO.get(0).getSubTaskNum();
+        Integer priority = subTaskDTO.get(0).getPriority();
         if (StringUtils.isEmpty(subTaskNum) || priority == null || priority < 0) {
             return new Result(400, "缺少参数(子任务单号或优先级)");
         }
-        int changeRow = subTaskMapper.updatePriority(subTaskNum, priority);
+        subTaskDTO.forEach(item -> {
+            subTaskList.add(item.getSubTaskNum());
+        });
+        int changeRow = subTaskMapper.updatePriority(subTaskList, priority);
         if (changeRow <= 0) {
             return new Result(400, "优先级未修改");
         }
         return new Result();
     }
-
     /**
      * 根据任务号将任务状态置为已完成
      *

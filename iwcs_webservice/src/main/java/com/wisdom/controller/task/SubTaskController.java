@@ -124,8 +124,9 @@ public class SubTaskController {
      * @return
      */
     @PostMapping("/setPriority")
-    public Result setPriority(@RequestBody SubTaskDTO subTaskDTO) {
+    public Result setPriority(@RequestBody List<SubTaskDTO> subTaskDTO) {
         return subTaskService.setPriority(subTaskDTO);
     }
+
 
 }

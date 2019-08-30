@@ -199,4 +199,18 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      * 查询未初始化的货架
      */
     BasePodDetail selectUnInitPodByPodCode(String podCode);
+
+    /**
+     * 查询未初始化的货架数量
+     */
+    Integer selectPodCount();
+
+    /**
+     * 查询未锁定的货架
+     */
+    Integer selectUnLockPodCount();
+    /**
+     * 查询没有货的货架数
+     */
+    Integer selectUnStockCount();
 }

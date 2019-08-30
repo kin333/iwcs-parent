@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -300,13 +297,17 @@ public class MainTaskService implements IMainTaskService {
     }
 
 
-    public Result setPriority(MainTaskDTO mainTask) {
-        String mainTaskNum = mainTask.getMainTaskNum();
-        Integer priority = mainTask.getPriority();
+    public Result setPriority(List<MainTaskDTO> mainTask) {
+        List<String> mainTaskList = new ArrayList<>();
+        String mainTaskNum = mainTask.get(0).getMainTaskNum();
+        Integer priority = mainTask.get(0).getPriority();
+        mainTask.forEach(item -> {
+            mainTaskList.add(item.getMainTaskNum());
+        });
         if (StringUtils.isEmpty(mainTaskNum) || priority == null || priority < 0 ) {
             return new Result(400, "缺少参数(主任务单号或优先级)");
         }
-        int changeRow = mainTaskMapper.updatePriority(mainTaskNum, priority);
+        int changeRow = mainTaskMapper.updatePriority(mainTaskList,priority);
         if (changeRow <= 0) {
             return new Result(400, "优先级未修改");
         }

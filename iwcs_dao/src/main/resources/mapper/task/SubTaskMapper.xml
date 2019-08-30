@@ -238,11 +238,10 @@
 
 
   <update id="updatePriority">
-    update ts_sub_task
-    <set>
-      priority = #{priority}
-    </set>
-    where sub_task_num = #{subTaskNum}
+    update ts_sub_task set priority = #{priority} where sub_task_num in
+    <foreach collection="subTaskList" index="index" item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
   </update>
   <update id="updateRobotCodeByBerCode">
     update ts_sub_task
@@ -327,5 +326,27 @@
     </set>
     where sub_task_num = #{subTaskNum}
   </update>
+  <select id="selectUnStartSubTaskCount" resultType="java.lang.Integer">
+        select count(*) from ts_sub_task where task_status = '0' or task_status = 0
+  </select>
+  <select id="selectStartSubTaskCount" resultType="java.lang.Integer">
+        select count(*) from ts_sub_task where task_status = '1' or task_status = 1
+  </select>
+  <select id="selectEndSubTaskCount" resultType="java.lang.Integer">
+        select count(*) from ts_sub_task where task_status = '9' or task_status = 9
+  </select>
 
+  <select id="getViewData" resultType="com.wisdom.iwcs.domain.system.ViewData">
+      select COUNT(DISTINCT id) AS dateList,
+      FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s') as hours
+      FROM ts_sub_task WHERE task_status = 9 or task_status = '9'
+      GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s');
+  </select>
+
+  <select id="getSubStartViewData" resultType="com.wisdom.iwcs.domain.system.ViewData">
+      select COUNT(DISTINCT id) AS dateList,
+      FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s') as hours
+      FROM ts_sub_task WHERE task_status = 1 or task_status = '1'
+      GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s');
+  </select>
 </mapper>
