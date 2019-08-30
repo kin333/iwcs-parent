@@ -62,10 +62,11 @@ public class MainTaskWorker extends AbstractTaskWorker {
                 if (subTaskWorker != null) {
                     try {
                         synchronized (this) {
-                            logger.debug("主任务{}已有执行中的子任务{}，休眠等待", mainTask.getMainTaskNum(), subTaskWorker.getSubTask().getSubTaskNum());
+                            logger.debug("主任务{}已有执行中的子任务执行器{}，休眠等待", mainTask.getMainTaskNum(), subTaskWorker.getSubTask().getSubTaskNum());
                             this.wait(10000);
                         }
                     } catch (InterruptedException e) {
+                        logger.error("主任务{}执行器尝试随眠失败", mainTask.getMainTaskNum(), e);
                         e.printStackTrace();
                     }
                 } else {
@@ -87,7 +88,7 @@ public class MainTaskWorker extends AbstractTaskWorker {
                         SubTaskWorker subTaskWorker = new SubTaskWorker(null, this, currentPendingSubtask);
                         logger.info("子任务单{}启动子任务worker线程", currentPendingSubtask.getSubTaskNum());
                         Thread subTaskWorkerThread = new Thread(subTaskWorker);
-                        subTaskWorkerThread.setName("subtaskWorker-" + currentPendingSubtask.getSubTaskNum());
+                        subTaskWorkerThread.setName("subtaskWorker-" + currentPendingSubtask.getSubTaskNum() + "ThreadID-" + subTaskWorkerThread.getId());
                         subTaskWorkerThread.start();
 
                         //向消息队列发送消息
@@ -96,11 +97,8 @@ public class MainTaskWorker extends AbstractTaskWorker {
 
                         //将当前已启动的subtaskWork注入主任务对象
                         this.subTaskWorker = subTaskWorker;
-                        //TODO 注册子任务事件监听
-                        logger.debug("注册当前子任务监听事件");
                     }
                 }
-                //TODO 是否需要做线程相关处理、事件监听等。待定
             } catch (Exception e) {
                 logger.error("调度器出错，主任务{}执行出错", mainTask.getMainTaskNum());
                 logger.error("错误信息:" + e);

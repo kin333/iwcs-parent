@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.task.conditions.conditonHandler;
 
+import com.alibaba.fastjson.JSON;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.wisdom.iwcs.domain.task.TaskRelCondition;
 import com.wisdom.iwcs.domain.task.dto.BaseContextInfo;
@@ -27,6 +28,8 @@ public class RelConditionHandler implements IRelConditionHandler {
         HashMap<String, Object> env = new HashMap<>();
         env.put("bci", baseContextInfo);
         String createConditionExpress = taskRelCondition.getConExpression();
+        logger.info("创建条件表达式{}", createConditionExpress);
+        logger.info("本次计算时上下文参数{}", JSON.toJSONString(baseContextInfo));
         if (StringUtils.isBlank(createConditionExpress)) {
             return true;
         } else {
