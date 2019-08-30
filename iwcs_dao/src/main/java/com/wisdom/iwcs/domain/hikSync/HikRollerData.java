@@ -27,6 +27,11 @@ public class HikRollerData {
      */
     private String rcvFull;
 
+    /**
+     * 子任务号
+     */
+    private String taskCode;
+
     public HikRollerData() {
         this.sendNull = "";
         this.rcvNull = "";

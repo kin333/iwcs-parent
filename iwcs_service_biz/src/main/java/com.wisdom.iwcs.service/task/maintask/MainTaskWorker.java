@@ -101,7 +101,14 @@ public class MainTaskWorker extends AbstractTaskWorker {
                 }
             } catch (Exception e) {
                 logger.error("调度器出错，主任务{}执行出错", mainTask.getMainTaskNum());
-                logger.error("错误信息:" + e);
+                logger.error("错误信息:", e);
+                synchronized (this) {
+                    try {
+                        this.wait(60 * 1000);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
 
             }
         }

@@ -26,11 +26,11 @@ public class PublicContextDTO {
      */
     private String endBerCodeTwo;
     /**
-     * 接料点1接料数量
+     * 下料点1下料数量
      */
     private Integer endSendNum;
     /**
-     * 接料点2接料数量
+     * 下料点2下料数量
      */
     private Integer endSendNumTwo;
     /**

@@ -8,6 +8,7 @@ import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
 import com.wisdom.iwcs.service.task.impl.TaskContextService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,14 @@ public class ReceiveFullHandler implements IConditionHandler {
         //查找接料信息
         PublicContextDTO publicContextDTO = taskContextService.getPublicContext(subTaskCondition.getSubTaskNum());
 
+        if (StringUtils.isEmpty(publicContextDTO.getEndBerCode())) {
+            return false;
+        }
+
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
         hikRollerData.setRcvFull(publicContextDTO.getStartGetNum().toString());
+        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
         String jsonString = JSONObject.toJSONString(hikRollerData);
 
         //更新数据库

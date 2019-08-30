@@ -55,17 +55,27 @@ public class TaskContextUtils {
      * @return
      */
     public static <T> String objectToJson(T t) {
-        String jsonString = com.alibaba.fastjson.JSONObject.toJSONString(t);
 
+        JSONObject jsonObject = new JSONObject();
+        //获取所有的字段
         Field[] declaredFields = t.getClass().getDeclaredFields();
         for (Field declaredField : declaredFields) {
+            //获取标签
             ColumnName annotation = declaredField.getAnnotation(ColumnName.class);
-            if (!declaredField.getName().equals(annotation.value())) {
-                jsonString = jsonString.replace(declaredField.getName(), annotation.value());
+            //获取字段的get方法
+            String methodName = "get" + declaredField.getName().substring(0, 1).toUpperCase() + declaredField.getName().substring(1);
+            //向模板中加入子任务信息
+            try {
+                Method declaredMethod = t.getClass().getDeclaredMethod(methodName);
+                //获取字段值
+                Object invoke = declaredMethod.invoke(t);
+                jsonObject.accumulate(annotation.value(), invoke);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | JSONException e) {
+                e.printStackTrace();
             }
         }
 
-        return jsonString;
+        return jsonObject.toString();
     }
 
 }

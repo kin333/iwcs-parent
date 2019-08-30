@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -63,7 +64,7 @@ public class TemplateRelatedServer {
     /**
      * 表示主任务的上下文信息
      */
-    private final String CONTEXT = "context";
+    private final String CONTEXT = "Context";
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -126,6 +127,7 @@ public class TemplateRelatedServer {
                 throw new BusinessException("子任务" + subTaskNum + "发送消息体格式错误");
             }
             Object param = null;
+            Class paramType = null;
             //拼接get方法名
             String methodName = "get" + values[2].substring(0, 1).toUpperCase() + values[2].substring(1);
             try {
@@ -133,28 +135,44 @@ public class TemplateRelatedServer {
                     //向模板中加入子任务信息
                     Method declaredMethod = SubTask.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(subTask);
+                    Field declaredField = SubTask.class.getDeclaredField(values[2]);
+                    paramType = declaredField.getType();
                 } else if (MAIN_TASK.equals(values[1])) {
                     //向模板中加入主任务信息
                     Method declaredMethod = MainTask.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(mainTask);
+                    Field declaredField = MainTask.class.getDeclaredField(values[2]);
+                    paramType = declaredField.getType();
                 } else if (TEMP_RELATED_CONTEXT.equals(values[1])) {
                     //向模板中加入请求要求数据
                     Method declaredMethod = TempdateRelatedContext.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(tempdateRelatedContext);
+                    Field declaredField = TempdateRelatedContext.class.getDeclaredField(values[2]);
+                    paramType = declaredField.getType();
                 } else if (CONTEXT.equals(values[1])) {
                     //向模板中加入请求要求数据
                     Method declaredMethod = PublicContextDTO.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(publicContextDTO);
+                    Field declaredField = PublicContextDTO.class.getDeclaredField(values[2]);
+                    paramType = declaredField.getType();
                 } else {
                     throw new BusinessException("子任务" + subTaskNum + "的任务消息体错误: 无法找到" + values[1] + "的对应类");
                 }
                 if (param == null && NC.equals(values[0])) {
                     throw new BusinessException(values[2] + "是必填项,不能为null");
                 }
-            } catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException | NoSuchFieldException e) {
                 throw new BusinessException("子任务" + subTaskNum + "模板参数名与真实类字段没有对应");
             }
-            sendTemplate = replaceTemplateValue(sendTemplate, param);
+            if (param != null) {
+                sendTemplate = replaceTemplateValue(sendTemplate, param);
+            } else if (String.class.equals(paramType)) {
+                sendTemplate = replaceTemplateValue(sendTemplate, "");
+            } else if (Integer.class.equals(paramType)) {
+                sendTemplate = replaceTemplateValue(sendTemplate, 0);
+            } else {
+                sendTemplate = replaceTemplateValue(sendTemplate, "");
+            }
         }
         logger.info("子任务{}消息体已生成", subTaskNum);
 

@@ -8,6 +8,7 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
@@ -39,6 +40,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import sun.rmi.runtime.NewThreadAction;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -534,6 +536,7 @@ public class SubTaskService {
      */
     public SubTask autoCreateSubTask(String templateCode, String mainTaskNum) {
         TaskRel taskRel = taskRelMapper.selectByTemplCode(templateCode);
+        Preconditions.checkBusinessError(taskRel == null, "模板配置出错" + templateCode);
         SubTask subTask = new SubTask();
         //添加基础数据
         String subTaskNum = CodeBuilder.codeBuilder("S");
@@ -558,7 +561,7 @@ public class SubTaskService {
         subTask.setNeedConfirm(taskRel.getNeedConfirm());
         subTask.setWorkerTaskCode(subTaskNum);
         subTask.setTemplCode(templateCode);
-        //添加子任务顺便
+        //添加子任务顺序
         List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(mainTaskNum);
         subTask.setSubTaskSeq(subTaskList.size() + 1);
         //添加任务起始点
@@ -566,22 +569,27 @@ public class SubTaskService {
             IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
             String startPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum , taskRel.getStartPointAccessValue(), taskRel));
             subTask.setStartBercode(startPoint);
-            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(startPoint);
-            subTask.setMapCode(baseMapBerth.getMapCode());
-            subTask.setStartAlias(baseMapBerth.getPointAlias());
-            subTask.setStartX(baseMapBerth.getCoox().doubleValue());
-            subTask.setStartY(baseMapBerth.getCooy().doubleValue());
+            if (StringUtils.isNotEmpty(startPoint)) {
+                BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(startPoint);
+                subTask.setMapCode(baseMapBerth.getMapCode());
+                subTask.setStartAlias(baseMapBerth.getPointAlias());
+                subTask.setStartX(baseMapBerth.getCoox().doubleValue());
+                subTask.setStartY(baseMapBerth.getCooy().doubleValue());
+            }
         }
         //添加任务终点
         if (StringUtils.isNotBlank(taskRel.getEndPointAccess())) {
             IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getEndPointAccess());
             String endPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum, taskRel.getEndPointAccessValue(), taskRel));
             subTask.setEndBercode(endPoint);
-            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endPoint);
-            subTask.setEndMapCode(baseMapBerth.getMapCode());
-            subTask.setEndAlias(baseMapBerth.getPointAlias());
-            subTask.setEndX(baseMapBerth.getCoox().doubleValue());
-            subTask.setEndY(baseMapBerth.getCooy().doubleValue());
+            if (StringUtils.isNotEmpty(endPoint)) {
+                BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endPoint);
+                Preconditions.checkBusinessError(baseMapBerth == null, endPoint + "地图信息不存在");
+                subTask.setEndMapCode(baseMapBerth.getMapCode());
+                subTask.setEndAlias(baseMapBerth.getPointAlias());
+                subTask.setEndX(baseMapBerth.getCoox().doubleValue());
+                subTask.setEndY(baseMapBerth.getCooy().doubleValue());
+            }
         }
         //添加货架
         if (StringUtils.isNotBlank(taskRel.getPodAccess())) {

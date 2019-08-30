@@ -22,22 +22,22 @@ public class ContextDTO {
     @ColumnName("startGetNum")
     private Integer supplyLoadNum;
     /**
-     * 接料点1
+     * 下料点1
      */
     @ColumnName("endBerCode")
     private String supplyUnLoadWbFirst;
     /**
-     * 接料点2
+     * 下料点2
      */
     @ColumnName("endBerCodeTwo")
     private String supplyUnLoadWbSecond;
     /**
-     * 接料点1接料数量
+     * 下料点1接料数量
      */
     @ColumnName("endSendNum")
     private Integer supplyUnLoadWbFirstCount;
     /**
-     * 接料点2接料数量
+     * 下料点2接料数量
      */
     @ColumnName("endSendNumTwo")
     private Integer supplyUnLoadWbSecondCount;

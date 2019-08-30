@@ -298,7 +298,7 @@ public class SubTaskConditionService implements ISubTaskConditionsService {
     public boolean deleteListenner(String subTaskNum) {
         //查询子任务单对应的事件
         List<String> eventList = getEventList(subTaskNum);
-        logger.info("子任务单{}开始取消订阅事件", subTaskNum);
+//        logger.info("子任务单{}开始取消订阅事件", subTaskNum);
         if (eventList == null || eventList.size() <= 0) {
             return false;
         }
@@ -309,10 +309,10 @@ public class SubTaskConditionService implements ISubTaskConditionsService {
             }
             //发送结束标识
             RabbitMQPublicService.sendEndLogo(subConditionRouteKey.getRouteKey(), subTaskNum);
-            logger.info("子任务{}的订阅事件{}已发送结束标识,中文名:{},routeKey:{}", subTaskNum,subConditionRouteKey.getRouteKeyCode(),
-                    subConditionRouteKey.getRouteKeyName(), subConditionRouteKey.getRouteKey());
+//            logger.info("子任务{}的订阅事件{}已发送结束标识,中文名:{},routeKey:{}", subTaskNum,subConditionRouteKey.getRouteKeyCode(),
+//                    subConditionRouteKey.getRouteKeyName(), subConditionRouteKey.getRouteKey());
         }
-        logger.info("子任务单{}取消订阅事件完成", subTaskNum);
+//        logger.info("子任务单{}取消订阅事件完成", subTaskNum);
         return true;
     }
 

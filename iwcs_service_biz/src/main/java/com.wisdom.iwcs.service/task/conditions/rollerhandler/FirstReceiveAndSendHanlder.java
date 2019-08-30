@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.conditions.rollerhandler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.hikSync.HikRollerData;
 import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
@@ -8,6 +9,7 @@ import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
 import com.wisdom.iwcs.service.task.impl.TaskContextService;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +42,12 @@ public class FirstReceiveAndSendHanlder implements IConditionHandler {
 
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
+        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
+        Preconditions.checkBusinessError(publicContextDTO.getEndSendNum() == null, "第一下料点下料数量缺失");
         hikRollerData.setSendFull(publicContextDTO.getEndSendNum().toString());
-        hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNum().toString());
+        if (publicContextDTO.getEmptyRecycleNumOne() != null) {
+            hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNumOne().toString());
+        }
         String jsonString = JSONObject.toJSONString(hikRollerData);
 
         //更新数据库

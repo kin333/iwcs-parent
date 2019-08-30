@@ -90,6 +90,19 @@ public class TaskConstants {
          * 电梯子任务
          */
         public final static String ELE_TASK = "eleTask";
+        /**
+         * 滚筒任务,前往目标点
+         */
+        public final static String ROLLER_MOVE = "roller_move";
+        /**
+         * 转动滚筒
+         */
+        public final static String ROLLER_CONTINUE = "roller_continue";
+        /**
+         * 释放滚筒任务
+         */
+        public final static String ROLLER_END = "roller_end";
+
     }
 
     /**

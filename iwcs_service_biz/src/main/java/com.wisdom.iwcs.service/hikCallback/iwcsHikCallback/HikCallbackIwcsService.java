@@ -25,6 +25,8 @@ import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvA
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.eleFloor.SOURCE_FLOOR;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskSeq.ONE;
+import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_CONTINUE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.YES;
 
 /**
@@ -262,7 +265,7 @@ public class HikCallbackIwcsService {
     }
 
     private void publicCheckSubTask(HikCallBackAgvMove hikCallBackAgvMove, SubTask subTask) {
-        if (!hikCallBackAgvMove.getPodCode().equals(subTask.getPodCode())) {
+        if (hikCallBackAgvMove.getPodCode() != null && !hikCallBackAgvMove.getPodCode().equals(subTask.getPodCode())) {
             throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 货架号不匹配");
         }
         if (!hikCallBackAgvMove.getRobotCode().equals(subTask.getRobotCode())) {
@@ -475,6 +478,7 @@ public class HikCallbackIwcsService {
      * @return
      */
     public HikSyncResponse rollerNotify(HikCallBackAgvMove hikCallBackAgvMove) {
+        logger.info("接收到滚筒AGV回调,子任务{}", hikCallBackAgvMove.getTaskCode());
         switch (hikCallBackAgvMove.getMethod()) {
             //滚筒AGV开始移动
             case InspurBizConstants.HikCallbackMethod.MOVE_START:
@@ -490,6 +494,7 @@ public class HikCallbackIwcsService {
                 rollEnd(hikCallBackAgvMove); break;
             default: break;
         }
+        logger.info("滚筒AGV回调处理结束,子任务{}", hikCallBackAgvMove.getTaskCode());
         return new HikSyncResponse();
     }
 
@@ -511,15 +516,40 @@ public class HikCallbackIwcsService {
      * 滚筒AGV开始滚动
      */
     private void rollStart(HikCallBackAgvMove hikCallBackAgvMove) {
+        try {
+            JSONObject jsonObject = new JSONObject(hikCallBackAgvMove.getData());
+            String taskCode = jsonObject.getString("taskCode");
+            hikCallBackAgvMove.setTaskCode(taskCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         taskStartBaseChange(hikCallBackAgvMove);
-
-
     }
     /**
      * 滚筒AGV结束滚动
      */
     private void rollEnd(HikCallBackAgvMove hikCallBackAgvMove) {
-        taskFinishedBaseChange(hikCallBackAgvMove);
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+        subTask = subTaskList.get(subTaskList.size() - 1);
+        if (ROLLER_CONTINUE.equals(subTask.getSubTaskTyp())) {
+            hikCallBackAgvMove.setTaskCode(subTask.getSubTaskNum());
+            taskFinishedBaseChange(hikCallBackAgvMove);
+        }
 
+    }
+
+    /**
+     * 获取data中的子任务号
+     * @param hikCallBackAgvMove
+     */
+    private void getTaskCode(HikCallBackAgvMove hikCallBackAgvMove) {
+        try {
+            JSONObject jsonObject = new JSONObject(hikCallBackAgvMove.getData());
+            String taskCode = jsonObject.getString("taskCode");
+            hikCallBackAgvMove.setTaskCode(taskCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

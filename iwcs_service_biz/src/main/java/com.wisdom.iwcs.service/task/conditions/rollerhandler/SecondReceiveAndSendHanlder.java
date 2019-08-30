@@ -40,6 +40,7 @@ public class SecondReceiveAndSendHanlder implements IConditionHandler {
 
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
+        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
         hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNumTwo().toString());
         hikRollerData.setSendFull(publicContextDTO.getEndSendNumTwo().toString());
         String jsonString = JSONObject.toJSONString(hikRollerData);
