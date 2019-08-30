@@ -42,10 +42,15 @@ public class ContextDTO {
     @ColumnName("endSendNumTwo")
     private Integer supplyUnLoadWbSecondCount;
     /**
-     * 空框回收数量1
+     * 空框回收总数量
      */
     @ColumnName("emptyRecycleNum")
     private Integer emptyRecyleNum;
+    /**
+     * 空框回收总数量1
+     */
+    @ColumnName("emptyRecycleNumOne")
+    private Integer emptyRecyleNumOne;
     /**
      * 空框回收数量2
      */
@@ -67,12 +72,12 @@ public class ContextDTO {
      * 当前满料箱数量
      */
     @ColumnName("currentFullNum")
-    private String currentFullNum;
+    private Integer currentFullNum;
     /**
      * 当前空料箱数量
      */
     @ColumnName("currentEmptyNum")
-    private String currentEmptyNum;
+    private Integer currentEmptyNum;
 
     /**
      * 第一个目标点位是否就绪

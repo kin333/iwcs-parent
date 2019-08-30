@@ -60,6 +60,10 @@ public class TemplateRelatedServer {
      * 表示上下文的一些信息
      */
     private final String TEMP_RELATED_CONTEXT = "TempdateRelatedContext";
+    /**
+     * 表示主任务的上下文信息
+     */
+    private final String CONTEXT = "context";
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -94,8 +98,6 @@ public class TemplateRelatedServer {
         SubTaskTyp subTaskTyp = subTaskTypMapper.selectByTypeCode(subTask.getSubTaskTyp());
         checkNull(subTaskTyp, "子任务类型不存在:" + subTaskNum);
         String sendTemplate = subTaskTyp.getSubTaskMesSend();
-        //仅测试使用
-//        sendTemplate = "{"a": ${OP.SubTask.remark}, "b": ${NC.SubTask.appCode}}";
 
 
         //3.查询子任务对应的主任务信息
@@ -107,6 +109,12 @@ public class TemplateRelatedServer {
 
         //查询基础信息
         TempdateRelatedContext tempdateRelatedContext = getRequestInfo();
+
+        //查询任务上下文表的context信息
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+        checkNull(mainTask, "无对应的上下文信息:" + subTask.getMainTaskNum());
+        String context = taskContext.getContext();
+        PublicContextDTO publicContextDTO = JSONObject.parseObject(context, PublicContextDTO.class);
 
         //4.向发送消息体中插入消息
         while(true) {
@@ -133,6 +141,10 @@ public class TemplateRelatedServer {
                     //向模板中加入请求要求数据
                     Method declaredMethod = TempdateRelatedContext.class.getDeclaredMethod(methodName);
                     param = declaredMethod.invoke(tempdateRelatedContext);
+                } else if (CONTEXT.equals(values[1])) {
+                    //向模板中加入请求要求数据
+                    Method declaredMethod = PublicContextDTO.class.getDeclaredMethod(methodName);
+                    param = declaredMethod.invoke(publicContextDTO);
                 } else {
                     throw new BusinessException("子任务" + subTaskNum + "的任务消息体错误: 无法找到" + values[1] + "的对应类");
                 }

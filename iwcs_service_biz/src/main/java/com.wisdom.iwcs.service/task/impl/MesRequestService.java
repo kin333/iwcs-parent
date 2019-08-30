@@ -125,8 +125,10 @@ public class MesRequestService {
         }
         if (contextDTO.getEndBerCodeReady() == null) {
             contextDTO.setEndBerCodeReady(true);
+            contextDTO.setEmptyRecyleNumOne(startSupllyAndRecyle.getEmptyRecyleNum());
         } else {
             contextDTO.setEndBerCodeTwoReady(true);
+            contextDTO.setEmptyRecyleNumTwo(startSupllyAndRecyle.getEmptyRecyleNum());
         }
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));

@@ -34,9 +34,13 @@ public class PublicContextDTO {
      */
     private Integer endSendNumTwo;
     /**
-     * 空框回收数量1
+     * 空框回收总数量
      */
     private Integer emptyRecycleNum;
+    /**
+     * 空框回收总数量1
+     */
+    private Integer emptyRecycleNumOne;
     /**
      * 空框回收数量2
      */
@@ -54,11 +58,11 @@ public class PublicContextDTO {
     /**
      * 当前满料箱数量
      */
-    private String currentFullNum;
+    private Integer currentFullNum;
     /**
      * 当前空料箱数量
      */
-    private String currentEmptyNum;
+    private Integer currentEmptyNum;
     /**
      * 第一个目标点位是否就绪
      */
