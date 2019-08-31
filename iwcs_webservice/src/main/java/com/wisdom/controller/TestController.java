@@ -3,8 +3,10 @@ package com.wisdom.controller;
 import com.wisdom.iwcs.common.utils.JSONUtils;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
+import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.service.common.IPodCal;
 import com.wisdom.iwcs.service.message.NotificationService;
 import com.wisdom.iwcs.service.notice.NoticeUserMsgService;
@@ -29,6 +31,8 @@ public class TestController {
     NoticeUserMsgService noticeUserMsgService;
     @Autowired
     SubTaskService subTaskService;
+    @Autowired
+    BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     IPodCal podCal;
 
@@ -60,6 +64,21 @@ public class TestController {
     @GetMapping("/testAutoCreate/{mainTaskNum}")
     public Result testAutoCreate(@PathVariable String mainTaskNum) {
         subTaskService.autoCreateSubTask("testTemp", mainTaskNum);
+        return new Result();
+    }
+    @GetMapping("/addPointAlias")
+    public Result addPointAlias() {
+        Integer id = baseMapBerthMapper.selectFirst();
+        Integer i = 110;
+        while (id != null) {
+            BaseMapBerth baseMapBerth = new BaseMapBerth();
+            baseMapBerth.setId(id);
+            baseMapBerth.setPointAlias(i.toString());
+            baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
+            id = baseMapBerthMapper.selectFirst();
+            i++;
+        }
+
         return new Result();
     }
 

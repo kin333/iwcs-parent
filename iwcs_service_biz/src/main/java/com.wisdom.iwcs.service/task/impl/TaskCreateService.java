@@ -960,7 +960,7 @@ public class TaskCreateService implements ITaskCreateService {
         if (Strings.isNullOrEmpty(srcBerCode)) {
             throw new MesBusinessException(agvHandlingTaskCreateRequest.getSrcWb()+"该起始点在地图中未找到对应的地码！");
         }
-        String destBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getSrcWb());
+        String destBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getDestWb());
         if (Strings.isNullOrEmpty(destBerCode)) {
             throw new MesBusinessException(agvHandlingTaskCreateRequest.getSrcWb()+"该目标点在地图中未找到对应的地码！");
         }
@@ -981,7 +981,7 @@ public class TaskCreateService implements ITaskCreateService {
         mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
         mainTaskCreate.setStaticPodCode(agvHandlingTaskCreateRequest.getPodCode());
         //写入站点集合
-        String jsonString = JSONArray.toJSONString(Arrays.asList(srcBerCode,destBerCode));
+         String jsonString = JSONArray.toJSONString(Arrays.asList(srcBerCode,destBerCode));
         mainTaskCreate.setStaticViaPaths(jsonString);
         mainTaskMapper.insertSelective(mainTaskCreate);
 

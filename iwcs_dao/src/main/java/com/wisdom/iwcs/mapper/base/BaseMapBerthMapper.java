@@ -6,10 +6,12 @@ import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
+import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.List;
 import java.util.Map;
@@ -163,4 +165,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     List<BaseMapBerth> selectByBizTye(String bizType);
 
     List<BaseMapBerth> selectLikeBizTye(String bizType);
+
+    @Select("SELECT id FROM `iwcs_us_inspur`.`base_map_berth` WHERE `berth_type_value` = '1' and (point_alias IS NULL or point_alias = '') ORDER BY `cooy` DESC, `coox` LIMIT 1")
+    Integer selectFirst();
 }
