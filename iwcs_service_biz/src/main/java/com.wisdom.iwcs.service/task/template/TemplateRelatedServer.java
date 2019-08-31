@@ -97,7 +97,7 @@ public class TemplateRelatedServer {
             throw new BusinessException("数据异常: 子任务无任务类型");
         }
         SubTaskTyp subTaskTyp = subTaskTypMapper.selectByTypeCode(subTask.getSubTaskTyp());
-        checkNull(subTaskTyp, "子任务类型不存在:" + subTaskNum);
+        checkNull(subTaskTyp, subTaskNum + "子任务类型不存在:" + subTask.getSubTaskTyp());
         String sendTemplate = subTaskTyp.getSubTaskMesSend();
 
 

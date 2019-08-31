@@ -909,6 +909,10 @@ public class TaskCreateService implements ITaskCreateService {
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getTargetEmptyRecyleWb());
         Preconditions.checkMesBusinessError(baseMapBerth == null, createTaskRequest.getTargetEmptyRecyleWb() + "找不到别名对应的地图编码");
         createTaskRequest.setTargetEmptyRecyleWb(baseMapBerth.getBerCode());
+        //回收点
+        BaseMapBerth srcBaseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWbCode());
+        Preconditions.checkMesBusinessError(srcBaseMapBerth == null, createTaskRequest.getSrcWbCode() + "找不到别名对应的地图编码");
+        createTaskRequest.setSrcWbCode(srcBaseMapBerth.getBerCode());
 
         //写入站点集合
         String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getTargetEmptyRecyleWb()));
