@@ -126,6 +126,10 @@ public class SubTaskTypService {
 
     }
 
+    public SubTaskTyp selectSubTaskTypeByCode(SubTaskTyp subTaskTyp) {
+        SubTaskTyp subTaskType = SubTaskTypMapper.selectByTypeCode(subTaskTyp.getSubTaskTypCode());
+        return  subTaskType;
+    }
     /**
      * 根据主键选择性更新
      *

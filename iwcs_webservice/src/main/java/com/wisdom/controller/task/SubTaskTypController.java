@@ -5,6 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.SubTaskTyp;
 import com.wisdom.iwcs.domain.task.dto.SubTaskTypDTO;
 import com.wisdom.iwcs.mapstruct.task.SubTaskTypMapStruct;
 import com.wisdom.iwcs.service.task.impl.SubTaskTypService;
@@ -88,6 +89,14 @@ public class SubTaskTypController {
         return new Result(SubTaskTypDTO);
     }
 
+    /**
+     * 根据subTaskCode查询
+     */
+    @PostMapping("/getSubTaskTYpeByCode")
+    public Result selectSubTaskTypeByCode(@RequestBody SubTaskTyp subTaskTyp) {
+        SubTaskTyp subTaskType = SubTaskTypService.selectSubTaskTypeByCode(subTaskTyp);
+        return  new Result(subTaskType);
+    }
     /**
      * 分页查询记录
      *
