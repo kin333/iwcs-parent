@@ -39,9 +39,11 @@ public class AgvHandlingTaskController {
      */
     @PostMapping
     @SystemInterfaceLog(methodCode = CONWAIT_TO_DESTWB, methodName = CONWAIT_TO_DESTWB_DESC, methodThansfer = SRC_MES)
-    public MesResult createTask(@RequestBody MesBaseRequest<AgvHandlingTaskCreateRequest> mesBaseRequest) {
-        AgvHandlingTaskCreateRequest data = mesBaseRequest.getData();
-        iTaskCreateService.agvHandlingTaskCreate(data);
+    public MesResult createTask(@RequestBody MesBaseRequest<List<AgvHandlingTaskCreateRequest>> mesBaseRequest) {
+        List<AgvHandlingTaskCreateRequest> data = mesBaseRequest.getData();
+        for (AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest : data) {
+            iTaskCreateService.agvHandlingTaskCreate(agvHandlingTaskCreateRequest);
+        }
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
