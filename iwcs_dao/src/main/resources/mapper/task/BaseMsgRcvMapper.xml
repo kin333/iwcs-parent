@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.BaseMsgRcvMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.BaseMsgRcv">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="req_code" jdbcType="VARCHAR" property="reqCode" />
+    <result column="data" jdbcType="VARCHAR" property="data" />
+    <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="msg_from" jdbcType="VARCHAR" property="msgFrom" />
+    <result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+    <result column="rcpt_status" jdbcType="VARCHAR" property="rcptStatus" />
+    <result column="req_msg" jdbcType="VARCHAR" property="reqMsg" />
+    <result column="req_type" jdbcType="VARCHAR" property="reqType" />
+    <result column="task_code" jdbcType="VARCHAR" property="taskCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, req_code, data, last_modified_time, created_time, msg_from, msg_type, rcpt_status, 
+    req_msg, req_type, task_code
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from base_msg_rcv
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>
