@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="han" id="201907052018">
+        <createTable tableName="base_msg_send" remarks="消息发送表">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="req_code" remarks="请求编号" type="VARCHAR(64)"/>
+            <column name="last_modified_time" remarks="更新时间" type="datetime"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="method " remarks="方法名" type="VARCHAR(64)"/>
+            <column name="msg_from" remarks="消息来源ip" type="VARCHAR(32)"/>
+            <column name="msg_type" remarks="消息类型" type="VARCHAR(255)"/>
+            <column name="rcpt_status" remarks="当前任务单号" type="VARCHAR(2)"/>
+            <column name="req_msg" remarks="请求消息" type="VARCHAR(2000)"/>
+            <column name="req_type" remarks="请求类型" type="VARCHAR(64)"/>
+            <column name="send_msg" remarks="发送消息内容" type="text"/>
+            <column name="send_status" remarks="发送状态" type="VARCHAR(2)"/>
+            <column name="task_code" remarks="任务编号" type="VARCHAR(64)"/>
+            <column name="third_invoke_type" remarks="第三方引用类型" type="VARCHAR(255)"/>
+            <column name="url" remarks="发送消息地址" type="VARCHAR(2000)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
