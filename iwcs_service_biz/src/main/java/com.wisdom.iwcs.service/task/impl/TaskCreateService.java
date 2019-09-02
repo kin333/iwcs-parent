@@ -122,6 +122,8 @@ public class TaskCreateService implements ITaskCreateService {
     private ITaskCreateService iTaskCreateService;
     @Autowired
     private TaskContextMapper taskContextMapper;
+    @Autowired
+    MesRequestService mesRequestService;
 
     /**
      * 创建任务
@@ -797,9 +799,9 @@ public class TaskCreateService implements ITaskCreateService {
      * @param createTaskRequest
      * @return
      */
-    public MesResult rollerTaskCreate(CreateTaskRequest createTaskRequest, String mainTaskType) {
+    public MesResult rollerTaskCreate(CreateTaskRequest createTaskRequest, String mainTaskType, String reqCode) {
         //1.参数校验
-        publicCheckIsBlank(createTaskRequest);
+        publicCheckIsBlank(createTaskRequest, reqCode);
 
         //2.创建主任务
         String mainTaskNum = createTaskRequest.getTaskCode();
@@ -813,28 +815,7 @@ public class TaskCreateService implements ITaskCreateService {
         mainTaskCreate.setStaticViaPaths(createTaskRequest.getStaticViaPaths());
         mainTaskMapper.insertSelective(mainTaskCreate);
 
-//        //3.创建子任务
-//        List<TaskRel> taskRelList = taskRelMapper.selectByMainTaskType(mainTaskType);
-//        TaskRel taskRel = taskRelList.get(0);
-//        SubTask subTaskCreate = new SubTask();
-//        String subTaskNum = CodeBuilder.codeBuilder("S");
-//        subTaskCreate.setMainTaskNum(mainTaskNum);
-//        subTaskCreate.setSubTaskNum(subTaskNum);
-//        subTaskCreate.setSubTaskTyp(taskRel.getSubTaskTypeCode());
-//        subTaskCreate.setCreateDate(new Date());
-//        subTaskCreate.setMainTaskSeq(taskRel.getSubTaskSeq());
-//        subTaskCreate.setMainTaskType(taskRel.getMainTaskTypeCode());
-//        subTaskCreate.setThirdType(taskRel.getThirdType());
-//        subTaskCreate.setSendStatus(SUB_NOT_ISSUED);
-//        subTaskCreate.setTaskStatus(SUB_NOT_ISSUED);
-//        subTaskCreate.setWorkerTaskCode(subTaskNum);
-//        subTaskCreate.setEndBercode(createTaskRequest.getSupplyLoadWb() != null ? createTaskRequest.getSupplyLoadWb(): createTaskRequest.getSrcWbCode());
-//        subTaskMapper.insertSelective(subTaskCreate);
-//
-//        //4.创建子任务前置后置条件
-//        iTaskCreateService.subTaskConditionCommonAdd(taskRel.getMainTaskTypeCode(), taskRel.getSubTaskTypeCode(), subTaskNum);
-
-        //5.创建子任务共享数据区域--任务上下文
+        //3.创建子任务共享数据区域--任务上下文
         TaskContext taskContext = new TaskContext();
         taskContext.setMainTaskNum(mainTaskNum);
         taskContext.setCreateTime(new Date());
@@ -853,26 +834,25 @@ public class TaskCreateService implements ITaskCreateService {
      * @param createTaskRequest
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
-    public MesResult supplyAndRecycle(CreateTaskRequest createTaskRequest, String mainTaskType) {
-        logger.info("自动产线供料、回收任务{}开始创建任务", createTaskRequest.getTaskCode());
+    public MesResult supplyAndRecycle(CreateTaskRequest createTaskRequest, String mainTaskType, String reqCode) {
+        String taskCode = createTaskRequest.getTaskCode();
+        logger.info("自动产线供料、回收任务{}开始创建任务", taskCode);
         //参数校验
         if (StringUtils.isBlank(createTaskRequest.getSupplyLoadWb())) {
-            throw new MesBusinessException(createTaskRequest.getTaskCode(), "供料点点位不能为空");
+            throw new MesBusinessException(reqCode, "供料点点位不能为空");
         }
-        if (createTaskRequest.getSupplyLoadNum() == null) {
-            throw new MesBusinessException(createTaskRequest.getTaskCode(), "供料点数量不能为空");
-        }
+        mesRequestService.countCheck(createTaskRequest.getSupplyLoadNum(), reqCode);
         //将点位信息转换为berCode
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSupplyLoadWb());
-        Preconditions.checkMesBusinessError(baseMapBerth == null, createTaskRequest.getSupplyLoadWb() + "找不到别名对应的地图编码");
+        Preconditions.checkMesBusinessError(baseMapBerth == null,
+                createTaskRequest.getSupplyLoadWb() + "找不到别名对应的地图编码",reqCode);
         createTaskRequest.setSupplyLoadWb(baseMapBerth.getBerCode());
 
         //写入站点集合
         String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getSupplyLoadWb()));
         createTaskRequest.setStaticViaPaths(jsonString);
         //公用的任务创建流程
-        rollerTaskCreate(createTaskRequest, mainTaskType);
+        rollerTaskCreate(createTaskRequest, mainTaskType, reqCode);
         //生成context列的数据信息
         ContextDTO contextDTO = new ContextDTO();
         contextDTO.setSupplyLoadWb(createTaskRequest.getSupplyLoadWb());
@@ -880,11 +860,11 @@ public class TaskCreateService implements ITaskCreateService {
         String contextJson = TaskContextUtils.objectToJson(contextDTO);
         //更新task_context表
         TaskContext taskContext = new TaskContext();
-        taskContext.setMainTaskNum(createTaskRequest.getTaskCode());
+        taskContext.setMainTaskNum(taskCode);
         taskContext.setContext(contextJson);
         taskContextMapper.updateByMainTaskNum(taskContext);
 
-        logger.info("自动产线供料、回收任务{}创建任务结束", createTaskRequest.getTaskCode());
+        logger.info("自动产线供料、回收任务{}创建任务结束", taskCode);
         return new MesResult();
     }
     /**
@@ -892,46 +872,51 @@ public class TaskCreateService implements ITaskCreateService {
      * @param createTaskRequest
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
-    public MesResult emptyRecyleTask(CreateTaskRequest createTaskRequest, String mainTaskType) {
-        logger.info("自动产线回收任务{}开始创建任务", createTaskRequest.getTaskCode());
+    public MesResult emptyRecyleTask(CreateTaskRequest createTaskRequest, String mainTaskType, String reqCode) {
+        String taskCode = createTaskRequest.getTaskCode();
+        String srcWbCode = createTaskRequest.getSrcWbCode();
+        String targetEmptyRecyleWb = createTaskRequest.getTargetEmptyRecyleWb();
+        logger.info("自动产线回收任务{}开始创建任务", taskCode);
+
         //参数校验
-        if (StringUtils.isBlank(createTaskRequest.getSrcWbCode())) {
-            throw new MesBusinessException(createTaskRequest.getTaskCode(), "空料箱回收上箱点编码不能为空");
+        if (StringUtils.isBlank(srcWbCode)) {
+            throw new MesBusinessException(reqCode, "空料箱回收上箱点编码不能为空");
         }
-        if (StringUtils.isBlank(createTaskRequest.getTargetEmptyRecyleWb())) {
-            throw new MesBusinessException(createTaskRequest.getTaskCode(), "空框回收下箱点不能为空");
+        if (StringUtils.isBlank(targetEmptyRecyleWb)) {
+            throw new MesBusinessException(reqCode, "空框回收下箱点不能为空");
         }
-        if (createTaskRequest.getEmptyRecyleNum() == null) {
-            throw new MesBusinessException(createTaskRequest.getTaskCode(), "空框回收数量不能为空");
-        }
+        mesRequestService.countCheck(createTaskRequest.getEmptyRecyleNum(), reqCode);
+
         //将点位信息转换为berCode
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getTargetEmptyRecyleWb());
-        Preconditions.checkMesBusinessError(baseMapBerth == null, createTaskRequest.getTargetEmptyRecyleWb() + "找不到别名对应的地图编码");
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(targetEmptyRecyleWb);
+        Preconditions.checkMesBusinessError(baseMapBerth == null, targetEmptyRecyleWb + "找不到别名对应的地图编码", reqCode);
         createTaskRequest.setTargetEmptyRecyleWb(baseMapBerth.getBerCode());
         //回收点
-        BaseMapBerth srcBaseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWbCode());
-        Preconditions.checkMesBusinessError(srcBaseMapBerth == null, createTaskRequest.getSrcWbCode() + "找不到别名对应的地图编码");
+        BaseMapBerth srcBaseMapBerth = baseMapBerthMapper.selectByPointAlias(srcWbCode);
+        Preconditions.checkMesBusinessError(srcBaseMapBerth == null, srcWbCode + "找不到别名对应的地图编码", reqCode);
         createTaskRequest.setSrcWbCode(srcBaseMapBerth.getBerCode());
 
         //写入站点集合
-        String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getTargetEmptyRecyleWb()));
+        String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getSrcWbCode(),
+                                                                 createTaskRequest.getTargetEmptyRecyleWb()));
         createTaskRequest.setStaticViaPaths(jsonString);
         //公用的任务创建流程
-        rollerTaskCreate(createTaskRequest, mainTaskType);
+        rollerTaskCreate(createTaskRequest, mainTaskType, reqCode);
+
         //生成context列的数据信息
         ContextDTO contextDTO = new ContextDTO();
         contextDTO.setSrcWbCode(createTaskRequest.getSrcWbCode());
         contextDTO.setEmptyRecyleWb(createTaskRequest.getTargetEmptyRecyleWb());
         contextDTO.setEmptyRecyleNum(createTaskRequest.getEmptyRecyleNum());
         String contextJson = TaskContextUtils.objectToJson(contextDTO);
+
         //更新task_context表
         TaskContext taskContext = new TaskContext();
-        taskContext.setMainTaskNum(createTaskRequest.getTaskCode());
+        taskContext.setMainTaskNum(taskCode);
         taskContext.setContext(contextJson);
         taskContextMapper.updateByMainTaskNum(taskContext);
 
-        logger.info("自动产线回收任务{}创建任务结束", createTaskRequest.getTaskCode());
+        logger.info("自动产线回收任务{}创建任务结束", taskCode);
         return new MesResult();
     }
 
@@ -939,12 +924,18 @@ public class TaskCreateService implements ITaskCreateService {
      * Mes公用的参数检查
      * @param createTaskRequest
      */
-    public void publicCheckIsBlank(CreateTaskRequest createTaskRequest) {
-        if (Strings.isNullOrEmpty(createTaskRequest.getTaskCode())) {
-            throw new MesBusinessException(createTaskRequest.getTaskCode(), "任务号不能为空");
+    public void publicCheckIsBlank(CreateTaskRequest createTaskRequest, String reqCode) {
+        String taskCode = createTaskRequest.getTaskCode();
+        if (Strings.isNullOrEmpty(taskCode)) {
+            throw new MesBusinessException(reqCode, "任务号不能为空");
         }
         if (Strings.isNullOrEmpty(createTaskRequest.getTaskPri())) {
-            throw new MesBusinessException(createTaskRequest.getTaskCode(), "优先级不能为空");
+            throw new MesBusinessException(reqCode, "优先级不能为空");
+        }
+        //校验主任号是否已存在
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(taskCode);
+        if(mainTask != null) {
+            throw new MesBusinessException(reqCode, taskCode + "任务号已存在");
         }
     }
 
@@ -955,14 +946,14 @@ public class TaskCreateService implements ITaskCreateService {
      * @return MesResult
      */
     @Override
-    public MesResult agvHandlingTaskCreate(AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest){
+    public MesResult agvHandlingTaskCreate(AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest, String reqCode){
         String srcBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getSrcWb());
         if (Strings.isNullOrEmpty(srcBerCode)) {
-            throw new MesBusinessException(agvHandlingTaskCreateRequest.getSrcWb()+"该起始点在地图中未找到对应的地码！");
+            throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getSrcWb()+"该起始点在地图中未找到对应的地码！");
         }
         String destBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getDestWb());
         if (Strings.isNullOrEmpty(destBerCode)) {
-            throw new MesBusinessException(agvHandlingTaskCreateRequest.getSrcWb()+"该目标点在地图中未找到对应的地码！");
+            throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getSrcWb()+"该目标点在地图中未找到对应的地码！");
         }
 
         //查询终点是否有关联点

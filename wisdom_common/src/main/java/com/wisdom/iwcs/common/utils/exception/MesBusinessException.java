@@ -17,10 +17,10 @@ public class MesBusinessException extends RuntimeException {
         super(errorMsg);
         this.msg = errorMsg;
     }
-    public MesBusinessException(String taskCode, String errorMsg) {
+    public MesBusinessException(String reqCode, String errorMsg) {
         super(errorMsg);
         this.msg = errorMsg;
-        this.taskCode = taskCode;
+        this.reqCode = reqCode;
     }
 
     @Override

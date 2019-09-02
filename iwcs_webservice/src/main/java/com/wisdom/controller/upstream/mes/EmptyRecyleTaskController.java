@@ -1,6 +1,7 @@
 package com.wisdom.controller.upstream.mes;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
+import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
@@ -8,6 +9,7 @@ import com.wisdom.iwcs.domain.upstream.mes.StartRecyle;
 import com.wisdom.iwcs.service.task.impl.MesRequestService;
 import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,7 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.EMPTYRECYC
  * @author han
  */
 @RestController
+@Transactional(rollbackFor = Exception.class)
 @RequestMapping("/api/wisdom/autoProductionLine/emptyRecyleTask")
 public class EmptyRecyleTaskController {
     @Autowired
@@ -43,7 +46,7 @@ public class EmptyRecyleTaskController {
     public MesResult taskCreate(@RequestBody MesBaseRequest<List<CreateTaskRequest>> mesBaseRequest) {
         List<CreateTaskRequest> data = mesBaseRequest.getData();
         for (CreateTaskRequest createTaskRequest : data) {
-            taskCreateService.emptyRecyleTask(createTaskRequest, EMPTYRECYCLETASK);
+            taskCreateService.emptyRecyleTask(createTaskRequest, EMPTYRECYCLETASK, mesBaseRequest.getReqcode());
         }
         return new MesResult(mesBaseRequest.getReqcode());
     }
@@ -55,7 +58,7 @@ public class EmptyRecyleTaskController {
     @SystemInterfaceLog(methodCode = START_RECYLE, methodName = START_RECYLE_DESC, methodThansfer = SRC_MES)
     public MesResult startRecyle(@RequestBody MesBaseRequest<StartRecyle> mesBaseRequest) {
         StartRecyle data = mesBaseRequest.getData();
-        mesRequestService.startRecyle(data);
+        mesRequestService.startRecyle(data, mesBaseRequest.getReqcode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 }

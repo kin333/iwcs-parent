@@ -1,10 +1,12 @@
 package com.wisdom.controller.upstream.mes;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
+import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.domain.upstream.mes.*;
 import com.wisdom.iwcs.service.task.impl.MesRequestService;
 import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.SUPPLYANDR
  * @author han
  */
 @RestController
+@Transactional(rollbackFor = Exception.class)
 @RequestMapping("/api/wisdom/autoProductionLine/supplyAndRecyle")
 public class LineFeedAndRecycleController {
     @Autowired
@@ -37,7 +40,7 @@ public class LineFeedAndRecycleController {
     public MesResult taskCreate(@RequestBody MesBaseRequest<List<CreateTaskRequest>> mesBaseRequest) {
         List<CreateTaskRequest> data = mesBaseRequest.getData();
         for (CreateTaskRequest createTaskRequest : data) {
-            taskCreateService.supplyAndRecycle(createTaskRequest, SUPPLYANDRECYCLE);
+            taskCreateService.supplyAndRecycle(createTaskRequest, SUPPLYANDRECYCLE, mesBaseRequest.getReqcode());
         }
         return new MesResult(mesBaseRequest.getReqcode());
     }
@@ -49,7 +52,7 @@ public class LineFeedAndRecycleController {
     @SystemInterfaceLog(methodCode = SUPPLY_UNLOADWB_NOTIFY, methodName = SUPPLY_UNLOADWB_NOTIFY_DESC, methodThansfer = SRC_MES)
     public MesResult supplyUnloadWbNotify(@RequestBody MesBaseRequest<SupplyInfoNotify> mesBaseRequest) {
         SupplyInfoNotify data = mesBaseRequest.getData();
-        mesRequestService.supplyUnloadWbNotify(data);
+        mesRequestService.supplyUnloadWbNotify(data, mesBaseRequest.getReqcode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
@@ -60,7 +63,7 @@ public class LineFeedAndRecycleController {
     @SystemInterfaceLog(methodCode = START_SUPLLY_AND_RECYLE, methodName = START_SUPLLY_AND_RECYLE_DESC, methodThansfer = SRC_MES)
     public MesResult startSupllyAndRecyle(@RequestBody MesBaseRequest<StartSupllyAndRecyle> mesBaseRequest) {
         StartSupllyAndRecyle data = mesBaseRequest.getData();
-        mesRequestService.startSupllyAndRecyle(data);
+        mesRequestService.startSupllyAndRecyle(data, mesBaseRequest.getReqcode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
@@ -71,7 +74,7 @@ public class LineFeedAndRecycleController {
     @SystemInterfaceLog(methodCode = START_RECYLE, methodName = START_RECYLE_DESC, methodThansfer = SRC_MES)
     public MesResult startRecyle(@RequestBody MesBaseRequest<StartRecyle> mesBaseRequest) {
         StartRecyle data = mesBaseRequest.getData();
-        mesRequestService.startRecyle(data);
+        mesRequestService.startRecyle(data, mesBaseRequest.getReqcode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 }

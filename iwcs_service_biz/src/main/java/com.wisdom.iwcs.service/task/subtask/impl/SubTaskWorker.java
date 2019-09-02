@@ -90,7 +90,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
                 synchronized (waitLock){
                     System.out.println("sub task is going to wait " + waitLock);
                     if (! postRunnable()) {
-                        logger.info("子任务{}后置条件检查未符合,30s后重试", subTask.getSubTaskNum());
+                        logger.info("子任务{}后置条件检查未符合,5s后重试", subTask.getSubTaskNum());
                         waitLock.wait(5 * 1000);
                     } else{
                         //通知主任务的时机，待定......

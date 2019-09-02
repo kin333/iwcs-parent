@@ -37,9 +37,9 @@ public final class Preconditions {
         }
     }
 
-    public static void checkMesBusinessError(boolean error, String errorMsg) {
+    public static void checkMesBusinessError(boolean error, String errorMsg, String reqCode) {
         if (error) {
-            throw new MesBusinessException(errorMsg);
+            throw new MesBusinessException(reqCode, errorMsg);
         }
     }
 }

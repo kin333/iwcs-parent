@@ -2,7 +2,12 @@ package com.wisdom.config;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.domain.log.InterfaceLog;
+import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.log.InterfaceLogMapper;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,6 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -79,6 +85,13 @@ public class AspectInterfaceLogConfiguration {
         interfaceLog.setSevThreadName(Thread.currentThread().getName());
         interfaceLog.setReqIp(request.getRemoteAddr());
         interfaceLog.setReqCode(requestUniqueCode);
+
+        //检查reqCode是否重复
+        MesResult mesResult = thirdPartyReqCode(pjp, interfaceLog);
+        if (MesResult.NG.equals(mesResult.getCode())) {
+            return mesResult;
+        }
+
         Object ob = new Object();
         try {
             // ob 为方法的返回值
@@ -102,5 +115,32 @@ public class AspectInterfaceLogConfiguration {
             throw e;
         }
         return ob;
+    }
+
+    /**
+     * 使用第三方的reqCode
+     * 如果第三方传入reqCode,则使用第三方的reqCode
+     * @param pjp
+     * @param interfaceLog
+     * @return
+     */
+    private MesResult thirdPartyReqCode(ProceedingJoinPoint pjp, InterfaceLog interfaceLog) {
+        JSONArray jsonArray = JSONArray.fromObject(pjp.getArgs());
+        if (jsonArray.size() > 0) {
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                String reqcode = jsonObject.getString("reqcode");
+                if (StringUtils.isNotEmpty(reqcode)) {
+                    int count = interfaceLogMapper.selectCountByReqCode(reqcode);
+                    if (count > 0) {
+                        return new MesResult(MesResult.NG, "请求编码已存在", reqcode);
+                    }
+                    interfaceLog.setReqCode(reqcode);
+                }
+            } catch (JSONException e) {
+                //使用自动生成的reqCode
+            }
+        }
+        return new MesResult();
     }
 }

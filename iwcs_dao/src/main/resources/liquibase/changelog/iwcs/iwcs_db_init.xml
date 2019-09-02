@@ -1017,4 +1017,10 @@
         <addDefaultValue tableName="base_map_berth" columnName="in_lock" defaultValueNumeric="0"/>
     </changeSet>
 
+    <changeSet id="201908311722" author="han">
+        <createIndex tableName="interface_log" indexName="idx_req_code">
+            <column name="req_code"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

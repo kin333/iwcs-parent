@@ -2,6 +2,7 @@ package com.wisdom.iwcs.mapper.log;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.log.InterfaceLog;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +21,7 @@ public interface InterfaceLogMapper extends MyMapperAndIds<InterfaceLog> {
      * @return list
      */
     List<InterfaceLog> selectPage(Map map);
+
+    @Select("select count(*) from interface_log where req_code = #{reqcode}")
+    int selectCountByReqCode(String reqcode);
 }

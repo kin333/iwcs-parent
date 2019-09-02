@@ -48,11 +48,7 @@ public class ApplicationControllerAdvice {
         MesResult response = new MesResult();
         response.setCode(NG);
         response.setMessage(re.getMsg());
-        if (StringUtils.isNotBlank(re.getReqCode())) {
-            response.setReqCode(re.getReqCode());
-        } else {
-            //数据库查询出reqCode
-        }
+        response.setReqCode(re.getReqCode());
         if (logger.isInfoEnabled()) {
             logger.info("请求返回结果为【{}】", JSONObject.toJSONString(response));
         }
