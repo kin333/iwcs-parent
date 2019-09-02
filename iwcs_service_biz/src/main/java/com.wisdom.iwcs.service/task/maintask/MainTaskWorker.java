@@ -38,6 +38,9 @@ public class MainTaskWorker extends AbstractTaskWorker {
 //        SubTask currentPendingSubtask = getCurrentPendingSubtask();
         subTaskWorker = null;
         logger.info("主任务执行器{}接收到子任务执行器的完成信号", mainTaskNum, subTask.getSubTaskNum());
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
