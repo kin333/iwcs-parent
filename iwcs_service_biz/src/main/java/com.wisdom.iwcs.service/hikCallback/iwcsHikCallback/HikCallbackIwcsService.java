@@ -23,6 +23,8 @@ import com.wisdom.iwcs.domain.task.BaseMsgSend;
 import com.wisdom.iwcs.domain.task.EleControlTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
+import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
+import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
@@ -34,6 +36,7 @@ import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
+import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
 import javafx.application.Application;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,6 +94,8 @@ public class HikCallbackIwcsService {
     private BaseMsgSendMapper baseMsgSendMapper;
     @Autowired
     private ApplicationProperties applicationProperties;
+    @Autowired
+    private TemplateRelatedServer templateRelatedServer;
 
     public HikSyncResponse taskNotify(HikCallBackAgvMove hikCallBackAgvMove) {
         switch (hikCallBackAgvMove.getMethod()) {
@@ -605,7 +610,7 @@ public class HikCallbackIwcsService {
             arriveSrcWbInfoDto.setTaskCode(subTask.getMainTaskNum());
             arriveSrcWbInfoDto.setSrcWb(baseMapBerth.getPointAlias());
             arriveSrcWbInfoDto.setArriveTime(new Date());
-            String msg= JSON.toJSONString(arriveSrcWbInfoDto);
+            Object msg = arriveSrcWbInfoDto;
             sendMsgNotifyMES(msg,"arriveSrcWb", hikCallBackAgvMove.getTaskCode());
         }
 
@@ -626,7 +631,7 @@ public class HikCallbackIwcsService {
             leaveSrcWbInfoDto.setSrcWb(baseMapBerth.getPointAlias());
             leaveSrcWbInfoDto.setTaskCode(subTask.getMainTaskNum());
             leaveSrcWbInfoDto.setLeaveTime(new Date());
-            String msg= JSON.toJSONString(leaveSrcWbInfoDto);
+            Object msg = leaveSrcWbInfoDto;
             sendMsgNotifyMES(msg, "leaveSrcWb", hikCallBackAgvMove.getTaskCode());
         }
 
@@ -644,7 +649,7 @@ public class HikCallbackIwcsService {
         if (subTask != null) {
             //校验是否时机械臂等待点，
             List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getWbCode());
-            String msg = "{}";
+            Object msg = new Object();
             String method = "";
             if (point.size() > 0){
                 //发送消息
@@ -653,7 +658,7 @@ public class HikCallbackIwcsService {
                 arriveDestWbWaitPortInfoDTO.setTaskCode(subTask.getMainTaskNum());
                 arriveDestWbWaitPortInfoDTO.setWaitPort(baseMapBerth.getPointAlias());
                 arriveDestWbWaitPortInfoDTO.setArriveTime(new Date());
-                msg = JSON.toJSONString(arriveDestWbWaitPortInfoDTO);
+                msg = arriveDestWbWaitPortInfoDTO;
                 method = "arriveDestWbWaitPort";
             }else{
                 ArriveDestWbInfoDto arriveDestWbInfoDto = new ArriveDestWbInfoDto();
@@ -661,27 +666,33 @@ public class HikCallbackIwcsService {
                 arriveDestWbInfoDto.setTaskCode(subTask.getMainTaskNum());
                 arriveDestWbInfoDto.setDestWb(baseMapBerth.getPointAlias());
                 arriveDestWbInfoDto.setArriveTime(new Date());
-                msg = JSON.toJSONString(arriveDestWbInfoDto);
+                msg = arriveDestWbInfoDto;
                 method = "arriveDestWb";
             }
             sendMsgNotifyMES(msg, method, hikCallBackAgvMove.getTaskCode());
         }
         updateMapInfoAndPod(hikCallBackAgvMove,subTask);
     }
+
     /**
      * 通知MES 发送消息统一接口
      */
-    public void sendMsgNotifyMES(String msg, String method, String taskCode){
+    public void sendMsgNotifyMES(Object msg, String method, String taskCode){
         String url = applicationProperties.getMesParam().getAgvHandlingTaskUrl();
+
+        MesBaseRequest mesBaseRequest = new MesBaseRequest();
+        mesBaseRequest.setReqcode(templateRelatedServer.getRequestInfo().getReqCode());
+        mesBaseRequest.setData(msg);
+
         BaseMsgSend baseMsgSend = new BaseMsgSend();
         baseMsgSend.setCreatedTime(new Date());
         baseMsgSend.setMethod(method);
         baseMsgSend.setMsgFrom("192.168.102.96");
         baseMsgSend.setMsgType(SRC_MES);
-        baseMsgSend.setReqMsg(msg);
+        baseMsgSend.setReqMsg(JSON.toJSONString(mesBaseRequest));
         baseMsgSend.setRcptStatus("0");
         baseMsgSend.setSendStatus("0");
-        baseMsgSend.setSendMsg(msg);
+        baseMsgSend.setSendMsg(JSON.toJSONString(mesBaseRequest));
         baseMsgSend.setTaskCode(taskCode);
         baseMsgSend.setUrl(url+"/");
         baseMsgSendMapper.insertSelective(baseMsgSend);
