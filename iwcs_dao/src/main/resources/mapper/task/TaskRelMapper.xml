@@ -97,4 +97,11 @@
   <select id="selectDataByTemplCode" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_task_rel where templ_code = #{templCode}
   </select>
+
+  <select id="selectSubCodeByTemplCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel where templ_code in
+    <foreach collection="templCodeList" index="index" item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

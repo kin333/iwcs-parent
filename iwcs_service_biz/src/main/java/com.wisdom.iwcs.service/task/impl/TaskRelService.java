@@ -3,12 +3,14 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.greenpineyu.fel.function.operator.Sub;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
+import com.wisdom.iwcs.domain.task.TaskBifurcate;
 import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
@@ -16,6 +18,7 @@ import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,18 +222,39 @@ public class TaskRelService {
         return taskRelList;
     }
 
-    public List<SubTaskTyp> selectSubTaskByMainCode(TaskRel taskRel) {
+    public List<TaskBifurcate> selectSubTaskByMainCode(TaskRel taskRel) {
 
-        List<String> subTaskCode = new ArrayList<String>();
+        Map<String,Object> map = new HashMap<>();
+        List<TaskBifurcate> taskBifurcateList = new ArrayList<>();
+        TaskRel subTaskCodeList = null;
+        // 根据主任务code查对应subTaskCode
         List<TaskRel> taskRelList = TaskRelMapper.selectByMainCode(taskRel.getMainTaskTypeCode());
+        // 判断是否有子任务
         if (taskRelList.size() == 0) {
             return null;
         }
+        // 获取子任务code和overflow
         for (TaskRel item : taskRelList) {
-            subTaskCode.add(item.getSubTaskTypeCode());
+            TaskBifurcate taskBifurcate = new TaskBifurcate();
+            List<SubTaskTyp> subTaskTypListChild = new ArrayList<>();
+            SubTaskTyp subTaskTypList = SubTaskTypMapper.selectByTypeCode(item.getSubTaskTypeCode());
+            // 分叉查询
+            if (!StringUtils.isEmpty(item.getOutflow())) {
+                String[] outflow = item.getOutflow().split(";");
+                for (String i : outflow) {
+                    subTaskCodeList = TaskRelMapper.selectByTemplCode(i);
+                    SubTaskTyp subTaskTyp = SubTaskTypMapper.selectByTypeCode(subTaskCodeList.getSubTaskTypeCode());
+                    subTaskTypListChild.add(subTaskTyp);
+                }
+            }
+            taskBifurcate.setOverFlow(item.getOutflow());
+            taskBifurcate.setSubTaskCode(subTaskTypList.getSubTaskTypCode());
+            taskBifurcate.setSubTaskName(subTaskTypList.getSubTaskTypName());
+            taskBifurcate.setTemplCode(item.getTemplCode());
+            taskBifurcate.setSubTaskType(subTaskTypListChild);
+            taskBifurcateList.add(taskBifurcate);
         }
-        List<SubTaskTyp> subTaskTypList = SubTaskTypMapper.selectByMainCode(subTaskCode);
-        return subTaskTypList;
+        return taskBifurcateList;
     }
 
     /**

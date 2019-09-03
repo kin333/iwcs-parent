@@ -1,13 +1,12 @@
 package com.wisdom.controller.task;
 
 import java.util.List;
+import java.util.Map;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.domain.task.SubTaskTyp;
-import com.wisdom.iwcs.domain.task.TaskModal;
-import com.wisdom.iwcs.domain.task.TaskRel;
+import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
 import com.wisdom.iwcs.service.task.impl.TaskRelService;
@@ -139,7 +138,7 @@ public class TaskRelController {
     @PostMapping("/getSubTaskByMainCode")
     public Result selectSubTaskByMainCode(@RequestBody TaskRel taskRel){
 
-        List<SubTaskTyp> subTaskTyp = TaskRelService.selectSubTaskByMainCode(taskRel);
+        List<TaskBifurcate> subTaskTyp = TaskRelService.selectSubTaskByMainCode(taskRel);
         return new Result(subTaskTyp);
     }
 }

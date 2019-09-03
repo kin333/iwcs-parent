@@ -4,6 +4,7 @@ package com.wisdom.iwcs.mapper.task;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.TaskRel;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
      */
     TaskRel selectByTemplCode(String templCode);
 
+    List<TaskRel> selectSubCodeByTemplCode(@Param("templCodeList") List<String> templCodeList);
 
     List<TaskRel> selectPageByGroup();
 
