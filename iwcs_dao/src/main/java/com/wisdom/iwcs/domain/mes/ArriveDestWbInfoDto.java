@@ -3,6 +3,8 @@ package com.wisdom.iwcs.domain.mes;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  * AGV到达终点
  * @Author george
@@ -27,5 +29,5 @@ public class ArriveDestWbInfoDto {
     /**
      * 到达时间
      */
-    private String arriveTime;
+    private Date arriveTime;
 }

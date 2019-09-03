@@ -48,6 +48,7 @@ public class InterfaceLogConstants {
         public final static String START_SUPLLY_AND_RECYLE = "startSupllyAndRecyle";
         public final static String START_RECYLE = "startRecyle";
         public final static String ROLLER_NOTIFY = "rollerNotify";
+        public final static String CARRY_NOTIFY = "carryNotify";
         public final static String CONWAIT_TO_DESTWB = "conWaitToDestWb";
 
         public final static String ARRIVE_SRC_WB = "arriveSrcWb";
@@ -96,6 +97,7 @@ public class InterfaceLogConstants {
         public final static String START_SUPLLY_AND_RECYLE_DESC = "接料点通知供料及回收空框信息";
         public final static String START_RECYLE_DESC = "通知可出空料框";
         public final static String ROLLER_NOTIFY_DESC = "滚筒Agv回调";
+        public final static String CARRY_NOTIFY_DESC = "点到点搬运Agv回调";
         public final static String CONWAIT_TO_DESTWB_DESC = "通知Agv可从等待点前往终点";
 
         public final static String ARRIVE_SRC_WB_DESC = "AGV到达起点";

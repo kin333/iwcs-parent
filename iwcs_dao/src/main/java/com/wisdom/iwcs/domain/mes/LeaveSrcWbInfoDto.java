@@ -3,6 +3,8 @@ package com.wisdom.iwcs.domain.mes;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  * AGV离开起点
  * @Author george
@@ -26,5 +28,5 @@ public class LeaveSrcWbInfoDto {
     /**
      * 到达时间
      */
-    private String leaveTime;
+    private Date leaveTime;
 }

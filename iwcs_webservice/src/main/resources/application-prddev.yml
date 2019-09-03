@@ -123,6 +123,7 @@ application:
     leaveSrcWbUrl: http://192.168.102.95/api/wisdom/agvHandlingTask/leaveSrcWb
     arriveDestWbWaitPortUrl: http://192.168.102.95/api/wisdom/agvHandlingTask/arriveDestWbWaitPort
     arriveDestWbUrl: http://192.168.102.95/api/wisdom/agvHandlingTask/arriveDestWb
+    agvHandlingTaskUrl: http://192.168.102.95/api/wisdom/agvHandlingTask
   hikParam:
     returnPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/returnPod
     getOutPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/getOutPod

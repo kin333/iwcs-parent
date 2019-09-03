@@ -1,5 +1,7 @@
 package com.wisdom.iwcs.service.hikCallback.iwcsHikCallback;
 
+import com.alibaba.fastjson.JSON;
+import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.TaskConstants;
@@ -13,6 +15,11 @@ import com.wisdom.iwcs.domain.hikSync.HikReachCheckArea;
 import com.wisdom.iwcs.domain.hikSync.HikSyncResponse;
 import com.wisdom.iwcs.domain.log.ResPosEvt;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
+import com.wisdom.iwcs.domain.mes.ArriveDestWbInfoDto;
+import com.wisdom.iwcs.domain.mes.ArriveDestWbWaitPortInfoDTO;
+import com.wisdom.iwcs.domain.mes.ArriveSrcWbInfoDto;
+import com.wisdom.iwcs.domain.mes.LeaveSrcWbInfoDto;
+import com.wisdom.iwcs.domain.task.BaseMsgSend;
 import com.wisdom.iwcs.domain.task.EleControlTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
@@ -20,11 +27,14 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.task.BaseConnectionPointMapper;
+import com.wisdom.iwcs.mapper.task.BaseMsgSendMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
+import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
+import javafx.application.Application;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,6 +57,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeT
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.eleFloor.SOURCE_FLOOR;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskSeq.ONE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_CONTINUE;
@@ -76,6 +87,10 @@ public class HikCallbackIwcsService {
     BaseConnectionPointMapper baseConnectionPointMapper;
     @Autowired
     private LineNotifyService lineNotifyService;
+    @Autowired
+    private BaseMsgSendMapper baseMsgSendMapper;
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     public HikSyncResponse taskNotify(HikCallBackAgvMove hikCallBackAgvMove) {
         switch (hikCallBackAgvMove.getMethod()) {
@@ -386,12 +401,6 @@ public class HikCallbackIwcsService {
 //        String message = "子任务回调:子任务已结束";
 //        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
 
-        //校验是否时机械臂等待点，是，通知MES AGV到达等待点
-        List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getWbCode());
-        if (point.size() > 0){
-            //调用子任务
-        }
-
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getMapDataCode());
         //发送释放储位消息
         ResPosEvt resPosEvt = new ResPosEvt();
@@ -551,5 +560,165 @@ public class HikCallbackIwcsService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 美国浪潮点到点回调
+     * @param hikCallBackAgvMove
+     * @return
+     */
+    public HikSyncResponse carryNotify(HikCallBackAgvMove hikCallBackAgvMove) {
+        switch (hikCallBackAgvMove.getMethod()) {
+            //任务开始
+            case InspurBizConstants.HikCallbackMethod.TASK_START:
+                arriveStartPoint(hikCallBackAgvMove);
+                break;
+            //走出储位
+            case InspurBizConstants.HikCallbackMethod.TASK_LEAVE_POINT:
+                leaveStartPoint(hikCallBackAgvMove);
+                break;
+            //任务结束、到达等待点
+            case InspurBizConstants.HikCallbackMethod.TASK_FINISHED:
+                arriveEndPoint(hikCallBackAgvMove);
+                break;
+            default:
+                break;
+        }
+        HikSyncResponse hikSyncResponse = new HikSyncResponse();
+        hikSyncResponse.setReqCode(hikCallBackAgvMove.getReqCode());
+        return hikSyncResponse;
+    }
+
+    /**
+     * 小车到达起始点
+     */
+    public void arriveStartPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+        if (baseMapBerth == null) {
+            throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+        }
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
+        if (subTask != null) {
+            ArriveSrcWbInfoDto arriveSrcWbInfoDto = new ArriveSrcWbInfoDto();
+            arriveSrcWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
+            arriveSrcWbInfoDto.setTaskCode(subTask.getMainTaskNum());
+            arriveSrcWbInfoDto.setSrcWb(baseMapBerth.getPointAlias());
+            arriveSrcWbInfoDto.setArriveTime(new Date());
+            String msg= JSON.toJSONString(arriveSrcWbInfoDto);
+            sendMsgNotifyMES(msg,"arriveSrcWb", hikCallBackAgvMove.getTaskCode());
+        }
+
+        updateMapInfoAndPod(hikCallBackAgvMove,subTask);
+    }
+    /**
+     * 小车离开储位
+     */
+    public void leaveStartPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+        if (baseMapBerth == null) {
+            throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+        }
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        if (subTask != null) {
+            LeaveSrcWbInfoDto leaveSrcWbInfoDto = new LeaveSrcWbInfoDto();
+            leaveSrcWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
+            leaveSrcWbInfoDto.setSrcWb(baseMapBerth.getPointAlias());
+            leaveSrcWbInfoDto.setTaskCode(subTask.getMainTaskNum());
+            leaveSrcWbInfoDto.setLeaveTime(new Date());
+            String msg= JSON.toJSONString(leaveSrcWbInfoDto);
+            sendMsgNotifyMES(msg, "leaveSrcWb", hikCallBackAgvMove.getTaskCode());
+        }
+
+        updateMapInfoAndPod(hikCallBackAgvMove,subTask);
+    }
+    /**
+     * 小车到达终点或机械臂关联点
+     */
+    public void arriveEndPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+        if (baseMapBerth == null) {
+            throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+        }
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        if (subTask != null) {
+            //校验是否时机械臂等待点，
+            List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getWbCode());
+            String msg = "{}";
+            String method = "";
+            if (point.size() > 0){
+                //发送消息
+                ArriveDestWbWaitPortInfoDTO arriveDestWbWaitPortInfoDTO = new ArriveDestWbWaitPortInfoDTO();
+                arriveDestWbWaitPortInfoDTO.setAgvCode(hikCallBackAgvMove.getRobotCode());
+                arriveDestWbWaitPortInfoDTO.setTaskCode(subTask.getMainTaskNum());
+                arriveDestWbWaitPortInfoDTO.setWaitPort(baseMapBerth.getPointAlias());
+                arriveDestWbWaitPortInfoDTO.setArriveTime(new Date());
+                msg = JSON.toJSONString(arriveDestWbWaitPortInfoDTO);
+                method = "arriveDestWbWaitPort";
+            }else{
+                ArriveDestWbInfoDto arriveDestWbInfoDto = new ArriveDestWbInfoDto();
+                arriveDestWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
+                arriveDestWbInfoDto.setTaskCode(subTask.getMainTaskNum());
+                arriveDestWbInfoDto.setDestWb(baseMapBerth.getPointAlias());
+                arriveDestWbInfoDto.setArriveTime(new Date());
+                msg = JSON.toJSONString(arriveDestWbInfoDto);
+                method = "arriveDestWb";
+            }
+            sendMsgNotifyMES(msg, method, hikCallBackAgvMove.getTaskCode());
+        }
+        updateMapInfoAndPod(hikCallBackAgvMove,subTask);
+    }
+    /**
+     * 通知MES 发送消息统一接口
+     */
+    public void sendMsgNotifyMES(String msg, String method, String taskCode){
+        String url = applicationProperties.getMesParam().getAgvHandlingTaskUrl();
+        BaseMsgSend baseMsgSend = new BaseMsgSend();
+        baseMsgSend.setCreatedTime(new Date());
+        baseMsgSend.setMethod(method);
+        baseMsgSend.setMsgFrom("192.168.102.96");
+        baseMsgSend.setMsgType(SRC_MES);
+        baseMsgSend.setReqMsg(msg);
+        baseMsgSend.setRcptStatus("0");
+        baseMsgSend.setSendStatus("0");
+        baseMsgSend.setSendMsg(msg);
+        baseMsgSend.setTaskCode(taskCode);
+        baseMsgSend.setUrl(url+"/");
+        baseMsgSendMapper.insertSelective(baseMsgSend);
+    }
+
+    /**
+     * 统一更新货架和地码信息
+     */
+    public void updateMapInfoAndPod(HikCallBackAgvMove hikCallBackAgvMove, SubTask subTask){
+        //1. 更新地码信息
+        updateMapInfo(hikCallBackAgvMove, subTask);
+
+        //2.更新货架信息
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(hikCallBackAgvMove.getPodCode());
+        if (basePodDetail == null) {
+            throw new BusinessException(hikCallBackAgvMove.getPodCode() + "货架号无对应货架信息");
+        }
+        if (subTask != null && !subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
+            logger.error("货架锁定源与子任务号不匹配,子任务号:{}  地码编号:{}  锁定源:{} 锁定标识:{}", subTask.getSubTaskNum(),
+                    hikCallBackAgvMove.getMapDataCode(), basePodDetail.getLockSource(), basePodDetail.getInLock());
+            throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
+                    + " 货架编号:" + hikCallBackAgvMove.getPodCode());
+        }
+        BasePodDetail tmpBasePodDetail = new BasePodDetail();
+        tmpBasePodDetail.setId(basePodDetail.getId());
+        tmpBasePodDetail.setCoox(hikCallBackAgvMove.getCooX());
+        tmpBasePodDetail.setCooy(hikCallBackAgvMove.getCooY());
+        tmpBasePodDetail.setBerCode(hikCallBackAgvMove.getMapDataCode());
+        tmpBasePodDetail.setMapCode(hikCallBackAgvMove.getMapCode());
+        tmpBasePodDetail.setLastModifiedTime(new Date());
+        //更新货架信息表
+        int changeRows = basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
+        if (changeRows <= 0) {
+            logger.error("子任务{}在更新货架的地码编号{}时失败", hikCallBackAgvMove.getTaskCode(),
+                    hikCallBackAgvMove.getWbCode());
+        }
+        logger.info("子任务{}在更新货架的地码编号{}时成功 ", hikCallBackAgvMove.getTaskCode(),
+                hikCallBackAgvMove.getWbCode());
     }
 }

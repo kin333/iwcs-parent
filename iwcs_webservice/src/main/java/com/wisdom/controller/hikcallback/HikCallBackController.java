@@ -116,6 +116,7 @@ public class HikCallBackController {
     public HikSyncResponse excuteTask(@RequestBody HikReachCheckArea hikReachCheckArea) {
         return hikCallbackIwcsService.excuteTask(hikReachCheckArea);
     }
+
     /**
      * agv接货架出电梯时,小车出电梯回调
      * @return
@@ -125,6 +126,7 @@ public class HikCallBackController {
     public HikSyncResponse releaseResource(@RequestBody HikReachCheckArea hikReachCheckArea) {
         return hikCallbackIwcsService.releaseResource(hikReachCheckArea);
     }
+
     /**
      * 滚筒Agv回调
      * @return
@@ -135,5 +137,14 @@ public class HikCallBackController {
         return hikCallbackIwcsService.rollerNotify(hikCallBackAgvMove);
     }
 
-
+    /**
+     * 美国浪潮 点到点搬运回调
+     * @param
+     * @return
+     */
+    @PostMapping("/carry/notify")
+    @SystemInterfaceLog(methodCode = CARRY_NOTIFY, methodName = CARRY_NOTIFY_DESC, methodThansfer = SRC_HIK)
+    public HikSyncResponse carryNotify(@RequestBody HikCallBackAgvMove hikCallBackAgvMove) {
+        return hikCallbackIwcsService.carryNotify(hikCallBackAgvMove);
+    }
 }

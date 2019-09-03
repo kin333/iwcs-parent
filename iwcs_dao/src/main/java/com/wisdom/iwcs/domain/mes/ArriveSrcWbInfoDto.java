@@ -1,7 +1,10 @@
 package com.wisdom.iwcs.domain.mes;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  * AGV到达起点
@@ -27,5 +30,5 @@ public class ArriveSrcWbInfoDto {
     /**
      * 到达时间
      */
-    private String arriveTime;
+    private Date arriveTime;
 }

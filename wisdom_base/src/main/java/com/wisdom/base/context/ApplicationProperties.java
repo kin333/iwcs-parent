@@ -808,6 +808,7 @@ public class ApplicationProperties {
         private String arriveSrcWbUrl;
         private String leaveSrcWbUrl;
         private String arriveDestWbUrl;
+        private String agvHandlingTaskUrl;
 
         public String getArriveDestWbWaitPortUrl() {
             return arriveDestWbWaitPortUrl;
@@ -839,6 +840,14 @@ public class ApplicationProperties {
 
         public void setArriveDestWbUrl(String arriveDestWbUrl) {
             this.arriveDestWbUrl = arriveDestWbUrl;
+        }
+
+        public String getAgvHandlingTaskUrl() {
+            return agvHandlingTaskUrl;
+        }
+
+        public void setAgvHandlingTaskUrl(String agvHandlingTaskUrl) {
+            this.agvHandlingTaskUrl = agvHandlingTaskUrl;
         }
     }
 
