@@ -8,9 +8,11 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.domain.task.SubTaskTyp;
 import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
+import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,10 +36,13 @@ public class TaskRelService {
 
     private final TaskRelMapStruct TaskRelMapStruct;
 
+    private final SubTaskTypMapper SubTaskTypMapper;
+
     @Autowired
-    public TaskRelService(TaskRelMapStruct TaskRelMapStruct, TaskRelMapper TaskRelMapper) {
+    public TaskRelService(TaskRelMapStruct TaskRelMapStruct, TaskRelMapper TaskRelMapper, SubTaskTypMapper SubTaskTypMapper) {
         this.TaskRelMapStruct = TaskRelMapStruct;
         this.TaskRelMapper = TaskRelMapper;
+        this.SubTaskTypMapper = SubTaskTypMapper;
     }
 
     /**
@@ -211,6 +217,20 @@ public class TaskRelService {
             taskRelList = TaskRelMapper.selectBySubCode(taskData);
         }
         return taskRelList;
+    }
+
+    public List<SubTaskTyp> selectSubTaskByMainCode(TaskRel taskRel) {
+
+        List<String> subTaskCode = new ArrayList<String>();
+        List<TaskRel> taskRelList = TaskRelMapper.selectByMainCode(taskRel.getMainTaskTypeCode());
+        if (taskRelList.size() == 0) {
+            return null;
+        }
+        for (TaskRel item : taskRelList) {
+            subTaskCode.add(item.getSubTaskTypeCode());
+        }
+        List<SubTaskTyp> subTaskTypList = SubTaskTypMapper.selectByMainCode(subTaskCode);
+        return subTaskTypList;
     }
 
     /**

@@ -7,6 +7,8 @@ import java.util.Map;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
+import com.wisdom.iwcs.domain.task.TaskRel;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -29,4 +31,6 @@ public interface SubTaskTypMapper extends  MyMapperAndIds<SubTaskTyp> {
      * @return
      */
     SubTaskTyp selectByTypeCode(String subTaskTypCode);
+
+    List<SubTaskTyp> selectByMainCode(@Param("subTaskCode") List<String> subTaskCode);
 }

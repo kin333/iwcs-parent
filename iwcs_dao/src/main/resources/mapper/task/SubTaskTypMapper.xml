@@ -43,4 +43,11 @@
     where sub_task_typ_code = #{subTaskTypCode}
     LIMIT 1
   </select>
+
+  <select id="selectByMainCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from ts_sub_task_typ where sub_task_typ_code in
+    <foreach collection="subTaskCode" index="index" item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

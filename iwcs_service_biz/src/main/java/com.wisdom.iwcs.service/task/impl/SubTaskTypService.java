@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class SubTaskTypService {
         SubTaskTyp SubTaskTyp = SubTaskTypMapStruct.toEntity(record);
 
         Integer userId = SecurityUtils.getCurrentUserId();
-
+        SubTaskTyp.setCreateDate(new Date());
         int num = SubTaskTypMapper.insert(SubTaskTyp);
         Preconditions.checkArgument(num > 0, ApplicationErrorEnum.COMMON_FAIL);
 
