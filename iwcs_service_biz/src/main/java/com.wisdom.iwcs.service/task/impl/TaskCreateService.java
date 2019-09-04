@@ -947,6 +947,11 @@ public class TaskCreateService implements ITaskCreateService {
      */
     @Override
     public MesResult agvHandlingTaskCreate(AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest, String reqCode){
+        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
+        createTaskRequest.setTaskCode(agvHandlingTaskCreateRequest.getTaskCode());
+        createTaskRequest.setTaskPri(agvHandlingTaskCreateRequest.getTaskPri());
+        //1.参数校验
+        publicCheckIsBlank(createTaskRequest, reqCode);
         String srcBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getSrcWb());
         if (Strings.isNullOrEmpty(srcBerCode)) {
             throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getSrcWb()+"该起始点在地图中未找到对应的地码！");

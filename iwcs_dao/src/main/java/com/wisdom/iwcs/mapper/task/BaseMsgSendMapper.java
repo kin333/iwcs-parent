@@ -19,4 +19,10 @@ public interface BaseMsgSendMapper extends MyMapperAndIds<BaseMsgSend> {
      * @return list
      */
     List<BaseMsgSend> selectPage(Map map);
+
+    /**
+     * 查询所有未发送的消息
+     * @return
+     */
+    List<BaseMsgSend> selectAllNoSend();
 }

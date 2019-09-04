@@ -233,6 +233,8 @@ public class MesRequestService {
      * @return 
      */
     public MesResult conWaitToDestWb(ConWaitToDestWbRequest conWaitToDestWbRequest, String reqCode) {
+        //1.参数校验
+        publicCheck(conWaitToDestWbRequest.getTaskCode(), reqCode);
         //通过主任务号查子任务号 = rcs主任务号
         //确保一个主任务只有一个子任务
         List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(conWaitToDestWbRequest.getTaskCode());

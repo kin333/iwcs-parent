@@ -17,10 +17,7 @@ import com.wisdom.iwcs.service.task.scheduler.TestWcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
-import com.wisdom.iwcs.service.task.wcsSimulator.EleAutoDownWorker;
-import com.wisdom.iwcs.service.task.wcsSimulator.EleAutoUpWorker;
-import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
-import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
+import com.wisdom.iwcs.service.task.wcsSimulator.*;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -71,6 +68,9 @@ public class TaskTestController {
     PackWlCacheWorker packWlCacheWorker;
     @Autowired
     LineNotifyService lineNotifyService;
+
+    @Autowired
+    MesAutoSendInfoThread mesAutoSendInfoThread;
 
     @GetMapping("/sendLineNotify")
     public Result sendLineNotify() {
@@ -386,6 +386,16 @@ public class TaskTestController {
 
     @GetMapping("/testHikConcurrent")
     public Result testHikConcurrent() {
+        return new Result();
+    }
+
+    @GetMapping("/startMesSend")
+    public Result startMesSend() {
+        logger.info("开始启动MES信息发送程序");
+        //启动MES信息发送
+        Thread mesThread = new Thread(mesAutoSendInfoThread);
+        mesThread.start();
+
         return new Result();
     }
 

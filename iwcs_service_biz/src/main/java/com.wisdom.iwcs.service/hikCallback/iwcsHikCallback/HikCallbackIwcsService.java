@@ -677,6 +677,7 @@ public class HikCallbackIwcsService {
      * 小车到达终点
      */
     public void arriveEndPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        taskFinishedBaseChange(hikCallBackAgvMove);
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
         if (baseMapBerth == null) {
             throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
@@ -741,12 +742,12 @@ public class HikCallbackIwcsService {
         baseMsgSend.setMethod(method);
         baseMsgSend.setMsgFrom("192.168.102.96");
         baseMsgSend.setMsgType(SRC_MES);
-        baseMsgSend.setReqMsg(JSON.toJSONString(mesBaseRequest));
+//        baseMsgSend.setReqMsg(JSON.toJSONString(mesBaseRequest));
         baseMsgSend.setRcptStatus("0");
         baseMsgSend.setSendStatus("0");
         baseMsgSend.setSendMsg(JSON.toJSONString(mesBaseRequest));
         baseMsgSend.setTaskCode(taskCode);
-        baseMsgSend.setUrl(url+"/");
+        baseMsgSend.setUrl(url+"/" + method);
         baseMsgSendMapper.insertSelective(baseMsgSend);
     }
 

@@ -31,7 +31,7 @@
       WARNING - @mbg.generated
     -->
     id, req_code, last_modified_time, created_time, method, msg_from, msg_type, rcpt_status, 
-    req_msg, req_type, send_status, task_code, third_invoke_type, url
+    req_msg, req_type, send_status, task_code, third_invoke_type, url, send_msg
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -52,5 +52,10 @@
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
     order by last_modified_time desc
+  </select>
+
+  <select id="selectAllNoSend" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from base_msg_send
+    where send_status = '0'
   </select>
 </mapper>
