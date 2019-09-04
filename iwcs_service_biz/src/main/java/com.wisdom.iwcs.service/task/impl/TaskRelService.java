@@ -9,10 +9,7 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
-import com.wisdom.iwcs.domain.task.SubTaskTyp;
-import com.wisdom.iwcs.domain.task.TaskBifurcate;
-import com.wisdom.iwcs.domain.task.TaskModal;
-import com.wisdom.iwcs.domain.task.TaskRel;
+import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
@@ -222,41 +219,44 @@ public class TaskRelService {
         return taskRelList;
     }
 
-    public List<TaskBifurcate> selectSubTaskByMainCode(TaskRel taskRel) {
-
-        Map<String,Object> map = new HashMap<>();
-        List<TaskBifurcate> taskBifurcateList = new ArrayList<>();
-        TaskRel subTaskCodeList = null;
-        // 根据主任务code查对应subTaskCode
+    public List<TaskRelSubMain> selectSubTaskByMainCode(TaskRel taskRel) {
         List<TaskRel> taskRelList = TaskRelMapper.selectByMainCode(taskRel.getMainTaskTypeCode());
-        // 判断是否有子任务
         if (taskRelList.size() == 0) {
             return null;
         }
-        // 获取子任务code和overflow
-        for (TaskRel item : taskRelList) {
-            TaskBifurcate taskBifurcate = new TaskBifurcate();
-            List<SubTaskTyp> subTaskTypListChild = new ArrayList<>();
-            SubTaskTyp subTaskTypList = SubTaskTypMapper.selectByTypeCode(item.getSubTaskTypeCode());
-            // 分叉查询
-            if (!StringUtils.isEmpty(item.getOutflow())) {
-                String[] outflow = item.getOutflow().split(";");
-                for (String i : outflow) {
-                    subTaskCodeList = TaskRelMapper.selectByTemplCode(i);
-                    SubTaskTyp subTaskTyp = SubTaskTypMapper.selectByTypeCode(subTaskCodeList.getSubTaskTypeCode());
-                    subTaskTypListChild.add(subTaskTyp);
-                }
-            }
-            taskBifurcate.setOverFlow(item.getOutflow());
-            taskBifurcate.setSubTaskCode(subTaskTypList.getSubTaskTypCode());
-            taskBifurcate.setSubTaskName(subTaskTypList.getSubTaskTypName());
-            taskBifurcate.setTemplCode(item.getTemplCode());
-            taskBifurcate.setSubTaskType(subTaskTypListChild);
-            taskBifurcateList.add(taskBifurcate);
-        }
-        return taskBifurcateList;
+        List<TaskRelSubMain> subTaskTypList = TaskRelMapper.selectSubMainByMainCode(taskRel.getMainTaskTypeCode());
+        return subTaskTypList;
+
     }
 
+    /**
+     * 生成或更新任务模板
+     */
+    public int insertTaskModal(List<TaskRelSubMain> taskRelSubMains) {
+
+        taskRelSubMains.forEach(item -> {
+            TaskRelDTO taskRel = new TaskRelDTO();
+            taskRel.setMainTaskTypeCode(item.getMainTaskTypeCode());
+            taskRel.setSubTaskTypeCode(item.getSubTaskTypeCode());
+            taskRel.setSubTaskSeq(item.getSubTaskSeq());
+            if (item.getDeleteFlag()) {
+                TaskRelMapper.deleteByTemplCode(item.getTemplCode());
+            } else {
+                if (StringUtils.isEmpty(item.getTemplCode())) {
+                    // 插入
+                    String templCode = item.getSubTaskTypeCode() + "_" + item.getSubTaskSeq();
+                    taskRel.setTemplCode(templCode);
+                    taskRel.setMainTaskSeq(1);
+                    insert(taskRel);
+                } else {
+                    // 根据templCode更新
+                    taskRel.setTemplCode(item.getTemplCode());
+                    TaskRelMapper.updateTaskByTemplCode(taskRel);
+                }
+            }
+        });
+        return 1;
+    }
     /**
      * 通过任务模板编号查询信息
      */

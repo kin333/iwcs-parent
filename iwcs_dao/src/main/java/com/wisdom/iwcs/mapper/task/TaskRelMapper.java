@@ -4,6 +4,8 @@ package com.wisdom.iwcs.mapper.task;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.TaskRel;
+import com.wisdom.iwcs.domain.task.TaskRelSubMain;
+import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -44,4 +46,9 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
 
     TaskRel selectDataByTemplCode(TaskRel templCode);
 
+    List<TaskRelSubMain> selectSubMainByMainCode(String mainCode);
+
+    Integer updateTaskByTemplCode(TaskRelDTO taskRel);
+
+    Integer deleteByTemplCode(String templCode);
 }

@@ -137,8 +137,13 @@ public class TaskRelController {
     }
     @PostMapping("/getSubTaskByMainCode")
     public Result selectSubTaskByMainCode(@RequestBody TaskRel taskRel){
-
-        List<TaskBifurcate> subTaskTyp = TaskRelService.selectSubTaskByMainCode(taskRel);
+        List<TaskRelSubMain> subTaskTyp = TaskRelService.selectSubTaskByMainCode(taskRel);
         return new Result(subTaskTyp);
+    }
+
+    @PostMapping("/saveTaskModal")
+    public Result insertTaskModal(@RequestBody List<TaskRelSubMain> taskRelSubMains) {
+        TaskRelService.insertTaskModal(taskRelSubMains);
+        return new Result();
     }
 }

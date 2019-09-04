@@ -104,4 +104,26 @@
       #{item}
     </foreach>
   </select>
+
+    <select id="selectSubMainByMainCode" resultType="com.wisdom.iwcs.domain.task.TaskRelSubMain">
+        select
+        r.id as id,
+        s.sub_task_typ_name as subTaskTypName,
+        r.templ_code as templCode,
+        r.main_task_type_code as mainTaskTypeCode,
+        r.sub_task_type_code as subTaskTypeCode,
+        r.sub_task_seq as subTaskSeq
+        from ts_task_rel as r left join ts_sub_task_typ as s
+        on r.sub_task_type_code = s.sub_task_typ_code
+        where r.main_task_type_code = #{mainCode}
+        order by r.sub_task_seq asc
+    </select>
+
+  <update id="updateTaskByTemplCode">
+    update ts_task_rel set sub_task_seq = #{subTaskSeq} where templ_code = #{templCode}
+  </update>
+
+  <delete id="deleteByTemplCode">
+    delete from ts_task_rel where templ_code = #{templCode}
+  </delete>
 </mapper>
