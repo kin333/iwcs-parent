@@ -614,7 +614,7 @@ public class HikCallbackIwcsService {
             sendMsgNotifyMES(msg,"arriveSrcWb", hikCallBackAgvMove.getTaskCode());
         }
 
-        updateMapInfoAndPod(hikCallBackAgvMove,subTask);
+        updateMapInfoAndPod(hikCallBackAgvMove);
     }
     /**
      * 小车离开储位
@@ -635,7 +635,7 @@ public class HikCallbackIwcsService {
             sendMsgNotifyMES(msg, "leaveSrcWb", hikCallBackAgvMove.getTaskCode());
         }
 
-        updateMapInfoAndPod(hikCallBackAgvMove,subTask);
+        updateMapInfoAndPod(hikCallBackAgvMove);
     }
     /**
      * 小车到达终点或机械臂关联点
@@ -671,7 +671,7 @@ public class HikCallbackIwcsService {
             }
             sendMsgNotifyMES(msg, method, hikCallBackAgvMove.getTaskCode());
         }
-        updateMapInfoAndPod(hikCallBackAgvMove,subTask);
+        updateMapInfoAndPod(hikCallBackAgvMove);
     }
 
     /**
@@ -701,20 +701,24 @@ public class HikCallbackIwcsService {
     /**
      * 统一更新货架和地码信息
      */
-    public void updateMapInfoAndPod(HikCallBackAgvMove hikCallBackAgvMove, SubTask subTask){
+    public void updateMapInfoAndPod(HikCallBackAgvMove hikCallBackAgvMove){
         //1. 更新地码信息
-        updateMapInfo(hikCallBackAgvMove, subTask);
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+        if (baseMapBerth == null) {
+            throw new BusinessException(hikCallBackAgvMove.getMapDataCode() + "此地码的信息不存在");
+        }
+        //更新储位货架号
+        baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
+        baseMapBerth.setPodCode(hikCallBackAgvMove.getPodCode());
+        baseMapBerth.setLockSource("");
+        //更新储位信息,加货架号,解锁
+        baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
+        logger.info("子任务{}更新储位货架{}成功", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getPodCode());
 
         //2.更新货架信息
         BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(hikCallBackAgvMove.getPodCode());
         if (basePodDetail == null) {
             throw new BusinessException(hikCallBackAgvMove.getPodCode() + "货架号无对应货架信息");
-        }
-        if (subTask != null && !subTask.getSubTaskNum().equals(basePodDetail.getLockSource())) {
-            logger.error("货架锁定源与子任务号不匹配,子任务号:{}  地码编号:{}  锁定源:{} 锁定标识:{}", subTask.getSubTaskNum(),
-                    hikCallBackAgvMove.getMapDataCode(), basePodDetail.getLockSource(), basePodDetail.getInLock());
-            throw new BusinessException("货架锁定源与子任务号不匹配,子任务号:" + subTask.getSubTaskNum()
-                    + " 货架编号:" + hikCallBackAgvMove.getPodCode());
         }
         BasePodDetail tmpBasePodDetail = new BasePodDetail();
         tmpBasePodDetail.setId(basePodDetail.getId());
