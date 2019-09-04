@@ -609,6 +609,19 @@ public class HikCallbackIwcsService {
         SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
         if (subTask != null) {
+            subTask.setRobotCode(hikCallBackAgvMove.getRobotCode());
+            subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.START);
+            subTask.setWorkerTaskCode(hikCallBackAgvMove.getTaskCode());
+            try {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                subTask.setTaskStartTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
+            } catch (ParseException e) {
+                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
+                subTask.setTaskStartTime(new Date());
+            }
+            //更新子任务的执行AGV和实际任务状态以及实际任务开始时间
+            subTaskMapper.updateRobotCodeByBerCode(subTask);
+
             ArriveSrcWbInfoDto arriveSrcWbInfoDto = new ArriveSrcWbInfoDto();
             arriveSrcWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
             arriveSrcWbInfoDto.setTaskCode(subTask.getMainTaskNum());
@@ -630,14 +643,33 @@ public class HikCallbackIwcsService {
         }
         SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         if (subTask != null) {
-            LeaveSrcWbInfoDto leaveSrcWbInfoDto = new LeaveSrcWbInfoDto();
-            leaveSrcWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
-            leaveSrcWbInfoDto.setSrcWb(baseMapBerth.getPointAlias());
-            leaveSrcWbInfoDto.setTaskCode(subTask.getMainTaskNum());
-            leaveSrcWbInfoDto.setLeaveTime(new Date());
-            Object msg = leaveSrcWbInfoDto;
-            sendMsgNotifyMES(msg, "leaveSrcWb", hikCallBackAgvMove.getTaskCode());
+
+            if (!SubTaskStatusEnum.Executing.getStatusCode().equals(subTask.getTaskStatus())) {
+                logger.error(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+//                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+            }
+            // 更新子任务实际离开储位时间
+            try {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                subTask.setTaskLeaveTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
+            } catch (ParseException e) {
+                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
+                subTask.setTaskLeaveTime(new Date());
+            }
+            subTaskMapper.updateRobotCodeByBerCode(subTask);
+        } else {
+            //subTask == null时说明没有生成任务单,这里认为此次请求为人工调用
+            logger.warn("任务号" + hikCallBackAgvMove.getTaskCode() + "没有匹配的任务");
         }
+
+        LeaveSrcWbInfoDto leaveSrcWbInfoDto = new LeaveSrcWbInfoDto();
+        leaveSrcWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
+        leaveSrcWbInfoDto.setSrcWb(baseMapBerth.getPointAlias());
+        leaveSrcWbInfoDto.setTaskCode(subTask.getMainTaskNum());
+        leaveSrcWbInfoDto.setLeaveTime(new Date());
+        Object msg = leaveSrcWbInfoDto;
+        sendMsgNotifyMES(msg, "leaveSrcWb", hikCallBackAgvMove.getTaskCode());
+
 
         updateMapInfoAndPod(hikCallBackAgvMove);
     }
@@ -651,6 +683,15 @@ public class HikCallbackIwcsService {
         }
         SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         if (subTask != null) {
+            //更新子任务状态以及实际任务结束时间
+            subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
+            try {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                subTask.setTaskEndTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
+            } catch (ParseException e) {
+                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
+                subTask.setTaskEndTime(new Date());
+            }
             ArriveDestWbInfoDto arriveDestWbInfoDto = new ArriveDestWbInfoDto();
             arriveDestWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
             arriveDestWbInfoDto.setTaskCode(subTask.getMainTaskNum());
