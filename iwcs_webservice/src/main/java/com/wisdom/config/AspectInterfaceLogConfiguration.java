@@ -135,7 +135,7 @@ public class AspectInterfaceLogConfiguration {
                     if (count > 0) {
                         return new MesResult(MesResult.NG, "请求编码已存在", reqcode);
                     }
-                    interfaceLog.setReqCode(reqcode);
+//                    interfaceLog.setReqCode(reqcode);
                 }
             } catch (JSONException e) {
                 //使用自动生成的reqCode

@@ -131,7 +131,7 @@ application:
     rotatePodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/rotatePodByTps
     movePodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/genMoveTaskByPod
     genAgvSchedulingTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/genAgvSchedulingTask
-    continueTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/continueTask
+    continueTaskUrl: http://192.168.102.95/rcs/services/rest/hikRpcService/continueTask
     cancelTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/cancelTask
     returnMapOrPodUrl: http://192.168.102.95/rcs/services/rest/hikRpcService/queryPodBerthAndMat
     returnTaskStatus:  http://192.168.102.95/rcs/services/rest/hikRpcService/queryTaskStatus

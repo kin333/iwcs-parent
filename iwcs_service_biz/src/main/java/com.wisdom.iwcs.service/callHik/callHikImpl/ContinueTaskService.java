@@ -36,7 +36,7 @@ public class ContinueTaskService implements IContinueTaskService {
     @Override
     public Result continueTask(ContinueTaskRequestDTO continueTaskRequestDTO) {
 
-        checkContinueTaskParam(continueTaskRequestDTO);
+//        checkContinueTaskParam(continueTaskRequestDTO);
         ContinueTaskDTo continueTaskDTo = new ContinueTaskDTo();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String reqTime = formatter.format(new Date());
