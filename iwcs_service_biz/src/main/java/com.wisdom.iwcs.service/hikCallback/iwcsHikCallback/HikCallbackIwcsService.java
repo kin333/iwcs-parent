@@ -582,7 +582,11 @@ public class HikCallbackIwcsService {
             case InspurBizConstants.HikCallbackMethod.TASK_LEAVE_POINT:
                 leaveStartPoint(hikCallBackAgvMove);
                 break;
-            //任务结束、到达等待点
+            //到达机械臂等待点
+            case InspurBizConstants.HikCallbackMethod.ARRIVE_WAIT:
+                arrivedWaitPoint(hikCallBackAgvMove);
+                break;
+            //任务结束
             case InspurBizConstants.HikCallbackMethod.TASK_FINISHED:
                 arriveEndPoint(hikCallBackAgvMove);
                 break;
@@ -638,7 +642,7 @@ public class HikCallbackIwcsService {
         updateMapInfoAndPod(hikCallBackAgvMove);
     }
     /**
-     * 小车到达终点或机械臂关联点
+     * 小车到达终点
      */
     public void arriveEndPoint(HikCallBackAgvMove hikCallBackAgvMove){
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
@@ -647,10 +651,28 @@ public class HikCallbackIwcsService {
         }
         SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         if (subTask != null) {
+            ArriveDestWbInfoDto arriveDestWbInfoDto = new ArriveDestWbInfoDto();
+            arriveDestWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
+            arriveDestWbInfoDto.setTaskCode(subTask.getMainTaskNum());
+            arriveDestWbInfoDto.setDestWb(baseMapBerth.getPointAlias());
+            arriveDestWbInfoDto.setArriveTime(new Date());
+            sendMsgNotifyMES(arriveDestWbInfoDto, "arriveDestWb", hikCallBackAgvMove.getTaskCode());
+        }
+        updateMapInfoAndPod(hikCallBackAgvMove);
+    }
+
+    /**
+     * 小车到达机械臂关联点
+     */
+    public void arrivedWaitPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+        if (baseMapBerth == null) {
+            throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+        }
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        if (subTask != null) {
             //校验是否时机械臂等待点，
             List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getWbCode());
-            Object msg = new Object();
-            String method = "";
             if (point.size() > 0){
                 //发送消息
                 ArriveDestWbWaitPortInfoDTO arriveDestWbWaitPortInfoDTO = new ArriveDestWbWaitPortInfoDTO();
@@ -658,20 +680,9 @@ public class HikCallbackIwcsService {
                 arriveDestWbWaitPortInfoDTO.setTaskCode(subTask.getMainTaskNum());
                 arriveDestWbWaitPortInfoDTO.setWaitPort(baseMapBerth.getPointAlias());
                 arriveDestWbWaitPortInfoDTO.setArriveTime(new Date());
-                msg = arriveDestWbWaitPortInfoDTO;
-                method = "arriveDestWbWaitPort";
-            }else{
-                ArriveDestWbInfoDto arriveDestWbInfoDto = new ArriveDestWbInfoDto();
-                arriveDestWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
-                arriveDestWbInfoDto.setTaskCode(subTask.getMainTaskNum());
-                arriveDestWbInfoDto.setDestWb(baseMapBerth.getPointAlias());
-                arriveDestWbInfoDto.setArriveTime(new Date());
-                msg = arriveDestWbInfoDto;
-                method = "arriveDestWb";
+                sendMsgNotifyMES(arriveDestWbWaitPortInfoDTO, "arriveDestWbWaitPort", hikCallBackAgvMove.getTaskCode());
             }
-            sendMsgNotifyMES(msg, method, hikCallBackAgvMove.getTaskCode());
         }
-        updateMapInfoAndPod(hikCallBackAgvMove);
     }
 
     /**

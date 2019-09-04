@@ -196,6 +196,10 @@ public class InspurBizConstants {
          * 滚筒AGV结束滚动
          */
         public final static String ROLL_END = "rollEnd";
+        /**
+         * 到达机械臂等待点
+         */
+        public final static String ARRIVE_WAIT = "arriveWait";
 
     }
 
