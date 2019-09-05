@@ -10,8 +10,9 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.dto.TaskRelConditionDTO;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
-import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
+import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -36,13 +37,14 @@ public class TaskRelService {
 
     private final TaskRelMapStruct TaskRelMapStruct;
 
-    private final SubTaskTypMapper SubTaskTypMapper;
+
+    private final TaskRelConditionMapper TaskRelConditionMapper;
 
     @Autowired
-    public TaskRelService(TaskRelMapStruct TaskRelMapStruct, TaskRelMapper TaskRelMapper, SubTaskTypMapper SubTaskTypMapper) {
+    public TaskRelService(TaskRelMapStruct TaskRelMapStruct, TaskRelMapper TaskRelMapper, TaskRelConditionMapper TaskRelConditionMapper) {
         this.TaskRelMapStruct = TaskRelMapStruct;
         this.TaskRelMapper = TaskRelMapper;
-        this.SubTaskTypMapper = SubTaskTypMapper;
+        this.TaskRelConditionMapper = TaskRelConditionMapper;
     }
 
     /**
@@ -236,26 +238,44 @@ public class TaskRelService {
 
         taskRelSubMains.forEach(item -> {
             TaskRelDTO taskRel = new TaskRelDTO();
+            TaskRelCondition taskRelCondition = new TaskRelCondition();
+
             taskRel.setMainTaskTypeCode(item.getMainTaskTypeCode());
             taskRel.setSubTaskTypeCode(item.getSubTaskTypeCode());
             taskRel.setSubTaskSeq(item.getSubTaskSeq());
+            taskRelCondition.setMainTaskTypeCode(item.getMainTaskTypeCode());
+            taskRelCondition.setSubTaskTypeCode(item.getSubTaskTypeCode());
+//            taskRelCondition.setSubTaskSeq(item.getSubTaskSeq());
+
             if (item.getDeleteFlag()) {
                 TaskRelMapper.deleteByTemplCode(item.getTemplCode());
+                TaskRelConditionMapper.deleteByTemplCode(item.getTemplCode());
             } else {
                 if (StringUtils.isEmpty(item.getTemplCode())) {
                     // 插入
-                    String templCode = item.getSubTaskTypeCode() + "_" + item.getSubTaskSeq();
+                    String templCode = item.getMainTaskTypeCode().substring(0,3) + "_" + item.getSubTaskTypeCode() + "_" + item.getSubTaskSeq();
                     taskRel.setTemplCode(templCode);
+                    taskRelCondition.setTemplCode(templCode);
                     taskRel.setMainTaskSeq(1);
                     insert(taskRel);
+                    TaskRelConditionMapper.insert(taskRelCondition);
                 } else {
                     // 根据templCode更新
                     taskRel.setTemplCode(item.getTemplCode());
+//                    taskRelCondition.setTemplCode(item.getTemplCode());
                     TaskRelMapper.updateTaskByTemplCode(taskRel);
+//                    TaskRelConditionMapper.updateByTemplCode(taskRelCondition);
                 }
             }
         });
         return 1;
+    }
+    /**
+     * 查询非本身子任务的任务模板信息
+     */
+    public List<TaskRelSubMain> selectSubTaskTypeByCode(TaskRel taskRel) {
+        List<TaskRelSubMain> taskRelList = TaskRelMapper.selectSubTaskTypeByCode(taskRel);
+        return taskRelList;
     }
     /**
      * 通过任务模板编号查询信息

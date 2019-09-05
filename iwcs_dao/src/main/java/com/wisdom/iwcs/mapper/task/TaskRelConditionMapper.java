@@ -2,6 +2,8 @@ package com.wisdom.iwcs.mapper.task;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.TaskRelCondition;
+import com.wisdom.iwcs.domain.task.dto.TaskRelConditionDTO;
+import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -48,4 +50,10 @@ public interface TaskRelConditionMapper extends MyMapperAndIds<TaskRelCondition>
     TaskRelCondition selectByMainTaskTypeAndPriority(@Param("mainTaskType") String mainTaskType,@Param("subTaskSeq") Integer subTaskSeq);
 
     List<TaskRelCondition> selectByTemplCode(String templCode);
+
+    Integer updateByTemplCode(TaskRelCondition taskRelCondition);
+
+    Integer deleteByTemplCode(String templCode);
+
+    TaskRelCondition selectTaskConditionByTemplCode(TaskRelCondition taskRelConditionDTO);
 }

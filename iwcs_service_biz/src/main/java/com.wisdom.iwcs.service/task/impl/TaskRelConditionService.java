@@ -256,4 +256,10 @@ public class TaskRelConditionService implements ITaskRelConditionsService {
 
         return mGridReturnData;
     }
+
+    @Override
+    public TaskRelCondition selectTaskConditionByTemplCode(TaskRelCondition record) {
+        TaskRelCondition taskRelCondition = taskRelConditionMapper.selectTaskConditionByTemplCode(record);
+        return taskRelCondition;
+    }
 }

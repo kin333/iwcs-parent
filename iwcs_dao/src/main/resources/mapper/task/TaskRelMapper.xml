@@ -126,4 +126,16 @@
   <delete id="deleteByTemplCode">
     delete from ts_task_rel where templ_code = #{templCode}
   </delete>
+    <select id="selectSubTaskTypeByCode" resultType="com.wisdom.iwcs.domain.task.TaskRelSubMain">
+        select
+        r.id as id,
+        s.sub_task_typ_name as subTaskTypName,
+        r.templ_code as templCode,
+        r.main_task_type_code as mainTaskTypeCode,
+        r.sub_task_type_code as subTaskTypeCode,
+        r.sub_task_seq as subTaskSeq
+        from ts_task_rel as r left join ts_sub_task_typ as s
+        on r.sub_task_type_code = s.sub_task_typ_code
+        where r.main_task_type_code = #{mainTaskTypeCode} and r.sub_task_type_code != #{subTaskTypeCode}
+    </select>
 </mapper>

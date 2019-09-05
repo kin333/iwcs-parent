@@ -5,6 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.TaskRelCondition;
 import com.wisdom.iwcs.domain.task.dto.TaskRelConditionDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelConditionsMapStruct;
 import com.wisdom.iwcs.service.task.intf.ITaskRelConditionsService;
@@ -115,5 +116,11 @@ public class TaskRelConditionsController {
         ITaskRelConditionsService.updateByPrimaryKey(tsTaskRelConditionDTO);
 
         return new Result();
+    }
+
+    @PostMapping("/getTaskConditionByTemplCode")
+    public Result selectTaskConditionByTemplCode(@RequestBody TaskRelCondition taskRelConditionDTO) {
+        TaskRelCondition taskRelConditionList = ITaskRelConditionsService.selectTaskConditionByTemplCode(taskRelConditionDTO);
+        return new Result(taskRelConditionList);
     }
 }

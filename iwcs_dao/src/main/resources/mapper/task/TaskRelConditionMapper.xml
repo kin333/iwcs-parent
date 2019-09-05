@@ -72,4 +72,15 @@
         select <include refid="Base_Column_List" /> from ts_task_rel_condition
         where templ_code = #{templCode}
     </select>
+
+    <update id="updateByTemplCode">
+    update ts_task_rel_condition set sub_task_seq = #{subTaskSeq} where templ_code = #{templCode}
+  </update>
+    <delete id="deleteByTemplCode">
+    delete from ts_task_rel_condition where templ_code = #{templCode}
+  </delete>
+
+    <select id="selectTaskConditionByTemplCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from ts_task_rel_condition where templ_code = #{templCode}
+    </select>
 </mapper>

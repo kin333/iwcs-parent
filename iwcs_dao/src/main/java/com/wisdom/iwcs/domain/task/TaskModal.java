@@ -9,6 +9,7 @@ public class TaskModal {
     private String searchMainCode;
     private String searchSubCode;
     private String taskType;
+    private String templCode;
 
     public String getMainTaskCode() {
         return mainTaskCode;
@@ -64,5 +65,13 @@ public class TaskModal {
 
     public void setTaskType(String taskType) {
         this.taskType = taskType;
+    }
+
+    public String getTemplCode() {
+        return templCode;
+    }
+
+    public void setTemplCode(String templCode) {
+        this.templCode = templCode;
     }
 }

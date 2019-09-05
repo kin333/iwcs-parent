@@ -10,6 +10,7 @@ import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
 import com.wisdom.iwcs.service.task.impl.TaskRelService;
+import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
@@ -145,5 +146,11 @@ public class TaskRelController {
     public Result insertTaskModal(@RequestBody List<TaskRelSubMain> taskRelSubMains) {
         TaskRelService.insertTaskModal(taskRelSubMains);
         return new Result();
+    }
+
+    @PostMapping("/getSubTaskTypeByCode")
+    public Result selectSubTaskTypeByCode(@RequestBody TaskRel taskRel){
+        List<TaskRelSubMain> taskRelList = TaskRelService.selectSubTaskTypeByCode(taskRel);
+        return new Result(taskRelList);
     }
 }

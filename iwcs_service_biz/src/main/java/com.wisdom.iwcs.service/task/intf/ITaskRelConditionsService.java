@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.task.intf;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.domain.task.TaskRelCondition;
 import com.wisdom.iwcs.domain.task.dto.TaskRelConditionDTO;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface ITaskRelConditionsService {
     int deleteMore(List<String> ids);
 
     GridReturnData<TaskRelConditionDTO> selectPage(GridPageRequest gridPageRequest);
+
+    TaskRelCondition selectTaskConditionByTemplCode(TaskRelCondition record);
 }
