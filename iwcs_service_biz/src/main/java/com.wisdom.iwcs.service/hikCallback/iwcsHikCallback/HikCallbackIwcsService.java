@@ -523,8 +523,6 @@ public class HikCallbackIwcsService {
      */
     private void moveEnd(HikCallBackAgvMove hikCallBackAgvMove) {
         taskFinishedBaseChange(hikCallBackAgvMove);
-
-
     }
     /**
      * 滚筒AGV开始滚动
@@ -740,7 +738,7 @@ public class HikCallbackIwcsService {
         BaseMsgSend baseMsgSend = new BaseMsgSend();
         baseMsgSend.setCreatedTime(new Date());
         baseMsgSend.setMethod(method);
-        baseMsgSend.setMsgFrom("192.168.102.96");
+        baseMsgSend.setMsgFrom("192.168.102.95");
         baseMsgSend.setMsgType(SRC_MES);
 //        baseMsgSend.setReqMsg(JSON.toJSONString(mesBaseRequest));
         baseMsgSend.setRcptStatus("0");

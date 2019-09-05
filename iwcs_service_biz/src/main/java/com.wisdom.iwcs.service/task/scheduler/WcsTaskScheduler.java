@@ -2,8 +2,10 @@ package com.wisdom.iwcs.service.task.scheduler;
 
 
 import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
+import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import org.slf4j.Logger;
@@ -23,6 +25,8 @@ public class WcsTaskScheduler implements Runnable {
 
     @Autowired
     TaskOperationLogMapper taskOperationLogMapper;
+    @Autowired
+    MainTaskMapper mainTaskMapper;
 
     private ConcurrentHashMap<String, MainTaskWorker> maintaskWorkerMaps = new ConcurrentHashMap<String, MainTaskWorker>();
 
@@ -51,6 +55,12 @@ public class WcsTaskScheduler implements Runnable {
                 thread.setName("线程主任务执行器-" + t.getMainTaskNum());
                 thread.start();
                 maintaskWorkerMaps.put(t.getMainTaskNum(), mainTaskWorker);
+                //将主任务状态改为正在执行
+                MainTask mainTaskTmp = new MainTask();
+                mainTaskTmp.setId(t.getId());
+                mainTaskTmp.setTaskStatus(TaskConstants.mainTaskStatus.MAIN_ISSUED);
+                mainTaskTmp.setDateChg(new Date());
+                mainTaskMapper.updateByPrimaryKeySelective(mainTaskTmp);
             } else {
                 logger.debug("主任务{}已经在调度器中，跳过", t.getMainTaskNum());
             }
