@@ -668,7 +668,7 @@ public class HikCallbackIwcsService {
         Object msg = leaveSrcWbInfoDto;
         sendMsgNotifyMES(msg, "leaveSrcWb", hikCallBackAgvMove.getTaskCode());
 
-
+        hikCallBackAgvMove.setPodCode("");
         updateMapInfoAndPod(hikCallBackAgvMove);
     }
     /**
