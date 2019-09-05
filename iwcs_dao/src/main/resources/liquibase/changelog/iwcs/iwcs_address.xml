@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="201909051039" author="han">
+        <createTable tableName="address" remarks="第三方IP对照表">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="code" remarks="地址编码" type="VARCHAR(32)" defaultValue=""/>
+            <column name="address" remarks="ip和端口信息" type="VARCHAR(100)" defaultValue=""/>
+            <column name="name" remarks="中文名" type="VARCHAR(50)" defaultValue=""/>
+            <column name="remark" remarks="备注" type="VARCHAR(100)" defaultValue=""/>
+            <column name="status" remarks="状态: 0:启用,1:禁用" type="VARCHAR(2)" defaultValue="0"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

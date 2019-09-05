@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.hikCallback.impl;
 
+import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.XmlToBeanUtils;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.*;
@@ -28,6 +29,7 @@ import static com.wisdom.iwcs.common.utils.DeleteFlagEnum.NOT_DELETED;
 import static com.wisdom.iwcs.common.utils.ValidFlagEnum.NOT_VALID;
 import static com.wisdom.iwcs.common.utils.ValidFlagEnum.VALID;
 import static com.wisdom.iwcs.common.utils.WhTypeEnum.INTELLIGENCE;
+import static com.wisdom.iwcs.common.utils.YZConstants.LOCK;
 import static com.wisdom.iwcs.common.utils.YZConstants.UNLOCK;
 import static com.wisdom.iwcs.common.utils.podUtils.PodConstants.BinCargoCapacityStatus.EMPTY_BIN;
 import static com.wisdom.iwcs.common.utils.syncUtils.PodDirectionEnum.*;
@@ -407,6 +409,9 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
                 basePodDetail.setValidFlag(NOT_VALID.getStatus());
                 basePodDetail.setDeleteFlag(NOT_DELETED.getStatus());
                 basePodDetail.setCreatedTime(new Date());
+                basePodDetail.setInStock(Integer.valueOf(InspurBizConstants.InStock.NO_GOODS));
+                basePodDetail.setVersion(0);
+                basePodDetail.setInLock(LOCK);
                 insertBasePodDetailList.add(basePodDetail);
                 data.getBins().stream().forEach(binData -> {
                     BasePodBincode basePodBincode = new BasePodBincode();
