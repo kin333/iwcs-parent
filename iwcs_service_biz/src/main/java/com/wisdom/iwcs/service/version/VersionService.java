@@ -57,7 +57,7 @@ public class VersionService {
         return mGridReturnData;
     }
     public Result Upload(MultipartFile file) throws FileNotFoundException {
-
+        int count = 0;
         if(!file.isEmpty()){
             String fileName = file.getOriginalFilename();
             String suffixName = fileName.substring(fileName.lastIndexOf(".")+1);
@@ -70,9 +70,6 @@ public class VersionService {
                 return new Result(0, "传入的文件类型错误");
             }
             Version oldVersionInfo = versionMapper.selectnewVersion();
-            if (oldVersionInfo.getVersion() >= version) {
-                return new Result(400, "该版本不是最新版本");
-            }
             String path = ResourceUtils.getURL("iwcs_webservice/src/main/webapp").getPath() + "static/apk/";
             String uploadPath = path.substring(1, path.length());
             String newName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + "." + suffixName;
@@ -84,7 +81,16 @@ public class VersionService {
             versionDto.setVersion(version);
             versionDto.setInformation(" ");
             versionDto.setUrl(uploadPath + newfileName);
-            int count = versionMapper.updateVersion(versionDto);
+
+            if (oldVersionInfo == null) {
+                count = versionMapper.insert(versionDto);
+            } else {
+                if (oldVersionInfo.getVersion() >= version) {
+                    return new Result(400, "该版本不是最新版本");
+                }
+                count = versionMapper.updateVersion(versionDto);
+            }
+
             if (count == 0) {
                 return new Result(0, "更新数据失败");
             }
@@ -98,6 +104,8 @@ public class VersionService {
                 return new Result(0, "上传文件失败");
             }
 
+        } else {
+            return new Result(400, "上传文件内容为空");
         }
         return new Result(200, "上传成功");
 

@@ -257,7 +257,7 @@
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update base_map_berth
             <set>
-                in_lock=#{item.inLock},lock_resource_time = NOW(),lock_source=#{item.lockSource}
+                in_lock=#{item.inLock},lock_source=#{item.lockSource}
             </set>
             where  ber_code= #{item.berCode}
         </foreach>

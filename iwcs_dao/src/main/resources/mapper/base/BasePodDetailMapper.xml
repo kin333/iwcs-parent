@@ -364,7 +364,7 @@
     <update id="updateSourceMapByPodCode">
             update base_pod_detail
             <set>
-                area_code = #{areaCode}
+                area_code = #{areaCode},
                 pod_prop2 = #{mapCode},
                 valid_flag = 0
             </set>
