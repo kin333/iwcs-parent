@@ -19,6 +19,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -56,7 +57,7 @@ public class VersionService {
 
         return mGridReturnData;
     }
-    public Result Upload(MultipartFile file) throws FileNotFoundException {
+    public Result Upload(MultipartFile file, String bathPath) throws FileNotFoundException {
         int count = 0;
         if(!file.isEmpty()){
             String fileName = file.getOriginalFilename();
@@ -70,17 +71,16 @@ public class VersionService {
                 return new Result(0, "传入的文件类型错误");
             }
             Version oldVersionInfo = versionMapper.selectnewVersion();
-            String path = ResourceUtils.getURL("iwcs_webservice/src/main/webapp").getPath() + "static/apk/";
-            String uploadPath = path.substring(1, path.length());
+            String uploadPath = bathPath + "static" + File.separator + "upload" + File.separator;
             String newName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + "." + suffixName;
             String caselsh = fileName.substring(0, fileName.lastIndexOf("."));
-            String newfileName = caselsh + newName;
-
+            String newfileName = caselsh + "_" + newName;
+            String savePath =  "/static/upload/"+ newfileName;
 
             VersionDto versionDto = new VersionDto();
             versionDto.setVersion(version);
             versionDto.setInformation(" ");
-            versionDto.setUrl(uploadPath + newfileName);
+            versionDto.setUrl(savePath);
 
             if (oldVersionInfo == null) {
                 count = versionMapper.insert(versionDto);
