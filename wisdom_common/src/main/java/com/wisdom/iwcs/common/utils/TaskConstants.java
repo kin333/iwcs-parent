@@ -64,6 +64,21 @@ public class TaskConstants {
          */
         public final static String EMPTYRECYCLETASK = "emptyRecycleTask";
 
+        /**
+         * 美国浪潮点到点
+         */
+        public final static String US_PTOP = "USpTop";
+        /**
+         * 美国浪潮起点有等待点的点到点
+         */
+        public final static String PTOP_START_WAIT = "pTopStartWait";
+        /**
+         * 美国浪潮终点有等待点的点到点
+         */
+        public final static String PTOP_END_WAIT = "pTopEndWait";
+
+
+
 
     }
 

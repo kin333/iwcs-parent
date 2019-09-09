@@ -15,6 +15,7 @@ import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.service.callHik.IContinueTaskService;
+import com.wisdom.iwcs.service.callHik.callHikImpl.ContinueTaskService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,8 @@ public class MesRequestService {
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     MainTaskMapper mainTaskMapper;
+    @Autowired
+    ContinueTaskService continueTaskService;
 
 
     /**
@@ -240,9 +243,7 @@ public class MesRequestService {
         List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(conWaitToDestWbRequest.getTaskCode());
         if (subTasks.size() > 0){
             String subTaskNum = subTasks.get(0).getSubTaskNum();
-            ContinueTaskRequestDTO continueTaskRequestDTO = new ContinueTaskRequestDTO();
-            continueTaskRequestDTO.setTaskCode(subTaskNum);
-            iContinueTaskService.continueTask(continueTaskRequestDTO);
+            continueTaskService.continueTask(subTaskNum);
         }else{
             throw new MesBusinessException("找不到对应的任务:" + conWaitToDestWbRequest.getTaskCode(), reqCode);
 //            return new MesResult("NG","失败", reqCode);

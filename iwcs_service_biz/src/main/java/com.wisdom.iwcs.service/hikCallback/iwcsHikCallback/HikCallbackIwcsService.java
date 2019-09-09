@@ -24,20 +24,19 @@ import com.wisdom.iwcs.domain.task.EleControlTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
-import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.task.BaseConnectionPointMapper;
 import com.wisdom.iwcs.mapper.task.BaseMsgSendMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.service.base.ICommonService;
+import com.wisdom.iwcs.service.callHik.callHikImpl.ContinueTaskService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
-import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
 import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
-import javafx.application.Application;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -48,7 +47,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import sun.awt.SubRegionShowable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,10 +57,10 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeT
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAMANUALPOINT;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.HikCallbackMethod.LIFT_POD_END;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.eleFloor.SOURCE_FLOOR;
-import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskSeq.ONE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_CONTINUE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.YES;
 
@@ -96,6 +94,10 @@ public class HikCallbackIwcsService {
     private ApplicationProperties applicationProperties;
     @Autowired
     private TemplateRelatedServer templateRelatedServer;
+    @Autowired
+    ContinueTaskService continueTaskService;
+    @Autowired
+    ICommonService iCommonService;
 
     public HikSyncResponse taskNotify(HikCallBackAgvMove hikCallBackAgvMove) {
         switch (hikCallBackAgvMove.getMethod()) {
@@ -279,6 +281,22 @@ public class HikCallbackIwcsService {
         baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
         baseMapBerth.setPodCode(hikCallBackAgvMove.getPodCode());
         baseMapBerth.setLockSource("");
+        //更新储位信息,加货架号,解锁
+        baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
+        logger.info("子任务{}解锁地码{}成功", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getPodCode());
+    }
+    /**
+     * 清除地码的货架信息(无点位检查)
+     * @param hikCallBackAgvMove
+     */
+    private void updateMapInfoNoCheck(HikCallBackAgvMove hikCallBackAgvMove) {
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+        if (baseMapBerth == null) {
+            throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+        }
+        //解锁这个储位
+        baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
+        baseMapBerth.setPodCode("");
         //更新储位信息,加货架号,解锁
         baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
         logger.info("子任务{}解锁地码{}成功", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getPodCode());
@@ -580,13 +598,21 @@ public class HikCallbackIwcsService {
             case InspurBizConstants.HikCallbackMethod.TASK_LEAVE_POINT:
                 leaveStartPoint(hikCallBackAgvMove);
                 break;
-            //到达机械臂等待点
-            case InspurBizConstants.HikCallbackMethod.ARRIVE_WAIT:
-                arrivedWaitPoint(hikCallBackAgvMove);
+            //到达机械臂等待点(起点有等待点)
+            case InspurBizConstants.HikCallbackMethod.ARRIVE_START_WAIT:
+                arrivedStartWaitPoint(hikCallBackAgvMove);
+                break;
+            //到达机械臂等待点(终点有等待点)
+            case InspurBizConstants.HikCallbackMethod.ARRIVE_END_WAIT:
+                arrivedEndWaitPoint(hikCallBackAgvMove);
                 break;
             //任务结束
             case InspurBizConstants.HikCallbackMethod.TASK_FINISHED:
                 arriveEndPoint(hikCallBackAgvMove);
+                break;
+            //AGV举升完成
+            case LIFT_POD_END:
+                liftPodEnd(hikCallBackAgvMove);
                 break;
             default:
                 break;
@@ -627,10 +653,32 @@ public class HikCallbackIwcsService {
             arriveSrcWbInfoDto.setArriveTime(new Date());
             Object msg = arriveSrcWbInfoDto;
             sendMsgNotifyMES(msg,"arriveSrcWb", hikCallBackAgvMove.getTaskCode());
+
         }
 
         updateMapInfoAndPod(hikCallBackAgvMove);
     }
+
+    /**
+     * 举起货架完成回调
+     * @param hikCallBackAgvMove
+     */
+    public void liftPodEnd(HikCallBackAgvMove hikCallBackAgvMove) {
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
+        if (subTask != null) {
+            //检查起点是否是等待点
+            List<String> points = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getWbCode());
+            if (points.size() > 0) {
+                //发送消息
+                if (noticeMesOpenDoor(subTask.getMainTaskNum(), subTask.getStartAlias(), hikCallBackAgvMove.getRobotCode())) {
+                    //如果返回OK
+                    continueTaskService.continueTask(hikCallBackAgvMove.getTaskCode());
+                }
+            }
+        }
+    }
+
     /**
      * 小车离开储位
      */
@@ -668,8 +716,7 @@ public class HikCallbackIwcsService {
         Object msg = leaveSrcWbInfoDto;
         sendMsgNotifyMES(msg, "leaveSrcWb", hikCallBackAgvMove.getTaskCode());
 
-        hikCallBackAgvMove.setPodCode("");
-        updateMapInfoAndPod(hikCallBackAgvMove);
+        updateMapInfoNoCheck(hikCallBackAgvMove);
     }
     /**
      * 小车到达终点
@@ -688,8 +735,8 @@ public class HikCallbackIwcsService {
                 SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 subTask.setTaskEndTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
             } catch (ParseException e) {
-                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
                 subTask.setTaskEndTime(new Date());
+                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
             }
             ArriveDestWbInfoDto arriveDestWbInfoDto = new ArriveDestWbInfoDto();
             arriveDestWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
@@ -697,30 +744,49 @@ public class HikCallbackIwcsService {
             arriveDestWbInfoDto.setDestWb(baseMapBerth.getPointAlias());
             arriveDestWbInfoDto.setArriveTime(new Date());
             sendMsgNotifyMES(arriveDestWbInfoDto, "arriveDestWb", hikCallBackAgvMove.getTaskCode());
+            //检查终点是否是等待点
+            List<String> points = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getMapDataCode());
+            if (points.size() > 0) {
+                //发送消息
+                if (noticeMesOpenDoor(subTask.getMainTaskNum(), baseMapBerth.getPointAlias(), hikCallBackAgvMove.getRobotCode())) {
+                    //如果返回OK
+                    continueTaskService.continueTask(hikCallBackAgvMove.getTaskCode());
+                }
+            }
         }
         updateMapInfoAndPod(hikCallBackAgvMove);
+
+    }
+
+    /**
+     * 到达起点是等待点的位置
+     * @param hikCallBackAgvMove
+     */
+    public void arrivedStartWaitPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        arrivedWaitPoint(hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getWbCode());
+    }
+    /**
+     * 到达终点是等待点的位置
+     * @param hikCallBackAgvMove
+     */
+    public void arrivedEndWaitPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        arrivedWaitPoint(hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getMapDataCode());
     }
 
     /**
      * 小车到达机械臂关联点
      */
-    public void arrivedWaitPoint(HikCallBackAgvMove hikCallBackAgvMove){
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+    public void arrivedWaitPoint(String taskCode,String berCode){
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
         if (baseMapBerth == null) {
-            throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+            throw new BusinessException(berCode + "此地码的信息不存在");
         }
-        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        SubTask subTask = subTaskMapper.selectByTaskCode(taskCode);
         if (subTask != null) {
-            //校验是否时机械臂等待点，
-            List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(hikCallBackAgvMove.getWbCode());
-            if (point.size() > 0){
-                //发送消息
-                ArriveDestWbWaitPortInfoDTO arriveDestWbWaitPortInfoDTO = new ArriveDestWbWaitPortInfoDTO();
-                arriveDestWbWaitPortInfoDTO.setAgvCode(hikCallBackAgvMove.getRobotCode());
-                arriveDestWbWaitPortInfoDTO.setTaskCode(subTask.getMainTaskNum());
-                arriveDestWbWaitPortInfoDTO.setWaitPort(baseMapBerth.getPointAlias());
-                arriveDestWbWaitPortInfoDTO.setArriveTime(new Date());
-                sendMsgNotifyMES(arriveDestWbWaitPortInfoDTO, "arriveDestWbWaitPort", hikCallBackAgvMove.getTaskCode());
+            //发送消息
+            if (noticeMesOpenDoor(subTask.getMainTaskNum(), baseMapBerth.getPointAlias(), subTask.getRobotCode())) {
+                //如果返回OK
+//                continueTaskService.continueTask(taskCode);
             }
         }
     }
@@ -745,8 +811,10 @@ public class HikCallbackIwcsService {
         baseMsgSend.setSendStatus("0");
         baseMsgSend.setSendMsg(JSON.toJSONString(mesBaseRequest));
         baseMsgSend.setTaskCode(taskCode);
-        baseMsgSend.setUrl(url+"/" + method);
+        String allUrl = url+"/" + method;
+        baseMsgSend.setUrl(allUrl);
         baseMsgSendMapper.insertSelective(baseMsgSend);
+
     }
 
     /**
@@ -787,4 +855,34 @@ public class HikCallbackIwcsService {
         logger.info("子任务{}在更新货架的地码编号{}时成功 ", hikCallBackAgvMove.getTaskCode(),
                 hikCallBackAgvMove.getWbCode());
     }
+
+    /**
+     * 通知mes开门
+     * @param
+     * @param
+     * @return
+     */
+    public boolean noticeMesOpenDoor(String mainTaskNum, String pointAlias, String robotCode ) {
+        ArriveDestWbWaitPortInfoDTO arriveDestWbWaitPortInfoDTO = new ArriveDestWbWaitPortInfoDTO();
+        arriveDestWbWaitPortInfoDTO.setAgvCode(robotCode);
+        arriveDestWbWaitPortInfoDTO.setTaskCode(mainTaskNum);
+        arriveDestWbWaitPortInfoDTO.setWaitPort(pointAlias);
+        arriveDestWbWaitPortInfoDTO.setArriveTime(new Date());
+
+        MesBaseRequest mesBaseRequest = new MesBaseRequest();
+        mesBaseRequest.setReqcode(templateRelatedServer.getRequestInfo().getReqCode());
+        mesBaseRequest.setData(arriveDestWbWaitPortInfoDTO);
+        String url = applicationProperties.getMesParam().getAgvHandlingTaskUrl() + "arriveDestWbWaitPort";
+
+
+//        String resultBody = NetWorkUtil.transferContinueTask(JSON.toJSONString(mesBaseRequest), url);
+        try {
+//            iCommonService.handleMesResponse(resultBody);
+        } catch (BusinessException e) {
+            return false;
+        }
+        return true;
+    }
+
+
 }
