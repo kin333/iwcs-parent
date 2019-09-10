@@ -2,6 +2,7 @@ package com.wisdom.iwcs.domain.task;
 
 public class TaskModal {
 
+    private String id;
     private String mainTaskCode;
     private String mainTaskName;
     private String subTaskCode;
@@ -10,6 +11,14 @@ public class TaskModal {
     private String searchSubCode;
     private String taskType;
     private String templCode;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getMainTaskCode() {
         return mainTaskCode;

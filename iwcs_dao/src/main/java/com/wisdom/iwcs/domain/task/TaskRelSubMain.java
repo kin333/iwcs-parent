@@ -16,6 +16,15 @@ public class TaskRelSubMain {
     private String subTaskTypName;
     private Integer subTaskSeq;
     private Boolean deleteFlag;
+    private String outflow;
+
+    public String getOutflow() {
+        return outflow;
+    }
+
+    public void setOutflow(String outflow) {
+        this.outflow = outflow;
+    }
 
     public Boolean getDeleteFlag() {
         return deleteFlag;

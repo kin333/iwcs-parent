@@ -79,7 +79,7 @@
 
 
   <select id="selectPageByGroup" resultType="com.wisdom.iwcs.domain.task.TaskModal">
-    select m.main_task_type_code as mainTaskCode,sub.sub_task_typ_code as subTaskCode,
+    select m.id as id, m.main_task_type_code as mainTaskCode,sub.sub_task_typ_code as subTaskCode,
      m.main_task_type_name as mainTaskName, sub.sub_task_typ_name as subTaskName
      from ts_main_task_type as m left join ts_task_rel as t
     on m.main_task_type_code = t.main_task_type_code left join ts_sub_task_typ as sub
@@ -110,6 +110,7 @@
         r.id as id,
         s.sub_task_typ_name as subTaskTypName,
         r.templ_code as templCode,
+        r.outflow as outflow,
         r.main_task_type_code as mainTaskTypeCode,
         r.sub_task_type_code as subTaskTypeCode,
         r.sub_task_seq as subTaskSeq

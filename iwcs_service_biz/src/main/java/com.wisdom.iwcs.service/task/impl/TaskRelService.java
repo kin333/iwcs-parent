@@ -66,6 +66,12 @@ public class TaskRelService {
         return num;
     }
 
+    public List<TaskRelSubMain> selectSubMainByMainCode(TaskRelSubMain taskRelSubMain) {
+
+        List<TaskRelSubMain> taskRelSubMainList = TaskRelMapper.selectSubMainByMainCode(taskRelSubMain.getMainTaskTypeCode());
+
+        return taskRelSubMainList;
+    }
     /**
      * 批量写入记录
      *
@@ -93,7 +99,7 @@ public class TaskRelService {
      *
      * @return {@link TaskRelDTO }
      */
-    public TaskRelDTO selectByPrimaryKey(Integer id) {
+    public TaskRelDTO selectByPrimaryKey(Long id) {
 
         TaskRel TaskRel = TaskRelMapper.selectByPrimaryKey(id);
         Preconditions.checkNotNull(TaskRel, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
@@ -229,6 +235,12 @@ public class TaskRelService {
         List<TaskRelSubMain> subTaskTypList = TaskRelMapper.selectSubMainByMainCode(taskRel.getMainTaskTypeCode());
         return subTaskTypList;
 
+    }
+
+    public List<TaskRel> selectByMainCode(TaskRel taskRel){
+        List<TaskRel> taskRelList = TaskRelMapper.selectByMainCode(taskRel.getMainTaskTypeCode());
+
+        return taskRelList;
     }
 
     /**
