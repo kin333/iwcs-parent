@@ -131,6 +131,20 @@ public class SubTaskActionDTO {
     private Integer resendCount;
 
     /**
+     * 返回信息
+     */
+    @Column(name = "result_body")
+    private String resultBody;
+
+    public String getResultBody() {
+        return resultBody;
+    }
+
+    public void setResultBody(String resultBody) {
+        this.resultBody = resultBody;
+    }
+
+    /**
      * @return id
      */
     public Long getId() {

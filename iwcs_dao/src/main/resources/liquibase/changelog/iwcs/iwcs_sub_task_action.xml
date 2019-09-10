@@ -32,4 +32,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="201909091548" author="han">
+        <addColumn tableName="sub_task_action">
+            <column name="result_body" remarks="返回信息" type="VARCHAR(1000)" defaultValue=""/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

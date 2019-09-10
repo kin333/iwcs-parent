@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.TaskRelAction;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -19,4 +20,8 @@ public interface TaskRelActionMapper extends MyMapperAndIds<TaskRelAction> {
      * @return list
      */
     List<TaskRelAction> selectPage(Map map);
+
+    List<TaskRelAction> selectByTempCodeAndNode(@Param("tempCode") String tempCode,@Param("nodeCode") String nodeCode);
+
+    TaskRelAction selectByActionCode(String actionCode);
 }

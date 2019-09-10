@@ -7,6 +7,7 @@ import com.wisdom.iwcs.common.utils.NetWorkUtil;
 import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.constant.SendStatus;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
@@ -68,12 +69,7 @@ public class IwcsPublicService {
             logger.warn("{}子任务下发状态为已下发，跳过本次下发过程", subTask.getSubTaskNum());
             return;
         }
-        String jsonStr = "";
-        try {
-            jsonStr = templateRelatedServer.templateIntoInfo(subTaskNum);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        String jsonStr = templateRelatedServer.templateIntoInfo(subTaskNum);
 
         // 2. 根据subtask的值，完善下发的信息，并下发命令
         logger.debug("子任务{}开始完善任务消息体", subTaskNum);
@@ -83,10 +79,12 @@ public class IwcsPublicService {
             //如果执行者类型是海康,则调用海康的接口
             resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
             iCommonService.handleHikResponseAndThrowException(resultBody);
-        } if (SRC_MES.equals(subTaskTyp.getWorkerType())) {
+        } else if (SRC_MES.equals(subTaskTyp.getWorkerType())) {
             logger.info("MES发送任务:{}", jsonStr);
             resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
             iCommonService.handleMesResponse(resultBody);
+        } else {
+            throw new BusinessException("第三方未配置");
         }
         SubTask tmpSubask = new SubTask();
         tmpSubask.setId(subTask.getId());

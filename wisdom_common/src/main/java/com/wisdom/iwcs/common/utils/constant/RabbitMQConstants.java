@@ -22,6 +22,10 @@ public class RabbitMQConstants {
      */
     public static final String ROUTEKEY_TASK_LOG = "agv.task.taskLog";
     /**
+     * 节点动作 的routeKey
+     */
+    public static final String ROUTEKEY_NODE_ACTION = "agv.node.action";
+    /**
      * 消息队列关闭的结束标记
      */
     public static final String END_LOGO = "OK";

@@ -332,7 +332,29 @@ public class RabbitMQUtil {
         return taskLogChannel;
     }
 
-
+    /**
+     * 节点通知向交换机发送消息
+     * @param param
+     * @param <T>
+     */
+    public static synchronized <T> void basicPublicNode(T param) {
+        String jsonString = JSON.toJSONString(param);
+        Channel channel = null;
+        try {
+            channel = createChannelDefault();
+            channel.basicPublish(RabbitMQConstants.EXCHANGE_A, RabbitMQConstants.ROUTEKEY_TASK_LOG, null, jsonString.getBytes("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (channel != null) {
+                    channel.close();
+                }
+            } catch (TimeoutException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 }

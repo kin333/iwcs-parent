@@ -834,6 +834,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @param createTaskRequest
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public MesResult supplyAndRecycle(CreateTaskRequest createTaskRequest, String mainTaskType, String reqCode) {
         String taskCode = createTaskRequest.getTaskCode();
         logger.info("自动产线供料、回收任务{}开始创建任务", taskCode);
@@ -872,6 +873,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @param createTaskRequest
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public MesResult emptyRecyleTask(CreateTaskRequest createTaskRequest, String mainTaskType, String reqCode) {
         String taskCode = createTaskRequest.getTaskCode();
         String srcWbCode = createTaskRequest.getSrcWbCode();
@@ -946,6 +948,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @return MesResult
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public MesResult agvHandlingTaskCreate(AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest, String reqCode){
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTaskCode(agvHandlingTaskCreateRequest.getTaskCode());
@@ -958,7 +961,7 @@ public class TaskCreateService implements ITaskCreateService {
         }
         String destBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getDestWb());
         if (Strings.isNullOrEmpty(destBerCode)) {
-            throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getSrcWb()+"该目标点在地图中未找到对应的地码！");
+            throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getDestWb()+"该目标点在地图中未找到对应的地码！");
         }
 
         //查询终点是否有关联点

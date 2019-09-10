@@ -44,4 +44,15 @@
     </if>
     order by last_modified_time desc
   </select>
+
+  <select id="selectByTempCodeAndNode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel_action
+    where templ_code = #{tempCode}
+    and create_node = #{nodeCode}
+  </select>
+
+  <select id="selectByActionCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel_action
+    where action_code = #{actionCode}
+  </select>
 </mapper>

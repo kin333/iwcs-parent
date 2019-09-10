@@ -32,6 +32,7 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FIN
  * @author han
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class MesRequestService {
     private final Logger logger = LoggerFactory.getLogger(MesRequestService.class);
     @Autowired

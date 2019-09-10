@@ -1,9 +1,11 @@
 package com.wisdom.iwcs.service.hikCallback.iwcsHikCallback;
 
 import com.alibaba.fastjson.JSON;
+import com.greenpineyu.fel.function.operator.Sub;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
+import com.wisdom.iwcs.common.utils.NetWorkUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -19,17 +21,14 @@ import com.wisdom.iwcs.domain.mes.ArriveDestWbInfoDto;
 import com.wisdom.iwcs.domain.mes.ArriveDestWbWaitPortInfoDTO;
 import com.wisdom.iwcs.domain.mes.ArriveSrcWbInfoDto;
 import com.wisdom.iwcs.domain.mes.LeaveSrcWbInfoDto;
-import com.wisdom.iwcs.domain.task.BaseMsgSend;
-import com.wisdom.iwcs.domain.task.EleControlTask;
-import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
+import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
-import com.wisdom.iwcs.mapper.task.BaseConnectionPointMapper;
-import com.wisdom.iwcs.mapper.task.BaseMsgSendMapper;
-import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.callHik.callHikImpl.ContinueTaskService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
@@ -37,6 +36,7 @@ import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
 import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -59,9 +59,14 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvA
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.HikCallbackMethod.LIFT_POD_END;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_HIK;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
+import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.*;
+import static com.wisdom.iwcs.common.utils.TaskConstants.createNode.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.eleFloor.SOURCE_FLOOR;
+import static com.wisdom.iwcs.common.utils.TaskConstants.executeMode.NO_PROMISE_ARRIVE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_CONTINUE;
+import static com.wisdom.iwcs.common.utils.TaskConstants.workTaskStatus.ARRIVE_WITE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.YES;
 
 /**
@@ -98,59 +103,12 @@ public class HikCallbackIwcsService {
     ContinueTaskService continueTaskService;
     @Autowired
     ICommonService iCommonService;
-
-    public HikSyncResponse taskNotify(HikCallBackAgvMove hikCallBackAgvMove) {
-        switch (hikCallBackAgvMove.getMethod()) {
-            //任务开始
-            case InspurBizConstants.HikCallbackMethod.TASK_START:
-                taskStart(hikCallBackAgvMove); break;
-            //走出储位
-            case InspurBizConstants.HikCallbackMethod.TASK_LEAVE_POINT:
-                taskLeavePoint(hikCallBackAgvMove); break;
-            //任务结束
-            case InspurBizConstants.HikCallbackMethod.TASK_FINISHED:
-                taskFinished(hikCallBackAgvMove); break;
-            //到达检查点
-            case InspurBizConstants.HikCallbackMethod.APPLY_RESOURCE:
-                ; break;
-            default: break;
-        }
-        HikSyncResponse hikSyncResponse = new HikSyncResponse();
-        hikSyncResponse.setReqCode(hikCallBackAgvMove.getReqCode());
-         return hikSyncResponse;
-    }
-
-    /**
-     * 任务开始时回调的方法
-     * @param hikCallBackAgvMove
-     */
-    @Transactional(rollbackFor = Exception.class)
-    void taskStart(HikCallBackAgvMove hikCallBackAgvMove) {
-        //小车开始任务的基础修改
-        taskStartBaseChange(hikCallBackAgvMove);
-//        logger.debug("任务{}的搬运任务开始", hikCallBackAgvMove.getTaskCode());
-//        SubTask subTask  = new SubTask();
-//        subTask.setRobotCode(hikCallBackAgvMove.getRobotCode());
-//        subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.START);
-//        subTask.setWorkerTaskCode(hikCallBackAgvMove.getTaskCode());
-//        try {
-//            SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            subTask.setTaskStartTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
-//        } catch (ParseException e) {
-//            logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
-//            subTask.setTaskStartTime(new Date());
-//        }
-//        //更新子任务的执行AGV和实际任务状态以及实际任务开始时间
-//        subTaskMapper.updateRobotCodeByBerCode(subTask);
-
-//        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
-//        //向消息队列发送消息
-//        String message = "子任务回调:子任务已开始搬运";
-//        if (subTask != null && subTask.getStartBercode() != null && !subTask.getStartBercode().equals(hikCallBackAgvMove.getWbCode())) {
-//            message += " (任务起始点异常, 子任务起始点为:{" + subTask.getStartBercode() + "},实际起始点为:{" + hikCallBackAgvMove.getWbCode() + "})";
-//        }
-//        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_START,message));
-    }
+    @Autowired
+    TaskRelActionMapper taskRelActionMapper;
+    @Autowired
+    AddressMapper addressMapper;
+    @Autowired
+    SubTaskActionMapper subTaskActionMapper;
 
     /**
      * 小车开始任务的基础修改
@@ -179,9 +137,180 @@ public class HikCallbackIwcsService {
             message += " (任务起始点异常, 子任务起始点为:{" + subTask.getStartBercode() + "},实际起始点为:{" + hikCallBackAgvMove.getWbCode() + "})";
         }
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_START,message));
+
+        if (subTask != null) {
+            //节点动作
+            nodeAction(subTask, PTOP_START);
+        }
+
         return subTask;
+    }
+
+    /**
+     * 离开储位的基础修改
+     * @param hikCallBackAgvMove
+     * @return
+     */
+    private SubTask taskLeaveBaseChange(HikCallBackAgvMove hikCallBackAgvMove) {
+        logger.debug("任务{}已走出储位", hikCallBackAgvMove.getTaskCode());
+        //1. 查询子任务信息
+        //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        if (subTask != null) {
+            if (!SubTaskStatusEnum.Executing.getStatusCode().equals(subTask.getTaskStatus())) {
+                logger.error(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+//                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
+            }
+            // 更新子任务实际离开储位时间
+            try {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                subTask.setTaskLeaveTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
+            } catch (ParseException e) {
+                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
+                subTask.setTaskLeaveTime(new Date());
+            }
+            subTaskMapper.updateRobotCodeByBerCode(subTask);
+            nodeAction(subTask, PTOP_LEAVE);
+        } else {
+            //subTask == null时说明没有生成任务单,这里认为此次请求为人工调用
+            logger.warn("任务号" + hikCallBackAgvMove.getTaskCode() + "没有匹配的任务");
+        }
+        return subTask;
+    }
+
+    /**
+     * 小车移动结束时的基础修改
+     * 主要更改子任务表中的结束时间,修改任务状态,完成时间
+     * @param hikCallBackAgvMove
+     * @return
+     */
+    private SubTask taskFinishedBaseChange(HikCallBackAgvMove hikCallBackAgvMove) {
+        logger.info("任务{}已结束", hikCallBackAgvMove.getTaskCode());
+        //1. 查询子任务信息
+        //当subTask = null 时认为此次调用为人工调用,没有生成任务单
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
+        if (subTask != null) {
+            publicCheckSubTask(hikCallBackAgvMove, subTask);
+            //更新子任务状态以及实际任务结束时间
+            subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
+            try {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                subTask.setTaskEndTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
+            } catch (ParseException e) {
+                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
+                subTask.setTaskEndTime(new Date());
+            }
+            subTaskMapper.updateRobotCodeByBerCode(subTask);
+            //节点动作
+            nodeAction(subTask, PTOP_END);
+        }
+
+        //向消息队列发送消息
+        String message = "子任务回调:子任务已结束";
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
+        return subTask;
+    }
+
+    /**
+     * 节点动作
+     * @param
+     * @param nodeCode
+     */
+    private void nodeAction(SubTask subTask, String nodeCode) {
+        //1.获取节点动作模板信息
+        List<TaskRelAction> taskRelActionList = taskRelActionMapper.selectByTempCodeAndNode(subTask.getTemplCode(), nodeCode);
+        for (TaskRelAction taskRelAction : taskRelActionList) {
+            //2.生成消息体和地址
+            String jsonStr = templateRelatedServer.actionTemplateInfo(subTask, taskRelAction.getActionCode());
+            String address = addressMapper.selectAddressByCode(taskRelAction.getApp());
+            String url = address + taskRelAction.getUrl();
+            //3.获取生成子任务节点动作
+            SubTaskAction subTaskAction = new SubTaskAction();
+            subTaskAction.setSubTaskNum(subTask.getSubTaskNum());
+            subTaskAction.setActionCode(taskRelAction.getActionCode());
+            subTaskAction.setTemplCode(taskRelAction.getTemplCode());
+            subTaskAction.setActionType(taskRelAction.getActionType());
+            subTaskAction.setContent(jsonStr);
+            subTaskAction.setUrl(url);
+            subTaskAction.setApp(taskRelAction.getApp());
+            subTaskAction.setThirdInvokeType(taskRelAction.getThirdInvokeType());
+            subTaskAction.setExecuteMode(taskRelAction.getExecuteMode());
+            subTaskAction.setPreActions(taskRelAction.getPreActions());
+            subTaskAction.setCreateTime(new Date());
+            subTaskAction.setCreateNode(nodeCode);
+
+
+            //4.如果不保证必达,且无前置请求,则发送
+//            try {
+//                if (NO_PROMISE_ARRIVE.equals(taskRelAction.getExecuteMode()) && StringUtils.isEmpty(taskRelAction.getPreActions())) {
+//                    String resultBody = "";
+//                    if (SRC_HIK.equals(taskRelAction.getApp())) {
+//                        //如果执行者类型是海康,则调用海康的接口
+//                        resultBody = NetWorkUtil.transferContinueTask(jsonStr, url);
+//                        JSONObject obj = new JSONObject(resultBody);
+//                        if (obj.getString("code").equals("0")) {
+//                            subTaskAction.setActionType(SEND_SUCCESS);
+//                        } else {
+//                            subTaskAction.setActionType(SEND_ERROR);
+//                        }
+//                    } else if (SRC_MES.equals(taskRelAction.getApp())) {
+//                        //调用MES
+//                        logger.info("MES发送任务:{}", jsonStr);
+//                        resultBody = NetWorkUtil.transferContinueTask(jsonStr, url);
+//                        JSONObject obj = new JSONObject(resultBody);
+//                        if (obj.getString("code").equals(MesResult.OK)) {
+//                            subTaskAction.setActionType(SEND_SUCCESS);
+//                        } else {
+//                            subTaskAction.setActionType(SEND_ERROR);
+//                        }
+//                        logger.info("MES返回的消息体为:" + resultBody);
+//                    }
+//                    subTaskAction.setResultBody(resultBody);
+//                } else {
+//                    subTaskAction.setActionType(CREATE);
+//                }
+//                //插入请求信息
+//                subTaskActionMapper.insertSelective(subTaskAction);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+        }
 
     }
+
+
+    public HikSyncResponse taskNotify(HikCallBackAgvMove hikCallBackAgvMove) {
+        switch (hikCallBackAgvMove.getMethod()) {
+            //任务开始
+            case InspurBizConstants.HikCallbackMethod.TASK_START:
+                taskStart(hikCallBackAgvMove); break;
+            //走出储位
+            case InspurBizConstants.HikCallbackMethod.TASK_LEAVE_POINT:
+                taskLeavePoint(hikCallBackAgvMove); break;
+            //任务结束
+            case InspurBizConstants.HikCallbackMethod.TASK_FINISHED:
+                taskFinished(hikCallBackAgvMove); break;
+            //到达检查点
+            case InspurBizConstants.HikCallbackMethod.APPLY_RESOURCE:
+                 break;
+            default: break;
+        }
+        HikSyncResponse hikSyncResponse = new HikSyncResponse();
+        hikSyncResponse.setReqCode(hikCallBackAgvMove.getReqCode());
+         return hikSyncResponse;
+    }
+
+    /**
+     * 任务开始时回调的方法
+     * @param hikCallBackAgvMove
+     */
+    @Transactional(rollbackFor = Exception.class)
+    void taskStart(HikCallBackAgvMove hikCallBackAgvMove) {
+        //小车开始任务的基础修改
+        taskStartBaseChange(hikCallBackAgvMove);
+    }
+
 
     /**
      * 走出储位时回调的方法
@@ -191,29 +320,12 @@ public class HikCallbackIwcsService {
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
         BaseMapBerth baseMapBerth = null;
         try {
-            logger.debug("任务{}已走出储位", hikCallBackAgvMove.getTaskCode());
-            //1. 查询子任务信息
             //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
             SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
             if (subTask != null) {
                 publicCheckSubTask(hikCallBackAgvMove, subTask);
-                if (!SubTaskStatusEnum.Executing.getStatusCode().equals(subTask.getTaskStatus())) {
-                    logger.error(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
-//                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
-                }
-                // 更新子任务实际离开储位时间
-                try {
-                    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    subTask.setTaskLeaveTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
-                } catch (ParseException e) {
-                    logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
-                    subTask.setTaskLeaveTime(new Date());
-                }
-                subTaskMapper.updateRobotCodeByBerCode(subTask);
-            } else {
-                //subTask == null时说明没有生成任务单,这里认为此次请求为人工调用
-                logger.warn("任务号" + hikCallBackAgvMove.getTaskCode() + "没有匹配的任务");
             }
+            taskLeaveBaseChange(hikCallBackAgvMove);
 
 
             baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
@@ -312,37 +424,6 @@ public class HikCallbackIwcsService {
         }
     }
 
-    /**
-     * 小车移动结束时的基础修改
-     * 主要更改子任务表中的结束时间,修改任务状态,完成时间
-     * @param hikCallBackAgvMove
-     * @return
-     */
-    private SubTask taskFinishedBaseChange(HikCallBackAgvMove hikCallBackAgvMove) {
-        logger.info("任务{}已结束", hikCallBackAgvMove.getTaskCode());
-        //1. 查询子任务信息
-        //当subTask = null 时认为此次调用为人工调用,没有生成任务单
-        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
-        //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
-        if (subTask != null) {
-            publicCheckSubTask(hikCallBackAgvMove, subTask);
-            //更新子任务状态以及实际任务结束时间
-            subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
-            try {
-                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                subTask.setTaskEndTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
-            } catch (ParseException e) {
-                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
-                subTask.setTaskEndTime(new Date());
-            }
-            subTaskMapper.updateRobotCodeByBerCode(subTask);
-        }
-
-        //向消息队列发送消息
-        String message = "子任务回调:子任务已结束";
-        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
-        return subTask;
-    }
 
     /**
      * 任务完成时回调的方法
@@ -354,24 +435,6 @@ public class HikCallbackIwcsService {
         try {
             //1.小车移动结束时的基础修改
             SubTask subTask = taskFinishedBaseChange(hikCallBackAgvMove);
-//            logger.info("任务{}已结束", hikCallBackAgvMove.getTaskCode());
-//            //1. 查询子任务信息
-//            //当subTask = null 时认为此次调用为人工调用,没有生成任务单
-//            SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
-//            //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
-//            if (subTask != null) {
-//                publicCheckSubTask(hikCallBackAgvMove, subTask);
-//                //更新子任务状态以及实际任务结束时间
-//                subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
-//                try {
-//                    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                    subTask.setTaskEndTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
-//                } catch (ParseException e) {
-//                    logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
-//                    subTask.setTaskEndTime(new Date());
-//                }
-//                subTaskMapper.updateRobotCodeByBerCode(subTask);
-//            }
 
             //2. 更新地码信息
             updateMapInfo(hikCallBackAgvMove, subTask);
@@ -687,26 +750,7 @@ public class HikCallbackIwcsService {
         if (baseMapBerth == null) {
             throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
         }
-        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
-        if (subTask != null) {
-
-            if (!SubTaskStatusEnum.Executing.getStatusCode().equals(subTask.getTaskStatus())) {
-                logger.error(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
-//                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "任务异常: 任务状态不匹配");
-            }
-            // 更新子任务实际离开储位时间
-            try {
-                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                subTask.setTaskLeaveTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
-            } catch (ParseException e) {
-                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
-                subTask.setTaskLeaveTime(new Date());
-            }
-            subTaskMapper.updateRobotCodeByBerCode(subTask);
-        } else {
-            //subTask == null时说明没有生成任务单,这里认为此次请求为人工调用
-            logger.warn("任务号" + hikCallBackAgvMove.getTaskCode() + "没有匹配的任务");
-        }
+        SubTask subTask = taskLeaveBaseChange(hikCallBackAgvMove);
 
         LeaveSrcWbInfoDto leaveSrcWbInfoDto = new LeaveSrcWbInfoDto();
         leaveSrcWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
@@ -783,6 +827,10 @@ public class HikCallbackIwcsService {
         }
         SubTask subTask = subTaskMapper.selectByTaskCode(taskCode);
         if (subTask != null) {
+            SubTask tmpSubTask = new SubTask();
+            tmpSubTask.setId(subTask.getId());
+            tmpSubTask.setWorkTaskStatus(ARRIVE_WITE);
+            subTaskMapper.updateByPrimaryKeySelective(tmpSubTask);
             //发送消息
             if (noticeMesOpenDoor(subTask.getMainTaskNum(), baseMapBerth.getPointAlias(), subTask.getRobotCode())) {
                 //如果返回OK

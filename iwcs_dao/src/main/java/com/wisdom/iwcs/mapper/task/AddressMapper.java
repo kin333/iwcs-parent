@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.Address;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -19,4 +20,7 @@ public interface AddressMapper extends MyMapperAndIds<Address> {
      * @return list
      */
     List<Address> selectPage(Map map);
+
+    @Select("select address from address where code = #{code}")
+    String selectAddressByCode(String code);
 }

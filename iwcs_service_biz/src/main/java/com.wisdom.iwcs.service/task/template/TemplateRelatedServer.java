@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
-import com.wisdom.iwcs.domain.task.MainTask;
-import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.domain.task.SubTaskTyp;
-import com.wisdom.iwcs.domain.task.TaskContext;
+import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.BaseContextInfo;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
@@ -78,13 +75,15 @@ public class TemplateRelatedServer {
     ApplicationProperties applicationProperties;
     @Autowired
     TaskContextMapper taskContextMapper;
+    @Autowired
+    TaskRelActionMapper taskRelActionMapper;
 
     /**
      * 根据子任务编号,把子任务的信息插入到子任务对应的发送消息体中
      * @param subTaskNum 子任务编号
      * @return 加入参数后的发送消息体
      */
-    public String templateIntoInfo(String subTaskNum) throws InvocationTargetException, IllegalAccessException {
+    public String templateIntoInfo(String subTaskNum) {
         //1.查询子任务信息
         if (StringUtils.isEmpty(subTaskNum)) {
             throw new BusinessException("tempateIntoInfo()的参数不能为空");
@@ -100,7 +99,33 @@ public class TemplateRelatedServer {
         checkNull(subTaskTyp, subTaskNum + "子任务类型不存在:" + subTask.getSubTaskTyp());
         String sendTemplate = subTaskTyp.getSubTaskMesSend();
 
+        return baseTemplateIntoInfo(subTask, sendTemplate);
+    }
 
+    /**
+     * 子任务活动模板插入
+     * @return
+     */
+    public String actionTemplateInfo(SubTask subTask, String actionCode) {
+        //查询发送消息体
+        if (StringUtils.isEmpty(subTask.getTemplCode())) {
+            throw new BusinessException("数据异常: 子任务无任务类型TemplCode");
+        }
+        TaskRelAction taskRelAction = taskRelActionMapper.selectByActionCode(actionCode);
+        checkNull(taskRelAction, subTask.getSubTaskNum() + "任务活动类型不存在:" + subTask.getSubTaskTyp());
+        String sendTemplate = taskRelAction.getContent();
+
+        return baseTemplateIntoInfo(subTask, sendTemplate);
+    }
+
+    /**
+     * 基础的模板插入工具类
+     * @param subTask 要使用模板的子任务
+     * @param sendTemplate 模板
+     * @return
+     */
+    private String baseTemplateIntoInfo(SubTask subTask, String sendTemplate)  {
+        String subTaskNum = subTask.getSubTaskNum();
         //3.查询子任务对应的主任务信息
         if (StringUtils.isEmpty(subTask.getMainTaskNum())) {
             throw new BusinessException("数据异常: 子任务无主任务编号");
@@ -163,6 +188,8 @@ public class TemplateRelatedServer {
                 }
             } catch (NoSuchMethodException | NoSuchFieldException e) {
                 throw new BusinessException("子任务" + subTaskNum + "模板参数名与真实类字段没有对应");
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new BusinessException("子任务" + subTaskNum + "模板插入异常:" + e.getMessage());
             }
             if (param != null) {
                 sendTemplate = replaceTemplateValue(sendTemplate, param);
