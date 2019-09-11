@@ -139,4 +139,7 @@
     <include file="liquibase/changelog/iwcs/iwcs_db_add_base_msg_rcv_changelog_201900902.xml" relativeToChangelogFile="false"/>
 
     <include file="liquibase/changelog/iwcs/iwcs_address.xml" relativeToChangelogFile="false"/>
+
+    <include file="liquibase/changelog/iwcs/iwcs_sub_task_action.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_ts_task_rel_action.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

@@ -3,6 +3,7 @@ package com.wisdom.iwcs.common.utils.taskUtils;
 import com.rabbitmq.client.*;
 import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,0 +1,41 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="201909090919" author="han">
+        <createTable tableName="sub_task_action" remarks="子任务节点通知详情表">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="sub_task_num" remarks="子任务编号" type="VARCHAR(32)" defaultValue=""/>
+            <column name="action_code" remarks="动作编号" type="VARCHAR(32)" defaultValue=""/>
+            <column name="templ_code" remarks="模板编号" type="VARCHAR(64)" defaultValue=""/>
+            <column name="action_type" remarks="动作类型(notify:通知类动作)" type="VARCHAR(32)" defaultValue=""/>
+            <column name="content" remarks="动作上下文(消息通知消息体模板)" type="VARCHAR(2000)" defaultValue=""/>
+            <column name="url" remarks="通知地址" type="VARCHAR(200)" defaultValue=""/>
+            <column name="app" remarks="通知第三方" type="VARCHAR(32)" defaultValue=""/>
+            <column name="third_invoke_type" remarks="第三方调用类型(调用方式rest/soap/tcp)" type="VARCHAR(32)" defaultValue="rest"/>
+            <column name="execute_mode" remarks="执行模型,是否重复发送,1必达,0非必达" type="VARCHAR(2)" defaultValue="0"/>
+            <column name="pre_actions" remarks="前置动作" type="VARCHAR(32)" defaultValue=""/>
+            <column name="remark" remarks="备注" type="VARCHAR(100)" defaultValue=""/>
+            <column name="create_time" remarks="创建时间" type="DATETIME(3)"/>
+            <column name="create_by" remarks="创建人" type="VARCHAR(32)" defaultValue=""/>
+            <column name="last_modified_time" remarks="最后修改时间" type="DATETIME(3)"/>
+            <column name="create_node" remarks="创建节点(AGV到达起点,AGV离开,AGV到达终点)" type="VARCHAR(32)" defaultValue=""/>
+            <column name="action_status" remarks="发送状态,0已创建,1发送中,2发送成功,9发送失败" type="VARCHAR(12)" defaultValue="0"/>
+            <column name="last_exec_time" remarks="最后执行时间" type="DATETIME(3)"/>
+            <column name="resend_status" remarks="重发标记位" type="VARCHAR(32)" defaultValue=""/>
+            <column name="resend_time" remarks="创建时间" type="DATETIME(3)"/>
+            <column name="resend_user" remarks="重发人" type="VARCHAR(32)" defaultValue=""/>
+            <column name="resend_count" remarks="重发次数" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="201909091548" author="han">
+        <addColumn tableName="sub_task_action">
+            <column name="result_body" remarks="返回信息" type="VARCHAR(1000)" defaultValue=""/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

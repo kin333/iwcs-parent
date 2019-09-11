@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.SubTaskActionMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.SubTaskAction">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sub_task_num" jdbcType="VARCHAR" property="subTaskNum" />
+    <result column="action_code" jdbcType="VARCHAR" property="actionCode" />
+    <result column="templ_code" jdbcType="VARCHAR" property="templCode" />
+    <result column="action_type" jdbcType="VARCHAR" property="actionType" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="app" jdbcType="VARCHAR" property="app" />
+    <result column="third_invoke_type" jdbcType="VARCHAR" property="thirdInvokeType" />
+    <result column="execute_mode" jdbcType="VARCHAR" property="executeMode" />
+    <result column="pre_actions" jdbcType="VARCHAR" property="preActions" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime" />
+    <result column="create_node" jdbcType="VARCHAR" property="createNode" />
+    <result column="action_status" jdbcType="VARCHAR" property="actionStatus" />
+    <result column="last_exec_time" jdbcType="TIMESTAMP" property="lastExecTime" />
+    <result column="resend_status" jdbcType="VARCHAR" property="resendStatus" />
+    <result column="resend_time" jdbcType="TIMESTAMP" property="resendTime" />
+    <result column="resend_user" jdbcType="VARCHAR" property="resendUser" />
+    <result column="resend_count" jdbcType="INTEGER" property="resendCount" />
+    <result column="result_body" jdbcType="VARCHAR" property="resultBody" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, sub_task_num, action_code, templ_code, action_type, content, url, app, third_invoke_type, 
+    execute_mode, pre_actions, remark, create_time, create_by, last_modified_time, create_node, 
+    action_status, last_exec_time, resend_status, resend_time, resend_user, resend_count, result_body
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from sub_task_action
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+
+  <select id="selectByActionCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from sub_task_action
+    where action_code = #{actionCode}
+    and sub_task_num = #{subTaskNum}
+  </select>
+
+  <select id="selectIdNoSend" resultType="long">
+    select id from sub_task_action
+    where action_status = '0'
+  </select>
+</mapper>

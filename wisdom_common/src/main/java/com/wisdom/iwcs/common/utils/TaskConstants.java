@@ -64,6 +64,21 @@ public class TaskConstants {
          */
         public final static String EMPTYRECYCLETASK = "emptyRecycleTask";
 
+        /**
+         * 美国浪潮点到点
+         */
+        public final static String US_PTOP = "USpTop";
+        /**
+         * 美国浪潮起点有等待点的点到点
+         */
+        public final static String PTOP_START_WAIT = "pTopStartWait";
+        /**
+         * 美国浪潮终点有等待点的点到点
+         */
+        public final static String PTOP_END_WAIT = "pTopEndWait";
+
+
+
 
     }
 
@@ -189,6 +204,10 @@ public class TaskConstants {
          * 已结束
          */
         public final static String END = "2";
+        /**
+         * 到达等待点
+         */
+        public final static String ARRIVE_WITE = "5";
 
     }
 
@@ -456,6 +475,68 @@ public class TaskConstants {
          * 第一个执行
          */
         public final static Integer ONE = 1;
+    }
+
+    /**
+     * 创建节点
+     */
+    public static final class createNode {
+        /**
+         * 点到点任务开始(到达起点)
+         */
+        public final static String PTOP_START = "pTop_start";
+        /**
+         * 点到点离开储位
+         */
+        public final static String PTOP_LEAVE = "pTop_leave";
+        /**
+         * 点到点任务结束(到达终点)
+         */
+        public final static String PTOP_END = "pTop_end";
+        /**
+         * 开始滚动
+         */
+        public final static String ROLLER_START = "roller_start";
+        /**
+         * 滚动完成
+         */
+        public final static String ROLLER_END = "roller_end";
+
+    }
+
+    /**
+     * 创建状态
+     */
+    public static final class actionStatus {
+        /**
+         * 已创建
+         */
+        public final static String CREATE = "0";
+        /**
+         * 发送中
+         */
+        public final static String SENDING = "1";
+        /**
+         * 发送成功
+         */
+        public final static String SEND_SUCCESS = "2";
+        /**
+         * 发送失败
+         */
+        public final static String SEND_ERROR = "3";
+    }
+    /**
+     * 执行模型,是否重复发送
+     */
+    public static final class executeMode {
+        /**
+         * 非必达
+         */
+        public final static String NO_PROMISE_ARRIVE = "0";
+        /**
+         * 必达
+         */
+        public final static String PROMISE_ARRIVE = "1";
     }
 
 

@@ -197,9 +197,17 @@ public class InspurBizConstants {
          */
         public final static String ROLL_END = "rollEnd";
         /**
-         * 到达机械臂等待点
+         * 到达机械臂等待点(起点有等待点)
          */
-        public final static String ARRIVE_WAIT = "arriveWait";
+        public final static String ARRIVE_START_WAIT = "arrivedStartWait";
+        /**
+         * 到达机械臂等待点(终点有等待点)
+         */
+        public final static String ARRIVE_END_WAIT = "arrivedEndWait";
+        /**
+         * AGV举升完成
+         */
+        public final static String LIFT_POD_END = "liftPodEnd";
 
     }
 

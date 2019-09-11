@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 
 /*import com.wisdom.iwcs.service.version.FilePathSevice;*/
@@ -36,8 +38,9 @@ private VersionService versionService;
 
 
     @PostMapping("/upload")
-    public Result upload(@RequestParam("file") MultipartFile file) throws FileNotFoundException {
-        return versionService.Upload(file);
+    public Result upload(@RequestParam("file") MultipartFile file, HttpServletRequest httpServletRequest) throws FileNotFoundException {
+        String bathPath = httpServletRequest.getSession().getServletContext().getRealPath("/");
+        return versionService.Upload(file, bathPath);
     }
 
     /**

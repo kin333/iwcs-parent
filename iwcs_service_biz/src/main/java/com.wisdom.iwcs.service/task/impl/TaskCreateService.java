@@ -826,6 +826,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @param createTaskRequest
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public MesResult supplyAndRecycle(CreateTaskRequest createTaskRequest, String mainTaskType, String reqCode) {
         String taskCode = createTaskRequest.getTaskCode();
         logger.info("自动产线供料、回收任务{}开始创建任务", taskCode);
@@ -864,6 +865,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @param createTaskRequest
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public MesResult emptyRecyleTask(CreateTaskRequest createTaskRequest, String mainTaskType, String reqCode) {
         String taskCode = createTaskRequest.getTaskCode();
         String srcWbCode = createTaskRequest.getSrcWbCode();
@@ -938,6 +940,7 @@ public class TaskCreateService implements ITaskCreateService {
      * @return MesResult
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public MesResult agvHandlingTaskCreate(AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest, String reqCode){
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTaskCode(agvHandlingTaskCreateRequest.getTaskCode());
@@ -950,15 +953,22 @@ public class TaskCreateService implements ITaskCreateService {
         }
         String destBerCode = baseMapBerthMapper.selectBerCodeByAlias(agvHandlingTaskCreateRequest.getDestWb());
         if (Strings.isNullOrEmpty(destBerCode)) {
-            throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getSrcWb()+"该目标点在地图中未找到对应的地码！");
+            throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getDestWb()+"该目标点在地图中未找到对应的地码！");
         }
 
         //查询终点是否有关联点
         List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(destBerCode);
-        String mainTaskTypeCode = "USpTop";
+        String mainTaskTypeCode = US_PTOP;
         if (point.size() > 0){
-            mainTaskTypeCode = "USpTopWait";
+            mainTaskTypeCode = PTOP_END_WAIT;
+        } else {
+            //查询起点是否有关联点
+            List<String> startPoint = baseConnectionPointMapper.selectPointByMapCodeBerCode(srcBerCode);
+            if (startPoint.size() > 0) {
+                mainTaskTypeCode = PTOP_START_WAIT;
+            }
         }
+
         //2.创建主任务
         String mainTaskNum = agvHandlingTaskCreateRequest.getTaskCode();
         MainTask mainTaskCreate = new MainTask();
@@ -969,7 +979,7 @@ public class TaskCreateService implements ITaskCreateService {
         mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
         mainTaskCreate.setStaticPodCode(agvHandlingTaskCreateRequest.getPodCode());
         //写入站点集合
-         String jsonString = JSONArray.toJSONString(Arrays.asList(srcBerCode,destBerCode));
+        String jsonString = JSONArray.toJSONString(Arrays.asList(srcBerCode,destBerCode));
         mainTaskCreate.setStaticViaPaths(jsonString);
         mainTaskMapper.insertSelective(mainTaskCreate);
 

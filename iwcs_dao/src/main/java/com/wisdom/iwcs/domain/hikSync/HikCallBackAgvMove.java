@@ -69,11 +69,11 @@ public class HikCallBackAgvMove {
      */
     private String taskCode;
     /**
-     * 地点地码(!!!)
+     * 地点地码(起点)
      */
     private String wbCode;
     /**
-     *
+     * 地点地码(终点)
      */
     private String mapDataCode;
 
