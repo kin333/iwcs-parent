@@ -239,6 +239,9 @@ public class HikCallbackIwcsService {
             subTaskAction.setPreActions(taskRelAction.getPreActions());
             subTaskAction.setCreateTime(new Date());
             subTaskAction.setCreateNode(nodeCode);
+            subTaskAction.setActionType(CREATE);
+            //插入请求信息
+            subTaskActionMapper.insertSelective(subTaskAction);
 
 
             //4.如果不保证必达,且无前置请求,则发送
@@ -689,6 +692,7 @@ public class HikCallbackIwcsService {
      * 小车到达起始点
      */
     public void arriveStartPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        taskStartBaseChange(hikCallBackAgvMove);
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
         if (baseMapBerth == null) {
             throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
@@ -696,18 +700,6 @@ public class HikCallbackIwcsService {
         SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
         if (subTask != null) {
-            subTask.setRobotCode(hikCallBackAgvMove.getRobotCode());
-            subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.START);
-            subTask.setWorkerTaskCode(hikCallBackAgvMove.getTaskCode());
-            try {
-                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                subTask.setTaskStartTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
-            } catch (ParseException e) {
-                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
-                subTask.setTaskStartTime(new Date());
-            }
-            //更新子任务的执行AGV和实际任务状态以及实际任务开始时间
-            subTaskMapper.updateRobotCodeByBerCode(subTask);
 
             ArriveSrcWbInfoDto arriveSrcWbInfoDto = new ArriveSrcWbInfoDto();
             arriveSrcWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
@@ -751,6 +743,13 @@ public class HikCallbackIwcsService {
             throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
         }
         SubTask subTask = taskLeaveBaseChange(hikCallBackAgvMove);
+
+        //清空储位
+        BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
+        tmpBaseMapBerth.setId(baseMapBerth.getId());
+        tmpBaseMapBerth.setPodCode("");
+        //更新储位信息,加货架号,解锁
+        baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
 
         LeaveSrcWbInfoDto leaveSrcWbInfoDto = new LeaveSrcWbInfoDto();
         leaveSrcWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());

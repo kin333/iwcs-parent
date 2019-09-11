@@ -51,4 +51,15 @@
     </if>
     order by last_modified_time desc
   </select>
+
+  <select id="selectByActionCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from sub_task_action
+    where action_code = #{actionCode}
+    and sub_task_num = #{subTaskNum}
+  </select>
+
+  <select id="selectIdNoSend" resultType="long">
+    select id from sub_task_action
+    where action_status = '0'
+  </select>
 </mapper>

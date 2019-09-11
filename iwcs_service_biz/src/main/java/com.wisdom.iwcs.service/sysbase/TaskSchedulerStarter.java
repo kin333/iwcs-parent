@@ -10,14 +10,13 @@ import com.wisdom.iwcs.netty.LineNettyClient;
 import com.wisdom.iwcs.netty.NettyServer;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
-import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoCallPodWorker;
-import com.wisdom.iwcs.service.task.wcsSimulator.QuaAutoToAgingWorker;
-import com.wisdom.iwcs.service.task.wcsSimulator.TaskLogThreadService;
+import com.wisdom.iwcs.service.task.wcsSimulator.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,6 +32,10 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
     TaskOperationLogMapper taskOperationLogMapper;
     @Autowired
     TaskLogThreadService taskLogThreadService;
+    @Autowired
+    ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    NodeActionSendThread nodeActionSendThread;
 
 
     @Override
@@ -42,8 +45,17 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 
             logger.info("开始启动任务调度器线程");
             //启动消息日志
-            Thread thread = new Thread(taskLogThreadService);
-            thread.start();
+            threadPoolTaskExecutor.execute(taskLogThreadService);
+
+            //启动节点活动消费线程(发送节点通知),3为临时值,应为自动配置值
+            for (int i = 0; i < 3; i++) {
+                threadPoolTaskExecutor.execute(new NodeActionThreadService());
+            }
+
+//            logger.info("开始启动节点通知调度线程");
+//            threadPoolTaskExecutor.execute(nodeActionSendThread);
+
+
 
 //            Thread taskthread = new Thread(wcsTaskScheduler);
 //            taskthread.start();

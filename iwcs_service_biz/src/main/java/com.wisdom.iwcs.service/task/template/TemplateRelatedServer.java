@@ -230,8 +230,9 @@ public class TemplateRelatedServer {
         }
         if (param instanceof String) {
             return data.replaceFirst(REGIX, param.toString());
-        } else if (param == null) {
-            return data.replaceFirst(REGIX, "null");
+        } else if (param instanceof Date) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return data.replaceFirst(REGIX, formatter.format((Date) param));
         } else {
             return data.replaceFirst(REGIX,  param.toString());
         }

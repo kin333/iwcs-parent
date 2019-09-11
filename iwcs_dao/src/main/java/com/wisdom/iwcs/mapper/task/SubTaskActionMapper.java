@@ -2,6 +2,7 @@ package com.wisdom.iwcs.mapper.task;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.SubTaskAction;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,4 +20,8 @@ public interface SubTaskActionMapper extends MyMapperAndIds<SubTaskAction> {
      * @return list
      */
     List<SubTaskAction> selectPage(Map map);
+
+    SubTaskAction selectByActionCode(@Param("actionCode") String actionCode,@Param("subTaskNum") String subTaskNum);
+
+    List<Long> selectIdNoSend();
 }

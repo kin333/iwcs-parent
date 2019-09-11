@@ -31,11 +31,6 @@ public class ConsumerThread implements Runnable {
      */
     private IConsumerAction consumerAction;
 
-    /**
-     * 消费者数量
-     */
-    private int consumerCount = 1;
-
     public ConsumerThread(String queueName, String routeKey) {
         this.queueName = queueName;
         this.routeKey = routeKey;
@@ -45,13 +40,6 @@ public class ConsumerThread implements Runnable {
         this.queueName = queueName;
         this.routeKey = routeKey;
         this.consumerAction = consumerAction;
-    }
-
-    public ConsumerThread(String queueName, String routeKey, IConsumerAction consumerAction, int consumerCount) {
-        this.queueName = queueName;
-        this.routeKey = routeKey;
-        this.consumerAction = consumerAction;
-        this.consumerCount = consumerCount;
     }
 
     public ConsumerThread() {
@@ -125,12 +113,6 @@ public class ConsumerThread implements Runnable {
                 autoAck = false;
             }
             String consumerTag = channel.basicConsume(queueName, autoAck, consumer);
-            if(consumerCount > 1) {
-                //如果指定多个消费者,则创建多个消费者
-                for (int i = 1; i < consumerCount; i++) {
-                    channel.basicConsume(queueName, autoAck, consumer);
-                }
-            }
             logger.info("Consume with tag: {}", consumerTag);
         } catch (IOException e) {
             e.printStackTrace();
