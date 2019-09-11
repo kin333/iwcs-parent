@@ -842,7 +842,8 @@ public class HikCallbackIwcsService {
      * 通知MES 发送消息统一接口
      */
     public void sendMsgNotifyMES(Object msg, String method, String taskCode){
-        String url = applicationProperties.getMesParam().getAgvHandlingTaskUrl();
+        String address = addressMapper.selectAddressByCode(SRC_MES);
+        String url = address + applicationProperties.getMesParam().getAgvHandlingTaskUrl();
 
         MesBaseRequest mesBaseRequest = new MesBaseRequest();
         mesBaseRequest.setReqcode(templateRelatedServer.getRequestInfo().getReqCode());
@@ -853,7 +854,6 @@ public class HikCallbackIwcsService {
         baseMsgSend.setMethod(method);
         baseMsgSend.setMsgFrom("192.168.102.95");
         baseMsgSend.setMsgType(SRC_MES);
-//        baseMsgSend.setReqMsg(JSON.toJSONString(mesBaseRequest));
         baseMsgSend.setRcptStatus("0");
         baseMsgSend.setSendStatus("0");
         baseMsgSend.setSendMsg(JSON.toJSONString(mesBaseRequest));
@@ -861,7 +861,6 @@ public class HikCallbackIwcsService {
         String allUrl = url+"/" + method;
         baseMsgSend.setUrl(allUrl);
         baseMsgSendMapper.insertSelective(baseMsgSend);
-
     }
 
     /**
@@ -919,7 +918,8 @@ public class HikCallbackIwcsService {
         MesBaseRequest mesBaseRequest = new MesBaseRequest();
         mesBaseRequest.setReqcode(templateRelatedServer.getRequestInfo().getReqCode());
         mesBaseRequest.setData(arriveDestWbWaitPortInfoDTO);
-        String url = applicationProperties.getMesParam().getAgvHandlingTaskUrl() + "arriveDestWbWaitPort";
+        String address = addressMapper.selectAddressByCode(SRC_MES);
+        String url = address + applicationProperties.getMesParam().getArriveDestWbWaitPortUrl();
 
 
 //        String resultBody = NetWorkUtil.transferContinueTask(JSON.toJSONString(mesBaseRequest), url);

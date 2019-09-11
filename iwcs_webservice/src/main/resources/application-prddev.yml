@@ -119,11 +119,11 @@ application:
     nettyServerHost: 192.168.102.95
     nettyServerPort: 9234
   MesParam:
-    arriveSrcWbUrl: http://119.3.38.221:11417/api/wisdom/agvHandlingTask/arriveSrcWb
-    leaveSrcWbUrl: http://119.3.38.221:11417/api/wisdom/agvHandlingTask/leaveSrcWb
-    arriveDestWbWaitPortUrl: http://119.3.38.221:11417/api/wisdom/agvHandlingTask/arriveDestWbWaitPort
-    arriveDestWbUrl: http://119.3.38.221:11417/api/wisdom/agvHandlingTask/arriveDestWb
-    agvHandlingTaskUrl: http://119.3.38.221:11417/api/wisdom/agvHandlingTask
+    arriveSrcWbUrl: /api/wisdom/agvHandlingTask/arriveSrcWb
+    leaveSrcWbUrl: /api/wisdom/agvHandlingTask/leaveSrcWb
+    arriveDestWbWaitPortUrl: /api/wisdom/agvHandlingTask/arriveDestWbWaitPort
+    arriveDestWbUrl: /api/wisdom/agvHandlingTask/arriveDestWb
+    agvHandlingTaskUrl: /api/wisdom/agvHandlingTask
   hikParam:
     returnPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/returnPod
     getOutPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/getOutPod

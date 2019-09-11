@@ -15,6 +15,7 @@ import com.wisdom.iwcs.domain.task.dto.FindPodOrMapResult;
 import com.wisdom.iwcs.domain.task.dto.HikFindBerCode;
 import com.wisdom.iwcs.domain.task.dto.HikFindPodCode;
 import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
+import com.wisdom.iwcs.mapper.task.AddressMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
@@ -55,6 +56,8 @@ public class IwcsPublicService {
     ICommonService iCommonService;
     @Autowired
     ApplicationProperties applicationProperties;
+    @Autowired
+    AddressMapper addressMapper;
 
     /**
      * 根据子任务单号获取最新子任务信息,并将任务消息体取出并完善,然后发送给第三方
@@ -75,16 +78,18 @@ public class IwcsPublicService {
         logger.debug("子任务{}开始完善任务消息体", subTaskNum);
         SubTaskTyp subTaskTyp = subTaskTypMapper.selectByTypeCode(subTask.getSubTaskTyp());
         String resultBody;
+        String address = addressMapper.selectAddressByCode(subTaskTyp.getWorkerType());
+        String url = address + subTaskTyp.getWorkerUrl();
         if (SRC_HIK.equals(subTaskTyp.getWorkerType())) {
             //如果执行者类型是海康,则调用海康的接口
-            resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
+            resultBody = NetWorkUtil.transferContinueTask(jsonStr, url);
             iCommonService.handleHikResponseAndThrowException(resultBody);
         } else if (SRC_MES.equals(subTaskTyp.getWorkerType())) {
             logger.info("MES发送任务:{}", jsonStr);
-            resultBody = NetWorkUtil.transferContinueTask(jsonStr, subTaskTyp.getWorkerUrl());
+            resultBody = NetWorkUtil.transferContinueTask(jsonStr, url);
             iCommonService.handleMesResponse(resultBody);
         } else {
-            throw new BusinessException("第三方未配置");
+            throw new BusinessException(subTaskTyp.getWorkerType() + "第三方未配置");
         }
         SubTask tmpSubask = new SubTask();
         tmpSubask.setId(subTask.getId());

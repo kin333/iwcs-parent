@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.mes;
 import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
+import com.wisdom.iwcs.mapper.task.AddressMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -23,10 +25,13 @@ import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.S
  * @Author george
  * @Date 2019/8/27 10:46
  */
+@Service
 public class MesHttpRequestService {
     private final Logger logger = LoggerFactory.getLogger(MesHttpRequestService.class);
     @Autowired
     private ApplicationProperties applicationProperties;
+    @Autowired
+    AddressMapper addressMapper;
 
 
     /**
@@ -45,8 +50,9 @@ public class MesHttpRequestService {
 
         //执行请求
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getMesParam().getArriveSrcWbUrl(),
-                HttpMethod.POST, requestEntity, String.class);
+        String address = addressMapper.selectAddressByCode(SRC_MES);
+        String url = address + applicationProperties.getMesParam().getArriveSrcWbUrl();
+        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
         //获取返回的header
         List<String> val = resp.getHeaders().get("Set-Cookie");
@@ -74,8 +80,9 @@ public class MesHttpRequestService {
 
         //执行请求
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getMesParam().getLeaveSrcWbUrl(),
-                HttpMethod.POST, requestEntity, String.class);
+        String address = addressMapper.selectAddressByCode(SRC_MES);
+        String url = address + applicationProperties.getMesParam().getLeaveSrcWbUrl();
+        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
         //获取返回的header
         List<String> val = resp.getHeaders().get("Set-Cookie");
@@ -104,8 +111,9 @@ public class MesHttpRequestService {
 
         //执行请求
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getMesParam().getArriveDestWbWaitPortUrl(),
-                HttpMethod.POST, requestEntity, String.class);
+        String address = addressMapper.selectAddressByCode(SRC_MES);
+        String url = address + applicationProperties.getMesParam().getArriveDestWbWaitPortUrl();
+        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
         //获取返回的header
         List<String> val = resp.getHeaders().get("Set-Cookie");
@@ -133,8 +141,9 @@ public class MesHttpRequestService {
 
         //执行请求
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getMesParam().getArriveDestWbUrl(),
-                HttpMethod.POST, requestEntity, String.class);
+        String address = addressMapper.selectAddressByCode(SRC_MES);
+        String url = address + applicationProperties.getMesParam().getArriveDestWbUrl();
+        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
         //获取返回的header
         List<String> val = resp.getHeaders().get("Set-Cookie");
