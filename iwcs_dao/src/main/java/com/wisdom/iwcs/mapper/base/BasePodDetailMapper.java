@@ -182,6 +182,8 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      */
     int updateMapByPodCode(List<BasePodDetail> list);
 
+    int updateMapsByPodCode(BasePodDetail basePodDetail);
+
     /**
      * 清空所有货架对应的地图信息
      */

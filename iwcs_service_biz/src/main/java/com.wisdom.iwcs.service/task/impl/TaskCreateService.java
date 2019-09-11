@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.FloorMapEnum;
 import com.wisdom.iwcs.common.utils.Result;
-import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -19,7 +18,6 @@ import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.elevator.Elevator;
 import com.wisdom.iwcs.domain.elevator.ElevatorTaskRequest;
-import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.upstream.mes.AgvHandlingTaskCreateRequest;
@@ -32,19 +30,15 @@ import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.base.ICommonService;
-import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.websocket.PongMessage;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -57,9 +51,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstant
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.pTopTaskSubTaskTypeConstants.INIT_STORAGE;
-import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.*;
-import static com.wisdom.iwcs.domain.upstream.mes.MesResult.NG;
 
 /**
  * 任务创建

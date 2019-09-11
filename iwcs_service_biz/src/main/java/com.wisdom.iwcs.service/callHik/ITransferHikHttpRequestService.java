@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.callHik;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.domain.TPSRequest.ReturnPodRequestDTO;
+import com.wisdom.iwcs.domain.base.dto.BasePodAndMapDTO;
 import com.wisdom.iwcs.domain.hikSync.*;
 
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.*;
@@ -54,4 +55,12 @@ public interface ITransferHikHttpRequestService {
      */
     @SystemInterfaceLog(methodCode = CANCEL_TASK_CODE, methodName = CANCEL_TASK_NAME, methodThansfer = SRC_IWCS)
     String transferCancelTask(CancelTaskDTO cancelTaskDTO);
+
+    /**
+     * 货架与位置绑定、解绑
+     * @param basePodAndMapDTO
+     * @return
+     */
+    @SystemInterfaceLog(methodCode = Bind_And_Berth_CODE, methodName = Bind_And_Berth_NAME, methodThansfer = SRC_IWCS)
+    String transferBindPodAndBerth(BasePodAndMapDTO basePodAndMapDTO);
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.log.TaskOperationLogHisMapper">
+  <insert id="taskOperationLogHis" >
+    INSERT INTO task_operation_log_his
+        SELECT * FROM task_operation_log where DATE_SUB(CURDATE(), INTERVAL 7 DAY) > date(created_time)
+  </insert>
+
+  <delete id="taskOperationLog">
+    DELETE from task_operation_log where DATE_SUB(CURDATE(), INTERVAL 7 DAY) > date(created_time)
+  </delete>
+
+</mapper>

@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.callHik.callHikImpl;
 import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.domain.TPSRequest.ReturnPodRequestDTO;
+import com.wisdom.iwcs.domain.base.dto.BasePodAndMapDTO;
 import com.wisdom.iwcs.domain.hikSync.*;
 import com.wisdom.iwcs.service.callHik.ITransferHikHttpRequestService;
 import org.slf4j.Logger;
@@ -258,6 +259,30 @@ public class TransferHikHttpRequestService implements ITransferHikHttpRequestSer
         httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
 
         HttpEntity<CancelTaskDTO> requestEntity = new HttpEntity<>(cancelTaskDTO, httpHeaders);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getHikParam().getCancelTaskUrl(),
+                HttpMethod.POST, requestEntity, String.class);
+
+        List<String> val = resp.getHeaders().get("Set-Cookie");
+        System.out.println(val);
+
+        String body = resp.getBody();
+        return body;
+    }
+
+    /**
+     * 货架与位置绑定、解绑
+     * @param basePodAndMapDTO
+     * @return
+     */
+    @Override
+    @SystemInterfaceLog(methodCode = Bind_And_Berth_CODE, methodName = Bind_And_Berth_NAME, methodThansfer = SRC_IWCS)
+    public String transferBindPodAndBerth(BasePodAndMapDTO basePodAndMapDTO) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
+
+        HttpEntity<BasePodAndMapDTO> requestEntity = new HttpEntity<>(basePodAndMapDTO, httpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getHikParam().getCancelTaskUrl(),
