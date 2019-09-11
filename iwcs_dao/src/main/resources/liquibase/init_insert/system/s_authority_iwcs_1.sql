@@ -21,3 +21,5 @@ INSERT INTO `s_authority` VALUES (19, 'W_ELEVATOR_LOG', NULL, '梯控日志', 'l
 INSERT INTO `s_authority` VALUES (20, 'W_ELEVATOR_LINE_LOG', NULL, '线体日志', 'list', '线体日志', 6, 1, 0);
 INSERT INTO `s_authority` VALUES (21, 'W_STORE', NULL, '仓库管理', 'list', '仓库管理', 0, 1, 0);
 INSERT INTO `s_authority` VALUES (22, 'W_STORE_VIEW', NULL, '仓库监控', 'list', '仓库监控', 21, 1, 0);
+INSERT INTO `s_authority` VALUES (23, 'W_OPERATION_SCHEDUL', NULL, '运维调度', 'list', '仓库管理', 0, 1, 0);
+INSERT INTO `s_authority` VALUES (24, 'W_OPERATION_BIND_POD', NULL, '货架绑定', 'list', '仓库监控', 23, 1, 0);
