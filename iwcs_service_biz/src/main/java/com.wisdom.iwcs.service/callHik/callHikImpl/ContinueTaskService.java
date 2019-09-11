@@ -88,11 +88,7 @@ public class ContinueTaskService implements IContinueTaskService {
         continueTaskDTo.setTaskCode(subTaskNum);
 
         String reponse = ITransferHikHttpRequestService.transferContinueTask(continueTaskDTo);
-        try {
-            ICommonService.handleHikResponseAndThrowException(reponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ICommonService.handleHikResponseAndThrowException(reponse);
         return new Result();
     }
 }

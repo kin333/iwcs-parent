@@ -1,6 +1,7 @@
 package com.wisdom.controller.upstream.mes;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.upstream.mes.AgvHandlingTaskCreateRequest;
 import com.wisdom.iwcs.domain.upstream.mes.ConWaitToDestWbRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
@@ -57,7 +58,12 @@ public class AgvHandlingTaskController {
     @SystemInterfaceLog(methodCode = CONWAIT_TO_DESTWB, methodName = CONWAIT_TO_DESTWB_DESC, methodThansfer = SRC_MES)
     public MesResult conWaitToDestWb(@RequestBody MesBaseRequest<ConWaitToDestWbRequest> mesBaseRequest) {
         ConWaitToDestWbRequest data = mesBaseRequest.getData();
-        mesRequestService.conWaitToDestWb(data, mesBaseRequest.getReqcode());
+        try {
+            mesRequestService.conWaitToDestWb(data, mesBaseRequest.getReqcode());
+        } catch (BusinessException e) {
+            e.printStackTrace();
+            return new MesResult(MesResult.NG, e.getMessage(), mesBaseRequest.getReqcode());
+        }
         return new MesResult(mesBaseRequest.getReqcode());
     }
 }
