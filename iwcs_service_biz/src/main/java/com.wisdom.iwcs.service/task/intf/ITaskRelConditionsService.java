@@ -26,5 +26,7 @@ public interface ITaskRelConditionsService {
 
     GridReturnData<TaskRelConditionDTO> selectPage(GridPageRequest gridPageRequest);
 
-    TaskRelCondition selectTaskConditionByTemplCode(TaskRelCondition record);
+    List<TaskRelCondition> selectTaskConditionByTemplCode(TaskRelCondition record);
+
+    int handleRelConditionData(List<TaskRelConditionDTO> record);
 }

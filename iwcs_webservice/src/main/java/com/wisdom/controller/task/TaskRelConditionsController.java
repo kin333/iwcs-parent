@@ -120,7 +120,13 @@ public class TaskRelConditionsController {
 
     @PostMapping("/getTaskConditionByTemplCode")
     public Result selectTaskConditionByTemplCode(@RequestBody TaskRelCondition taskRelConditionDTO) {
-        TaskRelCondition taskRelConditionList = ITaskRelConditionsService.selectTaskConditionByTemplCode(taskRelConditionDTO);
+        List<TaskRelCondition> taskRelConditionList = ITaskRelConditionsService.selectTaskConditionByTemplCode(taskRelConditionDTO);
         return new Result(taskRelConditionList);
+    }
+
+    @PostMapping("/handleRelConditionData")
+    public Result handleRelConditionData(@RequestBody List<TaskRelConditionDTO> taskRelConditionDTOS) {
+        int num = ITaskRelConditionsService.handleRelConditionData(taskRelConditionDTOS);
+        return new Result();
     }
 }

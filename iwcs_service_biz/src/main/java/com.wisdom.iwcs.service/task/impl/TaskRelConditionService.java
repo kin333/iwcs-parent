@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -258,8 +259,23 @@ public class TaskRelConditionService implements ITaskRelConditionsService {
     }
 
     @Override
-    public TaskRelCondition selectTaskConditionByTemplCode(TaskRelCondition record) {
-        TaskRelCondition taskRelCondition = taskRelConditionMapper.selectTaskConditionByTemplCode(record);
+    public List<TaskRelCondition> selectTaskConditionByTemplCode(TaskRelCondition record) {
+        List<TaskRelCondition> taskRelCondition = taskRelConditionMapper.selectTaskConditionByTemplCode(record);
         return taskRelCondition;
+    }
+
+    @Override
+    public int handleRelConditionData(List<TaskRelConditionDTO> record) {
+
+        record.forEach(item -> {
+            // 如果id为空就插入
+            if (StringUtils.isEmpty(item.getId())) {
+                insert(item);
+            } else {
+                // 不为空就更新
+                updateByPrimaryKey(item);
+            }
+        });
+        return 1;
     }
 }

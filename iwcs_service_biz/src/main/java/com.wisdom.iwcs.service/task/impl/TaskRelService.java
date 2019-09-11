@@ -50,9 +50,7 @@ public class TaskRelService {
     /**
      * 写入记录
      *
-     *
      * @param record {@link TaskRelDTO }
-     *
      * @return int
      */
     public int insert(TaskRelDTO record) {
@@ -66,12 +64,69 @@ public class TaskRelService {
         return num;
     }
 
+    public List<TaskRelSubMain> selectSubMainByMainCode(TaskRelSubMain taskRelSubMain) {
+
+        List<TaskRelSubMain> taskRelSubMainList = TaskRelMapper.selectSubMainByMainCode(taskRelSubMain.getMainTaskTypeCode());
+        taskRelSubMainList.get(0).setFloor(1);
+
+        List<TaskRelSubMain> taskRelSubMainData = formatterData(taskRelSubMainList.get(0), taskRelSubMainList);
+
+//        for (int idx = 0; idx < taskRelSubMainList.size(); idx++) {
+//            // 判断第一层taskRelSubMainList中的outFlow是否为空
+//            if (!StringUtils.isEmpty(taskRelSubMainList.get(idx).getOutflow())) {
+//                // 分割第一层outFlow为数组
+//                String[] outFlow = taskRelSubMainList.get(idx).getOutflow().split(";");
+//                // 循环第一层outflow数组
+//                for (int num = 0; num < outFlow.length; num++) {
+//                    //遍历第二层taskRelSubMainList
+//                    for (int i = 0; i < taskRelSubMainList.size(); i++) {
+//                        // 通过outflow数据查找相对应templCode数据
+//                        String templCode = taskRelSubMainList.get(i).getTemplCode();
+//                        if (outFlow[num].equals(templCode)) {
+//                            // 如果该层级为null 赋值该层级为 上一级 加1
+//                            if (taskRelSubMainList.get(i).getFloor() == null) {
+//                                taskRelSubMainList.get(i).setFloor(taskRelSubMainList.get(idx).getFloor() + 1);
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+        return taskRelSubMainData;
+    }
+
+    public List<TaskRelSubMain> formatterData(TaskRelSubMain taskRelSubMain, List<TaskRelSubMain> taskRelSubMainList) {
+
+        List<TaskRelSubMain> dataList = new ArrayList<TaskRelSubMain>();
+        if (!StringUtils.isEmpty(taskRelSubMain.getOutflow())) {
+            String[] outflow = taskRelSubMain.getOutflow().split(";");
+            for (int num = 0; num < outflow.length; num++) {
+                for (int idx = 0; idx < taskRelSubMainList.size(); idx++) {
+                    if (outflow[num].equals(taskRelSubMainList.get(idx).getTemplCode())) {
+                        if (taskRelSubMainList.get(idx).getFloor() == null) {
+                            taskRelSubMainList.get(idx).setFloor(taskRelSubMain.getFloor() + 1);
+                            dataList.add(taskRelSubMainList.get(idx));
+                        }
+                    }
+
+                }
+
+            }
+        }
+        if (dataList.size() != 0) {
+            for (int i = 0; i < dataList.size(); i++) {
+                formatterData(dataList.get(i), taskRelSubMainList);
+            }
+        }
+        return taskRelSubMainList;
+    }
+
     /**
      * 批量写入记录
      *
-     *
      * @param records {@link List<TaskRelDTO> }
-     *
      * @return int
      */
     public int insertBatch(List<TaskRelDTO> records) {
@@ -88,12 +143,10 @@ public class TaskRelService {
     /**
      * 根据主键-ID查询
      *
-     *
      * @param id {@link Integer }
-     *
      * @return {@link TaskRelDTO }
      */
-    public TaskRelDTO selectByPrimaryKey(Integer id) {
+    public TaskRelDTO selectByPrimaryKey(Long id) {
 
         TaskRel TaskRel = TaskRelMapper.selectByPrimaryKey(id);
         Preconditions.checkNotNull(TaskRel, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
@@ -104,9 +157,7 @@ public class TaskRelService {
     /**
      * 根据字段选择性查询
      *
-     *
      * @param record {@link TaskRelDTO }
-     *
      * @return {@link List<TaskRelDTO> }
      */
     public List<TaskRelDTO> selectSelective(TaskRelDTO record) {
@@ -119,9 +170,7 @@ public class TaskRelService {
     /**
      * 根据主键更新
      *
-     *
      * @param record {@link TaskRelDTO }
-     *
      * @return int
      */
     public int updateByPrimaryKey(TaskRelDTO record) {
@@ -130,7 +179,7 @@ public class TaskRelService {
         Integer userId = SecurityUtils.getCurrentUserId();
 
         int num = TaskRelMapper.updateByPrimaryKey(TaskRel);
-        Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
+        Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
 
@@ -139,9 +188,7 @@ public class TaskRelService {
     /**
      * 根据主键选择性更新
      *
-     *
      * @param record {@link TaskRelDTO }
-     *
      * @return int
      */
     public int updateByPrimaryKeySelective(TaskRelDTO record) {
@@ -150,7 +197,7 @@ public class TaskRelService {
         Integer userId = SecurityUtils.getCurrentUserId();
 
         int num = TaskRelMapper.updateByPrimaryKeySelective(TaskRel);
-        Preconditions.checkArgument(num ==1, ApplicationErrorEnum.COMMON_FAIL);
+        Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
         return num;
     }
@@ -158,9 +205,7 @@ public class TaskRelService {
     /**
      * 根据主键删除记录
      *
-     *
      * @param id {@link Integer }
-     *
      * @return int
      */
     public int deleteByPrimaryKey(Integer id) {
@@ -185,28 +230,22 @@ public class TaskRelService {
     /**
      * 根据主键删除多条记录
      *
-     *
      * @param ids {@link List<String> }
-     *
      * @return int
      */
-    public int deleteMore(List<String> ids){
+    public int deleteMore(List<String> ids) {
         return TaskRelMapper.deleteByIds(String.join(",", ids));
     }
 
     /**
      * 根据主键逻辑删除多条记录
      *
-     *
      * @param ids {@link List<String> }
-     *
      * @return int
      */
 //    public int deleteMoreLogic(List<String> ids){
 //        return TaskRelMapper.deleteLogicByIds(String.join(",", ids));
 //    }
-
-
     public List<TaskRel> selectByGroup() {
         return TaskRelMapper.selectPageByGroup();
     }
@@ -231,6 +270,12 @@ public class TaskRelService {
 
     }
 
+    public List<TaskRel> selectByMainCode(TaskRel taskRel) {
+        List<TaskRel> taskRelList = TaskRelMapper.selectByMainCode(taskRel.getMainTaskTypeCode());
+
+        return taskRelList;
+    }
+
     /**
      * 生成或更新任务模板
      */
@@ -253,7 +298,7 @@ public class TaskRelService {
             } else {
                 if (StringUtils.isEmpty(item.getTemplCode())) {
                     // 插入
-                    String templCode = item.getMainTaskTypeCode().substring(0,3) + "_" + item.getSubTaskTypeCode() + "_" + item.getSubTaskSeq();
+                    String templCode = item.getMainTaskTypeCode().substring(0, 3) + "_" + item.getSubTaskTypeCode() + "_" + item.getSubTaskSeq();
                     taskRel.setTemplCode(templCode);
                     taskRelCondition.setTemplCode(templCode);
                     taskRel.setMainTaskSeq(1);
@@ -270,6 +315,7 @@ public class TaskRelService {
         });
         return 1;
     }
+
     /**
      * 查询非本身子任务的任务模板信息
      */
@@ -277,27 +323,27 @@ public class TaskRelService {
         List<TaskRelSubMain> taskRelList = TaskRelMapper.selectSubTaskTypeByCode(taskRel);
         return taskRelList;
     }
+
     /**
      * 通过任务模板编号查询信息
      */
-    public TaskRel selectDataByTemplCode(TaskRel templCode){
+    public TaskRel selectDataByTemplCode(TaskRel templCode) {
         TaskRel taskRel = TaskRelMapper.selectDataByTemplCode(templCode);
         return taskRel;
     }
+
     /**
      * 根据条件分页查询
      *
-     *
      * @param gridPageRequest {@link GridPageRequest }
-     *
      * @return {@link GridReturnData<TaskRelDTO> }
      */
-    public GridReturnData<TaskRelDTO> selectPage(GridPageRequest gridPageRequest){
+    public GridReturnData<TaskRelDTO> selectPage(GridPageRequest gridPageRequest) {
         GridReturnData<TaskRelDTO> mGridReturnData = new GridReturnData<>();
         List<GridFilterInfo> filterList = gridPageRequest.getFilterList();
         Map<String, Object> map = new HashMap<>(2);
         filterList.forEach(gridFilterInfo -> {
-            if(gridFilterInfo.getFilterKey() != null && gridFilterInfo.getFilterValue() != null){
+            if (gridFilterInfo.getFilterKey() != null && gridFilterInfo.getFilterValue() != null) {
                 map.put(gridFilterInfo.getFilterKey(), gridFilterInfo.getFilterValue());
             }
         });

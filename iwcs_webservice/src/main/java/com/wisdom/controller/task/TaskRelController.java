@@ -86,7 +86,7 @@ public class TaskRelController {
      * @return {@link Result }
      */
     @GetMapping(value = "/{id}")
-    public Result selectByPrimaryKey(@PathVariable Integer id) {
+    public Result selectByPrimaryKey(@PathVariable Long id) {
         TaskRelDTO TaskRelDTO = TaskRelService.selectByPrimaryKey(id);
 
         return new Result(TaskRelDTO);
@@ -152,5 +152,18 @@ public class TaskRelController {
     public Result selectSubTaskTypeByCode(@RequestBody TaskRel taskRel){
         List<TaskRelSubMain> taskRelList = TaskRelService.selectSubTaskTypeByCode(taskRel);
         return new Result(taskRelList);
+    }
+
+    @PostMapping("/getByMainCode")
+    public Result selectByMainCode(@RequestBody TaskRel taskRel){
+        List<TaskRel> taskRelList = TaskRelService.selectByMainCode(taskRel);
+        return new Result(taskRelList);
+    }
+    @PostMapping("/getSubRelById")
+    public Result selectSubMainByMainCode(@RequestBody TaskRelSubMain taskRelSubMain) {
+
+        List<TaskRelSubMain> taskRelSubMainList = TaskRelService.selectSubMainByMainCode(taskRelSubMain);
+
+        return new Result(taskRelSubMainList);
     }
 }

@@ -187,8 +187,10 @@ public class SUserService {
         record.setLastModifiedBy(userId);
         record.setLastModifiedTime(new Date());
         record.setDeleteFlag(0);
+        // 取消默认密码设置
+//        record.setPassword(GetMD5Code(YZConstants.DEFAULT_PASSWORD));
 
-        record.setPassword(GetMD5Code(YZConstants.DEFAULT_PASSWORD));
+        record.setPassword(GetMD5Code(record.getPassword()));
 
         int returnNum = sUserMapper.insertSelective(record);
 
