@@ -1,9 +1,6 @@
 package com.wisdom.iwcs.domain.task;
 
 
-import javax.persistence.Id;
-import java.util.List;
-
 /**
  * 用于任务模板配置
  */
@@ -17,6 +14,15 @@ public class TaskRelSubMain {
     private Integer subTaskSeq;
     private Boolean deleteFlag;
     private String outflow;
+    private Integer floor;
+
+    public Integer getFloor() {
+        return floor;
+    }
+
+    public void setFloor(Integer floor) {
+        this.floor = floor;
+    }
 
     public String getOutflow() {
         return outflow;
