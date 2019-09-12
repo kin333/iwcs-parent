@@ -39,16 +39,28 @@ public class BasePodAndMapService {
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(basePodAndMapDTO.getPoint());
         Preconditions.checkBusinessError(baseMapBerth == null,
                 basePodAndMapDTO.getPoint() + "找不到别名对应的地图编码");
+        if (StringUtils.isNotBlank(baseMapBerth.getPodCode())){
+            throw new BusinessException("目标点位已有货架");
+        }
+        if (baseMapBerth.getInLock()==1 || StringUtils.isNotBlank(baseMapBerth.getLockSource())){
+            throw new BusinessException("目标点位已锁定");
+        }
         //根据货架编号查询base_pod_detail表的信息
         BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(basePodAndMapDTO.getPodCode());
         Preconditions.checkBusinessError(basePodDetail == null,
                 basePodAndMapDTO.getPodCode() + "找不到该货架编号对应的货架信息");
+        if(basePodDetail.getInLock()==1 || StringUtils.isNotBlank(basePodDetail.getLockSource())){
+            throw new BusinessException("货架已被锁定");
+        }
 
         //根据货架编号查询该货架的原来位置信息
         BaseMapBerth berthData = baseMapBerthMapper.selectDataByPodCode(basePodAndMapDTO.getPodCode());
         Preconditions.checkBusinessError(berthData == null,
                 basePodAndMapDTO.getPodCode() + "找不到该货架编号对应的初始位置信息");
-        if (StringUtils.isNotBlank(berthData.getPodCode()) && berthData.getInLock()==0 && StringUtils.isBlank(berthData.getLockSource())){
+
+        if (StringUtils.isBlank(baseMapBerth.getPodCode()) && baseMapBerth.getInLock()==0 && StringUtils.isBlank(baseMapBerth.getLockSource())
+                && basePodDetail.getInLock()==0 && StringUtils.isBlank(basePodDetail.getLockSource())){
+
             BaseMapBerth baseMapBerth2 = new BaseMapBerth();
             int version = 0;
             if (berthData.getVersion()!=null){
@@ -59,9 +71,8 @@ public class BasePodAndMapService {
             //清除该货架在map_berth表中原来的位置
             num = baseMapBerthMapper.deletePodCodeByBerCode(baseMapBerth2);
             Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
-        }
-        //判断该点是否已经有货架、是否有锁和锁的来源
-        if (StringUtils.isBlank(baseMapBerth.getPodCode()) && basePodDetail.getInLock()==0 && StringUtils.isBlank(basePodDetail.getLockSource())){
+
+
             //更新货架信息的新的点位
             BasePodDetail basePodDetail1 = new BasePodDetail();
             basePodDetail1.setBerCode(baseMapBerth.getBerCode());
@@ -72,23 +83,22 @@ public class BasePodAndMapService {
             //开始更新base_pod_detail表的信息
             num = basePodDetailMapper.updateMapsByPodCode(basePodDetail1);
             Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
-        }
-        //判断该点是否已经有货架、是否有锁和锁的来源
-        if (StringUtils.isBlank(baseMapBerth.getPodCode()) && baseMapBerth.getInLock()==0 && StringUtils.isBlank(baseMapBerth.getLockSource()) ){
+
             //更新货架编号的新位置信息
             BaseMapBerth baseMapBerth1 = new BaseMapBerth();
             baseMapBerth1.setPodCode(basePodAndMapDTO.getPodCode());
-            int version = 0;
+            int version1 = 0;
             if (baseMapBerth.getVersion()!=null){
-                version = baseMapBerth.getVersion();
+                version1 = baseMapBerth.getVersion();
             }
-            baseMapBerth1.setVersion(version);
+            baseMapBerth1.setVersion(version1);
             baseMapBerth1.setBerCode(baseMapBerth.getBerCode());
             //将货架编号写入新的位置
             num=baseMapBerthMapper.updatePodByBerCode(baseMapBerth1);
             Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
         }
         return num;
+
     }
 
     //将BigDecimal转换为String类型
