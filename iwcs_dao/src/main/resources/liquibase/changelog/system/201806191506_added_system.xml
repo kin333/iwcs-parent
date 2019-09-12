@@ -22,8 +22,8 @@
         <sqlFile path="liquibase/init_insert/system/s_authority.sql"/>
     </changeSet>
 
-    <changeSet id="s_authority_iwcs_init" author="devin">
-        <sqlFile path="liquibase/init_insert/system/s_authority_iwcs.sql"/>
+    <changeSet id="s_authority_iwcs_init_1" author="devin">
+        <sqlFile path="liquibase/init_insert/system/s_authority_iwcs_1.sql"/>
     </changeSet>
 
     <changeSet author="devin (generated)" id="1529391343830-59">
