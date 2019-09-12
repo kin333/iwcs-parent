@@ -710,8 +710,6 @@ public class HikCallbackIwcsService {
             sendMsgNotifyMES(msg,"arriveSrcWb", hikCallBackAgvMove.getTaskCode());
 
         }
-
-        updateMapInfoAndPod(hikCallBackAgvMove);
     }
 
     /**
@@ -773,14 +771,6 @@ public class HikCallbackIwcsService {
         SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         if (subTask != null) {
             //更新子任务状态以及实际任务结束时间
-            subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
-            try {
-                SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                subTask.setTaskEndTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));
-            } catch (ParseException e) {
-                subTask.setTaskEndTime(new Date());
-                logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
-            }
             ArriveDestWbInfoDto arriveDestWbInfoDto = new ArriveDestWbInfoDto();
             arriveDestWbInfoDto.setAgvCode(hikCallBackAgvMove.getRobotCode());
             arriveDestWbInfoDto.setTaskCode(subTask.getMainTaskNum());
@@ -868,7 +858,7 @@ public class HikCallbackIwcsService {
      */
     public void updateMapInfoAndPod(HikCallBackAgvMove hikCallBackAgvMove){
         //1. 更新地码信息
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getMapDataCode());
         if (baseMapBerth == null) {
             throw new BusinessException(hikCallBackAgvMove.getMapDataCode() + "此地码的信息不存在");
         }
@@ -889,9 +879,9 @@ public class HikCallbackIwcsService {
         tmpBasePodDetail.setId(basePodDetail.getId());
         tmpBasePodDetail.setCoox(hikCallBackAgvMove.getCooX());
         tmpBasePodDetail.setCooy(hikCallBackAgvMove.getCooY());
-        tmpBasePodDetail.setBerCode(hikCallBackAgvMove.getMapDataCode());
-        tmpBasePodDetail.setMapCode(hikCallBackAgvMove.getMapCode());
         tmpBasePodDetail.setLastModifiedTime(new Date());
+        tmpBasePodDetail.setMapCode(hikCallBackAgvMove.getMapCode());
+        tmpBasePodDetail.setBerCode(hikCallBackAgvMove.getMapDataCode());
         //更新货架信息表
         int changeRows = basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
         if (changeRows <= 0) {
