@@ -8,6 +8,7 @@ import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodAndMapDTO;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.service.callHik.callHikImpl.BindPodAndBerthService;
 import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,6 +27,8 @@ public class BasePodAndMapService {
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     private  BasePodDetailMapper basePodDetailMapper;
+    @Autowired
+    private BindPodAndBerthService bindPodAndBerthService;
 
     public int updatePodAndMap(BasePodAndMapDTO basePodAndMapDTO){
         int num = 0;
@@ -71,7 +74,12 @@ public class BasePodAndMapService {
             //清除该货架在map_berth表中原来的位置
             num = baseMapBerthMapper.deletePodCodeByBerCode(baseMapBerth2);
             Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
-
+            //在海康中解绑旧的位置信息
+            BasePodAndMapDTO basePodAndMapDTO1 = new BasePodAndMapDTO();
+            basePodAndMapDTO1.setPodCode(basePodAndMapDTO.getPodCode());
+            basePodAndMapDTO1.setPoint(berthData.getBerCode());
+            basePodAndMapDTO1.setIndBind("0");
+            bindPodAndBerthService.bindPodAndBerth(basePodAndMapDTO1);
 
             //更新货架信息的新的点位
             BasePodDetail basePodDetail1 = new BasePodDetail();
@@ -96,7 +104,14 @@ public class BasePodAndMapService {
             //将货架编号写入新的位置
             num=baseMapBerthMapper.updatePodByBerCode(baseMapBerth1);
             Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
+            //在海康中绑定新的位置信息
+            BasePodAndMapDTO basePodAndMapDTO2 = new BasePodAndMapDTO();
+            basePodAndMapDTO2.setPodCode(basePodAndMapDTO.getPodCode());
+            basePodAndMapDTO2.setPoint(baseMapBerth.getBerCode());
+            basePodAndMapDTO2.setIndBind("1");
+            bindPodAndBerthService.bindPodAndBerth(basePodAndMapDTO2);
         }
+
         return num;
 
     }

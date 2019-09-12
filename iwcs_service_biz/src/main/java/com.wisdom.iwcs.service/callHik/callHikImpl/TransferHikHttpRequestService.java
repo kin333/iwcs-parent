@@ -2,9 +2,10 @@ package com.wisdom.iwcs.service.callHik.callHikImpl;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.base.context.ApplicationProperties;
+import com.wisdom.iwcs.common.utils.AddressEnum;
 import com.wisdom.iwcs.domain.TPSRequest.ReturnPodRequestDTO;
-import com.wisdom.iwcs.domain.base.dto.BasePodAndMapDTO;
 import com.wisdom.iwcs.domain.hikSync.*;
+import com.wisdom.iwcs.mapper.task.AddressMapper;
 import com.wisdom.iwcs.service.callHik.ITransferHikHttpRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ public class TransferHikHttpRequestService implements ITransferHikHttpRequestSer
     private final Logger logger = LoggerFactory.getLogger(TransferHikHttpRequestService.class);
     @Autowired
     private ApplicationProperties applicationProperties;
+    @Autowired
+    private AddressMapper addressMapper;
 
     /**
      * 调用一键结束
@@ -273,19 +276,25 @@ public class TransferHikHttpRequestService implements ITransferHikHttpRequestSer
 
     /**
      * 货架与位置绑定、解绑
-     * @param basePodAndMapDTO
+     * @param
      * @return
      */
     @Override
     @SystemInterfaceLog(methodCode = Bind_And_Berth_CODE, methodName = Bind_And_Berth_NAME, methodThansfer = SRC_IWCS)
-    public String transferBindPodAndBerth(BasePodAndMapDTO basePodAndMapDTO) {
+    public String transferBindPodAndBerth(BindPodAndBerthDTO bindPodAndBerthDTO) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
 
-        HttpEntity<BasePodAndMapDTO> requestEntity = new HttpEntity<>(basePodAndMapDTO, httpHeaders);
+        HttpEntity<BindPodAndBerthDTO> requestEntity = new HttpEntity<>(bindPodAndBerthDTO, httpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getHikParam().getCancelTaskUrl(),
+
+        //拼接地址
+        String address = addressMapper.selectAddressByCode("HIK");
+        address += AddressEnum.BIND_POD_AND_BERTH.getValue();
+        logger.debug("拼接的地址"+address);
+
+        ResponseEntity<String> resp = restTemplate.exchange(address,
                 HttpMethod.POST, requestEntity, String.class);
 
         List<String> val = resp.getHeaders().get("Set-Cookie");

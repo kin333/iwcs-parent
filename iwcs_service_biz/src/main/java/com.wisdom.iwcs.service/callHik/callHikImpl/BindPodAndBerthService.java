@@ -49,7 +49,7 @@ public class BindPodAndBerthService implements IBindPodAndBerthService {
         bindPodAndBerthDTO.setIndBind(basePodAndMapDTO.getIndBind());
 
 
-        String reponse = ITransferHikHttpRequestService.transferBindPodAndBerth(basePodAndMapDTO);
+        String reponse = ITransferHikHttpRequestService.transferBindPodAndBerth(bindPodAndBerthDTO);
         ICommonService.handleHikResponseAndThrowException(reponse);
         return new Result();
     }
