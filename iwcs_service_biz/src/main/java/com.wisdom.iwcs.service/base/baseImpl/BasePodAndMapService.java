@@ -79,7 +79,7 @@ public class BasePodAndMapService {
             BaseMapBerth baseMapBerth1 = new BaseMapBerth();
             baseMapBerth1.setPodCode(basePodAndMapDTO.getPodCode());
             int version = 0;
-            if (berthData.getVersion()!=null){
+            if (baseMapBerth.getVersion()!=null){
                 version = baseMapBerth.getVersion();
             }
             baseMapBerth1.setVersion(version);
