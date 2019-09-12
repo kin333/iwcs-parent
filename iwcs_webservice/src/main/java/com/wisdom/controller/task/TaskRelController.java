@@ -163,7 +163,9 @@ public class TaskRelController {
     public Result selectSubMainByMainCode(@RequestBody TaskRelSubMain taskRelSubMain) {
 
         List<TaskRelSubMain> taskRelSubMainList = TaskRelService.selectSubMainByMainCode(taskRelSubMain);
-
+        if (taskRelSubMainList == null) {
+            return new Result(400, "该主任务下无任何子任务，不能生成图形");
+        }
         return new Result(taskRelSubMainList);
     }
 }

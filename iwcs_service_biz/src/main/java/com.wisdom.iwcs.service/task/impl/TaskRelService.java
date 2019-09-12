@@ -7,6 +7,7 @@ import com.greenpineyu.fel.function.operator.Sub;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.*;
@@ -64,32 +65,12 @@ public class TaskRelService {
     public List<TaskRelSubMain> selectSubMainByMainCode(TaskRelSubMain taskRelSubMain) {
 
         List<TaskRelSubMain> taskRelSubMainList = TaskRelMapper.selectSubMainByMainCode(taskRelSubMain.getMainTaskTypeCode());
+        if (taskRelSubMainList.size() == 0) {
+            return null;
+        }
         taskRelSubMainList.get(0).setFloor(1);
 
         List<TaskRelSubMain> taskRelSubMainData = formatterData(taskRelSubMainList.get(0), taskRelSubMainList);
-
-//        for (int idx = 0; idx < taskRelSubMainList.size(); idx++) {
-//            // 判断第一层taskRelSubMainList中的outFlow是否为空
-//            if (!StringUtils.isEmpty(taskRelSubMainList.get(idx).getOutflow())) {
-//                // 分割第一层outFlow为数组
-//                String[] outFlow = taskRelSubMainList.get(idx).getOutflow().split(";");
-//                // 循环第一层outflow数组
-//                for (int num = 0; num < outFlow.length; num++) {
-//                    //遍历第二层taskRelSubMainList
-//                    for (int i = 0; i < taskRelSubMainList.size(); i++) {
-//                        // 通过outflow数据查找相对应templCode数据
-//                        String templCode = taskRelSubMainList.get(i).getTemplCode();
-//                        if (outFlow[num].equals(templCode)) {
-//                            // 如果该层级为null 赋值该层级为 上一级 加1
-//                            if (taskRelSubMainList.get(i).getFloor() == null) {
-//                                taskRelSubMainList.get(i).setFloor(taskRelSubMainList.get(idx).getFloor() + 1);
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
 
         return taskRelSubMainData;
     }
