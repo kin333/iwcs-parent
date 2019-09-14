@@ -15,6 +15,7 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
+import liquibase.integration.servlet.LiquibaseStatusServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -310,5 +311,11 @@ public class BaseMapBerthService implements IBaseMapBerthService{
             return 500;
         }
         return baseMapBerthMapper.updateListByBerCode(baseMapBerthDTOList);
+    }
+
+    @Override
+    public List<BaseMapBerth> selectMapDataByMapCode(BaseMapBerth baseMapBerth) {
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectBerthCodeByMapCode(baseMapBerth.getMapCode());
+        return baseMapBerthList;
     }
 }

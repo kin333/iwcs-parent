@@ -132,4 +132,12 @@ public class BaseMapBerthController {
         }
         return new Result();
     }
+
+    @PostMapping("/getMapDataByMapCode")
+    public Result selectMapDataByMapCode(@RequestBody BaseMapBerth baseMapBerth) {
+
+        List<BaseMapBerth> baseMapBerthList = IBaseMapBerthService.selectMapDataByMapCode(baseMapBerth);
+
+        return new Result(baseMapBerthList);
+    }
 }

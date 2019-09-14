@@ -251,7 +251,7 @@
     </select>
 
     <select id="selectBerthCodeByMapCode" resultMap="BaseResultMap">
-       select <include refid="Base_Column_List"/> from base_map_berth WHERE map_code = #{mapCode}
+       select <include refid="Base_Column_List"/> from base_map_berth WHERE map_code = #{mapCode} order by coox
     </select>
 
     <update id="updateList">

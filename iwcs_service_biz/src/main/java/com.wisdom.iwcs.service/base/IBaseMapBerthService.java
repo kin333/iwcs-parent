@@ -37,4 +37,6 @@ public interface IBaseMapBerthService {
     List<BaseMapBerthDTO> selectAlltorageInfo(BaseMapBerthDTO record);
 
     int updateByBerCode(List<BaseMapBerthDTO> list);
+
+    List<BaseMapBerth> selectMapDataByMapCode(BaseMapBerth baseMapBerth);
 }
