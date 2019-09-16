@@ -32,6 +32,10 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
      * 根据任务状态查询主任务列表
      */
     List<MainTask> selectByTaskStatus(String taskStatus);
+    /**
+     * 根据任务状态查询主任务列表
+     */
+    List<MainTask> selectByTaskStatusList(List<String> taskStatusList);
 
     /**
      * 根据主任务单号设置优先级

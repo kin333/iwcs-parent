@@ -72,6 +72,15 @@
         from ts_main_task
         where task_status = #{taskStatus}
     </select>
+    <select id="selectByTaskStatusList" resultType="com.wisdom.iwcs.domain.task.MainTask">
+        select
+        <include refid="Base_Column_List"/>
+        from ts_main_task
+        where task_status in
+        <foreach collection="taskStatusList" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
 
 
     <update id="updatePriority">

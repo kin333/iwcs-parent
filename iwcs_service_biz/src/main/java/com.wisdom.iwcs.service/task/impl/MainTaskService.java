@@ -256,7 +256,10 @@ public class MainTaskService implements IMainTaskService {
 
     @Override
     public List<MainTask> getAllUnDispatchedTask() {
-        List<MainTask> mainTasks = mainTaskMapper.selectByTaskStatus(TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED);
+        ArrayList<String> status = new ArrayList<>();
+        status.add(TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED);
+        status.add(TaskConstants.mainTaskStatus.MAIN_ISSUED);
+        List<MainTask> mainTasks = mainTaskMapper.selectByTaskStatusList(status);
         return mainTasks;
     }
 
