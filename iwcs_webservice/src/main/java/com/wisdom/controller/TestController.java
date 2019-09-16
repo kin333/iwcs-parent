@@ -82,6 +82,18 @@ public class TestController {
         return new Result();
     }
 
+    @GetMapping("/testMyBatis")
+    public String testMyBatis() {
+        BaseMapBerth baseMapBerth1 = baseMapBerthMapper.selectByPrimaryKey(1);
+        System.out.println("查询结果1:" + baseMapBerth1.getId());
+        BaseMapBerth baseMapBerth2 = baseMapBerthMapper.selectByPrimaryKey(1);
+        System.out.println("查询结果2:" + baseMapBerth2.getId());
+        BaseMapBerth baseMapBerth3 = baseMapBerthMapper.selectByPrimaryKey(1);
+        System.out.println("查询结果3:" + baseMapBerth3.getId());
+        BaseMapBerth baseMapBerth4 = baseMapBerthMapper.selectByPrimaryKey(1);
+        System.out.println("查询结果4:" + baseMapBerth4.getId());
 
+        return "OK";
+    }
 
 }

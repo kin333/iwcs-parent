@@ -501,6 +501,14 @@ public class TaskConstants {
          * 滚动完成
          */
         public final static String ROLLER_END = "roller_end";
+        /**
+         * 滚筒移动任务开始
+         */
+        public final static String ROLLER_MOVE_START = "roller_move_start";
+        /**
+         * 滚筒移动任务完成
+         */
+        public final static String ROLLER_MOVE_END = "roller_move_end";
 
     }
 

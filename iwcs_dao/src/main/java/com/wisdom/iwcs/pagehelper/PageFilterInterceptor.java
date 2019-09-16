@@ -108,7 +108,7 @@ public class PageFilterInterceptor extends PageInterceptor {
 
             //根据数据权限去获取查询条件
             DataFilter vl = DataFilterResolver.resolve(boundSql, ms);
-            System.out.println(vl.authority() + vl.authority().length());
+//            System.out.println(vl.authority() + vl.authority().length());
             if (vl.authority() != null && vl.authority().length() > 0) {
                 List<DataFilterRule> dataFilterRuleList = getDataFilterRules(ms, parameter, vl.authority());
                 if (dataFilterRuleList.size() != 0) {
@@ -414,7 +414,7 @@ public class PageFilterInterceptor extends PageInterceptor {
             PageStringValue whereStringValue = new PageStringValue(ps.getWhere() + " AND " + whereSql);
 
             ps.setWhere(whereStringValue);
-            System.out.println(ps);
+//            System.out.println(ps);
 
             return ps.toString();
 
