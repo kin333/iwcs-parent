@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.base.baseImpl;
 
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -64,54 +65,62 @@ public class BasePodAndMapService {
         if (StringUtils.isBlank(baseMapBerth.getPodCode()) && baseMapBerth.getInLock()==0 && StringUtils.isBlank(baseMapBerth.getLockSource())
                 && basePodDetail.getInLock()==0 && StringUtils.isBlank(basePodDetail.getLockSource())){
 
-            BaseMapBerth baseMapBerth2 = new BaseMapBerth();
-            int version = 0;
-            if (berthData.getVersion()!=null){
-                version = berthData.getVersion();
-            }
-            baseMapBerth2.setVersion(version);
-            baseMapBerth2.setBerCode(berthData.getBerCode());
-            //清除该货架在map_berth表中原来的位置
-            num = baseMapBerthMapper.deletePodCodeByBerCode(baseMapBerth2);
-            Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
             //在海康中解绑旧的位置信息
             BasePodAndMapDTO basePodAndMapDTO1 = new BasePodAndMapDTO();
             basePodAndMapDTO1.setPodCode(basePodAndMapDTO.getPodCode());
             basePodAndMapDTO1.setPoint(berthData.getBerCode());
             basePodAndMapDTO1.setIndBind("0");
-            bindPodAndBerthService.bindPodAndBerth(basePodAndMapDTO1);
+            Result result = bindPodAndBerthService.bindPodAndBerth(basePodAndMapDTO1);
+            //海康解绑成功后   清除该货架在map_berth表中原来的位置
+            if (result.getReturnMsg().equals("操作成功")){
+                BaseMapBerth baseMapBerth2 = new BaseMapBerth();
+                int version = 0;
+                if (berthData.getVersion()!=null){
+                    version = berthData.getVersion();
+                }
+                baseMapBerth2.setVersion(version);
+                baseMapBerth2.setBerCode(berthData.getBerCode());
 
-            //更新货架信息的新的点位
-            BasePodDetail basePodDetail1 = new BasePodDetail();
-            basePodDetail1.setBerCode(baseMapBerth.getBerCode());
-            basePodDetail1.setCoox(bigDecimalToString(baseMapBerth.getCoox()));
-            basePodDetail1.setCooy(bigDecimalToString(baseMapBerth.getCooy()));
-            basePodDetail1.setVersion(basePodDetail.getVersion());
-            basePodDetail1.setPodCode(basePodAndMapDTO.getPodCode());
-            //开始更新base_pod_detail表的信息
-            num = basePodDetailMapper.updateMapsByPodCode(basePodDetail1);
-            Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
-
-            //更新货架编号的新位置信息
-            BaseMapBerth baseMapBerth1 = new BaseMapBerth();
-            baseMapBerth1.setPodCode(basePodAndMapDTO.getPodCode());
-            int version1 = 0;
-            if (baseMapBerth.getVersion()!=null){
-                version1 = baseMapBerth.getVersion();
+                num = baseMapBerthMapper.deletePodCodeByBerCode(baseMapBerth2);
+                Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
             }
-            baseMapBerth1.setVersion(version1);
-            baseMapBerth1.setBerCode(baseMapBerth.getBerCode());
-            //将货架编号写入新的位置
-            num=baseMapBerthMapper.updatePodByBerCode(baseMapBerth1);
-            Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
-            //在海康中绑定新的位置信息
-            BasePodAndMapDTO basePodAndMapDTO2 = new BasePodAndMapDTO();
-            basePodAndMapDTO2.setPodCode(basePodAndMapDTO.getPodCode());
-            basePodAndMapDTO2.setPoint(baseMapBerth.getBerCode());
-            basePodAndMapDTO2.setIndBind("1");
-            bindPodAndBerthService.bindPodAndBerth(basePodAndMapDTO2);
-        }
+            if(num>0){
+                //更新货架信息的新的点位
+                BasePodDetail basePodDetail1 = new BasePodDetail();
+                basePodDetail1.setBerCode(baseMapBerth.getBerCode());
+                basePodDetail1.setCoox(bigDecimalToString(baseMapBerth.getCoox()));
+                basePodDetail1.setCooy(bigDecimalToString(baseMapBerth.getCooy()));
+                basePodDetail1.setVersion(basePodDetail.getVersion());
+                basePodDetail1.setPodCode(basePodAndMapDTO.getPodCode());
+                //开始更新base_pod_detail表的信息
+                num = basePodDetailMapper.updateMapsByPodCode(basePodDetail1);
+                Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
 
+                if (num>0){
+                    //在海康中绑定新的位置信息
+                    BasePodAndMapDTO basePodAndMapDTO2 = new BasePodAndMapDTO();
+                    basePodAndMapDTO2.setPodCode(basePodAndMapDTO.getPodCode());
+                    basePodAndMapDTO2.setPoint(baseMapBerth.getBerCode());
+                    basePodAndMapDTO2.setIndBind("1");
+                    Result result1 = bindPodAndBerthService.bindPodAndBerth(basePodAndMapDTO2);
+                    if (result1.getReturnMsg().equals("操作成功")){
+                        //更新货架编号的新位置信息
+                        BaseMapBerth baseMapBerth1 = new BaseMapBerth();
+                        baseMapBerth1.setPodCode(basePodAndMapDTO.getPodCode());
+                        int version1 = 0;
+                        if (baseMapBerth.getVersion()!=null){
+                            version1 = baseMapBerth.getVersion();
+                        }
+                        baseMapBerth1.setVersion(version1);
+                        baseMapBerth1.setBerCode(baseMapBerth.getBerCode());
+                        //将货架编号写入新的位置
+                        num=baseMapBerthMapper.updatePodByBerCode(baseMapBerth1);
+                        Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
+                    }
+
+                }
+            }
+        }
         return num;
 
     }
