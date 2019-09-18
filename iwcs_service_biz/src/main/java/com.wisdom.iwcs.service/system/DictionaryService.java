@@ -12,11 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhanglisen on 2016/12/28.
@@ -254,5 +252,24 @@ public class DictionaryService {
             return new Result(200, "删除成功", "");
         }
         return new Result(500, "删除失败", "");
+    }
+
+    public List<Dictionary> getStrategicType(String dictionary) {
+
+        List<Dictionary> dicList = dictionaryMapper.selectByDictType("TASK_TYPE");
+        List<Dictionary> dicResultList = new ArrayList<Dictionary>();
+        if (dicList.size() != 0) {
+            dicList.forEach(item -> {
+                if (!StringUtils.isEmpty(item.getJudgeType())) {
+                    String[] judgeTypeList = item.getJudgeType().split(";");
+                    for (int i = 0; i < judgeTypeList.length; i++) {
+                        if (judgeTypeList[i].equalsIgnoreCase(dictionary)) {
+                            dicResultList.add(item);
+                        }
+                    }
+                }
+            });
+        }
+        return dicResultList;
     }
 }

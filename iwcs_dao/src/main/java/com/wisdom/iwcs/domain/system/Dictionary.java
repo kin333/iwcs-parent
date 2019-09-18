@@ -16,6 +16,15 @@ public class Dictionary implements Serializable {
     private Integer lastModifiedBy;//更新人
     private Long lastModifiedTime;//更新时间
     private Integer deleteFlag;//删除标记 0为删除 1为正常
+    private String judgeType;// 判断策略方式
+
+    public String getJudgeType() {
+        return judgeType;
+    }
+
+    public void setJudgeType(String judgeType) {
+        this.judgeType = judgeType;
+    }
 
     public Integer getId() {
         return id;

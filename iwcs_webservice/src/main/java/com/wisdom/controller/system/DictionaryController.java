@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by zhanglisen on 2016/12/28.
@@ -142,5 +143,11 @@ public class DictionaryController {
     public Result deleteByPrimaryKey(@PathVariable Integer id, HttpServletResponse response) {
         Result result = dictionaryService.deleteByPrimaryKey(id);
         return result;
+    }
+
+    @RequestMapping(value = "/{dictType}/getStrategicType", method = RequestMethod.GET)
+    public Result getStrategicType(@PathVariable String dictType) {
+        List<Dictionary> result = dictionaryService.getStrategicType(dictType);
+        return new Result(result);
     }
 }

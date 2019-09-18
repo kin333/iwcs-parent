@@ -19,6 +19,7 @@
         <result column="last_modified_by" property="lastModifiedBy" jdbcType="INTEGER"/>
         <result column="last_modified_time" property="lastModifiedTime" jdbcType="BIGINT"/>
         <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER"/>
+        <result column="judge_type" property="judgeType" jdbcType="VARCHAR"/>
 
     </resultMap>
 
@@ -41,7 +42,7 @@
 
     <sql id="Base_Column_List">
     a.id, a.dict_type, a.dict_type_name, a.dict_name, a.dict_value, a.sort_code,
-    a.status, a.created_by, a.created_time, a.last_modified_by, a.last_modified_time ,a.delete_flag
+    a.status, a.created_by, a.created_time, a.last_modified_by, a.last_modified_time ,a.delete_flag,a.judge_type
   </sql>
 
     <select id="selectBaseTypeList" resultMap="DictionaryDtoResultMap" parameterType="java.util.Map">
