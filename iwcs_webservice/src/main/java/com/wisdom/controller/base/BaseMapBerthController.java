@@ -140,4 +140,12 @@ public class BaseMapBerthController {
 
         return new Result(baseMapBerthList);
     }
+
+
+    @PostMapping("/updateMapBerthById")
+    public Result updateMapBerthById(@RequestBody List<BaseMapBerthDTO> baseMapBerthDTO) {
+        IBaseMapBerthService.updateMapBerthById(baseMapBerthDTO);
+
+        return new Result();
+    }
 }

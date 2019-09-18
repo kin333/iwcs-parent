@@ -318,4 +318,14 @@ public class BaseMapBerthService implements IBaseMapBerthService{
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectBerthCodeByMapCode(baseMapBerth.getMapCode());
         return baseMapBerthList;
     }
+    @Override
+    public int updateMapBerthById(List<BaseMapBerthDTO> baseMapBerthDTO) {
+
+        baseMapBerthDTO.forEach(item -> {
+            item.setInLock(1);
+        });
+        int num = baseMapBerthMapper.updateMapBerthById(baseMapBerthDTO);
+        return num;
+    }
+
 }

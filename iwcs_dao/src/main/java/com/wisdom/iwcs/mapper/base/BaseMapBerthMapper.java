@@ -181,4 +181,8 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      */
     int deletePodCodeByBerCode(BaseMapBerth baseMapBerth);
 
+    /**
+     * 批量锁定
+     */
+    int updateMapBerthById(List<BaseMapBerthDTO> baseMapBerthDTO);
 }

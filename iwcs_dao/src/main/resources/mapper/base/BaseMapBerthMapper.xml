@@ -337,6 +337,16 @@
         </foreach>
     </update>
 
+    <update id="updateMapBerthById">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update base_map_berth
+            <set>
+                in_lock=#{item.inLock}
+            </set>
+            where  ber_code= #{item.berCode}
+        </foreach>
+    </update>
+
     <select id="selectAliasByMapCode" resultType="string">
         select point_alias from base_map_berth
         where 1=1
