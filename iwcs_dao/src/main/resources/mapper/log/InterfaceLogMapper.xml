@@ -72,5 +72,34 @@
         <if test="reqCode != null and reqCode != ''">
             and req_code = #{reqCode}
         </if>
+        <if test="showHistory == true">
+            UNION ALL
+            select
+            <include refid="Base_Column_List"/>
+            from interface_log_his
+            where 1=1
+            <if test="searchKey != null and searchKey != ''">
+                and 1=1
+            </if>
+            <if test="startTime != null">
+                and UNIX_TIMESTAMP(receive_time) >= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
+            </if>
+            <if test="endTime != null">
+                and UNIX_TIMESTAMP(receive_time) &lt;= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
+            </if>
+            <if test="srcClientCode != null and srcClientCode != ''">
+                and src_client_code = #{srcClientCode}
+            </if>
+            <if test="interfaceCode != null and interfaceCode != ''">
+                and interface_code = #{interfaceCode}
+            </if>
+            <if test="sevThreadId != null and sevThreadId != ''">
+                and sev_thread_id = #{sevThreadId}
+            </if>
+            <if test="reqCode != null and reqCode != ''">
+                and req_code = #{reqCode}
+            </if>
+        </if>
+        order by created_time desc
     </select>
 </mapper>

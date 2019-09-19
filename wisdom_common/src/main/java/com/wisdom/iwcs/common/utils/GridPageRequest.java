@@ -39,6 +39,7 @@ public class GridPageRequest implements Serializable {
     private int pageNum;
     private int pageSize;
     private List<GridSortInfo> sortList;
+    private Boolean showHistory;
     /**
      * 关键字搜索
      */
@@ -118,5 +119,13 @@ public class GridPageRequest implements Serializable {
     public void setSearchKey(String searchKey) {
 
         this.searchKey = searchKey;
+    }
+
+    public Boolean getShowHistory() {
+        return showHistory;
+    }
+
+    public void setShowHistory(Boolean showHistory) {
+        this.showHistory = showHistory;
     }
 }

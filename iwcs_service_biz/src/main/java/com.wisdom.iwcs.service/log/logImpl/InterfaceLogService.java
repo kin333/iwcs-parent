@@ -188,13 +188,13 @@ public class InterfaceLogService implements IInterfaceLogService {
             }
         });
         map.put("searchKey", gridPageRequest.getSearchKey());
+        map.put("showHistory", gridPageRequest.getShowHistory());
         // 对map中的参数的合法性进行校验
 
         String sortMyBatisByString = gridPageRequest.getSortMybatisString();
         PageHelper.startPage(gridPageRequest.getPageNum(), gridPageRequest.getPageSize(), sortMyBatisByString);
 
         List<InterfaceLog> list = interfaceLogMapper.selectPage(map);
-
         PageInfo<InterfaceLog> pageInfo = new PageInfo<>(list);
         PageInfo<InterfaceLogDTO> pageInfoFinal = new PageInfo<>(interfaceLogMapStruct.toDto(list));
         pageInfoFinal.setTotal(pageInfo.getTotal());
