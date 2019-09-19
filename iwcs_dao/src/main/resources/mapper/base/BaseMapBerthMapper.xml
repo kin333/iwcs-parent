@@ -341,7 +341,8 @@
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update base_map_berth
             <set>
-                in_lock=#{item.inLock}
+                in_lock=#{item.inLock},
+                berth_type_value = #{item.berthTypeValue}
             </set>
             where  ber_code= #{item.berCode}
         </foreach>

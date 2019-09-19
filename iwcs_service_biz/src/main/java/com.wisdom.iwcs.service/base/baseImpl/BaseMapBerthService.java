@@ -321,9 +321,6 @@ public class BaseMapBerthService implements IBaseMapBerthService{
     @Override
     public int updateMapBerthById(List<BaseMapBerthDTO> baseMapBerthDTO) {
 
-        baseMapBerthDTO.forEach(item -> {
-            item.setInLock(1);
-        });
         int num = baseMapBerthMapper.updateMapBerthById(baseMapBerthDTO);
         return num;
     }
