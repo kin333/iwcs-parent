@@ -126,19 +126,12 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     logger.warn("子任务下发失败{}，将子任务重新执行标志设置为true");
                     reExecFlag.set(true);
                     e.printStackTrace();
-                    //测试时使用
                     try {
                         waitLock.wait(10 * 1000);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
                     break;
-//                    try {
-//                        waitLock.wait(1000 * 3);
-//                    } catch (InterruptedException e1) {
-//                        logger.error("子任务发送失败后，尝试休眠失败{}", subTask.getSubTaskNum());
-//                        e1.printStackTrace();
-//                    }
                 }
             }
         }
