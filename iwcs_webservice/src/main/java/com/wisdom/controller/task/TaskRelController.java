@@ -6,7 +6,9 @@ import java.util.Map;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.hikSync.ResolveDirectionDto;
 import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.dto.RelAndConditionDTO;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
 import com.wisdom.iwcs.service.task.impl.TaskRelService;
@@ -167,5 +169,11 @@ public class TaskRelController {
             return new Result(400, "该主任务下无任何子任务，不能生成图形");
         }
         return new Result(taskRelSubMainList);
+    }
+    @PostMapping("/updateRelAndConditionDate")
+    public Result updateRelAndConditionDate(@RequestBody RelAndConditionDTO recode) {
+
+        TaskRelService.updateRelAndConditionDate(recode);
+        return new Result();
     }
 }

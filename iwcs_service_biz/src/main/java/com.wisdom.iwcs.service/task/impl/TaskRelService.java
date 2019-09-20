@@ -3,18 +3,18 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.greenpineyu.fel.function.operator.Sub;
 import com.wisdom.iwcs.common.utils.GridFilterInfo;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
-import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.dto.RelAndConditionDTO;
 import com.wisdom.iwcs.domain.task.dto.TaskRelConditionDTO;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import com.wisdom.iwcs.mapper.task.TaskRelConditionMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
+import com.wisdom.iwcs.mapstruct.task.TaskRelConditionsMapStruct;
 import com.wisdom.iwcs.mapstruct.task.TaskRelMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,11 +38,14 @@ public class TaskRelService {
 
     private final TaskRelConditionMapper TaskRelConditionMapper;
 
+    private final TaskRelConditionsMapStruct taskRelConditionsMapStruct;
+
     @Autowired
-    public TaskRelService(TaskRelMapStruct TaskRelMapStruct, TaskRelMapper TaskRelMapper, TaskRelConditionMapper TaskRelConditionMapper) {
+    public TaskRelService(TaskRelMapStruct TaskRelMapStruct, TaskRelMapper TaskRelMapper, TaskRelConditionMapper TaskRelConditionMapper, TaskRelConditionsMapStruct taskRelConditionsMapStruct) {
         this.TaskRelMapStruct = TaskRelMapStruct;
         this.TaskRelMapper = TaskRelMapper;
         this.TaskRelConditionMapper = TaskRelConditionMapper;
+        this.taskRelConditionsMapStruct = taskRelConditionsMapStruct;
     }
 
     /**
@@ -294,6 +297,22 @@ public class TaskRelService {
             }
         });
         return 1;
+    }
+
+    public int updateRelAndConditionDate(RelAndConditionDTO recode) {
+        TaskRelDTO taskRel = recode.getTaskRel();
+        List<TaskRelConditionDTO>  taskRelConditionDTO = recode.getTaskRelCondition();
+        int num = updateByPrimaryKey(taskRel);
+        taskRelConditionDTO.forEach(item -> {
+            TaskRelCondition taskRelCondition = taskRelConditionsMapStruct.toEntity(item);
+            if (org.springframework.util.StringUtils.isEmpty(taskRelCondition.getId())) {
+                int insertNum = TaskRelConditionMapper.insert(taskRelCondition);
+            } else {
+                // 不为空就更新
+                int updateNum = TaskRelConditionMapper.updateByPrimaryKey(taskRelCondition);
+            }
+        });
+        return num;
     }
 
     /**
