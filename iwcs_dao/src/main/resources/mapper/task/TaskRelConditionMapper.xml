@@ -80,6 +80,13 @@
     delete from ts_task_rel_condition where templ_code = #{templCode}
   </delete>
 
+    <delete id="deleteByTemplCodes">
+        delete from ts_task_rel_condition where templ_code in
+        <foreach collection="templCodeList" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
     <select id="selectTaskConditionByTemplCode" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from ts_task_rel_condition where templ_code = #{templCode}
     </select>

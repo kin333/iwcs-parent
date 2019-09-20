@@ -330,7 +330,18 @@ public class TaskRelService {
         TaskRel taskRel = TaskRelMapper.selectDataByTemplCode(templCode);
         return taskRel;
     }
-
+/**
+ * 通过templCode删除rel数据 同时通过templCode删除relCondition中相对的数据
+ */
+    public int deleteByTemplCodes(List<TaskRel> taskRelList) {
+        List<String> templCodeList = new ArrayList<String>();
+        taskRelList.forEach(item -> {
+            templCodeList.add(item.getTemplCode());
+        });
+        int rellNum = TaskRelMapper.deleteByTemplCodes(templCodeList);
+        int conNum = TaskRelConditionMapper.deleteByTemplCodes(templCodeList);
+        return rellNum;
+    }
     /**
      * 根据条件分页查询
      *

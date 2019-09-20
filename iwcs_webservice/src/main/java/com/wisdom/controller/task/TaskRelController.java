@@ -176,4 +176,10 @@ public class TaskRelController {
         TaskRelService.updateRelAndConditionDate(recode);
         return new Result();
     }
+
+    @PostMapping("/deleteByTemplCodes")
+    public Result deleteByTemplCodes(@RequestBody List<TaskRel> taskRelList) {
+        TaskRelService.deleteByTemplCodes(taskRelList);
+        return new Result();
+    }
 }

@@ -80,7 +80,7 @@
 
   <select id="selectPageByGroup" resultType="com.wisdom.iwcs.domain.task.TaskModal">
     select m.id as id, m.main_task_type_code as mainTaskCode,sub.sub_task_typ_code as subTaskCode,
-     m.main_task_type_name as mainTaskName, sub.sub_task_typ_name as subTaskName
+     m.main_task_type_name as mainTaskName, sub.sub_task_typ_name as subTaskName, t.templ_code as templCode
      from ts_main_task_type as m left join ts_task_rel as t
     on m.main_task_type_code = t.main_task_type_code left join ts_sub_task_typ as sub
     on t.sub_task_type_code = sub.sub_task_typ_code
@@ -127,6 +127,14 @@
   <delete id="deleteByTemplCode">
     delete from ts_task_rel where templ_code = #{templCode}
   </delete>
+
+    <delete id="deleteByTemplCodes">
+    delete from ts_task_rel where templ_code in
+    <foreach collection="templCodeList" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+    </foreach>
+  </delete>
+
     <select id="selectSubTaskTypeByCode" resultType="com.wisdom.iwcs.domain.task.TaskRelSubMain">
         select
         r.id as id,

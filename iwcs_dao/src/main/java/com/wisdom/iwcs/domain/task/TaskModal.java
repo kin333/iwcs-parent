@@ -1,5 +1,7 @@
 package com.wisdom.iwcs.domain.task;
 
+import java.util.List;
+
 public class TaskModal {
 
     private String id;
@@ -11,6 +13,7 @@ public class TaskModal {
     private String searchSubCode;
     private String taskType;
     private String templCode;
+    private List<String> templCodeList;
 
     public String getId() {
         return id;
@@ -82,5 +85,13 @@ public class TaskModal {
 
     public void setTemplCode(String templCode) {
         this.templCode = templCode;
+    }
+
+    public List<String> getTemplCodeList() {
+        return templCodeList;
+    }
+
+    public void setTemplCodeList(List<String> templCodeList) {
+        this.templCodeList = templCodeList;
     }
 }

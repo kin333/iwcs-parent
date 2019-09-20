@@ -7,6 +7,7 @@ import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.TaskRelSubMain;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
 import org.apache.ibatis.annotations.Param;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.springframework.stereotype.Repository;
 
@@ -54,4 +55,6 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
     Integer deleteByTemplCode(String templCode);
 
     List<TaskRelSubMain> selectSubTaskTypeByCode(TaskRel taskRel);
+
+    Integer deleteByTemplCodes(@Param("templCodeList") List<String> templCodeList);
 }

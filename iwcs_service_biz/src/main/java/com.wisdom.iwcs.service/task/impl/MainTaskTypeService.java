@@ -13,6 +13,7 @@ import com.wisdom.iwcs.domain.task.MainTaskType;
 import com.wisdom.iwcs.domain.task.TaskModal;
 import com.wisdom.iwcs.domain.task.dto.MainTaskTypeDTO;
 import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
+import com.wisdom.iwcs.mapper.task.TaskRelMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskTypeMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import org.slf4j.Logger;
@@ -34,10 +35,17 @@ public class MainTaskTypeService {
 
     private final MainTaskTypeMapStruct mainTaskTypeMapStruct;
 
+    private final com.wisdom.iwcs.mapper.task.TaskRelMapper TaskRelMapper;
+
+    private final com.wisdom.iwcs.mapper.task.TaskRelConditionMapper TaskRelConditionMapper;
+
     @Autowired
-    public MainTaskTypeService(MainTaskTypeMapStruct mainTaskTypeMapStruct, MainTaskTypeMapper mainTaskTypeMapper) {
+    public MainTaskTypeService(MainTaskTypeMapStruct mainTaskTypeMapStruct, MainTaskTypeMapper mainTaskTypeMapper,
+                               com.wisdom.iwcs.mapper.task.TaskRelMapper taskRelMapper, com.wisdom.iwcs.mapper.task.TaskRelConditionMapper taskRelConditionMapper) {
         this.mainTaskTypeMapStruct = mainTaskTypeMapStruct;
         this.mainTaskTypeMapper = mainTaskTypeMapper;
+        TaskRelMapper = taskRelMapper;
+        TaskRelConditionMapper = taskRelConditionMapper;
     }
 
     /**
@@ -246,7 +254,12 @@ public class MainTaskTypeService {
      * 根据主任务code删除
      */
     public int deleteMainTaskType(TaskModal taskModal) {
+        List<String> templCodeList = taskModal.getTemplCodeList();
+        int rellNum = TaskRelMapper.deleteByTemplCodes(templCodeList);
+        int conNum = TaskRelConditionMapper.deleteByTemplCodes(templCodeList);
+        // 主任务表删除
         int num = mainTaskTypeMapper.deleteMainTaskType(taskModal);
+
         return num;
     }
 

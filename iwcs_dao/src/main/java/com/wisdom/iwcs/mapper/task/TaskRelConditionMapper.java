@@ -56,4 +56,6 @@ public interface TaskRelConditionMapper extends MyMapperAndIds<TaskRelCondition>
     Integer deleteByTemplCode(String templCode);
 
     List<TaskRelCondition> selectTaskConditionByTemplCode(TaskRelCondition taskRelConditionDTO);
+
+    Integer deleteByTemplCodes(@Param("templCodeList") List<String> templCodeList);
 }
