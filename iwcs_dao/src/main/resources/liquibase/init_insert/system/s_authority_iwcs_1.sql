@@ -23,3 +23,7 @@ INSERT INTO `s_authority` VALUES (21, 'W_STORE', NULL, '仓库管理', 'list', '
 INSERT INTO `s_authority` VALUES (22, 'W_STORE_VIEW', NULL, '仓库监控', 'list', '仓库监控', 21, 1, 0);
 INSERT INTO `s_authority` VALUES (23, 'W_OPERATION_SCHEDUL', NULL, '运维调度', 'list', '仓库管理', 0, 1, 0);
 INSERT INTO `s_authority` VALUES (24, 'W_OPERATION_BIND_POD', NULL, '货架绑定', 'list', '仓库监控', 23, 1, 0);
+INSERT INTO `s_authority` VALUES (25, 'W_MAP_DATA', NULL, '地图数据', 'list', '地图数据', 1, 1, 0);
+INSERT INTO `s_authority` VALUES (26, 'W_MAP_SET', NULL, '地图设置', 'list', '地图设置', 1, 1, 0);
+INSERT INTO `s_authority` VALUES (27, 'W_TASK_MODAL', NULL, '任务模板', 'list', '任务模板', 2, 1, 0);
+INSERT INTO `s_authority` VALUES (28, 'W_SUB_TASK_MODAL', NULL, '子任务类型', 'list', '子任务类型', 2, 1, 0);
