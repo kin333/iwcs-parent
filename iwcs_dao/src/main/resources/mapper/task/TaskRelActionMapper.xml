@@ -55,4 +55,10 @@
     select <include refid="Base_Column_List" /> from ts_task_rel_action
     where action_code = #{actionCode}
   </select>
+
+  <select id="selectExecuteModeByTempCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel_action
+    where templ_code = #{tempCode}
+    and execute_mode = '1'
+  </select>
 </mapper>

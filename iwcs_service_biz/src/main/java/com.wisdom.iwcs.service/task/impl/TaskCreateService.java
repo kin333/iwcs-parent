@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.FloorMapEnum;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -49,6 +50,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskWork
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
+import static com.wisdom.iwcs.common.utils.TaskConstants.handlerName.ACTIONCHECKHANDLER;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.pTopTaskSubTaskTypeConstants.INIT_STORAGE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.*;
@@ -116,6 +118,8 @@ public class TaskCreateService implements ITaskCreateService {
     private TaskContextMapper taskContextMapper;
     @Autowired
     MesRequestService mesRequestService;
+    @Autowired
+    TaskRelActionMapper taskRelActionMapper;
 
     /**
      * 创建任务
@@ -779,6 +783,17 @@ public class TaskCreateService implements ITaskCreateService {
             subTaskCondition.setSubscribeEvent(taskRelCondition.getSubscribeEvent());
             subTaskCondition.setConditonTriger(taskRelCondition.getConditonTriger());
             subTaskCondition.setConditonHandler(taskRelCondition.getConditonHandler());
+            subTaskCondition.setCreateDate(new Date());
+            subTaskConditionMapper.insertSelective(subTaskCondition);
+        }
+
+        //添加活动检查后置条件
+        List<TaskRelAction> actions = taskRelActionMapper.selectExecuteModeByTempCode(templCode);
+        if(actions.size() > 0) {
+            SubTaskCondition subTaskCondition = new SubTaskCondition();
+            subTaskCondition.setSubTaskNum(subTaskNum);
+            subTaskCondition.setConditonTriger(CondtionTriger.POST_CONDITION.getCode());
+            subTaskCondition.setConditonHandler(ACTIONCHECKHANDLER);
             subTaskCondition.setCreateDate(new Date());
             subTaskConditionMapper.insertSelective(subTaskCondition);
         }

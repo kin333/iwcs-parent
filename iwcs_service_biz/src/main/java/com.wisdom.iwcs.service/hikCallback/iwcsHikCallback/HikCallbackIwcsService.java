@@ -239,7 +239,7 @@ public class HikCallbackIwcsService {
             subTaskAction.setPreActions(taskRelAction.getPreActions());
             subTaskAction.setCreateTime(new Date());
             subTaskAction.setCreateNode(nodeCode);
-            subTaskAction.setActionType(CREATE);
+            subTaskAction.setActionStatus(CREATE);
             //插入请求信息
             subTaskActionMapper.insertSelective(subTaskAction);
 

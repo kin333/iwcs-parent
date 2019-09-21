@@ -52,7 +52,7 @@ public class SubTaskCondition {
     private String remark;
 
     /**
-     * 前置条件:pre，后置条件:afte
+     * 前置条件:pre，后置条件:after
      */
     @Column(name = "conditon_triger")
     private String conditonTriger;

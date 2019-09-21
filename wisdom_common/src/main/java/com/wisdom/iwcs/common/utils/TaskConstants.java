@@ -372,7 +372,10 @@ public class TaskConstants {
          * 电梯缓存区查找有货货架
          */
         public final static String ELECACHEPODHANDLER = "eleCachePodHandler";
-
+        /**
+         * action检查处理器
+         */
+        public final static String ACTIONCHECKHANDLER = "actionCheckHandler";
 
     }
 

@@ -24,4 +24,6 @@ public interface TaskRelActionMapper extends MyMapperAndIds<TaskRelAction> {
     List<TaskRelAction> selectByTempCodeAndNode(@Param("tempCode") String tempCode,@Param("nodeCode") String nodeCode);
 
     TaskRelAction selectByActionCode(String actionCode);
+
+    List<TaskRelAction> selectExecuteModeByTempCode(String tempCode);
 }
