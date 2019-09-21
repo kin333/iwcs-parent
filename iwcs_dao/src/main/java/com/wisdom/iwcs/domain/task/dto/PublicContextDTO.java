@@ -75,4 +75,15 @@ public class PublicContextDTO {
      * 回收点位是否就绪
      */
     private Boolean emptyRecycleReady;
+
+    /**
+     * 围栏外等待点
+     */
+    private String outWaitPoint;
+
+    /**
+     * 围栏内等待点
+     */
+    private String inWaitPoint;
+
 }

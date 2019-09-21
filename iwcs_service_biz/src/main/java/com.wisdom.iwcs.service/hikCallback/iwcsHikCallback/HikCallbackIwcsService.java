@@ -820,11 +820,12 @@ public class HikCallbackIwcsService {
             tmpSubTask.setId(subTask.getId());
             tmpSubTask.setWorkTaskStatus(ARRIVE_WITE);
             subTaskMapper.updateByPrimaryKeySelective(tmpSubTask);
+            noticeMesOpenDoor(subTask.getMainTaskNum(), baseMapBerth.getPointAlias(), subTask.getRobotCode());
             //发送消息
-            if (noticeMesOpenDoor(subTask.getMainTaskNum(), baseMapBerth.getPointAlias(), subTask.getRobotCode())) {
+//            if (noticeMesOpenDoor(subTask.getMainTaskNum(), baseMapBerth.getPointAlias(), subTask.getRobotCode())) {
                 //如果返回OK
 //                continueTaskService.continueTask(taskCode);
-            }
+//            }
         }
     }
 
@@ -912,10 +913,11 @@ public class HikCallbackIwcsService {
         String url = address + applicationProperties.getMesParam().getArriveDestWbWaitPortUrl();
 
 
-//        String resultBody = NetWorkUtil.transferContinueTask(JSON.toJSONString(mesBaseRequest), url);
         try {
+//            String resultBody = NetWorkUtil.transferContinueTask(JSON.toJSONString(mesBaseRequest), url);
 //            iCommonService.handleMesResponse(resultBody);
         } catch (BusinessException e) {
+            e.printStackTrace();
             return false;
         }
         return true;

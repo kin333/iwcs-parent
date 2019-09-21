@@ -50,6 +50,8 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskWork
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
+import static com.wisdom.iwcs.common.utils.TaskConstants.connectionPointType.IN_WAIT_POINT;
+import static com.wisdom.iwcs.common.utils.TaskConstants.connectionPointType.OUT_WAIT_POINT;
 import static com.wisdom.iwcs.common.utils.TaskConstants.handlerName.ACTIONCHECKHANDLER;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.pTopTaskSubTaskTypeConstants.INIT_STORAGE;
@@ -971,16 +973,37 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getDestWb()+"该目标点在地图中未找到对应的地码！");
         }
 
+        //围栏外关联点
+        String outWaitPoint = "";
+        //围栏内关联点
+        String inWaitPoint = "";
+
         //查询终点是否有关联点
-        List<String> point = baseConnectionPointMapper.selectPointByMapCodeBerCode(destBerCode);
+        List<String> endOutPoint = baseConnectionPointMapper.selectPointByBerCodeAndType(destBerCode, OUT_WAIT_POINT);
         String mainTaskTypeCode = US_PTOP;
-        if (point.size() > 0){
-            mainTaskTypeCode = PTOP_END_WAIT;
+        if (endOutPoint.size() > 0){
+            //查询终点是否有两个关联点
+            List<String> endInPoint = baseConnectionPointMapper.selectPointByBerCodeAndType(destBerCode, IN_WAIT_POINT);
+            if (endInPoint.size() > 0) {
+                mainTaskTypeCode = PTOP_END_WAIT_TWO;
+                outWaitPoint = endOutPoint.get(0);
+                inWaitPoint = endInPoint.get(0);
+            } else {
+                mainTaskTypeCode = PTOP_END_WAIT;
+            }
         } else {
             //查询起点是否有关联点
-            List<String> startPoint = baseConnectionPointMapper.selectPointByMapCodeBerCode(srcBerCode);
-            if (startPoint.size() > 0) {
-                mainTaskTypeCode = PTOP_START_WAIT;
+            List<String> startOutPoint = baseConnectionPointMapper.selectPointByBerCodeAndType(srcBerCode, OUT_WAIT_POINT);
+            if (startOutPoint.size() > 0) {
+                //查询起点是否有两个关联点
+                List<String> startInPoint = baseConnectionPointMapper.selectPointByBerCodeAndType(srcBerCode, IN_WAIT_POINT);
+                if (startInPoint.size() > 0) {
+                    inWaitPoint = startInPoint.get(0);
+                    outWaitPoint = startOutPoint.get(0);
+                    mainTaskTypeCode = PTOP_START_WAIT_TWO;
+                } else {
+                    mainTaskTypeCode = PTOP_START_WAIT;
+                }
             }
         }
 
@@ -1002,6 +1025,13 @@ public class TaskCreateService implements ITaskCreateService {
         TaskContext taskContext = new TaskContext();
         taskContext.setMainTaskNum(mainTaskNum);
         taskContext.setCreateTime(new Date());
+        if(StringUtils.isNotEmpty(inWaitPoint) && StringUtils.isNotEmpty(outWaitPoint)) {
+            ContextDTO contextDTO = new ContextDTO();
+            contextDTO.setInWaitPoint(inWaitPoint);
+            contextDTO.setOutWaitPoint(outWaitPoint);
+            String strContext = TaskContextUtils.objectToJson(contextDTO);
+            taskContext.setContext(strContext);
+        }
         taskContextMapper.insertSelective(taskContext);
 
         return new MesResult();

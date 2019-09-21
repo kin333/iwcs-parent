@@ -76,6 +76,14 @@ public class TaskConstants {
          * 美国浪潮终点有等待点的点到点
          */
         public final static String PTOP_END_WAIT = "pTopEndWait";
+        /**
+         * 美国浪潮起点有两个等待点的点到点
+         */
+        public final static String PTOP_START_WAIT_TWO = "pTopStartWaitTwo";
+        /**
+         * 美国浪潮终点有两个等待点的点到点
+         */
+        public final static String PTOP_END_WAIT_TWO = "pTopStartWaitTwo";
 
 
 
@@ -548,6 +556,20 @@ public class TaskConstants {
          * 必达
          */
         public final static String PROMISE_ARRIVE = "1";
+    }
+
+    /**
+     * 关联点位类型
+     */
+    public static final class connectionPointType {
+        /**
+         * 围栏外等待点
+         */
+        public final static String OUT_WAIT_POINT = "8";
+        /**
+         * 围栏内等待点
+         */
+        public final static String IN_WAIT_POINT = "9";
     }
 
 
