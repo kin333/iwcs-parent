@@ -38,4 +38,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="201909211330" author="han">
+        <addColumn tableName="sub_task_action">
+            <column name="response_handler" remarks="请求返回值处理器" type="VARCHAR(32)" defaultValue=""/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

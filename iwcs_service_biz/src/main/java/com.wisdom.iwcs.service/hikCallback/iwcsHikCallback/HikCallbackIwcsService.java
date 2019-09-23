@@ -239,6 +239,7 @@ public class HikCallbackIwcsService {
             subTaskAction.setPreActions(taskRelAction.getPreActions());
             subTaskAction.setCreateTime(new Date());
             subTaskAction.setCreateNode(nodeCode);
+            subTaskAction.setResponseHandler(taskRelAction.getResponseHandler());
             subTaskAction.setActionStatus(CREATE);
             //插入请求信息
             subTaskActionMapper.insertSelective(subTaskAction);
@@ -899,7 +900,7 @@ public class HikCallbackIwcsService {
      * @param
      * @return
      */
-    public boolean noticeMesOpenDoor(String mainTaskNum, String pointAlias, String robotCode ) {
+    public boolean noticeMesOpenDoor(String mainTaskNum, String pointAlias, String robotCode) {
         ArriveDestWbWaitPortInfoDTO arriveDestWbWaitPortInfoDTO = new ArriveDestWbWaitPortInfoDTO();
         arriveDestWbWaitPortInfoDTO.setAgvCode(robotCode);
         arriveDestWbWaitPortInfoDTO.setTaskCode(mainTaskNum);

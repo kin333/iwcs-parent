@@ -95,6 +95,20 @@ public class TaskRelActionDTO {
     private String createBy;
 
     /**
+     * 请求返回值处理器
+     */
+    @Column(name = "response_handler")
+    private String responseHandler;
+
+    public String getResponseHandler() {
+        return responseHandler;
+    }
+
+    public void setResponseHandler(String responseHandler) {
+        this.responseHandler = responseHandler;
+    }
+
+    /**
      * @return id
      */
     public Long getId() {

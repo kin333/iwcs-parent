@@ -26,4 +26,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="201909211327" author="han">
+        <addColumn tableName="ts_task_rel_action">
+            <column name="response_handler" remarks="请求返回值处理器" type="VARCHAR(32)" defaultValue=""/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

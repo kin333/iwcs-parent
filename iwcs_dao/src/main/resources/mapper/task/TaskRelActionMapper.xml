@@ -21,6 +21,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="response_handler" jdbcType="VARCHAR" property="responseHandler" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -28,7 +29,7 @@
     -->
     id, action_code, action_name, create_node, templ_code, action_type, content, url, 
     app, third_invoke_type, execute_mode, pre_actions, remark, create_time, last_modified_time, 
-    create_by
+    create_by, response_handler
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_task_rel_action

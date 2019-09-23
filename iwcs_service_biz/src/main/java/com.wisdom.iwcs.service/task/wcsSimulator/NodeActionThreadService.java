@@ -3,15 +3,20 @@ package com.wisdom.iwcs.service.task.wcsSimulator;
 import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.common.utils.NetWorkUtil;
 import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
+import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
 import com.wisdom.iwcs.domain.task.SubTaskAction;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.task.SubTaskActionMapper;
+import com.wisdom.iwcs.service.task.conditions.response.IResponseHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.*;
@@ -21,6 +26,7 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.executeMode.NO_PROMISE_
  * 节点活动的消费者队列线程
  * @author han
  */
+@Service
 public class NodeActionThreadService extends ConsumerThread {
     private static final Logger logger = LoggerFactory.getLogger(NodeActionThreadService.class);
 
@@ -52,6 +58,16 @@ public class NodeActionThreadService extends ConsumerThread {
                         while (true) {
                             resultBody = NetWorkUtil.transferContinueTask(subTaskAction.getContent(), subTaskAction.getUrl());
                             JSONObject obj = new JSONObject(resultBody);
+
+                            //处理返回结果
+                            if (StringUtils.isNotBlank(subTaskAction.getResponseHandler())) {
+                                IResponseHandler responseHandler = AppContext.getBean(subTaskAction.getResponseHandler());
+                                if (responseHandler == null) {
+                                    throw new BusinessException("找不到指定的返回值处理器:" + subTaskAction.getResponseHandler());
+                                }
+                                responseHandler.disposeResult(obj);
+                            }
+
 
                             if (SRC_MES.equals(subTaskAction.getApp())) {
                                 //调用MES
