@@ -125,7 +125,7 @@ application:
     genAgvSchedulingTaskUrl: http://192.168.102.96/cms/services/rest/hikRpcService/genAgvSchedulingTask
     continueTaskUrl: http://192.168.102.96/cms/services/rest/hikRpcService/continueTask
     cancelTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/cancelTask
-    freeRobotUrl: http://192.168.102.96/cms/services/rest/hikRpcService/freeRobot
+    #freeRobotUrl: http://192.168.102.96/cms/services/rest/hikRpcService/freeRobot
     returnMapOrPodUrl: http://192.168.102.96/rcs/services/rest/hikRpcService/queryPodBerthAndMat
     returnTaskStatus:  http://192.168.102.96/rcs/services/rest/hikRpcService/queryTaskStatus
     finiTask:  http://192.168.102.96/rcs/services/rest/hikLiftService/finiTask
