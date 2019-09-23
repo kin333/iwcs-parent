@@ -67,6 +67,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     BaseMapBerth selectByPointAlias(String pointAlias);
+    List<BaseMapBerth> selectByPointAliass(String pointAlias);
 
     BaseMapBerth selectDataByPodCode(String podCode);
 

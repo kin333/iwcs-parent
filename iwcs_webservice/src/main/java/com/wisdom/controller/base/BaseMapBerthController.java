@@ -84,6 +84,17 @@ public class BaseMapBerthController {
     }
 
     /**
+     * 根据point_alias字段查询记录
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/selectByPointAlias")
+    public Result selectByPointAlias(@RequestBody String pointAlias){
+        BaseMapBerthDTO baseMapBerthDTO =IBaseMapBerthService.selectByPointAlias(pointAlias);
+        return new Result(baseMapBerthDTO);
+    }
+
+    /**
      * 分页查询记录
      *
      * @param gridPageRequest {@link GridPageRequest }

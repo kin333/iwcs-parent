@@ -17,6 +17,7 @@ public interface IBaseMapBerthService {
     int insertBatch(List<BaseMapBerthDTO> records);
 
     BaseMapBerthDTO selectByPrimaryKey(Integer id);
+    BaseMapBerthDTO selectByPointAlias(String pointAlias);
 
     List<BaseMapBerthDTO> selectSelective(BaseMapBerthDTO record);
 

@@ -15,7 +15,6 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
-import liquibase.integration.servlet.LiquibaseStatusServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +99,19 @@ public class BaseMapBerthService implements IBaseMapBerthService{
         Preconditions.checkNotNull(baseMapBerth, ApplicationErrorEnum.COMMON_DATA_NOT_FOUND);
 
         return baseMapBerthMapStruct.toDto(baseMapBerth);
+    }
+
+    /**
+     * 根据point_alias字段查询记录
+     * @param pointAlias
+     * @return
+     */
+    @Override
+    public BaseMapBerthDTO selectByPointAlias(String pointAlias) {
+        List<BaseMapBerth> baseMapBerth = baseMapBerthMapper.selectByPointAliass(pointAlias);
+        Preconditions.checkBusinessError(baseMapBerth == null, pointAlias+"该别名对应的点位数据不存在!");
+        Preconditions.checkBusinessError(baseMapBerth.size()>1, pointAlias+"该别名对应的点位数据不唯一!");
+        return baseMapBerthMapStruct.toDto(baseMapBerth.get(0));
     }
 
     /**
