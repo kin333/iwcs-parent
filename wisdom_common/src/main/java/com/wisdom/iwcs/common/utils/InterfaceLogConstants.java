@@ -46,6 +46,7 @@ public class InterfaceLogConstants {
         public final static String SELECT_WHAREA_LIST = "selectWhAreaList";
         public final static String GET_ALLTORAGE_INFO = "getAlltorageInfo";
         public final static String SUPPLY_UNLOADWB_NOTIFY = "supplyUnloadWbNotify";
+        public final static String SUPPLY_LOAD_NUM = "supplyLoadNum";
         public final static String START_SUPLLY_AND_RECYLE = "startSupllyAndRecyle";
         public final static String START_RECYLE = "startRecyle";
         public final static String ROLLER_NOTIFY = "rollerNotify";
@@ -96,6 +97,7 @@ public class InterfaceLogConstants {
         public final static String SELECT_WHAREA_LIST_DESC = "拉取库区列表";
         public final static String GET_ALLTORAGE_INFO_DESC = "提供PDA查询储位信息";
         public final static String SUPPLY_UNLOADWB_NOTIFY_DESC = "通知AGV接料点目的地";
+        public final static String SUPPLY_LOAD_NUM_DESC = "通知AGV上料数量";
         public final static String START_SUPLLY_AND_RECYLE_DESC = "接料点通知供料及回收空框信息";
         public final static String START_RECYLE_DESC = "通知可出空料框";
         public final static String ROLLER_NOTIFY_DESC = "滚筒Agv回调";

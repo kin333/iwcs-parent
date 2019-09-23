@@ -279,4 +279,26 @@ public class MesRequestService {
             throw new MesBusinessException(reqCode, "上下箱数量只能为1或2");
         }
     }
+
+    /**
+     * 通知上料数量接口
+     * @param supplyLoadNumNotify
+     * @param reqCode
+     * @return
+     */
+    public MesResult supplyLoadNum(SupplyLoadNumNotify supplyLoadNumNotify, String reqCode) {
+        //校验
+        countCheck(supplyLoadNumNotify.getSupplyLoadNum(), reqCode);
+
+        //查询context,把数量加入到context里
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(supplyLoadNumNotify.getTaskCode());
+        String context = taskContext.getContext();
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        contextDTO.setSupplyLoadNum(supplyLoadNumNotify.getSupplyLoadNum());
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContext.setContext(jsonStr);
+        taskContextMapper.updateByMainTaskNum(taskContext);
+
+        return new MesResult(reqCode);
+    }
 }

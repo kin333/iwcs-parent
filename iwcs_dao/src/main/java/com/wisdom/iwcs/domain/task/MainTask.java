@@ -1,5 +1,7 @@
 package com.wisdom.iwcs.domain.task;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 import javax.persistence.*;
 
@@ -110,6 +112,20 @@ public class MainTask {
      */
     @Column(name = "static_pod_code")
     private String staticPodCode;
+
+    /**
+     * 主任务节点
+     */
+    @Column(name = "biz_process")
+    private String bizProcess;
+
+    public String getBizProcess() {
+        return bizProcess;
+    }
+
+    public void setBizProcess(String bizProcess) {
+        this.bizProcess = bizProcess;
+    }
 
     public String getStaticViaPaths() {
         return staticViaPaths;

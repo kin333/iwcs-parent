@@ -851,7 +851,7 @@ public class TaskCreateService implements ITaskCreateService {
         if (StringUtils.isBlank(createTaskRequest.getSupplyLoadWb())) {
             throw new MesBusinessException(reqCode, "供料点点位不能为空");
         }
-        mesRequestService.countCheck(createTaskRequest.getSupplyLoadNum(), reqCode);
+//        mesRequestService.countCheck(createTaskRequest.getSupplyLoadNum(), reqCode);
         //将点位信息转换为berCode
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSupplyLoadWb());
         Preconditions.checkMesBusinessError(baseMapBerth == null,
@@ -866,7 +866,7 @@ public class TaskCreateService implements ITaskCreateService {
         //生成context列的数据信息
         ContextDTO contextDTO = new ContextDTO();
         contextDTO.setSupplyLoadWb(createTaskRequest.getSupplyLoadWb());
-        contextDTO.setSupplyLoadNum(createTaskRequest.getSupplyLoadNum());
+//        contextDTO.setSupplyLoadNum(createTaskRequest.getSupplyLoadNum());
         String contextJson = TaskContextUtils.objectToJson(contextDTO);
         //更新task_context表
         TaskContext taskContext = new TaskContext();

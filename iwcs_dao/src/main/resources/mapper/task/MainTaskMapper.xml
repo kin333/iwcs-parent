@@ -25,6 +25,8 @@
       <result property="sourceFloor" jdbcType="VARCHAR" column="source_floor"/>
       <result property="destFloor" jdbcType="VARCHAR" column="dest_floor"/>
       <result property="elevatorWorkType" jdbcType="VARCHAR" column="elevator_work_type"/>
+
+     <result column="biz_process" jdbcType="VARCHAR" property="bizProcess" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -32,7 +34,7 @@
     -->
     id, main_task_num, main_task_type_code, task_status, date_chg, main_task_seq, group_id, 
     sequence, create_date, remark, priority, task_group_code, exector_num, area_code, source_floor, dest_floor, elevator_work_type,
-    static_via_paths,static_pod_code
+    static_via_paths,static_pod_code, biz_process
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_main_task
