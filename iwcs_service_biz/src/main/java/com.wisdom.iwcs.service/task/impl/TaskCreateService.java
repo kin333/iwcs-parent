@@ -1025,10 +1025,12 @@ public class TaskCreateService implements ITaskCreateService {
         TaskContext taskContext = new TaskContext();
         taskContext.setMainTaskNum(mainTaskNum);
         taskContext.setCreateTime(new Date());
-        if(StringUtils.isNotEmpty(inWaitPoint) && StringUtils.isNotEmpty(outWaitPoint)) {
+        if(StringUtils.isNotEmpty(outWaitPoint)) {
             ContextDTO contextDTO = new ContextDTO();
-            contextDTO.setInWaitPoint(inWaitPoint);
             contextDTO.setOutWaitPoint(outWaitPoint);
+            if(StringUtils.isNotEmpty(inWaitPoint)) {
+                contextDTO.setInWaitPoint(inWaitPoint);
+            }
             String strContext = TaskContextUtils.objectToJson(contextDTO);
             taskContext.setContext(strContext);
         }

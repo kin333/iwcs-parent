@@ -571,6 +571,64 @@ public class TaskConstants {
          */
         public final static String IN_WAIT_POINT = "9";
     }
+    /**
+     * 主任务节点
+     */
+    public static final class bizProcess {
+        /**
+         * 任务创建
+         */
+        public final static String TASK_CREATE = "0";
+        /**
+         * 任务结束
+         */
+        public final static String TASK_END = "9";
+        /**
+         * 任务开始
+         */
+        public final static String TASK_START = "1";
+        /**
+         * 离开储位
+         */
+        public final static String TASK_LEAVE = "2";
+        /**
+         * 到达终点
+         */
+        public final static String TASK_ARRIVED_END = "6";
+        /**
+         * 进围栏到达围栏外等待点
+         */
+        public final static String ENTER_ARRIVED_OUT = "11";
+        /**
+         * 进围栏时可离开围栏外等待点
+         */
+        public final static String ENTER_ALLOW_LEAVE_OUT_WAIT = "12";
+        /**
+         * 进围栏到达围栏内等待点
+         */
+        public final static String ENTER_ARRIVED_IN = "13";
+        /**
+         * 进围栏可离开围栏内等待点
+         */
+        public final static String ENTER_ALLOW_LEAVE_IN_WAIT = "14";
+        /**
+         * 出围栏到达围栏内等待点
+         */
+        public final static String COME_ARRIVED_IN = "15";
+        /**
+         * 出围栏时可离开围栏内等待点
+         */
+        public final static String COME_ALLOW_LEAVE_IN_WAIT = "16";
+        /**
+         * 出围栏到达围栏外等待点
+         */
+        public final static String COME_ARRIVED_OUT = "17";
+        /**
+         * 出围栏时可离开围栏外等待点
+         */
+        public final static String COME_ALLOW_LEAVE_OUT_WAIT = "18";
+    }
+
 
 
 
