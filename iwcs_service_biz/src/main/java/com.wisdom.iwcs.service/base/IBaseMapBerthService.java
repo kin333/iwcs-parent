@@ -42,4 +42,6 @@ public interface IBaseMapBerthService {
     int updateMapBerthById(List<BaseMapBerthDTO> baseMapBerthDTO);
 
     List<BaseMapBerth> selectMapDataByMapCode(BaseMapBerth baseMapBerth);
+
+    BaseMapBerth selectMapDataByBerCode(BaseMapBerth baseMapBerth);
 }
