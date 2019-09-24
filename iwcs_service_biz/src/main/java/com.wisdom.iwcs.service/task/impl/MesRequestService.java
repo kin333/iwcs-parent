@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
 
 /**
@@ -239,16 +241,33 @@ public class MesRequestService {
     public MesResult conWaitToDestWb(ConWaitToDestWbRequest conWaitToDestWbRequest, String reqCode) {
         //1.参数校验
         publicCheck(conWaitToDestWbRequest.getTaskCode(), reqCode);
-        //通过主任务号查子任务号 = rcs主任务号
-        //确保一个主任务只有一个子任务
-        List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(conWaitToDestWbRequest.getTaskCode());
-        if (subTasks.size() > 0){
-            String subTaskNum = subTasks.get(0).getSubTaskNum();
-            continueTaskService.continueTask(subTaskNum);
-        }else{
-            throw new MesBusinessException("找不到对应的任务:" + conWaitToDestWbRequest.getTaskCode(), reqCode);
-//            return new MesResult("NG","失败", reqCode);
+
+        //查询对应的主任务
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(conWaitToDestWbRequest.getTaskCode());
+        MainTask tmpMainTask = new MainTask();
+        tmpMainTask.setId(mainTask.getId());
+        //判断任务状态
+        if (TaskConstants.doorStatus.OPEN.equals(conWaitToDestWbRequest.getDoorStatus())) {
+            if (ENTER_ARRIVED_OUT.equals(mainTask.getBizProcess())) {
+                tmpMainTask.setBizProcess(ENTER_ALLOW_LEAVE_OUT_WAIT);
+            } else if (COME_ARRIVED_IN.equals(mainTask.getBizProcess())) {
+                tmpMainTask.setBizProcess(COME_ALLOW_LEAVE_IN_WAIT);
+            } else {
+                throw new MesBusinessException("任务节点未在等待开门状态", reqCode);
+            }
+        } else if (TaskConstants.doorStatus.CLOSE.equals(conWaitToDestWbRequest.getDoorStatus())) {
+            if (ENTER_ARRIVED_IN.equals(mainTask.getBizProcess())) {
+                tmpMainTask.setBizProcess(ENTER_ALLOW_LEAVE_IN_WAIT);
+            } else if (COME_ARRIVED_OUT.equals(mainTask.getBizProcess())) {
+                tmpMainTask.setBizProcess(COME_ALLOW_LEAVE_OUT_WAIT);
+            } else {
+                throw new MesBusinessException("任务节点未在等待关门状态", reqCode);
+            }
+        } else {
+            throw new MesBusinessException("开关门标记位错误:" + conWaitToDestWbRequest.getDoorStatus(), reqCode);
         }
+
+        mainTaskMapper.updateByPrimaryKeySelective(tmpMainTask);
         return new MesResult(reqCode);
     }
 

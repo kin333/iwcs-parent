@@ -86,8 +86,8 @@ public class IwcsPublicService {
             iCommonService.handleHikResponseAndThrowException(resultBody);
         } else if (SRC_MES.equals(subTaskTyp.getWorkerType())) {
             logger.info("MES发送任务:{}", jsonStr);
-            resultBody = NetWorkUtil.transferContinueTask(jsonStr, url);
-            iCommonService.handleMesResponse(resultBody);
+//            resultBody = NetWorkUtil.transferContinueTask(jsonStr, url);
+//            iCommonService.handleMesResponse(resultBody);
         } else {
             throw new BusinessException(subTaskTyp.getWorkerType() + "第三方未配置");
         }

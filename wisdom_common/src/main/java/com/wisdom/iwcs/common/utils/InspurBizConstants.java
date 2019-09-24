@@ -208,6 +208,26 @@ public class InspurBizConstants {
          * AGV举升完成
          */
         public final static String LIFT_POD_END = "liftPodEnd";
+        /**
+         * AGV放下货架后离开储位
+         */
+        public final static String DOWN_POD_AND_LEAVE = "downPodAndLeave";
+        /**
+         * 进围栏到达围栏外等待点
+         */
+        public final static String ENTER_ARRIVED_OUT_WAIT_POINT = "enterArrivedOutWaitPoint";
+        /**
+         * 进围栏到达围栏内等待点
+         */
+        public final static String ENTER_ARRIVED_IN_WAIT_POINT = "enterArrivedInWaitPoint";
+        /**
+         * 出围栏到达围栏内等待点
+         */
+        public final static String COME_ARRIVED_IN_WAIT_POINT = "comeArrivedInWaitPoint";
+        /**
+         * 出围栏到达围栏外等待点
+         */
+        public final static String COME_ARRIVED_OUT_WAIT_POINT = "comeArrivedOutWaitPoint";
 
     }
 

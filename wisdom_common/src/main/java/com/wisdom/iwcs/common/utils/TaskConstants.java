@@ -83,7 +83,7 @@ public class TaskConstants {
         /**
          * 美国浪潮终点有两个等待点的点到点
          */
-        public final static String PTOP_END_WAIT_TWO = "pTopStartWaitTwo";
+        public final static String PTOP_END_WAIT_TWO = "pTopEndWaitTwo";
 
 
 
@@ -584,7 +584,7 @@ public class TaskConstants {
          */
         public final static String TASK_END = "9";
         /**
-         * 任务开始
+         * 任务开始(到达起点)
          */
         public final static String TASK_START = "1";
         /**
@@ -629,7 +629,19 @@ public class TaskConstants {
         public final static String COME_ALLOW_LEAVE_OUT_WAIT = "18";
     }
 
-
+    /**
+     * 主任务节点
+     */
+    public static final class doorStatus {
+        /**
+         * 开门成功
+         */
+        public final static String OPEN = "1";
+        /**
+         * 关门成功
+         */
+        public final static String CLOSE = "2";
+    }
 
 
 
