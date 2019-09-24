@@ -100,11 +100,21 @@ public class ContextDTO {
      */
     @ColumnName("outWaitPoint")
     private String outWaitPoint;
+    /**
+     * 围栏外等待点别名
+     */
+    @ColumnName("outWaitPointAlias")
+    private String outWaitPointAlias;
 
     /**
      * 围栏内等待点
      */
     @ColumnName("inWaitPoint")
     private String inWaitPoint;
+    /**
+     * 围栏内等待点别名
+     */
+    @ColumnName("inWaitPointAlias")
+    private String inWaitPointAlias;
 
 }

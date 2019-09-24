@@ -1031,6 +1031,11 @@ public class TaskCreateService implements ITaskCreateService {
             ContextDTO contextDTO = new ContextDTO();
             contextDTO.setOutWaitPoint(outWaitPoint);
             contextDTO.setInWaitPoint(inWaitPoint);
+            //写入别名
+            BaseMapBerth outWaitPointBerth = baseMapBerthMapper.selectOneByBercode(outWaitPoint);
+            contextDTO.setOutWaitPointAlias(outWaitPointBerth.getPointAlias());
+            BaseMapBerth inWaitPointBerth = baseMapBerthMapper.selectOneByBercode(inWaitPoint);
+            contextDTO.setInWaitPointAlias(inWaitPointBerth.getPointAlias());
             String strContext = TaskContextUtils.objectToJson(contextDTO);
             taskContext.setContext(strContext);
         }
