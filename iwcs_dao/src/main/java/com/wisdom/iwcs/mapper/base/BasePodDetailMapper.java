@@ -215,4 +215,6 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
      * 查询没有货的货架数
      */
     Integer selectUnStockCount();
+
+    BasePodDetail selectPodDataByPodCode(BasePodDetail basePodDetail);
 }
