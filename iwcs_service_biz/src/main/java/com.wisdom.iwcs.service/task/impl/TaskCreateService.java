@@ -972,6 +972,10 @@ public class TaskCreateService implements ITaskCreateService {
         if (Strings.isNullOrEmpty(destBerCode)) {
             throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getDestWb()+"该目标点在地图中未找到对应的地码！");
         }
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(agvHandlingTaskCreateRequest.getPodCode());
+        if(basePodDetail == null) {
+            throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getPodCode()+"该货架未录入系统！");
+        }
 
         //围栏外关联点
         String outWaitPoint = "";

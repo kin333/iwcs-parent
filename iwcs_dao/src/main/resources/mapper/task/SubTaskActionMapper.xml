@@ -29,6 +29,7 @@
     <result column="resend_count" jdbcType="INTEGER" property="resendCount" />
     <result column="result_body" jdbcType="VARCHAR" property="resultBody" />
     <result column="response_handler" jdbcType="VARCHAR" property="responseHandler" />
+    <result column="error_result_message" jdbcType="VARCHAR" property="errorResultMessage" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -37,7 +38,7 @@
     id, sub_task_num, action_code, templ_code, action_type, content, url, app, third_invoke_type, 
     execute_mode, pre_actions, remark, create_time, create_by, last_modified_time, create_node, 
     action_status, last_exec_time, resend_status, resend_time, resend_user, resend_count, result_body,
-    response_handler
+    response_handler, error_result_message
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from sub_task_action

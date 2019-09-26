@@ -30,6 +30,7 @@ public class CodeBuilder {
     public static String subCodeBuilder() {
         SnowflakeIdUtil snowflakeIdUtil = SnowflakeIdUtil.newInstance();
         long id = snowflakeIdUtil.nextId();
+        System.out.println("已生成子任务号:" + "S" + id);
         return "S" + id;
     }
 

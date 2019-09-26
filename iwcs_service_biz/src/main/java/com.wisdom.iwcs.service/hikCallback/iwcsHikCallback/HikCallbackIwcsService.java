@@ -217,6 +217,11 @@ public class HikCallbackIwcsService {
         //1.获取节点动作模板信息
         List<TaskRelAction> taskRelActionList = taskRelActionMapper.selectByTempCodeAndNode(subTask.getTemplCode(), nodeCode);
         for (TaskRelAction taskRelAction : taskRelActionList) {
+            SubTaskAction checkActionNum = subTaskActionMapper.selectByActionCode(taskRelAction.getActionCode(), subTask.getSubTaskNum());
+            if (checkActionNum != null) {
+                continue;
+            }
+
             //2.生成消息体和地址
             String jsonStr = templateRelatedServer.actionTemplateInfo(subTask, taskRelAction.getActionCode());
             String address = addressMapper.selectAddressByCode(taskRelAction.getApp());
@@ -562,12 +567,22 @@ public class HikCallbackIwcsService {
      */
     private void moveStart(HikCallBackAgvMove hikCallBackAgvMove) {
         taskStartBaseChange(hikCallBackAgvMove);
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        if (subTask != null) {
+            //节点动作
+            nodeAction(subTask, ROLLER_MOVE_START);
+        }
     }
     /**
      * 滚筒AGV到达终点
      */
     private void moveEnd(HikCallBackAgvMove hikCallBackAgvMove) {
         taskFinishedBaseChange(hikCallBackAgvMove);
+        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+        if (subTask != null) {
+            //节点动作
+            nodeAction(subTask, ROLLER_MOVE_END);
+        }
     }
     /**
      * 滚筒AGV开始滚动
@@ -680,6 +695,7 @@ public class HikCallbackIwcsService {
      * 小车离开储位
      */
     public void leaveStartPoint(HikCallBackAgvMove hikCallBackAgvMove){
+        taskLeaveBaseChange(hikCallBackAgvMove);
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
         if (baseMapBerth == null) {
             throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
@@ -693,6 +709,7 @@ public class HikCallbackIwcsService {
         baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
 
         updateMapInfoNoCheck(hikCallBackAgvMove);
+
         //修改任务标记
         arrivedPoint(hikCallBackAgvMove.getTaskCode(), TASK_LEAVE);
     }

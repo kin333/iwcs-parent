@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.CONWAIT_TO_DESTWB;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.CREATE_TASK;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.CONWAIT_TO_DESTWB_DESC;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.CREATE_TASK_DESC;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 
 /**
@@ -34,12 +36,12 @@ public class AgvHandlingTaskController {
     private ITaskCreateService iTaskCreateService;
 
     /**
-     * 通知Agv可从等待点前往终点
+     * 创建任务
      * @param
      * @return
      */
     @PostMapping
-    @SystemInterfaceLog(methodCode = CONWAIT_TO_DESTWB, methodName = CONWAIT_TO_DESTWB_DESC, methodThansfer = SRC_MES)
+    @SystemInterfaceLog(methodCode = CREATE_TASK, methodName = CREATE_TASK_DESC, methodThansfer = SRC_MES)
     public MesResult createTask(@RequestBody MesBaseRequest<List<AgvHandlingTaskCreateRequest>> mesBaseRequest) {
         List<AgvHandlingTaskCreateRequest> data = mesBaseRequest.getData();
         for (AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest : data) {

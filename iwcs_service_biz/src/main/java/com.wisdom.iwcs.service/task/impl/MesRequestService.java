@@ -28,6 +28,7 @@ import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
+import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.*;
 
 /**
  * Mes系统请求的业务逻辑
@@ -119,7 +120,7 @@ public class MesRequestService {
         publicCheck(taskCode, reqCode);
         //校验回收数量
         if (emptyRecyleNum != null) {
-            countCheck(emptyRecyleNum, reqCode);
+            countCheckCanZero(emptyRecyleNum, reqCode);
         }
 
 
@@ -298,6 +299,16 @@ public class MesRequestService {
             throw new MesBusinessException(reqCode, "上下箱数量只能为1或2");
         }
     }
+    /**
+     * 数量校验
+     * @param count
+     * @param reqCode
+     */
+    public void countCheckCanZero(Integer count, String reqCode) {
+        if (count == null || count < 0 || count >= 3) {
+            throw new MesBusinessException(reqCode, "回收箱数量只能为0,1或2");
+        }
+    }
 
     /**
      * 通知上料数量接口
@@ -317,6 +328,37 @@ public class MesRequestService {
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContext.setContext(jsonStr);
         taskContextMapper.updateByMainTaskNum(taskContext);
+
+        return new MesResult(reqCode);
+    }
+
+    /**
+     * Mes通知小车可离开机台
+     * @param data
+     * @param reqCode
+     * @return
+     */
+    public MesResult checkSuccess(NotifyAgvLeave data, String reqCode) {
+        //1.参数校验
+        publicCheck(data.getTaskCode(), reqCode);
+
+        //2.获取原context
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(data.getTaskCode());
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(taskContext.getContext(), ContextDTO.class);
+
+        //3.保存通知信息
+        switch (data.getFlag()) {
+            case LEAVE_UP: contextDTO.setCanLeaveUp(true); break;
+            case LEAVE_DOWN_FIRST: contextDTO.setCanLeaveDownFirst(true); break;
+            case LEAVE_DOWN_SECOND: contextDTO.setCanLeaveDownSecond(true); break;
+            case LEAVE_UP_EMPTY: contextDTO.setCanLeaveUpEmpty(true); break;
+            case LEAVE_DOWN_EMPTY: contextDTO.setCanLeaveDownEmpty(true); break;
+            default:  throw new MesBusinessException(reqCode, "点位标识(flag)找不到对应的标记字符:" + data.getFlag());
+        }
+
+        //4.保存到数据库
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
 
         return new MesResult(reqCode);
     }

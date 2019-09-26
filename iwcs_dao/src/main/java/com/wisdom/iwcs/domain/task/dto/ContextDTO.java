@@ -4,6 +4,8 @@ import com.wisdom.base.annotation.ColumnName;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Column;
+
 /**
  * 美国浪潮使用的,
  * task_context表中的context列的json对应DTO
@@ -116,5 +118,31 @@ public class ContextDTO {
      */
     @ColumnName("inWaitPointAlias")
     private String inWaitPointAlias;
+
+    /**
+     * 可离开AGV上料点
+     */
+    @ColumnName("canLeaveUp")
+    private Boolean canLeaveUp;
+    /**
+     * 可离开AGV第一下料点
+     */
+    @ColumnName("canLeaveDownFirst")
+    private Boolean canLeaveDownFirst;
+    /**
+     * 可离开AGV第二下料点
+     */
+    @ColumnName("canLeaveDownSecond")
+    private Boolean canLeaveDownSecond;
+    /**
+     * 可离开AGV空箱上箱点
+     */
+    @ColumnName("canLeaveUpEmpty")
+    private Boolean canLeaveUpEmpty;
+    /**
+     * 可离开AGV空箱下箱点
+     */
+    @ColumnName("canLeaveDownEmpty")
+    private Boolean canLeaveDownEmpty;
 
 }

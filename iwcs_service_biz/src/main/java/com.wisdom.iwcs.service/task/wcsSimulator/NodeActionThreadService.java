@@ -7,6 +7,8 @@ import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
 import com.wisdom.iwcs.domain.task.SubTaskAction;
+import com.wisdom.iwcs.domain.upstream.mes.MesRespHandlerInfo;
+import com.wisdom.iwcs.domain.upstream.mes.MesRespHandlerResult;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.task.SubTaskActionMapper;
 import com.wisdom.iwcs.service.task.conditions.response.IResponseHandler;
@@ -38,6 +40,7 @@ public class NodeActionThreadService extends ConsumerThread {
                     //根据id获取消息
                     SubTaskActionMapper subTaskActionMapper = AppContext.getBean("subTaskActionMapper");
                     SubTaskAction subTaskAction = subTaskActionMapper.selectByPrimaryKey(Long.valueOf(id));
+                    logger.info("开始处理子任务{}的action请求,id为{}",subTaskAction.getSubTaskNum(), id);
                     if (!CREATE.equals(subTaskAction.getActionStatus())) {
                         return;
                     }
@@ -52,50 +55,57 @@ public class NodeActionThreadService extends ConsumerThread {
                     SubTaskAction tmpTaskAction = new SubTaskAction();
                     tmpTaskAction.setId(subTaskAction.getId());
 
-                    try {
-                        //发送消息
-                        String resultBody = "";
-                        while (true) {
+                    while (true) {
+                        try {
+                            //发送消息
+                            String resultBody = "";
+
+                            //发送信息
                             resultBody = NetWorkUtil.transferContinueTask(subTaskAction.getContent(), subTaskAction.getUrl());
                             JSONObject obj = new JSONObject(resultBody);
 
                             //处理返回结果
+                            MesRespHandlerResult mesRespHandlerResult = new MesRespHandlerResult();
                             if (StringUtils.isNotBlank(subTaskAction.getResponseHandler())) {
                                 IResponseHandler responseHandler = AppContext.getBean(subTaskAction.getResponseHandler());
                                 if (responseHandler == null) {
                                     throw new BusinessException("找不到指定的返回值处理器:" + subTaskAction.getResponseHandler());
                                 }
-                                responseHandler.disposeResult(obj);
+                                MesRespHandlerInfo mesRespHandlerInfo = new MesRespHandlerInfo();
+                                mesRespHandlerInfo.setSubTaskNum(subTaskAction.getSubTaskNum());
+                                //调用返回结果处理器
+                                mesRespHandlerResult = responseHandler.disposeResult(obj, mesRespHandlerInfo);
                             }
-
-
-                            if (SRC_MES.equals(subTaskAction.getApp())) {
-                                //调用MES
-                                if (obj.getString("code").equals(MesResult.OK)) {
-                                    tmpTaskAction.setActionType(SEND_SUCCESS);
-                                    logger.info("子任务{}的节点消息{}发送成功", subTaskAction.getSubTaskNum(), subTaskAction.getActionCode());
-                                    break;
-                                } else {
-                                    tmpTaskAction.setActionType(SEND_ERROR);
-                                    if (NO_PROMISE_ARRIVE.equals(subTaskAction.getExecuteMode())) {
-                                        break;
-                                    }
-                                    //循环请求需要循环调用
-                                    Thread.sleep(1000 * 30);
-                                }
+                            if (mesRespHandlerResult.isHandleResult()) {
+                                tmpTaskAction.setActionStatus(SEND_SUCCESS);
+                                logger.info("子任务{}的节点消息{}发送成功", subTaskAction.getSubTaskNum(), subTaskAction.getActionCode());
+                            } else {
+                                tmpTaskAction.setActionStatus(RESULT_ERROR);
+                                //记录错误信息
+                                tmpTaskAction.setErrorResultMessage(mesRespHandlerResult.getMessage());
+                            }
+                            logger.info("MES返回的消息体为:" + resultBody);
+                            tmpTaskAction.setResultBody(resultBody);
+                            break;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            //如果发送失败,则判断是否必达,必达需要重新发送
+                            tmpTaskAction.setActionStatus(SEND_ERROR);
+                            tmpTaskAction.setResultBody(e.getMessage());
+                            e.printStackTrace();
+                            if (NO_PROMISE_ARRIVE.equals(subTaskAction.getExecuteMode())) {
+                                break;
+                            }
+                            try {
+                                //循环请求需要循环调用
+                                Thread.sleep(1000 * 20);
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
                             }
                         }
-                        logger.info("MES返回的消息体为:" + resultBody);
-                        tmpTaskAction.setResultBody(resultBody);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        tmpTaskAction.setActionType(SEND_ERROR);
-                        tmpTaskAction.setResultBody(e.getMessage());
-                        e.printStackTrace();
-                    } finally {
-                        subTaskActionMapper.updateByPrimaryKeySelective(tmpTaskAction);
                     }
+                    subTaskActionMapper.updateByPrimaryKeySelective(tmpTaskAction);
                 });
     }
 }

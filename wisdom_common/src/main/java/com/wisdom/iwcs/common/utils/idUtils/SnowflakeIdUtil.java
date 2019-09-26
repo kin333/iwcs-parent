@@ -54,7 +54,7 @@ public class SnowflakeIdUtil {
 
     //=======================使用单例设计模式==========================================
 
-    public static SnowflakeIdUtil newInstance() {
+    public synchronized static SnowflakeIdUtil newInstance() {
         if (snowflakeIdUtil == null) {
             snowflakeIdUtil = new SnowflakeIdUtil();
         }

@@ -543,6 +543,10 @@ public class TaskConstants {
          * 发送失败
          */
         public final static String SEND_ERROR = "3";
+        /**
+         * 结果处理异常
+         */
+        public final static String RESULT_ERROR = "4";
     }
     /**
      * 执行模型,是否重复发送
@@ -642,7 +646,31 @@ public class TaskConstants {
          */
         public final static String CLOSE = "2";
     }
-
+    /**
+     * 通知AGV可离开机台状态
+     */
+    public static final class notifyAgvLeaveStatus {
+        /**
+         * 可离开供料点(上料点)
+         */
+        public final static String LEAVE_UP = "1";
+        /**
+         * 可离开接料点1（下料点1）
+         */
+        public final static String LEAVE_DOWN_FIRST = "2";
+        /**
+         * 可离开接料点2（下料点2）
+         */
+        public final static String LEAVE_DOWN_SECOND = "3";
+        /**
+         * 可离开空料箱回收上箱点（接料点）
+         */
+        public final static String LEAVE_UP_EMPTY = "4";
+        /**
+         * 可离开空箱下箱点
+         */
+        public final static String LEAVE_DOWN_EMPTY = "5";
+    }
 
 
 }

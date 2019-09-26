@@ -142,6 +142,20 @@ public class SubTaskAction {
     @Column(name = "response_handler")
     private String responseHandler;
 
+    /**
+     * 返回出错信息记录
+     */
+    @Column(name = "error_result_message")
+    private String errorResultMessage;
+
+    public String getErrorResultMessage() {
+        return errorResultMessage;
+    }
+
+    public void setErrorResultMessage(String errorResultMessage) {
+        this.errorResultMessage = errorResultMessage;
+    }
+
     public String getResponseHandler() {
         return responseHandler;
     }

@@ -44,4 +44,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="201909251715" author="han">
+        <addColumn tableName="sub_task_action">
+            <column name="error_result_message" remarks="返回出错信息记录" type="VARCHAR(50)" defaultValue=""/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
