@@ -422,21 +422,22 @@
         and in_lock = 0
         and delete_flag = 0
     </select>
-    <update id="updateMapById" parameterType="com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO">
+    <update id="updateMapById">
         update base_map_berth
         <set>
-            <if test="item.bizType != null">
-                biz_type = #{item.bizType},
+            <if test="record.bizType != null">
+                biz_type = #{record.bizType},
             </if>
-            <if test="item.operateAreaCode != null">
-                operate_area_code = #{item.operateAreaCode},
+            <if test="record.operateAreaCode != null">
+                operate_area_code = #{record.operateAreaCode},
             </if>
-            <if test="item.bizSecondAreaCode != null">
-                biz_second_area_code = #{item.bizSecondAreaCode},
+            <if test="record.bizSecondAreaCode != null">
+                biz_second_area_code = #{record.bizSecondAreaCode},
             </if>
         </set>
-        <foreach collection="id" item="item"  separator=";">
-        where id = #{id}
+        where id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+         #{item}
        </foreach>
     </update>
 </mapper>
