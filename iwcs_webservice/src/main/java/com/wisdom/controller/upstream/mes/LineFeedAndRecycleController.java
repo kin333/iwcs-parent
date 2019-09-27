@@ -48,7 +48,7 @@ public class LineFeedAndRecycleController {
     /**
      * 通知AGV上料数量
      */
-    @PostMapping("/supplyAndRecyle/supplyUnloadNum")
+    @PostMapping("/supplyUnloadNum")
     @SystemInterfaceLog(methodCode = SUPPLY_LOAD_NUM, methodName = SUPPLY_LOAD_NUM_DESC, methodThansfer = SRC_MES)
     public MesResult supplyLoadNum(@RequestBody MesBaseRequest<SupplyLoadNumNotify> mesBaseRequest) {
         SupplyLoadNumNotify data = mesBaseRequest.getData();

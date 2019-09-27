@@ -34,7 +34,7 @@ public class ReceiveFullHandler implements IConditionHandler {
         //查找接料信息
         PublicContextDTO publicContextDTO = taskContextService.getPublicContext(subTaskCondition.getSubTaskNum());
 
-        if (StringUtils.isEmpty(publicContextDTO.getEndBerCode())) {
+        if (publicContextDTO.getStartGetNum() == null || publicContextDTO.getStartGetNum() == 0) {
             return false;
         }
 
