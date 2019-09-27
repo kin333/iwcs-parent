@@ -406,4 +406,37 @@
         select <include refid="Base_Column_List"/> from base_map_berth
         where ber_code = #{berCode}
     </select>
+
+    <select id="selectMapByAreaCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from base_map_berth
+        where 1=1
+        <if test="bizType != null ">
+            and bizType = #{bizType}
+        </if>
+        <if test="operateAreaCode != null">
+            and operateAreaCode = #{operateAreaCode}
+        </if>
+        <if test="bizSecondAreaCode != null">
+            and bizSecondAreaCode = #{bizSecondAreaCode}
+        </if>
+        and in_lock = 0
+        and delete_flag = 0
+    </select>
+    <update id="updateMapById" parameterType="com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO">
+        update base_map_berth
+        <set>
+            <if test="item.bizType != null">
+                biz_type = #{item.bizType},
+            </if>
+            <if test="item.operateAreaCode != null">
+                operate_area_code = #{item.operateAreaCode},
+            </if>
+            <if test="item.bizSecondAreaCode != null">
+                biz_second_area_code = #{item.bizSecondAreaCode},
+            </if>
+        </set>
+        <foreach collection="id" item="item"  separator=";">
+        where id = #{id}
+       </foreach>
+    </update>
 </mapper>

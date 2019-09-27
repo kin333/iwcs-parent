@@ -400,6 +400,23 @@ public class TaskConstants {
     }
 
     /**
+     * 超越podaccess 策略
+     */
+    public static final class strategyType {
+        /**
+         * 获取起点策略
+         */
+        public final static String STARTPOINTSTRATEGY = "startPoint";
+        /**
+         * 获取终点策略
+         */
+        public final static String ENFPOINTSTATEGY = "endPoint";
+        /**
+         * 获取货架号
+         */
+        public final static String  PODCODESTRATEGY = "podCode";
+    }
+    /**
      * agv状态
      */
     public static final class agvTaskType {

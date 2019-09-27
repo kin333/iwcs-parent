@@ -3,6 +3,8 @@ package com.wisdom.iwcs.mapper.base;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.commonDto.fliterCondition.PodFliterCondition;
+import com.wisdom.iwcs.domain.base.BaseMap;
+import com.wisdom.iwcs.domain.base.BasePod;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.domain.base.dto.LockPodCondition;
@@ -217,4 +219,7 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
     Integer selectUnStockCount();
 
     BasePodDetail selectPodDataByPodCode(BasePodDetail basePodDetail);
+
+    BasePodDetail selectByBerCodeAndStock(@Param("berCode") String berCode,@Param("podStock") String podStock);
+
 }

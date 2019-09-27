@@ -6,6 +6,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,5 +165,12 @@ public class BaseMapBerthController {
         BaseMapBerth baseMapBerths = IBaseMapBerthService.selectMapDataByBerCode(baseMapBerth);
 
         return new Result(baseMapBerths);
+    }
+
+    @PostMapping("/updateMapById")
+    public Result updateMapById(@RequestBody BaseMapUpdateAreaDTO  record) {
+
+        IBaseMapBerthService.updateMapById(record);
+        return new Result();
     }
 }

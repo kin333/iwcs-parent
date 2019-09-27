@@ -4,6 +4,7 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
 
 import java.util.List;
 
@@ -44,4 +45,6 @@ public interface IBaseMapBerthService {
     List<BaseMapBerth> selectMapDataByMapCode(BaseMapBerth baseMapBerth);
 
     BaseMapBerth selectMapDataByBerCode(BaseMapBerth baseMapBerth);
+
+    int updateMapById(BaseMapUpdateAreaDTO record);
 }

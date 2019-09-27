@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.mapper.test.MapPodFilterStrategyMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.MapPodFilterStrategy">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="strategy_code" jdbcType="VARCHAR" property="strategyCode" />
+    <result column="operate_area_code" jdbcType="VARCHAR" property="operateAreaCode" />
+    <result column="biz_type" jdbcType="VARCHAR" property="bizType" />
+    <result column="biz_second_area_code" jdbcType="VARCHAR" property="bizSecondAreaCode" />
+    <result column="pod_stock" jdbcType="INTEGER" property="podStock" />
+    <result column="pod_type" jdbcType="VARCHAR" property="podType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+
+    id, strategy_code, operate_area_code, biz_type, biz_second_area_code, pod_stock, 
+    pod_type
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from map_pod_filter_strategy
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <!--<if test="startTime != null">-->
+      <!--and created_time &gt;= #{startTime,jdbcType=BIGINT}-->
+    <!--</if>-->
+    <!--<if test="endTime != null">-->
+      <!--and created_time &lt;= #{endTime,jdbcType=BIGINT}-->
+    <!--</if>-->
+    <!--order by last_modified_time desc-->
+  </select>
+
+  <select id="selectMapPodByCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from map_pod_filter_strategy
+    where strategy_code = #{strategyCode}
+    order by priority asc
+  </select>
+</mapper>

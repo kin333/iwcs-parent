@@ -8,13 +8,13 @@ public class MapPodFilterStrategy {
     private Integer id;
 
     /**
-     * ���Ա��
+     * 策略编号
      */
     @Column(name = "strategy_code")
     private String strategyCode;
 
     /**
-     * ��ҵ����(���ϻ�����������)
+     * 作业区域(如老化区、检验区)
      */
     @Column(name = "operate_area_code")
     private String operateAreaCode;
@@ -23,19 +23,22 @@ public class MapPodFilterStrategy {
     private String bizType;
 
     /**
-     * ҵ��μ�����(���ϻ����µ��Զ������ֶ���)
+     * 业务次级区域(如老化区下的自动区、手动区)
      */
     @Column(name = "biz_second_area_code")
     private String bizSecondAreaCode;
 
     /**
-     * ����״̬��0Ϊ�գ�1Ϊ��
+     *空满状态，0为空，1为满
      */
     @Column(name = "pod_stock")
     private Integer podStock;
 
     @Column(name = "pod_type")
     private String podType;
+
+    @Column(name = "priority")
+    private String priority;
 
     /**
      * @return id
@@ -149,5 +152,13 @@ public class MapPodFilterStrategy {
      */
     public void setPodType(String podType) {
         this.podType = podType == null ? null : podType.trim();
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

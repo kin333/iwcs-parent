@@ -11,6 +11,7 @@ import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
@@ -336,6 +337,23 @@ public class BaseMapBerthService implements IBaseMapBerthService{
         BaseMapBerth baseMapBerths = baseMapBerthMapper.selectMapDataByBerCode(baseMapBerth);
 
         return baseMapBerths;
+    }
+
+    @Override
+    public int updateMapById(BaseMapUpdateAreaDTO record) {
+        if (!record.getOperateAreaBool()) {
+            record.setOperateAreaCode("");
+        }
+        if (!record.getBizTypeBool()) {
+            record.setBizType("");
+        }
+        if (!record.getBizSecondAreaBool()) {
+            record.setBizSecondAreaCode("");
+        }
+        List<Integer> id = record.getId();
+        int num = baseMapBerthMapper.updateMapById(record, id);
+
+        return num;
     }
 
     @Override

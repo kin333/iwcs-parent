@@ -401,4 +401,9 @@
     <select id="selectPodDataByPodCode" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from base_pod_detail where pod_code = #{podCode}
     </select>
+
+    <select id="selectByBerCodeAndStock" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"/> from base_pod_detail
+        where ber_code = #{berCode} and in_stock = #{podStock}
+    </select>
 </mapper>
