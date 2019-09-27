@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
@@ -25,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
+import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.*;
 
 /**
  * Mes系统请求的业务逻辑
@@ -117,7 +120,7 @@ public class MesRequestService {
         publicCheck(taskCode, reqCode);
         //校验回收数量
         if (emptyRecyleNum != null) {
-            countCheck(emptyRecyleNum, reqCode);
+            countCheckCanZero(emptyRecyleNum, reqCode);
         }
 
 
@@ -239,16 +242,33 @@ public class MesRequestService {
     public MesResult conWaitToDestWb(ConWaitToDestWbRequest conWaitToDestWbRequest, String reqCode) {
         //1.参数校验
         publicCheck(conWaitToDestWbRequest.getTaskCode(), reqCode);
-        //通过主任务号查子任务号 = rcs主任务号
-        //确保一个主任务只有一个子任务
-        List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(conWaitToDestWbRequest.getTaskCode());
-        if (subTasks.size() > 0){
-            String subTaskNum = subTasks.get(0).getSubTaskNum();
-            continueTaskService.continueTask(subTaskNum);
-        }else{
-            throw new MesBusinessException("找不到对应的任务:" + conWaitToDestWbRequest.getTaskCode(), reqCode);
-//            return new MesResult("NG","失败", reqCode);
+
+        //查询对应的主任务
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(conWaitToDestWbRequest.getTaskCode());
+        MainTask tmpMainTask = new MainTask();
+        tmpMainTask.setId(mainTask.getId());
+        //判断任务状态
+        if (TaskConstants.doorStatus.OPEN.equals(conWaitToDestWbRequest.getDoorStatus())) {
+            if (ENTER_ARRIVED_OUT.equals(mainTask.getBizProcess())) {
+                tmpMainTask.setBizProcess(ENTER_ALLOW_LEAVE_OUT_WAIT);
+            } else if (COME_ARRIVED_IN.equals(mainTask.getBizProcess())) {
+                tmpMainTask.setBizProcess(COME_ALLOW_LEAVE_IN_WAIT);
+            } else {
+                throw new MesBusinessException("任务节点未在等待开门状态", reqCode);
+            }
+        } else if (TaskConstants.doorStatus.CLOSE.equals(conWaitToDestWbRequest.getDoorStatus())) {
+            if (ENTER_ARRIVED_IN.equals(mainTask.getBizProcess())) {
+                tmpMainTask.setBizProcess(ENTER_ALLOW_LEAVE_IN_WAIT);
+            } else if (COME_ARRIVED_OUT.equals(mainTask.getBizProcess())) {
+                tmpMainTask.setBizProcess(COME_ALLOW_LEAVE_OUT_WAIT);
+            } else {
+                throw new MesBusinessException("任务节点未在等待关门状态", reqCode);
+            }
+        } else {
+            throw new MesBusinessException("开关门标记位错误:" + conWaitToDestWbRequest.getDoorStatus(), reqCode);
         }
+
+        mainTaskMapper.updateByPrimaryKeySelective(tmpMainTask);
         return new MesResult(reqCode);
     }
 
@@ -278,5 +298,68 @@ public class MesRequestService {
         if (count == null || count <= 0 || count >= 3) {
             throw new MesBusinessException(reqCode, "上下箱数量只能为1或2");
         }
+    }
+    /**
+     * 数量校验
+     * @param count
+     * @param reqCode
+     */
+    public void countCheckCanZero(Integer count, String reqCode) {
+        if (count == null || count < 0 || count >= 3) {
+            throw new MesBusinessException(reqCode, "回收箱数量只能为0,1或2");
+        }
+    }
+
+    /**
+     * 通知上料数量接口
+     * @param supplyLoadNumNotify
+     * @param reqCode
+     * @return
+     */
+    public MesResult supplyLoadNum(SupplyLoadNumNotify supplyLoadNumNotify, String reqCode) {
+        //校验
+        countCheck(supplyLoadNumNotify.getSupplyLoadNum(), reqCode);
+
+        //查询context,把数量加入到context里
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(supplyLoadNumNotify.getTaskCode());
+        String context = taskContext.getContext();
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        contextDTO.setSupplyLoadNum(supplyLoadNumNotify.getSupplyLoadNum());
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContext.setContext(jsonStr);
+        taskContextMapper.updateByMainTaskNum(taskContext);
+
+        return new MesResult(reqCode);
+    }
+
+    /**
+     * Mes通知小车可离开机台
+     * @param data
+     * @param reqCode
+     * @return
+     */
+    public MesResult checkSuccess(NotifyAgvLeave data, String reqCode) {
+        //1.参数校验
+        publicCheck(data.getTaskCode(), reqCode);
+
+        //2.获取原context
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(data.getTaskCode());
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(taskContext.getContext(), ContextDTO.class);
+
+        //3.保存通知信息
+        switch (data.getFlag()) {
+            case LEAVE_UP: contextDTO.setCanLeaveUp(true); break;
+            case LEAVE_DOWN_FIRST: contextDTO.setCanLeaveDownFirst(true); break;
+            case LEAVE_DOWN_SECOND: contextDTO.setCanLeaveDownSecond(true); break;
+            case LEAVE_UP_EMPTY: contextDTO.setCanLeaveUpEmpty(true); break;
+            case LEAVE_DOWN_EMPTY: contextDTO.setCanLeaveDownEmpty(true); break;
+            default:  throw new MesBusinessException(reqCode, "点位标识(flag)找不到对应的标记字符:" + data.getFlag());
+        }
+
+        //4.保存到数据库
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
+
+        return new MesResult(reqCode);
     }
 }

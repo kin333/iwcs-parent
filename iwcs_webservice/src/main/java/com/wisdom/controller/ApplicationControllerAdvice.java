@@ -83,17 +83,32 @@ public class ApplicationControllerAdvice {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public Result runtimeExceptionDeal(RuntimeException re) {
+    public MesResult runtimeExceptionDeal(RuntimeException re) {
         if (logger.isErrorEnabled()) {
             logger.error("其他运行时错误信息:{}", re);
         }
-        Result response = new Result();
-        response.setReturnCode(400);
-        response.setReturnMsg("系统运行错误,请联系管理员");
-        response.setReturnData(new HashMap<>());
+        MesResult response = new MesResult();
+        response.setCode(NG);
+        response.setMessage("参数异常");
+        response.setReqCode("");
         if (logger.isInfoEnabled()) {
             logger.info("请求返回结果为【{}】", JSONObject.toJSONString(response));
         }
         return response;
     }
+
+//    @ExceptionHandler(RuntimeException.class)
+//    public Result runtimeExceptionDeal(RuntimeException re) {
+//        if (logger.isErrorEnabled()) {
+//            logger.error("其他运行时错误信息:{}", re);
+//        }
+//        Result response = new Result();
+//        response.setReturnCode(400);
+//        response.setReturnMsg("系统运行错误,请联系管理员");
+//        response.setReturnData(new HashMap<>());
+//        if (logger.isInfoEnabled()) {
+//            logger.info("请求返回结果为【{}】", JSONObject.toJSONString(response));
+//        }
+//        return response;
+//    }
 }

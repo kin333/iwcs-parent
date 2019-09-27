@@ -2,6 +2,7 @@ package com.wisdom.iwcs.mapper.base;
 
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
+import com.wisdom.iwcs.domain.base.BaseMap;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
@@ -163,6 +164,13 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      */
     BaseMapBerth selectEmptyPosByOperateAreaCode(@Param("mapCode") String mapCode,@Param("operateAreaCode")  String operateAreaCode);
 
+    /**
+     * 查询某区域内空储位
+     * @param operateAreaCode
+     * @return
+     */
+    BaseMapBerth selectEmptyPosByBizSecondAreaCode(@Param("operateAreaCode")  String operateAreaCode);
+
     List<BaseMapBerth> selectByBizTye(String bizType);
 
     List<BaseMapBerth> selectLikeBizTye(String bizType);
@@ -186,4 +194,6 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * 批量锁定
      */
     int updateMapBerthById(List<BaseMapBerthDTO> baseMapBerthDTO);
+
+    BaseMapBerth selectMapDataByBerCode(BaseMapBerth baseMapBerth);
 }

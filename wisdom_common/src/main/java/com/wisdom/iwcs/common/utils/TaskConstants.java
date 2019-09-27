@@ -95,7 +95,7 @@ public class TaskConstants {
         /**
          * 美国浪潮终点有两个等待点的点到点
          */
-        public final static String PTOP_END_WAIT_TWO = "pTopStartWaitTwo";
+        public final static String PTOP_END_WAIT_TWO = "pTopEndWaitTwo";
 
 
 
@@ -555,6 +555,10 @@ public class TaskConstants {
          * 发送失败
          */
         public final static String SEND_ERROR = "3";
+        /**
+         * 结果处理异常
+         */
+        public final static String RESULT_ERROR = "4";
     }
     /**
      * 执行模型,是否重复发送
@@ -583,8 +587,102 @@ public class TaskConstants {
          */
         public final static String IN_WAIT_POINT = "9";
     }
+    /**
+     * 主任务节点
+     */
+    public static final class bizProcess {
+        /**
+         * 任务创建
+         */
+        public final static String TASK_CREATE = "0";
+        /**
+         * 任务结束
+         */
+        public final static String TASK_END = "9";
+        /**
+         * 任务开始(到达起点)
+         */
+        public final static String TASK_START = "1";
+        /**
+         * 离开储位
+         */
+        public final static String TASK_LEAVE = "2";
+        /**
+         * 到达终点
+         */
+        public final static String TASK_ARRIVED_END = "6";
+        /**
+         * 进围栏到达围栏外等待点
+         */
+        public final static String ENTER_ARRIVED_OUT = "11";
+        /**
+         * 进围栏时可离开围栏外等待点
+         */
+        public final static String ENTER_ALLOW_LEAVE_OUT_WAIT = "12";
+        /**
+         * 进围栏到达围栏内等待点
+         */
+        public final static String ENTER_ARRIVED_IN = "13";
+        /**
+         * 进围栏可离开围栏内等待点
+         */
+        public final static String ENTER_ALLOW_LEAVE_IN_WAIT = "14";
+        /**
+         * 出围栏到达围栏内等待点
+         */
+        public final static String COME_ARRIVED_IN = "15";
+        /**
+         * 出围栏时可离开围栏内等待点
+         */
+        public final static String COME_ALLOW_LEAVE_IN_WAIT = "16";
+        /**
+         * 出围栏到达围栏外等待点
+         */
+        public final static String COME_ARRIVED_OUT = "17";
+        /**
+         * 出围栏时可离开围栏外等待点
+         */
+        public final static String COME_ALLOW_LEAVE_OUT_WAIT = "18";
+    }
 
-
+    /**
+     * 主任务节点
+     */
+    public static final class doorStatus {
+        /**
+         * 开门成功
+         */
+        public final static String OPEN = "1";
+        /**
+         * 关门成功
+         */
+        public final static String CLOSE = "2";
+    }
+    /**
+     * 通知AGV可离开机台状态
+     */
+    public static final class notifyAgvLeaveStatus {
+        /**
+         * 可离开供料点(上料点)
+         */
+        public final static String LEAVE_UP = "1";
+        /**
+         * 可离开接料点1（下料点1）
+         */
+        public final static String LEAVE_DOWN_FIRST = "2";
+        /**
+         * 可离开接料点2（下料点2）
+         */
+        public final static String LEAVE_DOWN_SECOND = "3";
+        /**
+         * 可离开空料箱回收上箱点（接料点）
+         */
+        public final static String LEAVE_UP_EMPTY = "4";
+        /**
+         * 可离开空箱下箱点
+         */
+        public final static String LEAVE_DOWN_EMPTY = "5";
+    }
 
 
 }

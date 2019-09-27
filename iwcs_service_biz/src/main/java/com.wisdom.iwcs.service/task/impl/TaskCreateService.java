@@ -877,7 +877,7 @@ public class TaskCreateService implements ITaskCreateService {
         if (StringUtils.isBlank(createTaskRequest.getSupplyLoadWb())) {
             throw new MesBusinessException(reqCode, "供料点点位不能为空");
         }
-        mesRequestService.countCheck(createTaskRequest.getSupplyLoadNum(), reqCode);
+//        mesRequestService.countCheck(createTaskRequest.getSupplyLoadNum(), reqCode);
         //将点位信息转换为berCode
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSupplyLoadWb());
         Preconditions.checkMesBusinessError(baseMapBerth == null,
@@ -892,7 +892,7 @@ public class TaskCreateService implements ITaskCreateService {
         //生成context列的数据信息
         ContextDTO contextDTO = new ContextDTO();
         contextDTO.setSupplyLoadWb(createTaskRequest.getSupplyLoadWb());
-        contextDTO.setSupplyLoadNum(createTaskRequest.getSupplyLoadNum());
+//        contextDTO.setSupplyLoadNum(createTaskRequest.getSupplyLoadNum());
         String contextJson = TaskContextUtils.objectToJson(contextDTO);
         //更新task_context表
         TaskContext taskContext = new TaskContext();
@@ -1243,37 +1243,43 @@ public class TaskCreateService implements ITaskCreateService {
         if (Strings.isNullOrEmpty(destBerCode)) {
             throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getDestWb()+"该目标点在地图中未找到对应的地码！");
         }
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(agvHandlingTaskCreateRequest.getPodCode());
+        if(basePodDetail == null) {
+            throw new MesBusinessException(reqCode, agvHandlingTaskCreateRequest.getPodCode()+"该货架未录入系统！");
+        }
 
         //围栏外关联点
         String outWaitPoint = "";
         //围栏内关联点
         String inWaitPoint = "";
 
-        //查询终点是否有关联点
+        //查询终点是否有围栏外关联点
         List<String> endOutPoint = baseConnectionPointMapper.selectPointByBerCodeAndType(destBerCode, OUT_WAIT_POINT);
         String mainTaskTypeCode = US_PTOP;
         if (endOutPoint.size() > 0){
-            //查询终点是否有两个关联点
+            outWaitPoint = endOutPoint.get(0);
+            //查询终点是否有围栏内关联点
             List<String> endInPoint = baseConnectionPointMapper.selectPointByBerCodeAndType(destBerCode, IN_WAIT_POINT);
             if (endInPoint.size() > 0) {
                 mainTaskTypeCode = PTOP_END_WAIT_TWO;
-                outWaitPoint = endOutPoint.get(0);
                 inWaitPoint = endInPoint.get(0);
             } else {
                 mainTaskTypeCode = PTOP_END_WAIT;
+                inWaitPoint = destBerCode;
             }
         } else {
-            //查询起点是否有关联点
+            //查询起点是否有围栏外关联点
             List<String> startOutPoint = baseConnectionPointMapper.selectPointByBerCodeAndType(srcBerCode, OUT_WAIT_POINT);
             if (startOutPoint.size() > 0) {
-                //查询起点是否有两个关联点
+                outWaitPoint = startOutPoint.get(0);
+                //查询起点是否有围栏内关联点
                 List<String> startInPoint = baseConnectionPointMapper.selectPointByBerCodeAndType(srcBerCode, IN_WAIT_POINT);
                 if (startInPoint.size() > 0) {
                     inWaitPoint = startInPoint.get(0);
-                    outWaitPoint = startOutPoint.get(0);
                     mainTaskTypeCode = PTOP_START_WAIT_TWO;
                 } else {
                     mainTaskTypeCode = PTOP_START_WAIT;
+                    inWaitPoint = srcBerCode;
                 }
             }
         }
@@ -1296,10 +1302,15 @@ public class TaskCreateService implements ITaskCreateService {
         TaskContext taskContext = new TaskContext();
         taskContext.setMainTaskNum(mainTaskNum);
         taskContext.setCreateTime(new Date());
-        if(StringUtils.isNotEmpty(inWaitPoint) && StringUtils.isNotEmpty(outWaitPoint)) {
+        if(StringUtils.isNotEmpty(outWaitPoint)) {
             ContextDTO contextDTO = new ContextDTO();
-            contextDTO.setInWaitPoint(inWaitPoint);
             contextDTO.setOutWaitPoint(outWaitPoint);
+            contextDTO.setInWaitPoint(inWaitPoint);
+            //写入别名
+            BaseMapBerth outWaitPointBerth = baseMapBerthMapper.selectOneByBercode(outWaitPoint);
+            contextDTO.setOutWaitPointAlias(outWaitPointBerth.getPointAlias());
+            BaseMapBerth inWaitPointBerth = baseMapBerthMapper.selectOneByBercode(inWaitPoint);
+            contextDTO.setInWaitPointAlias(inWaitPointBerth.getPointAlias());
             String strContext = TaskContextUtils.objectToJson(contextDTO);
             taskContext.setContext(strContext);
         }

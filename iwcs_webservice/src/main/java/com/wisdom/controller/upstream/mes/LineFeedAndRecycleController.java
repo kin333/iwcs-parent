@@ -46,6 +46,16 @@ public class LineFeedAndRecycleController {
     }
 
     /**
+     * 通知AGV上料数量
+     */
+    @PostMapping("/supplyAndRecyle/supplyUnloadNum")
+    @SystemInterfaceLog(methodCode = SUPPLY_LOAD_NUM, methodName = SUPPLY_LOAD_NUM_DESC, methodThansfer = SRC_MES)
+    public MesResult supplyLoadNum(@RequestBody MesBaseRequest<SupplyLoadNumNotify> mesBaseRequest) {
+        SupplyLoadNumNotify data = mesBaseRequest.getData();
+        mesRequestService.supplyLoadNum(data, mesBaseRequest.getReqcode());
+        return new MesResult(mesBaseRequest.getReqcode());
+    }
+    /**
      * 通知AGV接料点目的地
      */
     @PostMapping("/supplyUnloadWb/notify")
@@ -77,4 +87,17 @@ public class LineFeedAndRecycleController {
         mesRequestService.startRecyle(data, mesBaseRequest.getReqcode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
+
+    /**
+     * 通知小车可离开机台
+     */
+    @PostMapping("/checkSuccess")
+    @SystemInterfaceLog(methodCode = CHECK_SUCCESS, methodName = CHECK_SUCCESS_DESC, methodThansfer = SRC_MES)
+    public MesResult checkSuccess(@RequestBody MesBaseRequest<NotifyAgvLeave> mesBaseRequest) {
+        NotifyAgvLeave data = mesBaseRequest.getData();
+        mesRequestService.checkSuccess(data, mesBaseRequest.getReqcode());
+        return new MesResult(mesBaseRequest.getReqcode());
+    }
+
+
 }

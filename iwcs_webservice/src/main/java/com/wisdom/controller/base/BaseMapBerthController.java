@@ -159,4 +159,10 @@ public class BaseMapBerthController {
 
         return new Result();
     }
+    @PostMapping("/getMapDataByBerCode")
+    public Result selectMapDataByBerCode(@RequestBody BaseMapBerth baseMapBerth) {
+        BaseMapBerth baseMapBerths = IBaseMapBerthService.selectMapDataByBerCode(baseMapBerth);
+
+        return new Result(baseMapBerths);
+    }
 }

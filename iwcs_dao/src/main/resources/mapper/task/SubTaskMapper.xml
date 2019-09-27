@@ -268,6 +268,7 @@
     <include refid="Base_Column_List"/>
     from ts_sub_task
     where worker_task_code = #{taskCode}
+    order by id desc
     LIMIT 1
   </select>
 

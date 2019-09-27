@@ -392,4 +392,18 @@
         where 1=1
         and biz_type LIKE CONCAT('%',#{bizType},'%')
     </select>
+
+    <select id="selectEmptyPosByBizSecondAreaCode" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/> from base_map_berth
+        where  1=1
+        and operate_area_code = #{operateAreaCode}
+        and (pod_code = '' or pod_code is null)
+        and in_lock = 0
+        limit 1
+    </select>
+
+    <select id="selectMapDataByBerCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from base_map_berth
+        where ber_code = #{berCode}
+    </select>
 </mapper>

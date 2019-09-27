@@ -187,8 +187,10 @@ public class TemplateRelatedServer {
                     throw new BusinessException(values[2] + "是必填项,不能为null");
                 }
             } catch (NoSuchMethodException | NoSuchFieldException e) {
+                e.printStackTrace();
                 throw new BusinessException("子任务" + subTaskNum + "模板参数名与真实类字段没有对应");
             } catch (InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
                 throw new BusinessException("子任务" + subTaskNum + "模板插入异常:" + e.getMessage());
             }
             if (param != null) {

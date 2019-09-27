@@ -63,4 +63,10 @@
             <column name="static_pod_code" type="VARCHAR(50)" remarks="静态载具" defaultValue=""/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201909231830" author="han">
+        <addColumn tableName="ts_main_task">
+            <column name="biz_process" type="VARCHAR(12)" remarks="主任务节点" defaultValue=""/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

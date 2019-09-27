@@ -7,6 +7,7 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.podUtils.PodTaskLockEnum;
+import com.wisdom.iwcs.domain.base.BasePod;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
@@ -278,6 +279,15 @@ public class BasePodDetailService implements IBasePodDetailService {
         }
 
         return podTaskLockName;
+    }
+
+    @Override
+    public BasePodDetail selectPodByPodCode(BasePodDetailDTO record) {
+
+        BasePodDetail basePodDetail = basePodDetailMapStruct.toEntity(record);
+        BasePodDetail basePodDetails = basePodDetailMapper.selectPodDataByPodCode(basePodDetail);
+
+        return basePodDetails;
     }
 
     /**

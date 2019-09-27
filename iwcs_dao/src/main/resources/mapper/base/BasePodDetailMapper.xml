@@ -397,4 +397,8 @@
     <select id="selectUnStockCount" resultType="java.lang.Integer">
         select count(*) from base_pod_detail where in_stock = '0' or in_stock = 0
     </select>
+
+    <select id="selectPodDataByPodCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from base_pod_detail where pod_code = #{podCode}
+    </select>
 </mapper>

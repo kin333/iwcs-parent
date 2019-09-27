@@ -85,5 +85,14 @@ public class PublicContextDTO {
      * 围栏内等待点
      */
     private String inWaitPoint;
+    /**
+     * 围栏外等待点别名
+     */
+    private String outWaitPointAlias;
+
+    /**
+     * 围栏内等待点别名
+     */
+    private String inWaitPointAlias;
 
 }
