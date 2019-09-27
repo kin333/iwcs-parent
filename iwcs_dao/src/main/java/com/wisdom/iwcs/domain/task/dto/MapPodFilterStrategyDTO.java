@@ -38,7 +38,7 @@ public class MapPodFilterStrategyDTO {
     private String podType;
 
     @Column(name = "priority")
-    private String priority;
+    private Integer priority;
     /**
      * @return id
      */
@@ -100,11 +100,11 @@ public class MapPodFilterStrategyDTO {
         this.podType = podType == null ? null : podType.trim();
     }
 
-    public String getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Integer priority) {
         this.priority = priority;
     }
 }

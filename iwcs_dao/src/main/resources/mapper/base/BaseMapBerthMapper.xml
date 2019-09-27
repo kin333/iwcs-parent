@@ -411,13 +411,13 @@
         select <include refid="Base_Column_List"/> from base_map_berth
         where 1=1
         <if test="bizType != null ">
-            and bizType = #{bizType}
+            and biz_type = #{bizType}
         </if>
         <if test="operateAreaCode != null">
-            and operateAreaCode = #{operateAreaCode}
+            and operate_area_code = #{operateAreaCode}
         </if>
         <if test="bizSecondAreaCode != null">
-            and bizSecondAreaCode = #{bizSecondAreaCode}
+            and biz_second_area_code = #{bizSecondAreaCode}
         </if>
         and in_lock = 0
         and delete_flag = 0
