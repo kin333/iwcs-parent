@@ -16,6 +16,18 @@ public class TaskConstants {
          */
         public final static String PLAUTOWBCALLPOD = "plAutoWbCallPod";
         /**
+         * 超越  产线呼叫搬离货架
+         */
+        public final static String PLTOWOKPW = "plToWokpw";
+        /**
+         * 超越 人工插线区去老化区
+         */
+        public final static String WOKPWTOAGING = "wokpwToAging";
+        /**
+         * 超越 检验区呼叫搬离货架
+         */
+        public final static String QUAHAULBACK = "quaHaulback";
+        /**
          * 自动补充产线空货架缓存区
          */
         public final static String PLBUFSUPPLY = "plBufSupply";

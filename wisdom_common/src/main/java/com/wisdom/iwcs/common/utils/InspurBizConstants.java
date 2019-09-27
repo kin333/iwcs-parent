@@ -96,6 +96,10 @@ public class InspurBizConstants {
          * 检查区
          */
         public final static String CHECKFIELD = "checkField";
+        /**
+         * 人工插线区
+         */
+        public final static String WOKPWAREA = "wokpwArea";
 
     }
 

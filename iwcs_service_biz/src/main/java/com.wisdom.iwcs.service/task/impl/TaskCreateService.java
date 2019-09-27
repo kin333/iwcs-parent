@@ -37,9 +37,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -122,7 +124,8 @@ public class TaskCreateService implements ITaskCreateService {
     MesRequestService mesRequestService;
     @Autowired
     TaskRelActionMapper taskRelActionMapper;
-
+    @Autowired
+    MapResouceService mapResouceService;
     /**
      * 创建任务
      * @param  taskCreateRequest
@@ -753,6 +756,29 @@ public class TaskCreateService implements ITaskCreateService {
     }
 
     /**
+     * 超越 添加主任务
+     * @param taskType
+     * @param areaCode
+     * @param taskPri
+     * @return
+     */
+    public String createMainTask(String taskType, String areaCode,String taskPri){
+        String mainTaskNum = "";
+        MainTask mainTaskCreate = new MainTask();
+        mainTaskNum = CodeBuilder.codeBuilder("M");
+        mainTaskCreate.setMainTaskNum(mainTaskNum);
+        mainTaskCreate.setCreateDate(new Date());
+        mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(taskPri));
+        mainTaskCreate.setMainTaskTypeCode(taskType);
+        mainTaskCreate.setAreaCode(areaCode);
+        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskMapper.insertSelective(mainTaskCreate);
+        return mainTaskNum;
+    }
+
+
+
+    /**
      * 添加子任务条件
      * @param mainTaskTypeCode,subTaskTypeCode,subTaskNum
      * @return
@@ -877,6 +903,251 @@ public class TaskCreateService implements ITaskCreateService {
         logger.info("自动产线供料、回收任务{}创建任务结束", taskCode);
         return new MesResult();
     }
+
+    /**
+     * 超越点到点搬运 创建主任务接口 根据任务类型确定不同的任务
+     * @param createTaskRequest
+     * @param reqCode
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public MesResult pToPHandlingTask(CreateTaskRequest createTaskRequest, String reqCode) {
+        String taskCode = createTaskRequest.getTaskCode();
+        logger.info("超越点到点搬运{}开始创建主任务", taskCode);
+        String taskType = createTaskRequest.getTaskType();
+        //参数校验
+        if (StringUtils.isBlank(taskType)) {
+            throw new MesBusinessException(reqCode, "主任务类型不能为空");
+        }
+        switch (taskType){
+            case PLBUFSUPPLY:
+                plBufSupplyFun(createTaskRequest);
+                break;
+            case PLAUTOWBCALLPOD:
+                plAutoWbCallPodFun(createTaskRequest);
+                break;
+            case PLTOWOKPW:
+                plToWokpwFun(createTaskRequest,reqCode);
+                break;
+            case WOKPWTOAGING:
+                wokpwToAgingFun(createTaskRequest,reqCode);
+                break;
+            case AGINGTOQUAINSP:
+                agingToQuaInspFun(createTaskRequest,reqCode);
+                break;
+            case QUAHAULBACK:
+                quaHaulbackFun(createTaskRequest,reqCode);
+                break;
+            default:
+                logger.error("错误的主任务类型:{}",taskType);
+        }
+        return new MesResult();
+    }
+
+
+    /**
+     * 超越  线体缓存区补充空货架
+     * @param createTaskRequest
+     */
+    public MesResult plBufSupplyFun(CreateTaskRequest createTaskRequest){
+        logger.info("线体缓存区补充空货架:{}",JSON.toJSONString(createTaskRequest));
+       // Preconditions.checkBusinessError(Strings.isNullOrEmpty(createTaskRequest.getSrcWb()), "请填写搬运任务起点");
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
+        //Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
+        //Preconditions.checkBusinessError(!LINECACHEAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体缓存区");
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = baseMapBerth.getAreaCode();
+        String taskPri = createTaskRequest.getTaskPri();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri);
+        return new MesResult();
+    }
+
+    /**
+     * 超越 线体工作区补充空货架
+     * @param createTaskRequest
+     */
+    public MesResult plAutoWbCallPodFun(CreateTaskRequest createTaskRequest){
+        logger.info("线体工作区补充空货架:{}",JSON.toJSONString(createTaskRequest));
+       // Preconditions.checkBusinessError(Strings.isNullOrEmpty(createTaskRequest.getSrcWb()), "请填写搬运任务起点");
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
+        //Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
+        //Preconditions.checkBusinessError(!LINEWORKAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体工作区");
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = baseMapBerth.getAreaCode();
+        String taskPri = createTaskRequest.getTaskPri();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri);
+
+        return new MesResult();
+    }
+
+    /**
+     * 超越 产线呼叫搬离货架  (搬到人工插线区)
+     * @param createTaskRequest
+     */
+    public MesResult plToWokpwFun(CreateTaskRequest createTaskRequest,String reqCode){
+        logger.info("产线呼叫搬离货架:{}",JSON.toJSONString(createTaskRequest));
+        //参数校验
+        publicCheckIsBlank(createTaskRequest,reqCode);
+        if (StringUtils.isBlank(createTaskRequest.getSrcWb())){
+            throw new MesBusinessException(reqCode, "任务起点不能为空");
+        }
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
+        if (StringUtils.isBlank(baseMapBerth.getPodCode())){
+            throw new MesBusinessException(reqCode, "该点位无货架");
+        }
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = baseMapBerth.getAreaCode();
+        String taskPri = createTaskRequest.getTaskPri();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri);
+
+        return new MesResult();
+    }
+
+    /**
+     * 超越  人工插线区去老化区
+     * @param createTaskRequest
+     */
+    public MesResult wokpwToAgingFun(CreateTaskRequest createTaskRequest,String reqCode){
+        logger.info("人工插线区去老化区:{}",JSON.toJSONString(createTaskRequest));
+        //参数校验
+        publicCheckIsBlank(createTaskRequest,reqCode);
+        if (StringUtils.isBlank(createTaskRequest.getSrcWb())){
+            throw new MesBusinessException(reqCode, "任务起点不能为空");
+        }
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
+        if (StringUtils.isBlank(baseMapBerth.getPodCode())){
+            throw new MesBusinessException(reqCode, "该点位无货架");
+        }
+
+        //判断老化区是否有空位置
+        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+        lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
+        if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
+            throw new MesBusinessException(reqCode, "老化区暂无空位置");
+        }
+
+        List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
+        lockMapBerthConditions.add(lockMapBerthCondition);
+        //  计算空闲点位 并锁定
+        Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
+        if (result.getReturnCode() != HttpStatus.OK.value()) {
+            throw new MesBusinessException(reqCode, "锁定空储位失败");
+        }
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = baseMapBerth.getAreaCode();
+        String taskPri = createTaskRequest.getTaskPri();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri);
+
+        return new MesResult();
+    }
+
+    /**
+     * 超越 老化区去检验点
+     * @param createTaskRequest
+     */
+    public MesResult agingToQuaInspFun(CreateTaskRequest createTaskRequest,String reqCode){
+        logger.info("老化区去检验点:{}",JSON.toJSONString(createTaskRequest));
+        //参数校验
+        publicCheckIsBlank(createTaskRequest,reqCode);
+        if (StringUtils.isBlank(createTaskRequest.getSrcWb())){
+            throw new MesBusinessException(reqCode, "任务起点不能为空");
+        }
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
+        if (StringUtils.isBlank(baseMapBerth.getPodCode())){
+            throw new MesBusinessException(reqCode, "该点位无货架");
+        }
+
+        //判断检验点是否有空位置
+        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+        lockMapBerthCondition.setOperateAreaCode(QUAINSPAREA);
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
+        if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
+            throw new MesBusinessException(reqCode, "检验点暂无空位置");
+        }
+
+        List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
+        lockMapBerthConditions.add(lockMapBerthCondition);
+        //  计算空闲点位 并锁定
+        Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
+        if (result.getReturnCode() != HttpStatus.OK.value()) {
+            throw new MesBusinessException(reqCode, "锁定空储位失败");
+        }
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = baseMapBerth.getAreaCode();
+        String taskPri = createTaskRequest.getTaskPri();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri);
+
+        return new MesResult();
+    }
+
+
+
+    /**
+     * 超越  检验区呼叫搬离货架 （搬到老化区空货架缓存区）
+     * @param createTaskRequest
+     */
+    public MesResult quaHaulbackFun(CreateTaskRequest createTaskRequest,String reqCode){
+        logger.info("检验区呼叫搬离货架:{}",JSON.toJSONString(createTaskRequest));
+        //参数校验
+        publicCheckIsBlank(createTaskRequest,reqCode);
+        if (StringUtils.isBlank(createTaskRequest.getSrcWb())){
+            throw new MesBusinessException(reqCode, "任务起点不能为空");
+        }
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
+        if (StringUtils.isBlank(baseMapBerth.getPodCode())){
+            throw new MesBusinessException(reqCode, "该点位无货架");
+        }
+
+        //查询老化区缓存区是否有空位置
+        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+        lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
+        if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
+            throw new MesBusinessException(reqCode, "化区缓存区暂无空位置");
+        }
+        List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
+        lockMapBerthConditions.add(lockMapBerthCondition);
+        //  计算空闲点位 并锁定
+        Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
+        if (result.getReturnCode() != HttpStatus.OK.value()) {
+            throw new MesBusinessException(reqCode, "锁定空储位失败");
+        }
+
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = baseMapBerth.getAreaCode();
+        String taskPri = createTaskRequest.getTaskPri();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri);
+
+        return new MesResult();
+    }
+
+
+
+
+
     /**
      * 创建自动化产线空箱回收任务时独有的创建动作
      * @param createTaskRequest

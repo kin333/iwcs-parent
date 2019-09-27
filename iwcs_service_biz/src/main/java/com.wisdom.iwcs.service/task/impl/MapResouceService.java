@@ -13,9 +13,7 @@ import com.wisdom.iwcs.domain.base.dto.*;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
-import com.wisdom.iwcs.service.task.conditions.conditonHandler.BaseLockEmptyMapService;
 import com.wisdom.iwcs.service.task.intf.IMapResouceService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPCACHEAREA;
@@ -350,6 +351,38 @@ public class MapResouceService implements IMapResouceService {
                 return new Result(400, "缺少地图编码");
             }
 
+            //根据传入的条件找到符合储位
+            List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            if(selectBaseMapBerths.size() > 0) {
+                selectLockMapBerthCondition = lockMapBerthCondition;
+                selectBaseMapBerth = selectBaseMapBerths.get(0);
+                break;
+            }
+        }
+        if (selectBaseMapBerth == null) {
+            return new Result(400, "找不到空闲储位!");
+        }
+        //锁住选中的储位
+        LockStorageDto lockStorageDto = new LockStorageDto();
+        lockStorageDto.setMapCode(selectBaseMapBerth.getMapCode());
+        lockStorageDto.setBerCode(selectBaseMapBerth.getBerCode());
+        lockStorageDto.setPodCode(selectLockMapBerthCondition.getPodCode());
+        lockStorageDto.setLockSource(selectLockMapBerthCondition.getLockSource());
+        Result lockResult = lockMapBerth(lockStorageDto);
+        Preconditions.checkBusinessError(lockResult.getReturnCode() != 200,lockResult.getReturnMsg());
+        return new Result(selectBaseMapBerth);
+    }
+
+    /**
+     *  超越  获取区域的空闲储位并锁定
+     * @param baseMapBerthList
+     * @return
+     */
+    @Override
+    public Result lockEmptyStorageByOperateAreaList(List<LockMapBerthCondition> baseMapBerthList) {
+        LockMapBerthCondition selectLockMapBerthCondition = new LockMapBerthCondition();
+        BaseMapBerth selectBaseMapBerth = null;
+        for (LockMapBerthCondition lockMapBerthCondition:baseMapBerthList) {
             //根据传入的条件找到符合储位
             List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
             if(selectBaseMapBerths.size() > 0) {

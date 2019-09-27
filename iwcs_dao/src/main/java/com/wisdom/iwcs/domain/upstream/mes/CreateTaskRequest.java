@@ -1,7 +1,6 @@
 package com.wisdom.iwcs.domain.upstream.mes;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -15,6 +14,14 @@ public class CreateTaskRequest {
      * 唯一任务号，必填项
      */
     private String taskCode;
+    /**
+     * 主任务类型
+     */
+    private String taskType;
+    /**
+     * 搬运任务起点
+     */
+    private String srcWb;
     /**
      * 供料点 必填项
      */

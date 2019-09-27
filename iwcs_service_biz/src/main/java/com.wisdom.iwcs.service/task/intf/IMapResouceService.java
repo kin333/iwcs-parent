@@ -3,7 +3,6 @@ package com.wisdom.iwcs.service.task.intf;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
-import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
 import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 
@@ -43,6 +42,8 @@ public interface IMapResouceService {
 
 
     Result lockEmptyStorageByBizTypeList(List<LockMapBerthCondition> baseMapBerthList);
+
+    Result lockEmptyStorageByOperateAreaList(List<LockMapBerthCondition> baseMapBerthList);
 
     Result selectQuaEmptyStorage(LockMapBerthCondition lockMapBerthCondition);
 
