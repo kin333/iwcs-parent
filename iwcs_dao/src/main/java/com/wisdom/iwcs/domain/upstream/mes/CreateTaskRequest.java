@@ -22,6 +22,11 @@ public class CreateTaskRequest {
      * 搬运任务起点
      */
     private String srcWb;
+
+    /**
+     * 货架号
+     */
+    private String podCode;
     /**
      * 供料点 必填项
      */
