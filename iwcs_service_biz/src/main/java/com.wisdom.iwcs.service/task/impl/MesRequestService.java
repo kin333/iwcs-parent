@@ -73,7 +73,7 @@ public class MesRequestService {
         countCheck(firstCount, reqCode);
         Integer secondCount = loadWbSecondCount;
         if (secondCount != null) {
-            countCheck(secondCount, reqCode);
+            countCheckCanZero(secondCount, reqCode);
             Integer totalNum = firstCount + secondCount;
             countCheck(totalNum, reqCode);
         }
@@ -97,7 +97,9 @@ public class MesRequestService {
         contextDTO.setSupplyUnLoadWbFirst(supplyInfoNotify.getSupplyUnLoadWbFirst());
         contextDTO.setSupplyUnLoadWbFirstCount(supplyInfoNotify.getSupplyUnLoadWbFirstCount());
         contextDTO.setSupplyUnLoadWbSecond(supplyInfoNotify.getSupplyUnLoadWbSecond());
-        contextDTO.setSupplyUnLoadWbSecondCount(supplyInfoNotify.getSupplyUnLoadWbSecondCount());
+        if (supplyInfoNotify.getSupplyUnLoadWbSecondCount() != 0) {
+            contextDTO.setSupplyUnLoadWbSecondCount(supplyInfoNotify.getSupplyUnLoadWbSecondCount());
+        }
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
 
@@ -296,7 +298,7 @@ public class MesRequestService {
      */
     public void countCheck(Integer count, String reqCode) {
         if (count == null || count <= 0 || count >= 3) {
-            throw new MesBusinessException(reqCode, "上下箱数量只能为1或2");
+            throw new MesBusinessException(reqCode, "上下箱(总)数量只能为1或2");
         }
     }
     /**
