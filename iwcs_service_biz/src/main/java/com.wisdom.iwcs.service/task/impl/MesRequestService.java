@@ -159,6 +159,10 @@ public class MesRequestService {
                 }
             }
         }
+        //校验允许下箱请求是否已发送
+        if (contextDTO.getEmptyRecyleNumTwo() != null) {
+            throw new MesBusinessException(reqCode, "已通知AGV下料,请勿重复提交");
+        }
 
         //3.更新context的json字符串
         if (StringUtils.isBlank(emptyRecyleWb) && emptyRecyleNum == null) {
