@@ -27,3 +27,29 @@ INSERT INTO `s_authority` VALUES (25, 'W_MAP_DATA', NULL, '地图数据', 'list'
 INSERT INTO `s_authority` VALUES (26, 'W_MAP_SET', NULL, '地图设置', 'list', '地图设置', 1, 1, 0);
 INSERT INTO `s_authority` VALUES (27, 'W_TASK_MODAL', NULL, '任务模板', 'list', '任务模板', 2, 1, 0);
 INSERT INTO `s_authority` VALUES (28, 'W_SUB_TASK_MODAL', NULL, '子任务类型', 'list', '子任务类型', 2, 1, 0);
+-- 菜单按钮
+
+INSERT INTO `s_authority` VALUES (29, 'W_MAP_DATA_LOCK', 0, '地图数据-锁定', null, '菜单管理', 25, 2, 1000);
+INSERT INTO `s_authority` VALUES (30, 'W_MAP_DATA_UNLOCK', 0, '地图数据-解锁', null, '菜单管理', 25, 2, 1000);
+INSERT INTO `s_authority` VALUES (31, 'W_MAP_DATA_UPDATE', 0, '地图数据-更多数据', null, '菜单管理', 25, 2, 1000);
+
+INSERT INTO `s_authority` VALUES (32, 'W_MAP_SET_LOCK', 0, '地图设置-锁定', null, '菜单管理', 26, 2, 1000);
+INSERT INTO `s_authority` VALUES (33, 'W_MAP_SET_UNLOCK', 0, '地图设置-解锁', null, '菜单管理', 26, 2, 1000);
+INSERT INTO `s_authority` VALUES (34, 'W_MAP_SET_EDIT', 0, '地图设置-编辑', null, '菜单管理', 26, 2, 1000);
+
+INSERT INTO `s_authority` VALUES (35, 'W_TASK_MODAL_NEW', 0, '任务模板-新增', null, '菜单管理', 27, 2, 1000);
+INSERT INTO `s_authority` VALUES (36, 'W_TASK_MODAL_EDIT', 0, '任务模板-编辑', null, '菜单管理', 27, 2, 1000);
+INSERT INTO `s_authority` VALUES (37, 'W_TASK_MODAL_DELETE', 0, '任务模板-删除', null, '菜单管理', 27, 2, 1000);
+INSERT INTO `s_authority` VALUES (38, 'W_TASK_MODAL_GRAQHIC', 0, '任务模板-图形转化', null, '菜单管理', 27, 2, 1000);
+INSERT INTO `s_authority` VALUES (39, 'W_TASK_MODAL_TEMPL_DELETE', 0, '任务模板列表-删除', null, '菜单管理', 27, 2, 1000);
+INSERT INTO `s_authority` VALUES (40, 'W_TASK_MODAL_TEMPL_CONFIG', 0, '任务模板配置信息-保存', null, '菜单管理', 27, 2, 1000);
+INSERT INTO `s_authority` VALUES (41, 'W_TASK_MODAL_CONFIG', 0, '任务模板-配置', null, '菜单管理', 27, 2, 1000);
+
+INSERT INTO `s_authority` VALUES (42, 'W_SUB_TASK_MODAL_NEW', 0, '子任务类型-添加', null, '菜单管理', 28, 2, 1000);
+INSERT INTO `s_authority` VALUES (43, 'W_SUB_TASK_MODAL_CONFIG', 0, '子任务类型-编辑', null, '菜单管理', 28, 2, 1000);
+INSERT INTO `s_authority` VALUES (44, 'W_SUB_TASK_MODAL_DELETE', 0, '子任务类型-删除', null, '菜单管理', 28, 2, 1000);
+
+INSERT INTO `s_authority` VALUES (45, 'W_MAIN_TASK_CONFIG', 0, '主任务管理-设置优先级', null, '菜单管理', 8, 2, 1000);
+
+INSERT INTO `s_authority` VALUES (46, 'W_POD_INFO_LOCK', 0, '货架信息-锁定', null, '菜单管理', 9, 2, 1000);
+INSERT INTO `s_authority` VALUES (47, 'W_POD_INFO_UNLOCK', 0, '货架信息-解锁', null, '菜单管理', 9, 2, 1000);
