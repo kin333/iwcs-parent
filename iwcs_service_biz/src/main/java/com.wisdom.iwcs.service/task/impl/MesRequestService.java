@@ -72,9 +72,10 @@ public class MesRequestService {
         Integer firstCount = loadWbFirstCount;
         countCheck(firstCount, reqCode);
         Integer secondCount = loadWbSecondCount;
+        Integer totalNum = firstCount;
         if (secondCount != null) {
             countCheckCanZero(secondCount, reqCode);
-            Integer totalNum = firstCount + secondCount;
+            totalNum = firstCount + secondCount;
             countCheck(totalNum, reqCode);
         }
 
@@ -92,6 +93,10 @@ public class MesRequestService {
         //2.获取原context
         TaskContext taskContext = taskContextMapper.selectByMainTaskNum(taskCode);
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(taskContext.getContext(), ContextDTO.class);
+
+        if (!contextDTO.getSupplyLoadNum().equals(totalNum)) {
+            throw new MesBusinessException(reqCode, "上下料数量不一致");
+        }
 
         //3.更新context的json字符串
         contextDTO.setSupplyUnLoadWbFirst(supplyInfoNotify.getSupplyUnLoadWbFirst());
@@ -190,6 +195,10 @@ public class MesRequestService {
                 contextDTO.setEndBerCodeTwoReady(true);
                 contextDTO.setEmptyRecyleNumTwo(emptyRecyleNum);
             }
+        }
+
+        if (contextDTO.getEmptyRecyleNum() != null && contextDTO.getEmptyRecyleNum() > 2) {
+            throw new MesBusinessException(reqCode, "回收空料箱的总数量不能超过2");
         }
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
