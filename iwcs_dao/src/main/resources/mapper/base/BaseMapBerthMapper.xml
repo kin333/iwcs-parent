@@ -440,4 +440,11 @@
          #{item}
        </foreach>
     </update>
+    <update id="updateLockSourceByBercode">
+        update base_map_berth
+        <set>
+            lock_source = #{lockSource}
+        </set>
+        where ber_code = #{berCode}
+    </update>
 </mapper>

@@ -34,6 +34,9 @@ public class ReceiveEmptyHandler implements IConditionHandler {
         //查找接料信息
         PublicContextDTO publicContextDTO = taskContextService.getPublicContext(subTaskCondition.getSubTaskNum());
 
+        if (publicContextDTO.getEmptyRecycleNum() == null) {
+            return false;
+        }
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
         hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());

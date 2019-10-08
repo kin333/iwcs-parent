@@ -13,6 +13,7 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
@@ -20,6 +21,7 @@ import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskInfo;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
@@ -74,6 +76,8 @@ public class SubTaskService {
     TaskCreateService taskCreateService;
     @Autowired
     MainTaskMapper mainTaskMapper;
+    @Autowired
+    BasePodDetailMapper basePodDetailMapper;
 
     @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
@@ -592,6 +596,13 @@ public class SubTaskService {
                 subTask.setEndAlias(baseMapBerth.getPointAlias());
                 subTask.setEndX(baseMapBerth.getCoox().doubleValue());
                 subTask.setEndY(baseMapBerth.getCooy().doubleValue());
+                //锁定终点
+                int rows = baseMapBerthMapper.updateLockSourceByBercode(endPoint, subTask.getSubTaskNum());
+                if(rows > 0) {
+                    logger.info("子任务{}添加地码{}的锁定源成功", subTaskNum, endPoint);
+                } else {
+                    logger.info("子任务{}添加地码{}的锁定源失败", subTaskNum, endPoint);
+                }
             }
         }
         //添加货架
@@ -599,6 +610,13 @@ public class SubTaskService {
             IGetPodStrategic getPointStrategic = AppContext.getBean(taskRel.getPodAccess());
             String podCode = getPointStrategic.getPod(new AutoCreateBaseInfo(mainTaskNum, taskRel.getPodAccessValue(), taskRel));
             subTask.setPodCode(podCode);
+            //锁定货架
+            int rows = basePodDetailMapper.updateLockSourceByBercode(podCode, subTaskNum);
+            if(rows > 0) {
+                logger.info("子任务{}添加货架{}的锁定源成功", subTaskNum, podCode);
+            } else {
+                logger.info("子任务{}添加货架{}的锁定源失败", subTaskNum, podCode);
+            }
         }
         //添加机器人编号
         if (StringUtils.isNotBlank(taskRel.getRobotAccess())) {

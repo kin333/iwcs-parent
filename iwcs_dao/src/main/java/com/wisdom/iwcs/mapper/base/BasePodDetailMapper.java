@@ -222,4 +222,5 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
 
     BasePodDetail selectByBerCodeAndStock(@Param("berCode") String berCode,@Param("podStock") Integer podStock);
 
+    int updateLockSourceByBercode(@Param("podCode") String podCode,@Param("lockSource") String lockSource);
 }

@@ -202,4 +202,6 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     List<BaseMapBerth> selectMapByAreaCode(MapPodFilterStrategy mapPodFilterStrategy);
 
     Integer updateMapById(@Param("record") BaseMapUpdateAreaDTO record, @Param("list") List<Integer> list);
+
+    int updateLockSourceByBercode(@Param("berCode") String berCode,@Param("lockSource") String lockSource);
 }

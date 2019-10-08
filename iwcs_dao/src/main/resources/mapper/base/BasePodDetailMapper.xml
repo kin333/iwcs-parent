@@ -406,4 +406,12 @@
       select <include refid="Base_Column_List"/> from base_pod_detail
         where ber_code = #{berCode} and in_stock = #{podStock}
     </select>
+
+    <update id="updateLockSourceByBercode">
+        update base_pod_detail
+        <set>
+            lock_source = #{lockSource}
+        </set>
+        where pod_code = #{podCode}
+    </update>
 </mapper>
