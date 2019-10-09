@@ -65,7 +65,7 @@ public class QuaHaulbackWorker implements Runnable {
         for (BaseMapBerth baseMapBerth:mapBerthList){
             if (StringUtils.isNotEmpty(baseMapBerth.getPodCode())){
                 BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(baseMapBerth.getPodCode());
-                if (YZConstants.UNLOCK.equals(basePodDetail.getInStock())){
+                if (YZConstants.LOCK.equals(basePodDetail.getInStock())){
                     srcWb = baseMapBerth.getPointAlias();
                     break;
                 }
@@ -74,7 +74,7 @@ public class QuaHaulbackWorker implements Runnable {
         }
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-        createTaskRequest.setTaskCode(QUAHAULBACK);
+        createTaskRequest.setTaskType(QUAHAULBACK);
         createTaskRequest.setSrcWb(srcWb);
         createTaskRequest.setTaskPri("normal");
         createTaskRequest.setTaskCode("SKUNO20180331");

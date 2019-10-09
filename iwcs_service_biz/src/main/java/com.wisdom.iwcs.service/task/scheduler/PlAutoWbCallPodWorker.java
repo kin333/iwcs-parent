@@ -65,7 +65,7 @@ public class PlAutoWbCallPodWorker implements Runnable {
         }
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-        createTaskRequest.setTaskCode(PLAUTOWBCALLPOD);
+        createTaskRequest.setTaskType(PLAUTOWBCALLPOD);
         createTaskRequest.setSrcWb(srcWb);
         createTaskRequest.setTaskPri("normal");
         createTaskRequest.setTaskCode("SKUNO20180331");
