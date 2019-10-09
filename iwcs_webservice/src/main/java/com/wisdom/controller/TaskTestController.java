@@ -12,10 +12,7 @@ import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
-import com.wisdom.iwcs.service.task.scheduler.PackWlCacheWorker;
-import com.wisdom.iwcs.service.task.scheduler.TestWcsTaskScheduler;
-import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
-import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
+import com.wisdom.iwcs.service.task.scheduler.*;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.*;
 import org.apache.commons.lang3.StringUtils;
@@ -68,6 +65,14 @@ public class TaskTestController {
     PackWlCacheWorker packWlCacheWorker;
     @Autowired
     LineNotifyService lineNotifyService;
+    @Autowired
+    PlBufSupplyWorker plBufSupplyWorker;
+    @Autowired
+    PlAutoWbCallPodWorker plAutoWbCallPodWorker;
+    @Autowired
+    PlToWokpwWorker plToWokpwWorker;
+    @Autowired
+    QuaHaulbackWorker quaHaulbackWorker;
 
     @Autowired
     MesAutoSendInfoThread mesAutoSendInfoThread;
@@ -346,6 +351,71 @@ public class TaskTestController {
 
         return new Result("启动成功");
     }
+
+
+    /**
+     * 超越 点到点任务 自动模拟调度
+     * @return
+     */
+
+    @GetMapping("/mainTaskTest")
+    public Result mainTaskTest(){
+        int time = 1000;
+        try {
+
+            logger.info("开始启动 线体缓存区补充空货架 任务生成器");
+            Thread plBufSupplyThread = new Thread(plBufSupplyWorker);
+            plBufSupplyThread.start();
+            logger.info("启动 线体缓存区补充空货架 任务生成器成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动 线体工作区补充空货架 任务生成器");
+            Thread plAutoWbCallPodThread = new Thread(plAutoWbCallPodWorker);
+            plAutoWbCallPodThread.start();
+            logger.info("启动 线体工作区补充空货架 任务生成器成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动 产线呼叫搬离货架 任务调度器线程");
+            Thread plToWokpwThread = new Thread(plToWokpwWorker);
+            plToWokpwThread.start();
+            logger.info("启动 产线呼叫搬离货架 任务调度器线程成功");
+
+            Thread.sleep(time);
+
+            /*logger.info("开始启动 人工插线区去老化区 任务调度器线程");
+            Thread wokpwToAgingThread = new Thread(new QuaAutoCallPodWorker("DD"));
+            wokpwToAgingThread.start();
+            logger.info("启动 人工插线区去老化区 调度器线程成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动 老化区去检验点 任务生成器");
+            Thread agingToQuaInspThread = new Thread(new WorkLineScheduler("AB"));
+            agingToQuaInspThread.start();
+            logger.info("启动 老化区去检验点 任务生成器成功");
+
+            Thread.sleep(time);*/
+
+            logger.info("开始启动 检验区呼叫搬离货架 任务调度器线程");
+            Thread quaHaulbackThread = new Thread(quaHaulbackWorker);
+            quaHaulbackThread.start();
+            logger.info("启动 检验区呼叫搬离货架 任务调度器线程成功");
+
+            logger.info("开始 启动任务 调度器线程");
+            Thread thread = new Thread(wcsTaskScheduler);
+            thread.start();
+            logger.info("启动 任务调度器线程成功");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Result("启动成功");
+    }
+
+
 
     @GetMapping("/testStopCreateTask")
     public Result testStopCreateTask() {

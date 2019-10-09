@@ -2,7 +2,6 @@ package com.wisdom.iwcs.mapper.base;
 
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
-import com.wisdom.iwcs.domain.base.BaseMap;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
@@ -174,6 +173,8 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     BaseMapBerth selectEmptyPosByBizSecondAreaCode(@Param("operateAreaCode")  String operateAreaCode);
 
     List<BaseMapBerth> selectByBizTye(String bizType);
+    List<BaseMapBerth> selectByOperateAreaCode(String operateAreaCode);
+
 
     List<BaseMapBerth> selectLikeBizTye(String bizType);
 
