@@ -39,6 +39,11 @@ public class InspurBizConstants {
          */
         public final static String PAGEAREA = "pageArea";
 
+        /**
+         * 测试线区
+         */
+        public final static String TESTLINEAREA = "testLineArea";
+
     }
 
     /**
@@ -53,6 +58,11 @@ public class InspurBizConstants {
          * 老化区手动区
          */
         public final static String AGINGAREAMANUAL = "agingAreaManual";
+
+        /**
+         * 老化缓存区
+         */
+        public final static String AGINGCACHEAREA = "agingCacheArea";
 
         /**
          * 检验区缓存区

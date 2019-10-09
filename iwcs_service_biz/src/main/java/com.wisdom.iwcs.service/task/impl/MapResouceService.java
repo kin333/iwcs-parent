@@ -158,7 +158,7 @@ public class MapResouceService implements IMapResouceService {
      */
     @Override
     public Result lockMapBerth(LockStorageDto lockStorageDto) {
-        Result validateResult = validateLockParams(lockStorageDto);
+        Result validateResult = validateLockParamss(lockStorageDto);
         if (validateResult.getReturnCode() != 200){
             return validateResult;
         }
@@ -399,7 +399,7 @@ public class MapResouceService implements IMapResouceService {
         lockStorageDto.setMapCode(selectBaseMapBerth.getMapCode());
         lockStorageDto.setBerCode(selectBaseMapBerth.getBerCode());
         lockStorageDto.setPodCode(selectLockMapBerthCondition.getPodCode());
-        lockStorageDto.setLockSource(selectLockMapBerthCondition.getLockSource());
+       // lockStorageDto.setLockSource(selectLockMapBerthCondition.getLockSource());
         Result lockResult = lockMapBerth(lockStorageDto);
         Preconditions.checkBusinessError(lockResult.getReturnCode() != 200,lockResult.getReturnMsg());
         return new Result(selectBaseMapBerth);
@@ -437,5 +437,25 @@ public class MapResouceService implements IMapResouceService {
         return new Result();
     }
 
+
+    /**
+     * 超越 锁定储位的参数校验
+     * @param lockStorageDto
+     * @return
+     */
+    private Result validateLockParamss(LockStorageDto lockStorageDto) {
+        return getResult(lockStorageDto.getMapCode(), lockStorageDto.getBerCode());
+    }
+
+
+    private Result getResult(String mapCode, String berCode) {
+        if(Strings.isNullOrEmpty(mapCode)) {
+            return new Result(400,"缺少地图编码");
+        }
+        if(Strings.isNullOrEmpty(berCode)) {
+            return new Result(400,"缺少点位代码");
+        }
+        return new Result();
+    }
 
 }

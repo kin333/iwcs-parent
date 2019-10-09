@@ -27,6 +27,18 @@ public class CreateTaskRequest {
      * 货架号
      */
     private String podCode;
+
+    /**
+     * 点到点任务 起点
+     */
+    private String startPointAlias;
+
+    /**
+     * 点到点任务 终点
+     */
+    private String targetPointAlias;
+
+
     /**
      * 供料点 必填项
      */

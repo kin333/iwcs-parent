@@ -27,6 +27,18 @@ public class TaskConstants {
          * 超越 检验区呼叫搬离货架
          */
         public final static String QUAHAULBACK = "quaHaulback";
+
+
+        /**
+         * 超越 测试线去维修区
+         */
+        public final static String TESTTOREPAIR= "testToRepair";
+
+        /**
+         * 超越 维修区去测试线
+         */
+        public final static String REPAIRTOTEST = "repairToTest";
+
         /**
          * 自动补充产线空货架缓存区
          */

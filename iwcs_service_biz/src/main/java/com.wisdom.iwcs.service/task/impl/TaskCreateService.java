@@ -767,17 +767,22 @@ public class TaskCreateService implements ITaskCreateService {
      * @param taskPri
      * @return
      */
-    public String createMainTask(String taskType, String areaCode,String taskPri,String jsonString){
+    public String createMainTask(String taskType, String areaCode,String taskPri,String jsonString,String staticPodCode){
         String mainTaskNum = "";
         MainTask mainTaskCreate = new MainTask();
         mainTaskNum = CodeBuilder.codeBuilder("M");
         mainTaskCreate.setMainTaskNum(mainTaskNum);
         mainTaskCreate.setCreateDate(new Date());
-        mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(taskPri));
+        if (StringUtils.isNotEmpty(taskPri)){
+            mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(taskPri));
+        }
         mainTaskCreate.setMainTaskTypeCode(taskType);
         mainTaskCreate.setAreaCode(areaCode);
         if (StringUtils.isNotEmpty(jsonString)){
             mainTaskCreate.setStaticViaPaths(jsonString);
+        }
+        if (StringUtils.isNotEmpty(staticPodCode)){
+            mainTaskCreate.setStaticPodCode(staticPodCode);
         }
         mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
         mainTaskMapper.insertSelective(mainTaskCreate);
@@ -947,6 +952,15 @@ public class TaskCreateService implements ITaskCreateService {
             case QUAHAULBACK:
                 quaHaulbackFun(createTaskRequest,reqCode);
                 break;
+            case PTOP:
+                pTopFun(createTaskRequest,reqCode);
+                break;
+            case TESTTOREPAIR:
+                testToRepairFun(createTaskRequest,reqCode);
+                break;
+            case REPAIRTOTEST:
+                repairToTestFun(createTaskRequest,reqCode);
+                break;
             default:
                 logger.error("错误的主任务类型:{}",taskType);
         }
@@ -971,7 +985,8 @@ public class TaskCreateService implements ITaskCreateService {
         String areaCode = baseMapBerth.getAreaCode();
         String taskPri = createTaskRequest.getTaskPri();
         String jsonString ="";
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString);
+        String staticPodCode ="";
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1001,7 +1016,8 @@ public class TaskCreateService implements ITaskCreateService {
         String areaCode = baseMapBerth.getAreaCode();
         String taskPri = createTaskRequest.getTaskPri();
         String jsonString ="";
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString);
+        String staticPodCode ="";
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1037,7 +1053,8 @@ public class TaskCreateService implements ITaskCreateService {
         String areaCode = baseMapBerth.getAreaCode();
         String taskPri = createTaskRequest.getTaskPri();
         String jsonString ="";
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString);
+        String staticPodCode ="";
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1056,8 +1073,6 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public MesResult wokpwToAgingFun(CreateTaskRequest createTaskRequest,String reqCode){
         logger.info("人工插线区去老化区:{}",JSON.toJSONString(createTaskRequest));
-        //参数校验
-        publicCheckIsBlank(createTaskRequest,reqCode);
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
             throw new MesBusinessException(reqCode, "货架号不能为空");
         }
@@ -1068,6 +1083,7 @@ public class TaskCreateService implements ITaskCreateService {
         //判断老化区是否有空位置
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+        lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
         if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
             throw new MesBusinessException(reqCode, "老化区暂无空位置");
@@ -1092,8 +1108,9 @@ public class TaskCreateService implements ITaskCreateService {
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
         String areaCode = baseMapBerth.getAreaCode();
-        String taskPri = createTaskRequest.getTaskPri();
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString);
+        String taskPri ="";
+        String staticPodCode = createTaskRequest.getPodCode();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1112,8 +1129,6 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public MesResult agingToQuaInspFun(CreateTaskRequest createTaskRequest,String reqCode){
         logger.info("老化区去检验点:{}",JSON.toJSONString(createTaskRequest));
-        //参数校验
-        publicCheckIsBlank(createTaskRequest,reqCode);
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
             throw new MesBusinessException(reqCode, "货架号不能为空");
         }
@@ -1125,6 +1140,7 @@ public class TaskCreateService implements ITaskCreateService {
         //判断检验点是否有空位置
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setOperateAreaCode(QUAINSPAREA);
+        lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
         if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
             throw new MesBusinessException(reqCode, "检验点暂无空位置");
@@ -1149,8 +1165,9 @@ public class TaskCreateService implements ITaskCreateService {
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
         String areaCode = baseMapBerth.getAreaCode();
-        String taskPri = createTaskRequest.getTaskPri();
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString);
+        String taskPri = "";
+        String staticPodCode = createTaskRequest.getPodCode();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1166,7 +1183,7 @@ public class TaskCreateService implements ITaskCreateService {
 
 
     /**
-     * 超越  检验区呼叫搬离货架 （搬到老化区空货架缓存区）
+     * 超越  检验区呼叫搬离货架 （搬到老化区缓存区）
      * @param createTaskRequest
      */
     public MesResult quaHaulbackFun(CreateTaskRequest createTaskRequest,String reqCode){
@@ -1183,34 +1200,13 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException(reqCode, "该点位无货架");
         }
 
-        //查询老化区缓存区是否有空位置
-        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
-        lockMapBerthCondition.setOperateAreaCode(AGINGREA);
-        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
-        if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
-            throw new MesBusinessException(reqCode, "老化区缓存区暂无空位置");
-        }
-        List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
-        lockMapBerthConditions.add(lockMapBerthCondition);
-        //  计算空闲点位 并锁定
-        Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
-        if (result.getReturnCode() != HttpStatus.OK.value()) {
-            throw new MesBusinessException(reqCode, "锁定空储位失败");
-        }
-
-        //空闲点位
-        BaseMapBerth selectBaseMapBerth = (BaseMapBerth) result.getReturnData();
-        String berCode = selectBaseMapBerth.getBerCode();
-
-        //写入站点集合
-        String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getSrcWb(),
-                berCode));
-
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
         String areaCode = baseMapBerth.getAreaCode();
         String taskPri = createTaskRequest.getTaskPri();
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString);
+        String jsonString ="";
+        String staticPodCode ="";
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1224,6 +1220,176 @@ public class TaskCreateService implements ITaskCreateService {
     }
 
 
+    /**
+     * 超越 点到点任务
+     * @param createTaskRequest
+     */
+    public MesResult pTopFun(CreateTaskRequest createTaskRequest,String reqCode){
+        logger.info("超越点到点任务:{}",JSON.toJSONString(createTaskRequest));
+        String startPointAlias = createTaskRequest.getStartPointAlias();
+        String targetPointAlias = createTaskRequest.getTargetPointAlias();
+        if (StringUtils.isBlank(startPointAlias)){
+            throw new MesBusinessException(reqCode, "搬运起点不能为空！");
+        }
+        if (StringUtils.isBlank(targetPointAlias)){
+            throw new MesBusinessException(reqCode, "搬运目标点不能为空！");
+        }
+
+        //查询起点 点位坐标
+        BaseMapBerth startBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(startPointAlias);
+        Preconditions.checkBusinessError(startBaseMapBerth == null, "无效搬运起点编码" + startPointAlias);
+        if (StringUtils.isBlank(startBaseMapBerth.getPodCode())){
+            throw new MesBusinessException(reqCode, "搬运起点无货架");
+        }
+
+        //查询目标点 点位坐标
+        BaseMapBerth targetBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(targetPointAlias);
+        Preconditions.checkBusinessError(targetBaseMapBerth == null, "无效搬运目标点编码" + targetPointAlias);
+        if (StringUtils.isNotBlank(targetBaseMapBerth.getPodCode())){
+            throw new MesBusinessException(reqCode, "搬运目标点已存在货架");
+        }
+        if (targetBaseMapBerth.getInLock()==1 || StringUtils.isNotBlank(targetBaseMapBerth.getLockSource())){
+            throw new BusinessException("目标点位已锁定");
+        }
+
+
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(startBaseMapBerth.getBerCode(),
+                targetBaseMapBerth.getBerCode()));
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = startBaseMapBerth.getAreaCode();
+        String taskPri = "";
+        String staticPodCode = startBaseMapBerth.getPodCode();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+
+        //将主任务号插入 task_context 表
+        TaskContextDTO taskContextDTO = new TaskContextDTO();
+        taskContextDTO.setMainTaskNum(mainTaskNum);
+        taskContextDTO.setCreateTime(new Date());
+        TaskContext taskContext = taskContextMapStruct.toEntity(taskContextDTO);
+        int num = taskContextMapper.insert(taskContext);
+        Preconditions.checkArgument(num > 0, ApplicationErrorEnum.COMMON_FAIL);
+
+        return new MesResult();
+    }
+
+    /**
+     *超越  测试线去维修区
+     * @param createTaskRequest
+     * @param reqCode
+     * @return
+     */
+    public MesResult testToRepairFun(CreateTaskRequest createTaskRequest,String reqCode){
+        logger.info("测试线去维修区:{}",JSON.toJSONString(createTaskRequest));
+        if (StringUtils.isBlank(createTaskRequest.getPodCode())){
+            throw new MesBusinessException(reqCode, "货架号不能为空");
+        }
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
+
+        //判断维修区是否有空位置
+        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+        lockMapBerthCondition.setOperateAreaCode(REPAIRAREA);
+        lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
+        if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
+            throw new MesBusinessException(reqCode, "维修区暂无空位置");
+        }
+
+        List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
+        lockMapBerthConditions.add(lockMapBerthCondition);
+        //  计算空闲点位 并锁定
+        Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
+        if (result.getReturnCode() != HttpStatus.OK.value()) {
+            throw new MesBusinessException(reqCode, "锁定空储位失败");
+        }
+
+        //空闲点位
+        BaseMapBerth selectBaseMapBerth = (BaseMapBerth) result.getReturnData();
+        String berCode = selectBaseMapBerth.getBerCode();
+
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode(),
+                berCode));
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = baseMapBerth.getAreaCode();
+        String taskPri ="";
+        String staticPodCode = createTaskRequest.getPodCode();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+
+        //将主任务号插入 task_context 表
+        TaskContextDTO taskContextDTO = new TaskContextDTO();
+        taskContextDTO.setMainTaskNum(mainTaskNum);
+        taskContextDTO.setCreateTime(new Date());
+        TaskContext taskContext = taskContextMapStruct.toEntity(taskContextDTO);
+        int num = taskContextMapper.insert(taskContext);
+        Preconditions.checkArgument(num > 0, ApplicationErrorEnum.COMMON_FAIL);
+
+        return new MesResult();
+    }
+
+    /**
+     *超越  维修区去测试线
+     * @param createTaskRequest
+     * @param reqCode
+     * @return
+     */
+    public MesResult repairToTestFun(CreateTaskRequest createTaskRequest,String reqCode){
+        logger.info("维修区去测试线:{}",JSON.toJSONString(createTaskRequest));
+        if (StringUtils.isBlank(createTaskRequest.getPodCode())){
+            throw new MesBusinessException(reqCode, "货架号不能为空");
+        }
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
+
+        //判断测试线是否有空位置
+        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+        lockMapBerthCondition.setOperateAreaCode(REPAIRAREA);
+        lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
+        if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
+            throw new MesBusinessException(reqCode, "测试线暂无空位置");
+        }
+
+        List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
+        lockMapBerthConditions.add(lockMapBerthCondition);
+        //  计算空闲点位 并锁定
+        Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
+        if (result.getReturnCode() != HttpStatus.OK.value()) {
+            throw new MesBusinessException(reqCode, "锁定空储位失败");
+        }
+
+        //空闲点位
+        BaseMapBerth selectBaseMapBerth = (BaseMapBerth) result.getReturnData();
+        String berCode = selectBaseMapBerth.getBerCode();
+
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode(),
+                berCode));
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String areaCode = baseMapBerth.getAreaCode();
+        String taskPri ="";
+        String staticPodCode = createTaskRequest.getPodCode();
+        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+
+        //将主任务号插入 task_context 表
+        TaskContextDTO taskContextDTO = new TaskContextDTO();
+        taskContextDTO.setMainTaskNum(mainTaskNum);
+        taskContextDTO.setCreateTime(new Date());
+        TaskContext taskContext = taskContextMapStruct.toEntity(taskContextDTO);
+        int num = taskContextMapper.insert(taskContext);
+        Preconditions.checkArgument(num > 0, ApplicationErrorEnum.COMMON_FAIL);
+
+        return new MesResult();
+    }
 
 
 
