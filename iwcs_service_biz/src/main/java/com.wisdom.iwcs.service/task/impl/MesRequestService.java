@@ -102,8 +102,9 @@ public class MesRequestService {
         contextDTO.setSupplyUnLoadWbFirst(supplyInfoNotify.getSupplyUnLoadWbFirst());
         contextDTO.setSupplyUnLoadWbFirstCount(supplyInfoNotify.getSupplyUnLoadWbFirstCount());
         contextDTO.setSupplyUnLoadWbSecond(supplyInfoNotify.getSupplyUnLoadWbSecond());
-        if (supplyInfoNotify.getSupplyUnLoadWbSecondCount() != 0) {
-            contextDTO.setSupplyUnLoadWbSecondCount(supplyInfoNotify.getSupplyUnLoadWbSecondCount());
+        Integer wbSecondCount = supplyInfoNotify.getSupplyUnLoadWbSecondCount();
+        if (wbSecondCount != null && wbSecondCount != 0) {
+            contextDTO.setSupplyUnLoadWbSecondCount(wbSecondCount);
         }
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
@@ -333,6 +334,7 @@ public class MesRequestService {
      */
     public MesResult supplyLoadNum(SupplyLoadNumNotify supplyLoadNumNotify, String reqCode) {
         //校验
+        publicCheck(supplyLoadNumNotify.getTaskCode(), reqCode);
         countCheck(supplyLoadNumNotify.getSupplyLoadNum(), reqCode);
 
         //查询context,把数量加入到context里
@@ -374,6 +376,30 @@ public class MesRequestService {
         //4.保存到数据库
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
+
+        return new MesResult(reqCode);
+    }
+
+    /**
+     * 通知上空框数量
+     * @param emptyRecyleNotify
+     * @param reqCode
+     * @return
+     */
+    public MesResult emptyRecyleNum(EmptyRecyleNotify emptyRecyleNotify, String reqCode) {
+        //校验
+        publicCheck(emptyRecyleNotify.getTaskCode(), reqCode);
+        countCheck(emptyRecyleNotify.getEmptyRecyleNum(), reqCode);
+
+        //查询context,把数量加入到context里
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(emptyRecyleNotify.getTaskCode());
+        String context = taskContext.getContext();
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        contextDTO.setEmptyRecyleNum(emptyRecyleNotify.getEmptyRecyleNum());
+
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContext.setContext(jsonStr);
+        taskContextMapper.updateByMainTaskNum(taskContext);
 
         return new MesResult(reqCode);
     }

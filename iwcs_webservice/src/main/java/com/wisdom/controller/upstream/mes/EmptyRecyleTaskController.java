@@ -2,10 +2,7 @@ package com.wisdom.controller.upstream.mes;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
-import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
-import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
-import com.wisdom.iwcs.domain.upstream.mes.MesResult;
-import com.wisdom.iwcs.domain.upstream.mes.StartRecyle;
+import com.wisdom.iwcs.domain.upstream.mes.*;
 import com.wisdom.iwcs.service.task.impl.MesRequestService;
 import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.START_RECYLE;
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.TASK_CREATE;
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.MOVE_TASK_CREATE;
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.START_RECYLE_DESC;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.*;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.*;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.EMPTYRECYCLETASK;
 
@@ -59,6 +54,17 @@ public class EmptyRecyleTaskController {
     public MesResult startRecyle(@RequestBody MesBaseRequest<StartRecyle> mesBaseRequest) {
         StartRecyle data = mesBaseRequest.getData();
         mesRequestService.startRecyle(data, mesBaseRequest.getReqcode());
+        return new MesResult(mesBaseRequest.getReqcode());
+    }
+
+    /**
+     * 通知上空框数量
+     */
+    @PostMapping("/emptyRecyleNum")
+    @SystemInterfaceLog(methodCode = EMPTY_RECYLE_NUM, methodName = EMPTY_RECYLE_NUM_DESC, methodThansfer = SRC_MES)
+    public MesResult emptyRecyleNum(@RequestBody MesBaseRequest<EmptyRecyleNotify> mesBaseRequest) {
+        EmptyRecyleNotify data = mesBaseRequest.getData();
+        mesRequestService.emptyRecyleNum(data, mesBaseRequest.getReqcode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 }

@@ -1246,7 +1246,7 @@ public class TaskCreateService implements ITaskCreateService {
         if (StringUtils.isBlank(targetEmptyRecyleWb)) {
             throw new MesBusinessException(reqCode, "空框回收下箱点不能为空");
         }
-        mesRequestService.countCheck(createTaskRequest.getEmptyRecyleNum(), reqCode);
+//        mesRequestService.countCheck(createTaskRequest.getEmptyRecyleNum(), reqCode);
 
         //将点位信息转换为berCode
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(targetEmptyRecyleWb);
@@ -1268,7 +1268,7 @@ public class TaskCreateService implements ITaskCreateService {
         ContextDTO contextDTO = new ContextDTO();
         contextDTO.setSrcWbCode(createTaskRequest.getSrcWbCode());
         contextDTO.setEmptyRecyleWb(createTaskRequest.getTargetEmptyRecyleWb());
-        contextDTO.setEmptyRecyleNum(createTaskRequest.getEmptyRecyleNum());
+//        contextDTO.setEmptyRecyleNum(createTaskRequest.getEmptyRecyleNum());
         String contextJson = TaskContextUtils.objectToJson(contextDTO);
 
         //更新task_context表
