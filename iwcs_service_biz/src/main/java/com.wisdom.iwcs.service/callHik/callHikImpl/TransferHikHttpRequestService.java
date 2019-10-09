@@ -304,4 +304,24 @@ public class TransferHikHttpRequestService implements ITransferHikHttpRequestSer
         return body;
     }
 
+    @Override
+    @SystemInterfaceLog(methodCode = FREE_ROBOT, methodName = FREE_ROBOT_NAME, methodThansfer = SRC_IWCS)
+    public String transferFreeRobot(GenAgvSchedulingTaskDTO genAgvSchedulingTaskDTO) {
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
+
+        HttpEntity<GenAgvSchedulingTaskDTO> requestEntity = new HttpEntity<>(genAgvSchedulingTaskDTO, httpHeaders);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getHikParam().getFreeRobotUrl(),
+                HttpMethod.POST, requestEntity, String.class);
+
+        List<String> val = resp.getHeaders().get("Set-Cookie");
+        System.out.println(val);
+
+        String body = resp.getBody();
+        return body;
+    }
+
 }

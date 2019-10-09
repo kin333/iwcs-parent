@@ -91,6 +91,8 @@ public class GenAgvSchedulingTaskDTO {
      */
     private String agvCode;
 
+    private String robotCode;
+
     /**
      * 自定义字段
      */
@@ -178,6 +180,14 @@ public class GenAgvSchedulingTaskDTO {
 
     public String getPodTyp() {
         return podTyp;
+    }
+
+    public String getRobotCode() {
+        return robotCode;
+    }
+
+    public void setRobotCode(String robotCode) {
+        this.robotCode = robotCode;
     }
 
     public void setPodTyp(String podTyp) {

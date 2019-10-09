@@ -60,6 +60,7 @@ public class GenAgvSchedulingRequestDTO {
      */
     private String agvCode;
 
+    private String robotCode;
     /**
      * 自定义字段
      */
@@ -151,5 +152,13 @@ public class GenAgvSchedulingRequestDTO {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public String getRobotCode() {
+        return robotCode;
+    }
+
+    public void setRobotCode(String robotCode) {
+        this.robotCode = robotCode;
     }
 }

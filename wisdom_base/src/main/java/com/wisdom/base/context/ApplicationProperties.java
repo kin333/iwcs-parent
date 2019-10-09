@@ -629,6 +629,8 @@ public class ApplicationProperties {
 
         private String continueTaskUrl;
 
+        private String freeRobotUrl;
+
         private String cancelTaskUrl;
 
         private String clientCode;
@@ -698,6 +700,14 @@ public class ApplicationProperties {
 
         public String getClientCode() {
             return clientCode;
+        }
+
+        public String getFreeRobotUrl() {
+            return freeRobotUrl;
+        }
+
+        public void setFreeRobotUrl(String freeRobotUrl) {
+            this.freeRobotUrl = freeRobotUrl;
         }
 
         public void setClientCode(String clientCode) {

@@ -33,6 +33,7 @@ public class InterfaceLogConstants {
         public final static String GET_FREE_WB_INFO_CODE = "getFreeWbInfo";
         public final static String SHOW_POD_CODE = "showPodInfo";
         public final static String GEN_AGV_SCHEDULING_TASK_CODE = "genAgvSchedulingTask";
+        public final static String FREE_ROBOT = "freeRobot";
         public final static String CONTINUE_TASK_CODE = "continueTask";
         public final static String CANCEL_TASK_CODE = "cancelTask";
         public final static String Bind_And_Berth_CODE = "bindPodAndBerth";
@@ -87,6 +88,7 @@ public class InterfaceLogConstants {
         public final static String SHOW_POD_NAME = "获取货架信息";
         public final static String GEN_AGV_SCHEDULING_TASK_NAME = "生成任务单";
         public final static String CONTINUE_TASK_NAME = "继续执行任务";
+        public final static String FREE_ROBOT_NAME = "释放AGV";
         public final static String CANCEL_TASK_NAME = "取消任务";
         public final static String Bind_And_Berth_NAME = "货架与位置绑定、解绑";
         public final static String TASK_CREATE_DESC = "浪潮搬运任务创建";

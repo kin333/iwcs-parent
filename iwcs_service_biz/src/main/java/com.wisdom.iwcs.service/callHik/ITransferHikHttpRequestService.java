@@ -62,4 +62,12 @@ public interface ITransferHikHttpRequestService {
      */
     @SystemInterfaceLog(methodCode = Bind_And_Berth_CODE, methodName = Bind_And_Berth_NAME, methodThansfer = SRC_IWCS)
     String transferBindPodAndBerth(BindPodAndBerthDTO bindPodAndBerthDTO);
+
+    /**
+     * 超越释放AGV
+     * @param genAgvSchedulingTaskDTO
+     * @return
+     */
+    @SystemInterfaceLog(methodCode = FREE_ROBOT, methodName = FREE_ROBOT_NAME, methodThansfer = SRC_IWCS)
+    String transferFreeRobot(GenAgvSchedulingTaskDTO genAgvSchedulingTaskDTO);
 }
