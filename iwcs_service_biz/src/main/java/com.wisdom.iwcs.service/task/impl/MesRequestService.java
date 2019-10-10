@@ -11,6 +11,8 @@ import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.upstream.mes.*;
+import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ReportEmptyContainerNumber;
+import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
@@ -401,6 +403,74 @@ public class MesRequestService {
         taskContext.setContext(jsonStr);
         taskContextMapper.updateByMainTaskNum(taskContext);
 
+        return new MesResult(reqCode);
+    }
+
+    /**
+     * 超越 上报已下料数量及已接收空框数量
+     * @param emptyContainerNumber
+     * @param reqCode
+     * @return
+     */
+    public MesResult supllyAndRecyleResult(ReportEmptyContainerNumber emptyContainerNumber, String reqCode) {
+
+        // 校验
+        publicCheck(emptyContainerNumber.getTaskCode(), reqCode);
+        if (StringUtils.isEmpty(emptyContainerNumber.getSupplyUnLoadWb())) {
+            throw new MesBusinessException(reqCode, "请填写接料点");
+        }
+
+        //
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(emptyContainerNumber.getTaskCode());
+        String context = taskContext.getContext();
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        contextDTO.setEmptyRecyleNum(emptyContainerNumber.getEmptyRecyleNum());
+
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContext.setContext(jsonStr);
+        taskContextMapper.updateByMainTaskNum(taskContext);
+
+        return new MesResult(reqCode);
+    }
+
+    /**
+     *  超越 通知AGV是否可以离开
+     * @param supllyUnload
+     * @param reqCode
+     * @return
+     */
+    public MesResult supllyUnload(SupllyUnload supllyUnload, String reqCode) {
+        // 校验
+        publicCheck(supllyUnload.getTaskCode(), reqCode);
+
+        if (StringUtils.isEmpty(supllyUnload.getCurrentWb())) {
+            throw new MesBusinessException(reqCode, "当前点位必填");
+        }
+
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(supllyUnload.getTaskCode());
+        String context = taskContext.getContext();
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+
+        //判断离开的类型
+        switch (supllyUnload.getTaskSta()) {
+            case LEAVE_GET_GOOD:
+                contextDTO.setChaLeaveGood(true);
+                break;
+            case LEAVE_DOWN_GOOD:
+                contextDTO.setChaLeaveUpGood(true);
+                break;
+            case LEAVE_GOOD_EMPTY:
+                contextDTO.setChaLeaveDownEmpty(true);
+                    break;
+            case LEAVE_UP_GOOD_EMPTY:
+                contextDTO.setChaLeaveUpEmpty(true);
+                break;
+                default:
+                    throw new MesBusinessException(reqCode, "点位标识(taskSta)找不到对应的标记字符:" + supllyUnload.getTaskSta());
+        }
+
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
         return new MesResult(reqCode);
     }
 }

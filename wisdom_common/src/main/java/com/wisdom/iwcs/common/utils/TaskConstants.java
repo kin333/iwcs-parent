@@ -711,6 +711,22 @@ public class TaskConstants {
          * 可离开空箱下箱点
          */
         public final static String LEAVE_DOWN_EMPTY = "5";
+        /**
+         * 超越 取料点离开
+         */
+        public final static String LEAVE_GET_GOOD = "2";
+        /**
+         * 超越 工料点离开
+         */
+        public final static String LEAVE_DOWN_GOOD = "4";
+        /**
+         * 超越 去空料箱离开
+         */
+        public final static String LEAVE_GOOD_EMPTY = "6";
+        /**
+         * 超越 供料箱点离开
+         */
+        public final static String LEAVE_UP_GOOD_EMPTY = "8";
     }
 
 

@@ -144,5 +144,25 @@ public class ContextDTO {
      */
     @ColumnName("canLeaveDownEmpty")
     private Boolean canLeaveDownEmpty;
+    /**
+     * 超越 取料点离开
+     */
+    @ColumnName("chaLeaveGood")
+    private Boolean chaLeaveGood;
 
+    /**
+     * 超越 取料点离开
+     */
+    @ColumnName("chaLeaveUpGood")
+    private Boolean chaLeaveUpGood;
+    /**
+     * 超越 取空料箱点离开
+     */
+    @ColumnName("chaLeaveDownEmpty")
+    private Boolean chaLeaveDownEmpty;
+    /**
+     * 超越 供空料箱点离开
+     */
+    @ColumnName("chaLeaveUpEmpty")
+    private Boolean chaLeaveUpEmpty;
 }
