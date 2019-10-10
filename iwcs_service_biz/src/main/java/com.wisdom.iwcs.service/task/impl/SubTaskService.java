@@ -8,12 +8,10 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
-import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
@@ -42,7 +40,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-import sun.rmi.runtime.NewThreadAction;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -573,37 +570,45 @@ public class SubTaskService {
         subTask.setSubTaskSeq(subTaskList.size() + 1);
         //添加任务起始点
         if (StringUtils.isNotBlank(taskRel.getStartPointAccess())) {
-            IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
-            String startPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum , taskRel.getStartPointAccessValue(), taskRel));
-            subTask.setStartBercode(startPoint);
-            if (StringUtils.isNotEmpty(startPoint)) {
-                BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(startPoint);
-                subTask.setMapCode(baseMapBerth.getMapCode());
-                subTask.setStartAlias(baseMapBerth.getPointAlias());
-                subTask.setStartX(baseMapBerth.getCoox().doubleValue());
-                subTask.setStartY(baseMapBerth.getCooy().doubleValue());
-            }
-        }
-        //添加任务终点
-        if (StringUtils.isNotBlank(taskRel.getEndPointAccess())) {
-            IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getEndPointAccess());
-            String endPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum, taskRel.getEndPointAccessValue(), taskRel));
-            subTask.setEndBercode(endPoint);
-            if (StringUtils.isNotEmpty(endPoint)) {
-                BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endPoint);
-                Preconditions.checkBusinessError(baseMapBerth == null, endPoint + "地图信息不存在");
-                subTask.setEndMapCode(baseMapBerth.getMapCode());
-                subTask.setEndAlias(baseMapBerth.getPointAlias());
-                subTask.setEndX(baseMapBerth.getCoox().doubleValue());
-                subTask.setEndY(baseMapBerth.getCooy().doubleValue());
-                //锁定终点
-                int rows = baseMapBerthMapper.updateLockSourceByBercode(endPoint, subTask.getSubTaskNum());
-                if(rows > 0) {
-                    logger.info("子任务{}添加地码{}的锁定源成功", subTaskNum, endPoint);
-                } else {
-                    logger.info("子任务{}添加地码{}的锁定源失败", subTaskNum, endPoint);
+            if (("calculateByPropStrategic").equals(taskRel.getStartPointAccess())) {
+                subTask.setMapCode("AB");
+            }else {
+                IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
+                String startPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum, taskRel.getStartPointAccessValue(), taskRel));
+                subTask.setStartBercode(startPoint);
+                if (StringUtils.isNotEmpty(startPoint)) {
+                    BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(startPoint);
+                    subTask.setMapCode(baseMapBerth.getMapCode());
+                    subTask.setStartAlias(baseMapBerth.getPointAlias());
+                    subTask.setStartX(baseMapBerth.getCoox().doubleValue());
+                    subTask.setStartY(baseMapBerth.getCooy().doubleValue());
                 }
             }
+        }
+
+
+
+        //添加任务终点
+        if (StringUtils.isNotBlank(taskRel.getEndPointAccess())) {
+                IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getEndPointAccess());
+                String endPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum, taskRel.getEndPointAccessValue(), taskRel));
+                subTask.setEndBercode(endPoint);
+                if (StringUtils.isNotEmpty(endPoint)) {
+                    BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endPoint);
+                    Preconditions.checkBusinessError(baseMapBerth == null, endPoint + "地图信息不存在");
+                    subTask.setEndMapCode(baseMapBerth.getMapCode());
+                    subTask.setEndAlias(baseMapBerth.getPointAlias());
+                    subTask.setEndX(baseMapBerth.getCoox().doubleValue());
+                    subTask.setEndY(baseMapBerth.getCooy().doubleValue());
+                    //锁定终点
+                    int rows = baseMapBerthMapper.updateLockSourceByBercode(endPoint, subTask.getSubTaskNum());
+                    if(rows > 0) {
+                        logger.info("子任务{}添加地码{}的锁定源成功", subTaskNum, endPoint);
+                    } else {
+                        logger.info("子任务{}添加地码{}的锁定源失败", subTaskNum, endPoint);
+                    }
+                }
+
         }
         //添加货架
         if (StringUtils.isNotBlank(taskRel.getPodAccess())) {

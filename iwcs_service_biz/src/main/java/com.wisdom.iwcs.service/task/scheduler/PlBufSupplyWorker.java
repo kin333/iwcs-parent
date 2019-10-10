@@ -66,7 +66,7 @@ public class PlBufSupplyWorker implements Runnable {
         if (StringUtils.isNotEmpty(srcWb)) {
             CreateTaskRequest createTaskRequest = new CreateTaskRequest();
             createTaskRequest.setTaskType(PLBUFSUPPLY);
-            createTaskRequest.setSrcWb(srcWb);
+            //createTaskRequest.setSrcWb(srcWb);
             createTaskRequest.setTaskPri("normal");
             createTaskRequest.setTaskCode("SKUNO20180331");
             String reqCode = "T6000001970";

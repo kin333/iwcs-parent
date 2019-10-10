@@ -53,7 +53,7 @@ public class CalculateByPropStrategic implements IGetPointStrategic, IGetPodStra
             List<BaseMapBerth> baseMapBerth = baseMapBerthMapper.selectMapByAreaCode(mapPodFilterStrategy.get(i));
 
             if (baseMapBerth.size() != 0) {
-                point = baseMapBerth.get(1).getBerCode();
+                point = baseMapBerth.get(0).getBerCode();
                 break;
             }
         }

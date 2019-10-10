@@ -63,9 +63,9 @@ public class PlToWokpwWorker implements Runnable {
 
         //查找线体工作区的一个 满货架
         for (BaseMapBerth baseMapBerth:mapBerthList){
-            if (StringUtils.isNotEmpty(baseMapBerth.getPodCode())){
+            if (StringUtils.isNotEmpty(baseMapBerth.getPodCode()) &&  YZConstants.UNLOCK.equals(baseMapBerth.getInLock()) && StringUtils.isEmpty(baseMapBerth.getLockSource())){
                 BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(baseMapBerth.getPodCode());
-                if (YZConstants.LOCK.equals(basePodDetail.getInStock())){
+                if (YZConstants.LOCK.equals(basePodDetail.getInStock())  && YZConstants.UNLOCK.equals(basePodDetail.getInLock()) && StringUtils.isEmpty(basePodDetail.getLockSource()) ){
                     srcWb = baseMapBerth.getPointAlias();
                     break;
                 }

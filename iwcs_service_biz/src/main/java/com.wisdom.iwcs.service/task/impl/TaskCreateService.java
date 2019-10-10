@@ -763,11 +763,11 @@ public class TaskCreateService implements ITaskCreateService {
     /**
      * 超越 添加主任务
      * @param taskType
-     * @param areaCode
+     * @param
      * @param taskPri
      * @return
      */
-    public String createMainTask(String taskType, String areaCode,String taskPri,String jsonString,String staticPodCode){
+    public String createMainTask(String taskType,String taskPri,String jsonString,String staticPodCode){
         String mainTaskNum = "";
         MainTask mainTaskCreate = new MainTask();
         mainTaskNum = CodeBuilder.codeBuilder("M");
@@ -777,7 +777,7 @@ public class TaskCreateService implements ITaskCreateService {
             mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(taskPri));
         }
         mainTaskCreate.setMainTaskTypeCode(taskType);
-        mainTaskCreate.setAreaCode(areaCode);
+       // mainTaskCreate.setAreaCode(areaCode);
         if (StringUtils.isNotEmpty(jsonString)){
             mainTaskCreate.setStaticViaPaths(jsonString);
         }
@@ -977,17 +977,17 @@ public class TaskCreateService implements ITaskCreateService {
         logger.info("线体缓存区补充空货架:{}",JSON.toJSONString(createTaskRequest));
        // Preconditions.checkBusinessError(Strings.isNullOrEmpty(createTaskRequest.getSrcWb()), "请填写搬运任务起点");
         //查询点位坐标
-        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
+        //BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
         //Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
         //Preconditions.checkBusinessError(!LINECACHEAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体缓存区");
 
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = baseMapBerth.getAreaCode();
+        //String areaCode = baseMapBerth.getAreaCode();
         String taskPri = createTaskRequest.getTaskPri();
         String jsonString ="";
         String staticPodCode ="";
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1008,17 +1008,17 @@ public class TaskCreateService implements ITaskCreateService {
         logger.info("线体工作区补充空货架:{}",JSON.toJSONString(createTaskRequest));
        // Preconditions.checkBusinessError(Strings.isNullOrEmpty(createTaskRequest.getSrcWb()), "请填写搬运任务起点");
         //查询点位坐标
-        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
+        //BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
         //Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
         //Preconditions.checkBusinessError(!LINEWORKAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体工作区");
 
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = baseMapBerth.getAreaCode();
+       // String areaCode = baseMapBerth.getAreaCode();
         String taskPri = createTaskRequest.getTaskPri();
         String jsonString ="";
         String staticPodCode ="";
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1049,13 +1049,13 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException(reqCode, "该点位无货架");
         }
 
+        String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode()));
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = baseMapBerth.getAreaCode();
+       // String areaCode = baseMapBerth.getAreaCode();
         String taskPri = createTaskRequest.getTaskPri();
-        String jsonString ="";
-        String staticPodCode ="";
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String staticPodCode =baseMapBerth.getPodCode();
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1108,10 +1108,10 @@ public class TaskCreateService implements ITaskCreateService {
 
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = baseMapBerth.getAreaCode();
+      //  String areaCode = baseMapBerth.getAreaCode();
         String taskPri ="";
         String staticPodCode = createTaskRequest.getPodCode();
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1165,10 +1165,10 @@ public class TaskCreateService implements ITaskCreateService {
 
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = baseMapBerth.getAreaCode();
+       // String areaCode = baseMapBerth.getAreaCode();
         String taskPri = "";
         String staticPodCode = createTaskRequest.getPodCode();
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1201,13 +1201,13 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException(reqCode, "该点位无货架");
         }
 
+        String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode()));
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = baseMapBerth.getAreaCode();
+       // String areaCode = baseMapBerth.getAreaCode();
         String taskPri = createTaskRequest.getTaskPri();
-        String jsonString ="";
-        String staticPodCode ="";
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String staticPodCode =baseMapBerth.getPodCode();
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1260,10 +1260,10 @@ public class TaskCreateService implements ITaskCreateService {
 
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = startBaseMapBerth.getAreaCode();
+       // String areaCode = startBaseMapBerth.getAreaCode();
         String taskPri = "";
         String staticPodCode = startBaseMapBerth.getPodCode();
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1318,10 +1318,10 @@ public class TaskCreateService implements ITaskCreateService {
 
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = baseMapBerth.getAreaCode();
+       // String areaCode = baseMapBerth.getAreaCode();
         String taskPri ="";
         String staticPodCode = createTaskRequest.getPodCode();
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1376,10 +1376,10 @@ public class TaskCreateService implements ITaskCreateService {
 
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
-        String areaCode = baseMapBerth.getAreaCode();
+       // String areaCode = baseMapBerth.getAreaCode();
         String taskPri ="";
         String staticPodCode = createTaskRequest.getPodCode();
-        String mainTaskNum = createMainTask(taskType,areaCode,taskPri,jsonString,staticPodCode);
+        String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
