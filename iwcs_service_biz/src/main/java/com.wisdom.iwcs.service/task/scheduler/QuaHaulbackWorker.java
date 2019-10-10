@@ -72,13 +72,14 @@ public class QuaHaulbackWorker implements Runnable {
 
             }
         }
-
-        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-        createTaskRequest.setTaskType(QUAHAULBACK);
-        createTaskRequest.setSrcWb(srcWb);
-        createTaskRequest.setTaskPri("normal");
-        createTaskRequest.setTaskCode("SKUNO20180331");
-        String reqCode = "T6000001970";
-        taskCreateService.pToPHandlingTask(createTaskRequest,reqCode);
+        if (StringUtils.isNotEmpty(srcWb)) {
+            CreateTaskRequest createTaskRequest = new CreateTaskRequest();
+            createTaskRequest.setTaskType(QUAHAULBACK);
+            createTaskRequest.setSrcWb(srcWb);
+            createTaskRequest.setTaskPri("normal");
+            createTaskRequest.setTaskCode("SKUNO20180331");
+            String reqCode = "T6000001970";
+            taskCreateService.pToPHandlingTask(createTaskRequest, reqCode);
+        }
     }
 }

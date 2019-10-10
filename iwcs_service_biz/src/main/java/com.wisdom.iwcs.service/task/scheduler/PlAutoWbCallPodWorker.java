@@ -63,13 +63,15 @@ public class PlAutoWbCallPodWorker implements Runnable {
                 break;
             }
         }
+        if (StringUtils.isNotEmpty(srcWb)){
+            CreateTaskRequest createTaskRequest = new CreateTaskRequest();
+            createTaskRequest.setTaskType(PLAUTOWBCALLPOD);
+            createTaskRequest.setSrcWb(srcWb);
+            createTaskRequest.setTaskPri("normal");
+            createTaskRequest.setTaskCode("SKUNO20180331");
+            String reqCode = "T6000001970";
+            taskCreateService.pToPHandlingTask(createTaskRequest,reqCode);
+        }
 
-        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-        createTaskRequest.setTaskType(PLAUTOWBCALLPOD);
-        createTaskRequest.setSrcWb(srcWb);
-        createTaskRequest.setTaskPri("normal");
-        createTaskRequest.setTaskCode("SKUNO20180331");
-        String reqCode = "T6000001970";
-        taskCreateService.pToPHandlingTask(createTaskRequest,reqCode);
     }
 }
