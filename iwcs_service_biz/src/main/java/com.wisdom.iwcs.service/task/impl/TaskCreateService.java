@@ -957,10 +957,10 @@ public class TaskCreateService implements ITaskCreateService {
                 pTopFun(createTaskRequest);
                 break;
             case TESTTOREPAIR:
-                testToRepairFun(createTaskRequest,reqCode);
+                testToRepairFun(createTaskRequest);
                 break;
             case REPAIRTOTEST:
-                repairToTestFun(createTaskRequest,reqCode);
+                repairToTestFun(createTaskRequest);
                 break;
             default:
                 logger.error("错误的主任务类型:{}",taskType);
@@ -1279,13 +1279,13 @@ public class TaskCreateService implements ITaskCreateService {
     /**
      *超越  测试线去维修区
      * @param createTaskRequest
-     * @param reqCode
+     * @param 
      * @return
      */
-    public MesResult testToRepairFun(CreateTaskRequest createTaskRequest,String reqCode){
+    public MesResult testToRepairFun(CreateTaskRequest createTaskRequest){
         logger.info("测试线去维修区:{}",JSON.toJSONString(createTaskRequest));
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
-            throw new MesBusinessException(reqCode, "货架号不能为空");
+            throw new MesBusinessException("货架号不能为空");
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
@@ -1297,7 +1297,7 @@ public class TaskCreateService implements ITaskCreateService {
         lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
         if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
-            throw new MesBusinessException(reqCode, "维修区暂无空位置");
+            throw new MesBusinessException( "维修区暂无空位置");
         }
 
         List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
@@ -1305,7 +1305,7 @@ public class TaskCreateService implements ITaskCreateService {
         //  计算空闲点位 并锁定
         Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
         if (result.getReturnCode() != HttpStatus.OK.value()) {
-            throw new MesBusinessException(reqCode, "锁定空储位失败");
+            throw new MesBusinessException( "锁定空储位失败");
         }
 
         //空闲点位
@@ -1337,13 +1337,13 @@ public class TaskCreateService implements ITaskCreateService {
     /**
      *超越  维修区去测试线
      * @param createTaskRequest
-     * @param reqCode
+     * @param
      * @return
      */
-    public MesResult repairToTestFun(CreateTaskRequest createTaskRequest,String reqCode){
+    public MesResult repairToTestFun(CreateTaskRequest createTaskRequest){
         logger.info("维修区去测试线:{}",JSON.toJSONString(createTaskRequest));
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
-            throw new MesBusinessException(reqCode, "货架号不能为空");
+            throw new MesBusinessException( "货架号不能为空");
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
@@ -1355,7 +1355,7 @@ public class TaskCreateService implements ITaskCreateService {
         lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
         if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
-            throw new MesBusinessException(reqCode, "测试线暂无空位置");
+            throw new MesBusinessException( "测试线暂无空位置");
         }
 
         List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
@@ -1363,7 +1363,7 @@ public class TaskCreateService implements ITaskCreateService {
         //  计算空闲点位 并锁定
         Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
         if (result.getReturnCode() != HttpStatus.OK.value()) {
-            throw new MesBusinessException(reqCode, "锁定空储位失败");
+            throw new MesBusinessException("锁定空储位失败");
         }
 
         //空闲点位
