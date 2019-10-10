@@ -1,6 +1,8 @@
 package com.wisdom.controller.upstream.mes;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
+import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.TaskCreateRequest;
 import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
@@ -44,6 +46,17 @@ public class PToPHandlingTaskController {
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
-
+    /**
+     * 超越 手持
+     * @param createTaskRequest
+     * @return
+     */
+    @PostMapping("/create")
+    @SystemInterfaceLog(methodCode = TASK_CREATE, methodName =PToP_TASK_CREATE, methodThansfer = SRC_MES)
+    public Result createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+        String reqCode = "";
+        taskCreateService.pToPHandlingTask(createTaskRequest, reqCode);
+        return new Result();
+    }
 
 }

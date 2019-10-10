@@ -945,16 +945,16 @@ public class TaskCreateService implements ITaskCreateService {
                 plToWokpwFun(createTaskRequest,reqCode);
                 break;
             case WOKPWTOAGING:
-                wokpwToAgingFun(createTaskRequest,reqCode);
+                wokpwToAgingFun(createTaskRequest);
                 break;
             case AGINGTOQUAINSP:
-                agingToQuaInspFun(createTaskRequest,reqCode);
+                agingToQuaInspFun(createTaskRequest);
                 break;
             case QUAHAULBACK:
                 quaHaulbackFun(createTaskRequest,reqCode);
                 break;
             case PTOP:
-                pTopFun(createTaskRequest,reqCode);
+                pTopFun(createTaskRequest);
                 break;
             case TESTTOREPAIR:
                 testToRepairFun(createTaskRequest,reqCode);
@@ -1072,10 +1072,10 @@ public class TaskCreateService implements ITaskCreateService {
      * 超越  人工插线区去老化区
      * @param createTaskRequest
      */
-    public MesResult wokpwToAgingFun(CreateTaskRequest createTaskRequest,String reqCode){
+    public MesResult wokpwToAgingFun(CreateTaskRequest createTaskRequest){
         logger.info("人工插线区去老化区:{}",JSON.toJSONString(createTaskRequest));
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
-            throw new MesBusinessException(reqCode, "货架号不能为空");
+            throw new MesBusinessException("货架号不能为空");
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
@@ -1087,7 +1087,7 @@ public class TaskCreateService implements ITaskCreateService {
         lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
         if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
-            throw new MesBusinessException(reqCode, "老化区暂无空位置");
+            throw new MesBusinessException("老化区暂无空位置");
         }
 
         List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
@@ -1095,7 +1095,7 @@ public class TaskCreateService implements ITaskCreateService {
         //  计算空闲点位 并锁定
         Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
         if (result.getReturnCode() != HttpStatus.OK.value()) {
-            throw new MesBusinessException(reqCode, "锁定空储位失败");
+            throw new MesBusinessException("锁定空储位失败");
         }
 
         //空闲点位
@@ -1128,10 +1128,10 @@ public class TaskCreateService implements ITaskCreateService {
      * 超越 老化区去检验点
      * @param createTaskRequest
      */
-    public MesResult agingToQuaInspFun(CreateTaskRequest createTaskRequest,String reqCode){
+    public MesResult agingToQuaInspFun(CreateTaskRequest createTaskRequest){
         logger.info("老化区去检验点:{}",JSON.toJSONString(createTaskRequest));
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
-            throw new MesBusinessException(reqCode, "货架号不能为空");
+            throw new MesBusinessException("货架号不能为空");
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
@@ -1144,7 +1144,7 @@ public class TaskCreateService implements ITaskCreateService {
         lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
         if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
-            throw new MesBusinessException(reqCode, "检验点暂无空位置");
+            throw new MesBusinessException("检验点暂无空位置");
         }
 
         List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
@@ -1152,7 +1152,7 @@ public class TaskCreateService implements ITaskCreateService {
         //  计算空闲点位 并锁定
         Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
         if (result.getReturnCode() != HttpStatus.OK.value()) {
-            throw new MesBusinessException(reqCode, "锁定空储位失败");
+            throw new MesBusinessException("锁定空储位失败");
         }
 
         //空闲点位
@@ -1225,29 +1225,29 @@ public class TaskCreateService implements ITaskCreateService {
      * 超越 点到点任务
      * @param createTaskRequest
      */
-    public MesResult pTopFun(CreateTaskRequest createTaskRequest,String reqCode){
+    public MesResult pTopFun(CreateTaskRequest createTaskRequest){
         logger.info("超越点到点任务:{}",JSON.toJSONString(createTaskRequest));
         String startPointAlias = createTaskRequest.getStartPointAlias();
         String targetPointAlias = createTaskRequest.getTargetPointAlias();
         if (StringUtils.isBlank(startPointAlias)){
-            throw new MesBusinessException(reqCode, "搬运起点不能为空！");
+            throw new MesBusinessException("搬运起点不能为空！");
         }
         if (StringUtils.isBlank(targetPointAlias)){
-            throw new MesBusinessException(reqCode, "搬运目标点不能为空！");
+            throw new MesBusinessException("搬运目标点不能为空！");
         }
 
         //查询起点 点位坐标
         BaseMapBerth startBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(startPointAlias);
         Preconditions.checkBusinessError(startBaseMapBerth == null, "无效搬运起点编码" + startPointAlias);
         if (StringUtils.isBlank(startBaseMapBerth.getPodCode())){
-            throw new MesBusinessException(reqCode, "搬运起点无货架");
+            throw new MesBusinessException("搬运起点无货架");
         }
 
         //查询目标点 点位坐标
         BaseMapBerth targetBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(targetPointAlias);
         Preconditions.checkBusinessError(targetBaseMapBerth == null, "无效搬运目标点编码" + targetPointAlias);
         if (StringUtils.isNotBlank(targetBaseMapBerth.getPodCode())){
-            throw new MesBusinessException(reqCode, "搬运目标点已存在货架");
+            throw new MesBusinessException("搬运目标点已存在货架");
         }
         if (targetBaseMapBerth.getInLock()==1 || StringUtils.isNotBlank(targetBaseMapBerth.getLockSource())){
             throw new BusinessException("目标点位已锁定");
