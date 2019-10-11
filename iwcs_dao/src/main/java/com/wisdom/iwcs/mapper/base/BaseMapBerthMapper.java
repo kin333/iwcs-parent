@@ -205,4 +205,6 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     Integer updateMapById(@Param("record") BaseMapUpdateAreaDTO record, @Param("list") List<Integer> list);
 
     int updateLockSourceByBercode(@Param("berCode") String berCode,@Param("lockSource") String lockSource);
+
+    List<BaseMapBerth> selectAllRollerPoint();
 }

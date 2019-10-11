@@ -454,4 +454,9 @@
         </set>
         where ber_code = #{berCode}
     </update>
+
+    <select id="selectAllRollerPoint" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from base_map_berth
+        where point_alias LIKE CONCAT('2','%')
+    </select>
 </mapper>
