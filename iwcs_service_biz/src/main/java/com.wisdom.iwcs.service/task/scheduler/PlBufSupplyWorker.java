@@ -3,8 +3,10 @@ package com.wisdom.iwcs.service.task.scheduler;
 import com.wisdom.iwcs.common.utils.YZConstants;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.AGINGCACHEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.LINECACHEAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PLBUFSUPPLY;
 
@@ -28,6 +31,9 @@ public class PlBufSupplyWorker implements Runnable {
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     private ITaskCreateService taskCreateService;
+
+    @Autowired
+    private BasePodDetailMapper basePodDetailMapper;
 
     @Override
     public void run() {
@@ -55,7 +61,10 @@ public class PlBufSupplyWorker implements Runnable {
         logger.info("开始创建 线体缓存区补充空货架 的任务");
         List<BaseMapBerth> mapBerthList = baseMapBerthMapper.selectByBizTye(LINECACHEAREA);
         Preconditions.checkBusinessError(mapBerthList.size() <= 0, "基础数据异常: 找不到线体缓存区");
+        List<BaseMapBerth> berthList = baseMapBerthMapper.selectByBizTye(AGINGCACHEAREA);
+        Preconditions.checkBusinessError(berthList.size() <= 0, "基础数据异常: 找不到老化缓存区");
         String srcWb = "";
+        String podCode = "";
         //查找线体缓存区的一个空位置
         for (BaseMapBerth baseMapBerth:mapBerthList){
             if (StringUtils.isEmpty(baseMapBerth.getPodCode()) && YZConstants.UNLOCK.equals(baseMapBerth.getInLock()) && StringUtils.isEmpty(baseMapBerth.getLockSource())){
@@ -63,7 +72,19 @@ public class PlBufSupplyWorker implements Runnable {
                 break;
             }
         }
-        if (StringUtils.isNotEmpty(srcWb)) {
+
+        //查找老化缓存区的一个空货架
+        for (BaseMapBerth baseMapBerth:berthList){
+            if (StringUtils.isNotEmpty(baseMapBerth.getPodCode()) && YZConstants.UNLOCK.equals(baseMapBerth.getInLock()) && StringUtils.isEmpty(baseMapBerth.getLockSource()) ){
+                BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(baseMapBerth.getPodCode());
+                if (YZConstants.UNLOCK.equals(basePodDetail.getInStock())  && YZConstants.UNLOCK.equals(basePodDetail.getInLock()) && StringUtils.isEmpty(basePodDetail.getLockSource()) ){
+                    podCode = basePodDetail.getPodCode();
+                    break;
+                }
+            }
+        }
+
+        if (StringUtils.isNotEmpty(srcWb) && StringUtils.isNotEmpty(podCode)) {
             CreateTaskRequest createTaskRequest = new CreateTaskRequest();
             createTaskRequest.setTaskType(PLBUFSUPPLY);
             //createTaskRequest.setSrcWb(srcWb);

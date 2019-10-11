@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.AGINGCACHEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.QUAINSPAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.QUAHAULBACK;
 
@@ -59,7 +60,10 @@ public class QuaHaulbackWorker implements Runnable {
         logger.info("开始创建 检验区呼叫搬离货架 的任务");
         List<BaseMapBerth> mapBerthList = baseMapBerthMapper.selectByOperateAreaCode(QUAINSPAREA);
         Preconditions.checkBusinessError(mapBerthList.size() <= 0, "基础数据异常: 找不到检验区");
+        List<BaseMapBerth> berthList = baseMapBerthMapper.selectByBizTye(AGINGCACHEAREA);
+        Preconditions.checkBusinessError(berthList.size() <= 0, "基础数据异常: 找不到老化区缓存区");
         String srcWb = "";
+        String map = "";
 
         //查找 检验区 的一个 满货架
         for (BaseMapBerth baseMapBerth:mapBerthList){
@@ -72,7 +76,16 @@ public class QuaHaulbackWorker implements Runnable {
 
             }
         }
-        if (StringUtils.isNotEmpty(srcWb)) {
+
+        //查找老化区缓存区的一个空位置
+        for (BaseMapBerth baseMapBerth:berthList){
+            if (StringUtils.isEmpty(baseMapBerth.getPodCode()) && YZConstants.UNLOCK.equals(baseMapBerth.getInLock()) && StringUtils.isEmpty(baseMapBerth.getLockSource())){
+                map = baseMapBerth.getPointAlias();
+                break;
+            }
+        }
+
+        if (StringUtils.isNotEmpty(srcWb) && StringUtils.isNotEmpty(map)) {
             CreateTaskRequest createTaskRequest = new CreateTaskRequest();
             createTaskRequest.setTaskType(QUAHAULBACK);
             createTaskRequest.setSrcWb(srcWb);
