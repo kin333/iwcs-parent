@@ -16,7 +16,7 @@
             <column name="InSkuPoint1_InSkuQuantity" remarks="下料点一下料数量" type="INT" defaultValue=""/>
             <column name="InSkuPoint1_RecyclingQuantity" remarks="下料点一回收数量" type="INT" defaultValue=""/>
             <column name="InSkuPoint2" remarks="下料点二" type="VARCHAR(16)" defaultValue=""/>
-            <column name="InSkuPoint2_InSkuQuantity"remarks="下料点二下料数量" type="INT" defaultValue=""/>
+            <column name="InSkuPoint2_InSkuQuantity" remarks="下料点二下料数量" type="INT" defaultValue=""/>
             <column name="InSkuPoint2_RecyclingQuantity" remarks="下料点二回收数量" type="INT" defaultValue=""/>
             <column name="RecyclingPoint" remarks="回收点" type="VARCHAR(16)" defaultValue=""/>
             <column name="EmptyBoxPoint" remarks="上空箱点" type="VARCHAR(16)" defaultValue=""/>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.imitateTestMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.imitateTest">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="DeliveryStatus" jdbcType="VARCHAR" property="deliverystatus" />
+    <result column="taskcode" jdbcType="VARCHAR" property="taskcode" />
+    <result column="taskType" jdbcType="VARCHAR" property="tasktype" />
+    <result column="OutSkuPoint" jdbcType="VARCHAR" property="outskupoint" />
+    <result column="feedingQuantity" jdbcType="INTEGER" property="feedingquantity" />
+    <result column="InSkuPoint1" jdbcType="VARCHAR" property="inskupoint1" />
+    <result column="InSkuPoint1_InSkuQuantity" jdbcType="INTEGER" property="inskupoint1Inskuquantity" />
+    <result column="InSkuPoint1_RecyclingQuantity" jdbcType="INTEGER" property="inskupoint1Recyclingquantity" />
+    <result column="InSkuPoint2" jdbcType="VARCHAR" property="inskupoint2" />
+    <result column="InSkuPoint2_InSkuQuantity" jdbcType="INTEGER" property="inskupoint2Inskuquantity" />
+    <result column="InSkuPoint2_RecyclingQuantity" jdbcType="INTEGER" property="inskupoint2Recyclingquantity" />
+    <result column="RecyclingPoint" jdbcType="VARCHAR" property="recyclingpoint" />
+    <result column="EmptyBoxPoint" jdbcType="VARCHAR" property="emptyboxpoint" />
+    <result column="EmptyBoxNumber" jdbcType="INTEGER" property="emptyboxnumber" />
+    <result column="ShelfNumber" jdbcType="VARCHAR" property="shelfnumber" />
+    <result column="StartingPoint" jdbcType="VARCHAR" property="startingpoint" />
+    <result column="EndPoint" jdbcType="VARCHAR" property="endpoint" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, DeliveryStatus, taskcode, taskType, OutSkuPoint, feedingQuantity, InSkuPoint1, 
+    InSkuPoint1_InSkuQuantity, InSkuPoint1_RecyclingQuantity, InSkuPoint2, InSkuPoint2_InSkuQuantity, 
+    InSkuPoint2_RecyclingQuantity, RecyclingPoint, EmptyBoxPoint, EmptyBoxNumber, ShelfNumber, 
+    StartingPoint, EndPoint
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from imitatetest
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>

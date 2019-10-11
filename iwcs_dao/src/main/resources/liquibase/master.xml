@@ -10,7 +10,7 @@
 
     <include file="liquibase/changelog/201803081830_added_entity_codecSequenceAndFunc.xml"
              relativeToChangelogFile="false"/>
-
+    <include file="liquibase/changelog/iwcs/iwcs_imitateTest.xml"  relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_db_init.xml" relativeToChangelogFile="false"/>
 
     <include file="liquibase/changelog/iwcs/iwcs_db_wb_group_detail_changelog_201902211010.xml"
