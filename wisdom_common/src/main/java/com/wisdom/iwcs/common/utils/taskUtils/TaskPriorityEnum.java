@@ -37,4 +37,17 @@ public enum TaskPriorityEnum {
         }
         return null;
     }
+    /**
+     * 根据优先级获取编码
+     * @param priority
+     * @return
+     */
+    public static String getCodeByPriority(Integer priority) {
+        if (URGENT.getPriority().equals(priority)) {
+            return URGENT.getCode();
+        } else if (NORMAL.getPriority().equals(priority)) {
+            return NORMAL.getCode();
+        }
+        return null;
+    }
 }
