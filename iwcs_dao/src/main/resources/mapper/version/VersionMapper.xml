@@ -31,6 +31,6 @@
         update version
             set version = #{version,jdbcType=INTEGER},
                  url = #{url,jdbcType=VARCHAR}
-            where id = 1
+            where id = (SELECT max(id) FROM iwcs_prd_dev.version)
     </update>
 </mapper>
