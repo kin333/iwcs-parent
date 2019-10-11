@@ -88,6 +88,7 @@ public class VersionService {
                 if (oldVersionInfo.getVersion() >= version) {
                     return new Result(400, "该版本不是最新版本");
                 }
+                versionDto.setId(oldVersionInfo.getId());
                 count = versionMapper.updateVersion(versionDto);
             }
 

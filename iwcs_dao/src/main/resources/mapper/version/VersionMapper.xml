@@ -24,13 +24,13 @@
         insert into version (version,information,url)
         values (#{version,jdbcType=INTEGER}, #{information,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR})    </insert>
     <select id="selectnewVersion" resultType="com.wisdom.iwcs.domain.version.Version">
-      select  version,information,url
-     from version where id = (SELECT max(id) FROM iwcs_prd_dev.version)
+      select  <include refid="Base_Column_List"/>
+     from version where id = (SELECT max(id) FROM version)
     </select>
     <update id="updateVersion" parameterType="com.wisdom.iwcs.domain.version.VersionDto">
         update version
             set version = #{version,jdbcType=INTEGER},
                  url = #{url,jdbcType=VARCHAR}
-            where id = (SELECT max(id) FROM iwcs_prd_dev.version)
+            where id = #{id,jdbcType=INTEGER}
     </update>
 </mapper>
