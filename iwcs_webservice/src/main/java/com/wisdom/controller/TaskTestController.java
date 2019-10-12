@@ -384,19 +384,6 @@ public class TaskTestController {
 
             Thread.sleep(time);
 
-            /*logger.info("开始启动 人工插线区去老化区 任务调度器线程");
-            Thread wokpwToAgingThread = new Thread(new QuaAutoCallPodWorker("DD"));
-            wokpwToAgingThread.start();
-            logger.info("启动 人工插线区去老化区 调度器线程成功");
-
-            Thread.sleep(time);
-
-            logger.info("开始启动 老化区去检验点 任务生成器");
-            Thread agingToQuaInspThread = new Thread(new WorkLineScheduler("AB"));
-            agingToQuaInspThread.start();
-            logger.info("启动 老化区去检验点 任务生成器成功");
-
-            Thread.sleep(time);*/
 
             logger.info("开始启动 检验区呼叫搬离货架 任务调度器线程");
             Thread quaHaulbackThread = new Thread(quaHaulbackWorker);

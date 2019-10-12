@@ -65,11 +65,11 @@ public class QuaHaulbackWorker implements Runnable {
         String srcWb = "";
         String map = "";
 
-        //查找 检验区 的一个 满货架
+        //查找 检验区 的一个 货架
         for (BaseMapBerth baseMapBerth:mapBerthList){
             if (StringUtils.isNotEmpty(baseMapBerth.getPodCode()) &&  YZConstants.UNLOCK.equals(baseMapBerth.getInLock()) && StringUtils.isEmpty(baseMapBerth.getLockSource()) ){
                 BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(baseMapBerth.getPodCode());
-                if (YZConstants.LOCK.equals(basePodDetail.getInStock()) && YZConstants.UNLOCK.equals(basePodDetail.getInLock()) && StringUtils.isEmpty(basePodDetail.getLockSource()) ){
+                if (YZConstants.UNLOCK.equals(basePodDetail.getInLock()) && StringUtils.isEmpty(basePodDetail.getLockSource()) ){
                     srcWb = baseMapBerth.getPointAlias();
                     break;
                 }

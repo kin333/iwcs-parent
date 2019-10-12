@@ -1007,11 +1007,6 @@ public class TaskCreateService implements ITaskCreateService {
      */
     public MesResult plAutoWbCallPodFun(CreateTaskRequest createTaskRequest){
         logger.info("线体工作区补充空货架:{}",JSON.toJSONString(createTaskRequest));
-       // Preconditions.checkBusinessError(Strings.isNullOrEmpty(createTaskRequest.getSrcWb()), "请填写搬运任务起点");
-        //查询点位坐标
-        //BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSrcWb());
-        //Preconditions.checkBusinessError(baseMapBerth == null, "无效搬运点编码" + createTaskRequest.getSrcWb());
-        //Preconditions.checkBusinessError(!LINEWORKAREA.equals(baseMapBerth.getOperateAreaCode()), "点位不属于线体工作区");
 
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
@@ -1062,6 +1057,11 @@ public class TaskCreateService implements ITaskCreateService {
         String taskPri = createTaskRequest.getTaskPri();
         String staticPodCode =baseMapBerth.getPodCode();
         String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
+
+        //如果创建主任务成功，就把货架改成满的
+        if (StringUtils.isNotEmpty(mainTaskNum)){
+            basePodDetailMapper.updateInStock(staticPodCode,NOT_EMPTY_POD);
+        }
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
@@ -1226,6 +1226,11 @@ public class TaskCreateService implements ITaskCreateService {
         String taskPri = createTaskRequest.getTaskPri();
         String staticPodCode =baseMapBerth.getPodCode();
         String mainTaskNum = createMainTask(taskType,taskPri,jsonString,staticPodCode);
+
+        //如果创建主任务成功，就把货架改成空的
+        if (StringUtils.isNotEmpty(mainTaskNum)){
+            basePodDetailMapper.updateInStock(staticPodCode,EMPTY_POD);
+        }
 
         //将主任务号插入 task_context 表
         TaskContextDTO taskContextDTO = new TaskContextDTO();
