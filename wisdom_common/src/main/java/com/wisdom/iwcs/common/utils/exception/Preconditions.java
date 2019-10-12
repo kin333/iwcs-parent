@@ -42,4 +42,9 @@ public final class Preconditions {
             throw new MesBusinessException(reqCode, errorMsg);
         }
     }
+    public static void checkMesBusinessError(boolean error, String errorMsg) {
+        if (error) {
+            throw new MesBusinessException(errorMsg);
+        }
+    }
 }
