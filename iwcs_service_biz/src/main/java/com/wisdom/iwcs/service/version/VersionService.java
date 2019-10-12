@@ -61,17 +61,19 @@ public class VersionService {
         return mGridReturnData;
     }
     public Result Upload(MultipartFile file, String bathPath) throws FileNotFoundException {
+        Integer version;
         int count = 0;
         if(!file.isEmpty()){
             String fileName = file.getOriginalFilename();
             String suffixName = fileName.substring(fileName.lastIndexOf(".")+1);
             String prefix = fileName.substring(0,fileName.lastIndexOf("."));
-            Integer version = Integer.valueOf(prefix.substring(prefix.lastIndexOf("_") + 1));
+
             try {
+                version = Integer.valueOf(prefix.substring(prefix.lastIndexOf("_") + 1));
                 FileUtil.filter(suffixName);
             } catch (Exception e) {
                 e.printStackTrace();
-                return new Result(0, "传入的文件类型错误");
+                return new Result(0, "传入的文件类型错误,因为apk_1.apk");
             }
             Version oldVersionInfo = versionMapper.selectnewVersion();
             String uploadPath = bathPath + "static" + File.separator + "upload" + File.separator;
