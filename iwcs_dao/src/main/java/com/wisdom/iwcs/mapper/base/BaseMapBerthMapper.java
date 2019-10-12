@@ -30,7 +30,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      */
     List<BaseMapBerth> selectPage(Map map);
 
-    /**
+     /**
      * 根据地图编号删除地图地码信息
      *
      * @param mapCode
@@ -207,4 +207,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     int updateLockSourceByBercode(@Param("berCode") String berCode,@Param("lockSource") String lockSource);
 
     List<BaseMapBerth> selectAllRollerPoint();
+    List<BaseMapBerth> selectEmptyPodNormalPoint();
+    List<BaseMapBerth> selectPodNormalPoint();
+
 }
