@@ -165,4 +165,20 @@ public class ContextDTO {
      */
     @ColumnName("chaLeaveUpEmpty")
     private Boolean chaLeaveUpEmpty;
+
+    /**
+     * 超越 供料点
+     */
+    @ColumnName("currentWb")
+    private String currentWb;
+    /**
+     * 超越 1上料点，2下料点，3回收点
+     */
+    @ColumnName("nodeType")
+    private String nodeType;
+    /**
+     * 超越 回收空料箱送达目标点
+     */
+    @ColumnName("recyleWb")
+    private String recyleWb;
 }

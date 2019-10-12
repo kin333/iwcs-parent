@@ -5,13 +5,11 @@ import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.control.ContinueTaskRequestDTO;
 import com.wisdom.iwcs.domain.task.MainTask;
-import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.upstream.mes.*;
-import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ReportEmptyContainerNumber;
+import com.wisdom.iwcs.domain.upstream.mes.chaoyue.*;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
@@ -25,8 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
@@ -471,6 +467,27 @@ public class MesRequestService {
 
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
+        return new MesResult(reqCode);
+    }
+
+    public MesResult startSupllyAndRecyles(StartSupllyAndRecyles startSupllyAndRecyle, String reqCode) {
+
+        // 校验
+        publicCheck(startSupllyAndRecyle.getTaskCode(), reqCode);
+
+        if (StringUtils.isEmpty(startSupllyAndRecyle.getCurrentWb())) {
+            throw new MesBusinessException(reqCode, "供料点必填");
+        }
+
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(startSupllyAndRecyle.getTaskCode());
+        String context = taskContext.getContext();
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        contextDTO.setCurrentWb(startSupllyAndRecyle.getCurrentWb());
+        contextDTO.setNodeType(startSupllyAndRecyle.getNodeType());
+        contextDTO.setRecyleWb(startSupllyAndRecyle.getRecyleWb());
+        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+        taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
+
         return new MesResult(reqCode);
     }
 }

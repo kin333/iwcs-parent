@@ -6,6 +6,7 @@ import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.upstream.mes.*;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ReportEmptyContainerNumber;
+import com.wisdom.iwcs.domain.upstream.mes.chaoyue.StartSupllyAndRecyles;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
 import com.wisdom.iwcs.service.task.impl.MesRequestService;
 import com.wisdom.iwcs.service.task.impl.TaskCreateService;
@@ -125,6 +126,17 @@ public class LineFeedAndRecycleController {
 
         SupllyUnload data = mesBaseRequest.getData();
         mesRequestService.supllyUnload(data, mesBaseRequest.getReqcode());
+        return new MesResult(mesBaseRequest.getReqcode());
+    }
+    /**
+     * 超越 通知小车是否滚动
+     */
+    @PostMapping("/startSupllyAndRecyles")
+    @SystemInterfaceLog(methodCode = START_SUPLLY_AND_RECYLE, methodName = START_SUPLLY_AND_RECYLE_DESC, methodThansfer = SRC_MES)
+    public MesResult startSupllyAndRecyles(@RequestBody MesBaseRequest<StartSupllyAndRecyles> mesBaseRequest) {
+
+        StartSupllyAndRecyles data = mesBaseRequest.getData();
+        mesRequestService.startSupllyAndRecyles(data, mesBaseRequest.getReqcode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 }
