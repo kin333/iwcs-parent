@@ -42,6 +42,8 @@ public class ApplicationProperties {
 
     private final Warn warn = new Warn();
 
+    private final DownPda downPda = new DownPda();
+
     private final Netty netty = new Netty();
 
     private final MesParam mesParam = new MesParam();
@@ -98,9 +100,15 @@ public class ApplicationProperties {
         return rabbitmq;
     }
 
+
+    public DownPda getDownPda() {
+        return downPda;
+    }
+
     public Warn getWarn() {
         return warn;
     }
+
 
     public Netty getNetty(){
         return netty;
@@ -951,6 +959,19 @@ public class ApplicationProperties {
 
         public void setCheckName(String checkName) {
             this.checkName = checkName;
+        }
+    }
+
+    public static class DownPda {
+
+        private String url;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 }

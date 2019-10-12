@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.version;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.MD5Utils;
@@ -39,6 +40,8 @@ public class VersionService {
         this.versionMapper = versionMapper;
         this.versionStruct= versionStruct;
     }
+    @Autowired
+    ApplicationProperties applicationProperties;
     /**
      * 分页查询
      *
@@ -75,7 +78,7 @@ public class VersionService {
             String newName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + "." + suffixName;
             String caselsh = fileName.substring(0, fileName.lastIndexOf("."));
             String newfileName = caselsh + "_" + newName;
-            String savePath =  "/static/upload/"+ newfileName;
+            String savePath =  applicationProperties.getDownPda().getUrl() + "/static/upload/"+ newfileName;
 
             VersionDto versionDto = new VersionDto();
             versionDto.setVersion(version);

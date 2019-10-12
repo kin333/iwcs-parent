@@ -150,7 +150,8 @@ application:
     virtualHost: /
   warn:
     checkName: name1;name2
-
+  downPda:
+    url: http://192.168.102.95:8088
 
 mybatis:
   type-handlers-package: org.apache.ibatis.type.LocalDateTypeHandler
