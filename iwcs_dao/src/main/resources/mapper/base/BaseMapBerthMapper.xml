@@ -464,8 +464,6 @@
         where point_alias LIKE '1%' AND (pod_code is NULL OR pod_code='');
     </select>
     <select id="selectPodNormalPoint" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from base_map_berth
- where point_alias LIKE '1%' AND pod_code is not NULL AND pod_code!=''
+        select <include refid="Base_Column_List"/> from base_map_berth where point_alias LIKE '1%' AND pod_code is not NULL AND pod_code!=''
     </select>
-
 </mapper>

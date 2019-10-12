@@ -22,8 +22,8 @@ public class NomalTaskCreateWorker extends BaseAutoTestWorker  {
         List<BaseMapBerth> noPodbaseMapBerths = baseMapBerthMapper.selectEmptyPodNormalPoint();
         //生成随机数
         Random random = new Random();
-        int startNum = random.nextInt(PodbaseMapBerths.size()-1);
-        int endNum = random.nextInt(noPodbaseMapBerths.size()-1);
+        int startNum = random.nextInt(PodbaseMapBerths.size());
+        int endNum = random.nextInt(noPodbaseMapBerths.size());
         BaseMapBerth startBerth = PodbaseMapBerths.get(startNum);
         BaseMapBerth endBerth = noPodbaseMapBerths.get(endNum);
         String podCode=startBerth.getPodCode();
