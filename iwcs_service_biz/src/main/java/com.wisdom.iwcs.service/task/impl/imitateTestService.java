@@ -157,17 +157,6 @@ public class imitateTestService {
         return num;
     }
 
-    /**
-     * 根据主键逻辑删除记录
-     *
-     *
-     * @param id {@link Integer }
-     *
-     * @return int
-     */
-    public int deleteLogicByPrimaryKey(Integer id) {
-        return imitateTestMapper.deleteLogicByPrimaryKey(id);
-    }
 
     /**
      * 根据主键删除多条记录
@@ -179,18 +168,6 @@ public class imitateTestService {
      */
     public int deleteMore(List<String> ids){
         return imitateTestMapper.deleteByIds(String.join(",", ids));
-    }
-
-    /**
-     * 根据主键逻辑删除多条记录
-     *
-     *
-     * @param ids {@link List<String> }
-     *
-     * @return int
-     */
-    public int deleteMoreLogic(List<String> ids){
-        return imitateTestMapper.deleteLogicByIds(String.join(",", ids));
     }
 
     /**

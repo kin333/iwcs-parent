@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  * @date 2019-10-11 15:47:08.
  */
 @Repository
-public interface imitateTestMapper extends DeleteLogicMapper<imitateTest>, MyMapperAndIds<imitateTest> {
+public interface imitateTestMapper extends  MyMapperAndIds<imitateTest> {
     /**
      * selectPage
      * @param map condition
