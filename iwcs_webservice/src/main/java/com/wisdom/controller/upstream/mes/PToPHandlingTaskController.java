@@ -1,6 +1,7 @@
 package com.wisdom.controller.upstream.mes;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
@@ -24,8 +25,8 @@ import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.S
  */
 
 @RestController
-@Transactional(rollbackFor = Exception.class)
-@RequestMapping("/api/wisdom/pToPHandlingTask")
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping("/api/wisdom/pToPHandlingTask")
 public class PToPHandlingTaskController {
 
     @Autowired
@@ -51,10 +52,10 @@ public class PToPHandlingTaskController {
      */
     @PostMapping("/create")
     @SystemInterfaceLog(methodCode = TASK_CREATE, methodName =PToP_TASK_CREATE, methodThansfer = SRC_MES)
-    public MesResult createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+    public Result createTask(@RequestBody CreateTaskRequest createTaskRequest) {
         String reqCode = "";
         taskCreateService.pToPHandlingTask(createTaskRequest, reqCode);
-        return new MesResult();
+        return new Result();
     }
 
 }
