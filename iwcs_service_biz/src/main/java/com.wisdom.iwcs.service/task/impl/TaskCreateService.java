@@ -43,7 +43,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.BatchUpdateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -1089,8 +1088,8 @@ public class TaskCreateService implements ITaskCreateService {
 
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
-        Preconditions.checkMesBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
-        Preconditions.checkMesBusinessError(!WOKPWAREA.equals(baseMapBerth.getBizType()), "该货架不属于人工插线区！" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(!WOKPWAREA.equals(baseMapBerth.getBizType()), "该货架不属于人工插线区！" + createTaskRequest.getPodCode());
 
         //判断老化区是否有空位置
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
@@ -1148,8 +1147,8 @@ public class TaskCreateService implements ITaskCreateService {
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
-        Preconditions.checkMesBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
-        Preconditions.checkMesBusinessError(!AGINGREA.equals(baseMapBerth.getOperateAreaCode()), "该货架不属于老化区！" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(!AGINGREA.equals(baseMapBerth.getOperateAreaCode()), "该货架不属于老化区！" + createTaskRequest.getPodCode());
 
 
         //判断检验点是否有空位置
@@ -1264,14 +1263,14 @@ public class TaskCreateService implements ITaskCreateService {
 
         //查询起点 点位坐标
         BaseMapBerth startBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(startPointAlias);
-        Preconditions.checkMesBusinessError(startBaseMapBerth == null, "无效搬运起点编码" + startPointAlias);
+        Preconditions.checkBusinessError(startBaseMapBerth == null, "无效搬运起点编码" + startPointAlias);
         if (StringUtils.isBlank(startBaseMapBerth.getPodCode())){
             throw new BusinessException("搬运起点无货架");
         }
 
         //查询目标点 点位坐标
         BaseMapBerth targetBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(targetPointAlias);
-        Preconditions.checkMesBusinessError(targetBaseMapBerth == null, "无效搬运目标点编码" + targetPointAlias);
+        Preconditions.checkBusinessError(targetBaseMapBerth == null, "无效搬运目标点编码" + targetPointAlias);
         if (StringUtils.isNotBlank(targetBaseMapBerth.getPodCode())){
             throw  new BusinessException("搬运目标点已存在货架");
         }
@@ -1317,8 +1316,8 @@ public class TaskCreateService implements ITaskCreateService {
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
-        Preconditions.checkMesBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
-        Preconditions.checkMesBusinessError(!TESTLINEAREA.equals(baseMapBerth.getOperateAreaCode()), "该货架不属于测试线！" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(!TESTLINEAREA.equals(baseMapBerth.getOperateAreaCode()), "该货架不属于测试线！" + createTaskRequest.getPodCode());
 
         //判断维修区是否有空位置
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
@@ -1378,8 +1377,8 @@ public class TaskCreateService implements ITaskCreateService {
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
-        Preconditions.checkMesBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
-        Preconditions.checkMesBusinessError(!REPAIRAREA.equals(baseMapBerth.getOperateAreaCode()), "该货架不属于维修区！" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(!REPAIRAREA.equals(baseMapBerth.getOperateAreaCode()), "该货架不属于维修区！" + createTaskRequest.getPodCode());
         //判断测试线是否有空位置
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setOperateAreaCode(TESTLINEAREA);
