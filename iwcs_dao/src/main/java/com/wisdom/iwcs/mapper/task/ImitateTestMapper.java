@@ -1,6 +1,5 @@
 package com.wisdom.iwcs.mapper.task;
 
-import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import java.util.List;
 import java.util.Map;
