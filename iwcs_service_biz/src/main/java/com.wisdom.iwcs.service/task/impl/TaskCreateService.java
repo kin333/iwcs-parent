@@ -1049,6 +1049,12 @@ public class TaskCreateService implements ITaskCreateService {
         if (!LINEWORKAREA.equals(baseMapBerth.getBizType())){
             throw new MesBusinessException(reqCode, "该点位不属于线体工作区！");
         }
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(baseMapBerth.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new MesBusinessException(reqCode, "该货架已被锁！");
+        }
+
 
         String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode()));
         //创建主任务
@@ -1084,6 +1090,12 @@ public class TaskCreateService implements ITaskCreateService {
         logger.info("人工插线区去老化区:{}",JSON.toJSONString(createTaskRequest));
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
             throw new BusinessException("货架号不能为空");
+        }
+
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(createTaskRequest.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new BusinessException("该货架已被锁！");
         }
 
         //查询点位坐标
@@ -1144,6 +1156,12 @@ public class TaskCreateService implements ITaskCreateService {
         logger.info("老化区去检验点:{}",JSON.toJSONString(createTaskRequest));
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
             throw new BusinessException("货架号不能为空");
+        }
+
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(createTaskRequest.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new BusinessException("该货架已被锁！");
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
@@ -1219,6 +1237,12 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException(reqCode, "该点位不属于检验区！");
         }
 
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(baseMapBerth.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new MesBusinessException("该货架已被锁！");
+        }
+
         String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode()));
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
@@ -1268,6 +1292,12 @@ public class TaskCreateService implements ITaskCreateService {
             throw new BusinessException("搬运起点无货架");
         }
 
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(startBaseMapBerth.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new BusinessException("该货架已被锁！");
+        }
+
         //查询目标点 点位坐标
         BaseMapBerth targetBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(targetPointAlias);
         Preconditions.checkBusinessError(targetBaseMapBerth == null, "无效搬运目标点编码" + targetPointAlias);
@@ -1314,6 +1344,12 @@ public class TaskCreateService implements ITaskCreateService {
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
             throw new BusinessException("货架号不能为空");
         }
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(createTaskRequest.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new BusinessException("该货架已被锁！");
+        }
+
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
         Preconditions.checkBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
@@ -1374,6 +1410,11 @@ public class TaskCreateService implements ITaskCreateService {
         logger.info("维修区去测试线:{}",JSON.toJSONString(createTaskRequest));
         if (StringUtils.isBlank(createTaskRequest.getPodCode())){
             throw new BusinessException( "货架号不能为空");
+        }
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(createTaskRequest.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new BusinessException("该货架已被锁！");
         }
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
