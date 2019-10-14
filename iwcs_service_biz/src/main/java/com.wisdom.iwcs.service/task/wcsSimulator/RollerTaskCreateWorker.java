@@ -81,10 +81,22 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
         }
         downPointOneRecycleNum =random.nextInt(3) + 0;
         if(inpointNumber==2) {
-            downPointTwoRecycleNum = random.nextInt(3) + 0;
+            if(downPointOneRecycleNum == 0)
+            {
+                downPointTwoRecycleNum = random.nextInt(3) + 0;
+            }
+            if(downPointOneRecycleNum == 1)
+            {
+                downPointTwoRecycleNum = random.nextInt(2) + 0;
+            }
+            if(downPointOneRecycleNum == 2)
+            {
+                downPointTwoRecycleNum = 0;
+            }
         }
-        if((downPointOneRecycleNum+downPointTwoRecycleNum)!=0) {
 
+
+        if((downPointOneRecycleNum+downPointTwoRecycleNum)!=0) {
             BaseMapBerth recyclePointBerth = baseMapBerths.get(temp[2]);
             recyclePoint = recyclePointBerth.getPointAlias();
         }
