@@ -1,14 +1,14 @@
 package com.wisdom.iwcs.service.task.wcsSimulator;
 
+import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.task.Imitatetest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.task.ImitateTestMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -23,6 +23,8 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
     private final Logger logger = LoggerFactory.getLogger(RollerTaskCreateWorker.class);
     @Autowired
     BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    ImitateTestMapper imitateTestMapper;
 
 
     /**
@@ -50,7 +52,9 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
         String recyclePoint = "";
         //生成随机数据
         List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectAllRollerPoint();
+
         Random random = new Random();
+        int inpointNumber  = random.nextInt(2) + 1;
         HashSet<Integer> hs = new HashSet<>();
         while(hs.size() <4) {
             hs.add(random.nextInt(baseMapBerths.size()));
@@ -65,26 +69,40 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
          downPointOne=downPoint1Berth.getPointAlias();
         BaseMapBerth downPoint2Berth = baseMapBerths.get(temp[1]);
          downPointTwo=downPoint2Berth.getPointAlias();
-        downPointOneNum =random.nextInt(3) + 0;
-        if(downPointOneNum==0)
+
+        if(inpointNumber==2)
         {
-            downPointTwoNum =upPointNum;
+            downPointOneNum = downPointTwoNum = 1;
         }
-        if(downPointOneNum==1)
+        if(inpointNumber==1)
         {
-            downPointTwoNum = upPointNum-1;
+               downPointOneNum=upPointNum;
+                downPointTwoNum = 0;
         }
         downPointOneRecycleNum =random.nextInt(3) + 0;
-        downPointTwoRecycleNum =random.nextInt(3) + 0;
-
-        if((downPointOneRecycleNum+downPointTwoRecycleNum)!=0)
-        {
+        if(inpointNumber==2) {
+            downPointTwoRecycleNum = random.nextInt(3) + 0;
+        }
+        if((downPointOneRecycleNum+downPointTwoRecycleNum)!=0) {
 
             BaseMapBerth recyclePointBerth = baseMapBerths.get(temp[2]);
             recyclePoint = recyclePointBerth.getPointAlias();
         }
+       String  taskcode= CodeBuilder.codeBuilder("M");
 
-
+        Imitatetest imitateTest= new Imitatetest();
+        imitateTest.setTaskcode(taskcode);
+        imitateTest.setOutskupoint(upPoint);
+        imitateTest.setFeedingquantity(upPointNum);
+        imitateTest.setInskupoint1(downPointOne);
+        imitateTest.setInskupoint1Inskuquantity(downPointOneNum);
+        imitateTest.setInskupoint1Recyclingquantity(downPointOneRecycleNum);
+        imitateTest.setInskupoint2(downPointTwo);
+        imitateTest.setInskupoint2(downPointTwo);
+        imitateTest.setInskupoint2Inskuquantity(downPointTwoNum);
+        imitateTest.setInskupoint2Recyclingquantity(downPointTwoRecycleNum);
+        imitateTest.setRecyclingpoint(recyclePoint);
+        imitateTestMapper.insertSelective(imitateTest);
  }
 
 

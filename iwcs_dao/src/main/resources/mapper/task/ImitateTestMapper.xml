@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wisdom.iwcs.mapper.task.imitateTestMapper">
-  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.imitateTest">
+<mapper namespace="com.wisdom.iwcs.mapper.task.ImitateTestMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.Imitatetest">
     <!--
       WARNING - @mbg.generated
     -->

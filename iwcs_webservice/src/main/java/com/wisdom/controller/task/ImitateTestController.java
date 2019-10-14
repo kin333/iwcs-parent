@@ -2,12 +2,15 @@ package com.wisdom.controller.task;
 
 import java.util.List;
 
+import com.wisdom.iwcs.domain.task.dto.ImitateTestDTO;
+import com.wisdom.iwcs.mapstruct.task.ImitateTestMapStruct;
+import com.wisdom.iwcs.service.task.wcsSimulator.NomalTaskCreateWorker;
+import com.wisdom.iwcs.service.task.wcsSimulator.RollerEmptyTaskCreateWorker;
+import com.wisdom.iwcs.service.task.wcsSimulator.RollerTaskCreateWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import  com.wisdom.iwcs.mapstruct.task.imitateTestMapStruct;
-import com.wisdom.iwcs.domain.task.dto.imitateTestDTO;
-import com.wisdom.iwcs.service.task.impl.imitateTestService;
+import com.wisdom.iwcs.service.task.impl.ImitateTestService;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
@@ -20,11 +23,31 @@ import com.wisdom.iwcs.common.utils.Result;
  */
 @RestController
 @RequestMapping("/api/imitate_test")
-public class imitateTestController {
+public class ImitateTestController {
     @Autowired
-    imitateTestService   imitateTestService;
+    ImitateTestService ImitateTestService;
     @Autowired
-    imitateTestMapStruct imitateTestMapStruct;
+    ImitateTestMapStruct ImitateTestMapStruct;
+
+    @Autowired
+    NomalTaskCreateWorker nomalTaskCreateWorker;
+
+    @Autowired
+    RollerTaskCreateWorker rollerTaskCreateWorker;
+
+    @Autowired
+    RollerEmptyTaskCreateWorker rollerEmptyTaskCreateWorker;
+    @RequestMapping("/test")
+    String  test1()
+    { ;
+        Thread thread1=new Thread(nomalTaskCreateWorker);
+        Thread thread2=new Thread(rollerTaskCreateWorker);
+        Thread thread3=new Thread(rollerEmptyTaskCreateWorker);
+        thread1.start();
+        thread2.start();
+        thread3.start();
+         return "ok";
+    }
 
     /**
      * 根据主键ID删除
@@ -36,7 +59,7 @@ public class imitateTestController {
      */
     @DeleteMapping(value = "/{id}")
     public Result deleteByPrimaryKey(@PathVariable Integer id) {
-        imitateTestService.deleteByPrimaryKey(id);
+        ImitateTestService.deleteByPrimaryKey(id);
 
         return new Result();
     }
@@ -51,7 +74,7 @@ public class imitateTestController {
      */
     @DeleteMapping
     public Result deleteMoreByIds(@RequestBody List<String> ids) {
-        imitateTestService.deleteMore(ids);
+        ImitateTestService.deleteMore(ids);
 
         return new Result();
     }
@@ -60,13 +83,13 @@ public class imitateTestController {
      * 新增记录
      *
      *
-     * @param imitateTestDTO {@link imitateTestDTO }
+     * @param ImitateTestDTO {@link ImitateTestDTO }
      *
      * @return {@link Result }
      */
     @PostMapping
-    public Result insert(@RequestBody imitateTestDTO imitateTestDTO) {
-        imitateTestService.insert(imitateTestDTO);
+    public Result insert(@RequestBody ImitateTestDTO ImitateTestDTO) {
+        ImitateTestService.insert(ImitateTestDTO);
 
         return new Result();
     }
@@ -81,9 +104,9 @@ public class imitateTestController {
      */
     @GetMapping(value = "/{id}")
     public Result selectByPrimaryKey(@PathVariable Integer id) {
-        imitateTestDTO imitateTestDTO = imitateTestService.selectByPrimaryKey(id);
+        ImitateTestDTO ImitateTestDTO = ImitateTestService.selectByPrimaryKey(id);
 
-        return new Result(imitateTestDTO);
+        return new Result(ImitateTestDTO);
     }
 
     /**
@@ -96,7 +119,7 @@ public class imitateTestController {
      */
     @PostMapping(value = "/page")
     public Result selectPage(@RequestBody GridPageRequest gridPageRequest) {
-        GridReturnData<imitateTestDTO> records = imitateTestService.selectPage(gridPageRequest);
+        GridReturnData<ImitateTestDTO> records = ImitateTestService.selectPage(gridPageRequest);
 
         return new Result(records);
     }
@@ -105,13 +128,13 @@ public class imitateTestController {
      * 更新记录
      *
      *
-     * @param imitateTestDTO {@link imitateTestDTO }
+     * @param ImitateTestDTO {@link ImitateTestDTO }
      *
      * @return {@link Result }
      */
     @PutMapping
-    public Result updateByPrimaryKey(@RequestBody imitateTestDTO imitateTestDTO) {
-        imitateTestService.updateByPrimaryKey(imitateTestDTO);
+    public Result updateByPrimaryKey(@RequestBody ImitateTestDTO ImitateTestDTO) {
+        ImitateTestService.updateByPrimaryKey(ImitateTestDTO);
 
         return new Result();
     }

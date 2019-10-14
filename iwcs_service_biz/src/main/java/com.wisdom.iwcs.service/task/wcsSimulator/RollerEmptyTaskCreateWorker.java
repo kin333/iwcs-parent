@@ -1,7 +1,10 @@
 package com.wisdom.iwcs.service.task.wcsSimulator;
 
+import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.task.Imitatetest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.task.ImitateTestMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,8 @@ public class RollerEmptyTaskCreateWorker extends BaseAutoTestWorker {
     private final Logger logger = LoggerFactory.getLogger(RollerEmptyTaskCreateWorker.class);
     @Autowired
     BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    ImitateTestMapper imitateTestMapper;
 
 
     /**
@@ -36,10 +41,18 @@ public class RollerEmptyTaskCreateWorker extends BaseAutoTestWorker {
         if (endNum == startNum) {
             endNum ++;
         }
+        String startpoint=startBerth.getPointAlias();
         BaseMapBerth endBerth = baseMapBerths.get(endNum);
+        String Endpoint =endBerth.getPointAlias();
         //随机生成回收空框数量
         int emptyNum = random.nextInt(2) + 1;
-
+        String  taskcode= CodeBuilder.codeBuilder("M");
+        Imitatetest imitateTest= new Imitatetest();
+        imitateTest.setTaskcode(taskcode);
+        imitateTest.setEmptyboxpoint(startpoint);
+        imitateTest.setRecyclingpoint(Endpoint);
+        imitateTest.setEmptyboxnumber(emptyNum);
+        imitateTestMapper.insertSelective(imitateTest);
 
     }
 }
