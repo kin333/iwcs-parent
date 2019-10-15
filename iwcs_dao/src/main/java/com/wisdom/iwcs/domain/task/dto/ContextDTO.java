@@ -2,9 +2,6 @@ package com.wisdom.iwcs.domain.task.dto;
 
 import com.wisdom.base.annotation.ColumnName;
 import lombok.Data;
-import org.springframework.stereotype.Component;
-
-import javax.persistence.Column;
 
 /**
  * 美国浪潮使用的,
@@ -181,4 +178,9 @@ public class ContextDTO {
      */
     @ColumnName("recyleWb")
     private String recyleWb;
+    /**
+     * 超越小车是否离开
+     */
+    @ColumnName("leaveWb")
+    private String leaveWb;
 }

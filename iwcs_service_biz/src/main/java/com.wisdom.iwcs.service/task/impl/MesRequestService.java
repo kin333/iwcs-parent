@@ -457,12 +457,12 @@ public class MesRequestService {
                 break;
             case LEAVE_GOOD_EMPTY:
                 contextDTO.setChaLeaveDownEmpty(true);
-                    break;
+                break;
             case LEAVE_UP_GOOD_EMPTY:
                 contextDTO.setChaLeaveUpEmpty(true);
                 break;
-                default:
-                    throw new MesBusinessException(reqCode, "点位标识(taskSta)找不到对应的标记字符:" + supllyUnload.getTaskSta());
+            default:
+                throw new MesBusinessException(reqCode, "点位标识(taskSta)找不到对应的标记字符:" + supllyUnload.getTaskSta());
         }
 
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
@@ -470,6 +470,12 @@ public class MesRequestService {
         return new MesResult(reqCode);
     }
 
+    /**
+     * 滚筒是否滚动
+     * @param startSupllyAndRecyle
+     * @param reqCode
+     * @return
+     */
     public MesResult startSupllyAndRecyles(StartSupllyAndRecyles startSupllyAndRecyle, String reqCode) {
 
         // 校验

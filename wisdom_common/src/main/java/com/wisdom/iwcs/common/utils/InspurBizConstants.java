@@ -312,4 +312,22 @@ public class InspurBizConstants {
          */
         public final static String AGV_RECEIVE = "receive";
     }
+
+    /**
+     * 超越 接供料
+     */
+    public static final class SupllyNodeType {
+        /**
+         * 接料
+         */
+        public final static String RECEIVE_TYPE = "1";
+        /**
+         * 供料
+         */
+        public final static String SEND_TYPE = "2";
+        /**
+         * 回收
+         */
+        public final static String RECOVERY_TYPE = "3";
+    }
 }
