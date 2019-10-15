@@ -301,6 +301,10 @@ public class HikCallbackIwcsService {
             if (baseMapBerth == null) {
                 throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
             }
+            if (!hikCallBackAgvMove.getPodCode().equals(baseMapBerth.getPodCode())) {
+                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "子任务货架号不匹配,清空货架失败,目标点货架为:"
+                        + baseMapBerth.getPodCode() + " 移动货架为:" + hikCallBackAgvMove.getPodCode());
+            }
             logger.info("子任务{}开始清空地码{}的货架编号", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getWbCode());
             BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
             tmpBaseMapBerth.setId(baseMapBerth.getId());
