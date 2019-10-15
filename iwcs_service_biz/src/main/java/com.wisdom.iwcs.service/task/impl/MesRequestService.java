@@ -157,6 +157,9 @@ public class MesRequestService {
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(taskContext.getContext(), ContextDTO.class);
         //校验下箱数量
         if (supplyUnLoadNum != null) {
+            if (contextDTO.getSupplyUnLoadWbFirst() == null) {
+                throw new MesBusinessException(reqCode, "未通知第一下料点");
+            }
             if (contextDTO.getSupplyUnLoadWbFirst().equals(startSupllyAndRecyle.getSupplyLoadWb())) {
                 //第一下料点
                 if (!supplyUnLoadNum.equals(contextDTO.getSupplyUnLoadWbFirstCount())) {

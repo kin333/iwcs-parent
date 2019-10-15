@@ -61,7 +61,7 @@ public class NodeActionThreadService extends ConsumerThread {
                             String resultBody = "";
 
                             //发送信息
-                            resultBody = NetWorkUtil.transferContinueTask(subTaskAction.getContent(), subTaskAction.getUrl());
+                            resultBody = NetWorkUtil.transferContinueTaskUTF8(subTaskAction.getContent(), subTaskAction.getUrl());
                             JSONObject obj = new JSONObject(resultBody);
 
                             //处理返回结果
@@ -105,6 +105,7 @@ public class NodeActionThreadService extends ConsumerThread {
                             }
                         }
                     }
+//                    tmpTaskAction.setActionStatus(SEND_SUCCESS);
                     subTaskActionMapper.updateByPrimaryKeySelective(tmpTaskAction);
                 });
     }
