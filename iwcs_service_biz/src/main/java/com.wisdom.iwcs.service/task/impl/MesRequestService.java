@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -10,6 +11,7 @@ import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.upstream.mes.*;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.*;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
@@ -23,6 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
@@ -483,6 +488,19 @@ public class MesRequestService {
 
         if (StringUtils.isEmpty(startSupllyAndRecyle.getCurrentWb())) {
             throw new MesBusinessException(reqCode, "供料点必填");
+        }
+
+        // 如果同时回收空料箱 更新站点集合
+        if (SEND_TYPE.equals(startSupllyAndRecyle.getNodeType()) && StringUtils.isNotEmpty(startSupllyAndRecyle.getRecyleWb())) {
+
+            MainTask mainTask = mainTaskMapper.selectByMainTaskNum(startSupllyAndRecyle.getTaskCode());
+            String staticViaPaths = mainTask.getStaticViaPaths();
+            List<String> startPoint = JSONArray.parseArray(staticViaPaths, String.class);
+            String endPoint = startSupllyAndRecyle.getCurrentWb();
+            String jsonString = JSONArray.toJSONString(Arrays.asList(startPoint.get(1),endPoint));
+            mainTask.setStaticViaPaths(jsonString);
+
+            mainTaskMapper.updateByPrimaryKey(mainTask);
         }
 
         TaskContext taskContext = taskContextMapper.selectByMainTaskNum(startSupllyAndRecyle.getTaskCode());
