@@ -918,6 +918,54 @@ public class TaskCreateService implements ITaskCreateService {
     }
 
     /**
+     * 超越 创建自动产线供料、回收任务时独有的创建动作
+     * @param createTaskRequest
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public MesResult supplyAndRecycleTask(CreateTaskRequest createTaskRequest, String mainTaskType, String reqCode) {
+        String taskCode = createTaskRequest.getTaskCode();
+        logger.info("超越自动产线供料、回收任务{}开始创建任务", taskCode);
+        //参数校验
+        if (StringUtils.isBlank(createTaskRequest.getSupplyLoadWb())) {
+            throw new MesBusinessException(reqCode, "供料点点位不能为空");
+        }
+        if (StringUtils.isBlank(createTaskRequest.getSupplyUnLoadWb())) {
+            throw new MesBusinessException(reqCode, "接料点点位不能为空");
+        }
+
+        //将点位信息转换为berCode
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSupplyLoadWb());
+        Preconditions.checkMesBusinessError(baseMapBerth == null,
+                createTaskRequest.getSupplyLoadWb() + "找不到供料点别名对应的地图编码",reqCode);
+        createTaskRequest.setSupplyLoadWb(baseMapBerth.getBerCode());
+
+        BaseMapBerth baseMapBerth2 = baseMapBerthMapper.selectByPointAlias(createTaskRequest.getSupplyUnLoadWb());
+        Preconditions.checkMesBusinessError(baseMapBerth2 == null,
+                createTaskRequest.getSupplyUnLoadWb() + "找不到接料点别名对应的地图编码",reqCode);
+        createTaskRequest.setSupplyUnLoadWb(baseMapBerth2.getBerCode());
+
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(createTaskRequest.getSupplyLoadWb(),createTaskRequest.getSupplyUnLoadWb()));
+        createTaskRequest.setStaticViaPaths(jsonString);
+        //公用的任务创建流程
+        rollerTaskCreate(createTaskRequest, mainTaskType, reqCode);
+        //生成context列的数据信息
+        ContextDTO contextDTO = new ContextDTO();
+        contextDTO.setSupplyLoadWb(createTaskRequest.getSupplyLoadWb());
+        contextDTO.setSupplyUnLoadWbFirst(createTaskRequest.getSupplyUnLoadWb());
+        String contextJson = TaskContextUtils.objectToJson(contextDTO);
+        //更新task_context表
+        TaskContext taskContext = new TaskContext();
+        taskContext.setMainTaskNum(taskCode);
+        taskContext.setContext(contextJson);
+        taskContextMapper.updateByMainTaskNum(taskContext);
+
+        logger.info("自动产线供料、回收任务{}创建任务结束", taskCode);
+        return new MesResult();
+    }
+
+    /**
      * 超越点到点搬运 创建主任务接口 根据任务类型确定不同的任务
      * @param createTaskRequest
      * @param reqCode

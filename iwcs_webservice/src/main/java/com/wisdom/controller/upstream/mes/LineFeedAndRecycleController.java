@@ -1,9 +1,6 @@
 package com.wisdom.controller.upstream.mes;
 
 import com.wisdom.base.annotation.SystemInterfaceLog;
-import com.wisdom.iwcs.common.utils.PaginationUtil;
-import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
-import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.upstream.mes.*;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ReportEmptyContainerNumber;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.StartSupllyAndRecyles;
@@ -21,7 +18,6 @@ import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.*;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.*;
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_IWCS;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.SUPPLYANDRECYCLE;
 
@@ -47,6 +43,19 @@ public class LineFeedAndRecycleController {
         List<CreateTaskRequest> data = mesBaseRequest.getData();
         for (CreateTaskRequest createTaskRequest : data) {
             taskCreateService.supplyAndRecycle(createTaskRequest, SUPPLYANDRECYCLE, mesBaseRequest.getReqcode());
+        }
+        return new MesResult(mesBaseRequest.getReqcode());
+    }
+
+    /**
+     * 超越 创建自动产线供料、回收任务
+     */
+    @PostMapping("/supplyAndRecyleCreate")
+    @SystemInterfaceLog(methodCode = TASK_CREATE, methodName = MOVE_TASK_CREAT, methodThansfer = SRC_MES)
+    public MesResult createTask(@RequestBody MesBaseRequest<List<CreateTaskRequest>> mesBaseRequest) {
+        List<CreateTaskRequest> data = mesBaseRequest.getData();
+        for (CreateTaskRequest createTaskRequest : data) {
+            taskCreateService.supplyAndRecycleTask(createTaskRequest, SUPPLYANDRECYCLE, mesBaseRequest.getReqcode());
         }
         return new MesResult(mesBaseRequest.getReqcode());
     }

@@ -44,6 +44,10 @@ public class CreateTaskRequest {
      */
     private String supplyLoadWb;
     /**
+     * 接料点 必填项
+     */
+    private String supplyUnLoadWb;
+    /**
      * 接料数量，选填项
      */
     private Integer supplyLoadNum;
