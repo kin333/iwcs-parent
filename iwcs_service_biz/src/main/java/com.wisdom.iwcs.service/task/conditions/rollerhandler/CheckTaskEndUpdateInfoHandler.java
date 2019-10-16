@@ -43,12 +43,13 @@ public class CheckTaskEndUpdateInfoHandler implements IConditionHandler {
             contextDTO.setChaLeaveUpGood(false);
             contextDTO.setChaLeaveDownEmpty(false);
             contextDTO.setChaLeaveGood(false);
+            contextDTO.setEmptyRecyleNum(null);
 
             String contextJson = TaskContextUtils.objectToJson(contextDTO);
             //更新task_context表
             TaskContext taskContextDTO = new TaskContext();
-            taskContext.setMainTaskNum(mainTaskCode);
-            taskContext.setContext(contextJson);
+            taskContextDTO.setMainTaskNum(mainTaskCode);
+            taskContextDTO.setContext(contextJson);
             taskContextMapper.updateByMainTaskNum(taskContextDTO);
             return true;
         }

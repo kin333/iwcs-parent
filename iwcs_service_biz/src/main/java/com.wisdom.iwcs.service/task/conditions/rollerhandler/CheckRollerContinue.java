@@ -53,7 +53,7 @@ public class CheckRollerContinue implements IConditionHandler {
                     subTaskDTO.setJsonData("0");
                 }
             } else if (RECOVERY_TYPE.equals(contextDTO.getNodeType())) {
-                    subTaskDTO.setJsonData(String.valueOf(contextDTO.getEmptyRecyleNum()));
+                    subTaskDTO.setJsonData("1");
             } else if (RECEIVE_TYPE.equals(contextDTO.getNodeType())) {
                 subTaskDTO.setJsonData("");
             }
