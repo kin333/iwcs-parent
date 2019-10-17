@@ -318,11 +318,11 @@ public class InspurBizConstants {
      */
     public static final class SupllyNodeType {
         /**
-         * 接料
+         * 供料
          */
         public final static String RECEIVE_TYPE = "1";
         /**
-         * 供料
+         * 下料
          */
         public final static String SEND_TYPE = "2";
         /**

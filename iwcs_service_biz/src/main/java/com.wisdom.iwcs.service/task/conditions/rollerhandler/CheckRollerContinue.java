@@ -46,14 +46,17 @@ public class CheckRollerContinue implements IConditionHandler {
             logger.info("任务单{}前置条件检查成功", subTaskCondition.getSubTaskNum());
             // 判断上料还是下料
             subTaskDTO.setSubTaskNum(subTask.getSubTaskNum());
+            // 下料
             if (SEND_TYPE.equals(contextDTO.getNodeType())) {
                 if (StringUtils.isNotEmpty(contextDTO.getRecyleWb())) {
                     subTaskDTO.setJsonData("1");
                 } else {
                     subTaskDTO.setJsonData("0");
                 }
+                // 回收点
             } else if (RECOVERY_TYPE.equals(contextDTO.getNodeType())) {
                     subTaskDTO.setJsonData("1");
+                    // 接料
             } else if (RECEIVE_TYPE.equals(contextDTO.getNodeType())) {
                 subTaskDTO.setJsonData("");
             }
