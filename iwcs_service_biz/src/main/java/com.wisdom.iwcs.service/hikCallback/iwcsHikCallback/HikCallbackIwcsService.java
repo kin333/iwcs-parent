@@ -1,6 +1,5 @@
 package com.wisdom.iwcs.service.hikCallback.iwcsHikCallback;
 
-import com.alibaba.fastjson.JSON;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
@@ -15,13 +14,8 @@ import com.wisdom.iwcs.domain.hikSync.HikReachCheckArea;
 import com.wisdom.iwcs.domain.hikSync.HikSyncResponse;
 import com.wisdom.iwcs.domain.log.ResPosEvt;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
-import com.wisdom.iwcs.domain.mes.ArriveDestWbInfoDto;
-import com.wisdom.iwcs.domain.mes.ArriveDestWbWaitPortInfoDTO;
-import com.wisdom.iwcs.domain.mes.ArriveSrcWbInfoDto;
-import com.wisdom.iwcs.domain.mes.LeaveSrcWbInfoDto;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
-import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
@@ -55,7 +49,6 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvA
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.HikCallbackMethod.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.CREATE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.createNode.*;
@@ -112,7 +105,9 @@ public class HikCallbackIwcsService {
      */
     private SubTask taskStartBaseChange(HikCallBackAgvMove hikCallBackAgvMove) {
         logger.debug("任务{}的搬运任务开始", hikCallBackAgvMove.getTaskCode());
+        SubTask subTask1 = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         SubTask subTask  = new SubTask();
+        subTask.setSubTaskNum(subTask1.getSubTaskNum());
         subTask.setRobotCode(hikCallBackAgvMove.getRobotCode());
         subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.START);
         subTask.setWorkerTaskCode(hikCallBackAgvMove.getTaskCode());

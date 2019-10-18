@@ -7,13 +7,14 @@ import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
 
 @Component
 public class CheckRollerContinue implements IConditionHandler {
@@ -31,7 +32,7 @@ public class CheckRollerContinue implements IConditionHandler {
      */
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
-        logger.info("任务单{}CheckWorkStatusHandler后置条件检查开始", subTaskCondition.getSubTaskNum());
+        logger.info("任务单{}CheckRollerContinue前置条件检查开始", subTaskCondition.getSubTaskNum());
 
         SubTask subTaskDTO = new SubTask();
 
@@ -43,7 +44,7 @@ public class CheckRollerContinue implements IConditionHandler {
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
         if (!StringUtils.isEmpty(contextDTO.getNodeType())) {
-            logger.info("任务单{}前置条件检查成功", subTaskCondition.getSubTaskNum());
+            logger.info("任务单{}CheckRollerContinue前置条件检查成功", subTaskCondition.getSubTaskNum());
             // 判断上料还是下料
             subTaskDTO.setSubTaskNum(subTask.getSubTaskNum());
             // 下料

@@ -30,7 +30,7 @@ public class CheckRollerLeave implements IConditionHandler {
      */
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
-        logger.info("任务单{}CheckWorkStatusHandler后置条件检查开始", subTaskCondition.getSubTaskNum());
+        logger.info("任务单{}CheckRollerLeave前置条件检查开始", subTaskCondition.getSubTaskNum());
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskCondition.getSubTaskNum());
         String mainTaskCode = subTask.getMainTaskNum();
 
@@ -40,7 +40,7 @@ public class CheckRollerLeave implements IConditionHandler {
 
         if (contextDTO.getChaLeaveDownEmpty() || contextDTO.getChaLeaveGood() || contextDTO.getChaLeaveUpEmpty()
                 || contextDTO.getChaLeaveUpGood()) {
-            logger.info("任务单{}前置条件检查成功", subTaskCondition.getSubTaskNum());
+            logger.info("任务单{}CheckRollerLeave前置条件检查成功", subTaskCondition.getSubTaskNum());
             return true;
         }
 
