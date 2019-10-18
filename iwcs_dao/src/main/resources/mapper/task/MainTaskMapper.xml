@@ -111,6 +111,16 @@
   <select id="selectEndMainTaskCount" resultType="java.lang.Integer">
         select count(*) from ts_main_task where task_status = '9' or task_status = 9
   </select>
+
+    <select id="selectStartUSpTopTaskCount" resultType="java.lang.Integer">
+        select  IFNULL(count(*),0) from ts_main_task where (task_status = '0' or task_status = 0) AND (main_task_type_code='USpTop')
+    </select>
+    <select id="selectStartSupplyAndRecycleTaskCount" resultType="java.lang.Integer">
+       select IFNULL(count(*),0)from ts_main_task where (task_status = '0' or task_status = 0) AND (main_task_type_code='supplyAndRecycle')
+    </select>
+    <select id="selectStartEmptyRecycleTask" resultType="java.lang.Integer">
+        select IFNULL(count(*),0) from ts_main_task where (task_status = '0' or task_status = 0) AND (main_task_type_code='emptyRecycleTask')
+</select>
   <select id="getMainViewData" resultType="com.wisdom.iwcs.domain.system.ViewData">
       select COUNT(DISTINCT id) AS dateList,
       FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s') as hours

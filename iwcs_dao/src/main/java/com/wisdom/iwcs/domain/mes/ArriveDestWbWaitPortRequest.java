@@ -18,10 +18,21 @@ public class ArriveDestWbWaitPortRequest {
      * AGV编号
      */
     private String agvCode;
+
+    public String getDoorAction() {
+        return doorAction;
+    }
+
+    public void setDoorAction(String doorAction) {
+        this.doorAction = doorAction;
+    }
+
     /**
      * 到达时间
      */
+
     private String arriveTime;
+    private  String doorAction;
 
     public String getTaskCode() {
         return taskCode;
@@ -33,6 +44,17 @@ public class ArriveDestWbWaitPortRequest {
 
     public String getWaitPort() {
         return waitPort;
+    }
+
+    @Override
+    public String toString() {
+        return "ArriveDestWbWaitPortRequest{" +
+                "taskCode='" + taskCode + '\'' +
+                ", waitPort='" + waitPort + '\'' +
+                ", agvCode='" + agvCode + '\'' +
+                ", arriveTime='" + arriveTime + '\'' +
+                ", doorAction='" + doorAction + '\'' +
+                '}';
     }
 
     public void setWaitPort(String waitPort) {

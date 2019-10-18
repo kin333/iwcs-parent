@@ -63,6 +63,12 @@ public class AspectInterfaceLogConfiguration {
         long startTime = System.currentTimeMillis();
         // 接收到请求，记录请求内容
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if(attributes==null)
+        {
+
+            logger.warn("如果拿不到请求，就不执行记录日志");
+            return  pjp.proceed();
+        }
         HttpServletRequest request = attributes.getRequest();
         //时间转换
         SimpleDateFormat format0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -91,6 +97,7 @@ public class AspectInterfaceLogConfiguration {
         if (MesResult.NG.equals(mesResult.getCode())) {
             return mesResult;
         }
+
 
         Object ob = new Object();
         try {

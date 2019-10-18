@@ -68,4 +68,8 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
      * 时间段执行中的
      */
     List<ViewData> getMainStartViewData();
+    Integer selectStartUSpTopTaskCount();
+    Integer selectStartSupplyAndRecycleTaskCount();
+    Integer selectStartEmptyRecycleTask();
+
 }

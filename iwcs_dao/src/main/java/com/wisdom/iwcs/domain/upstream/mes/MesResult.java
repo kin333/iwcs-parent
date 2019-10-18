@@ -43,9 +43,27 @@ public class MesResult {
         this.reqCode = reqCode;
     }
 
+    public static String getOK() {
+        return OK;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
     public MesResult(String code, String message) {
         this.code = code;
         this.message = message;
+
+    }
+
+    @Override
+    public String toString() {
+        return "MesResult{" +
+                "code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                ", reqCode='" + reqCode + '\'' +
+                '}';
     }
 
     public MesResult(String code, String message, String reqCode) {
