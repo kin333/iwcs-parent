@@ -604,18 +604,10 @@ public class HikCallbackIwcsService {
      * 滚筒AGV结束滚动
      */
     private void rollEnd(HikCallBackAgvMove hikCallBackAgvMove) {
-        SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
-        List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
-        subTask = subTaskList.get(subTaskList.size() - 1);
-        if (ROLLER_CONTINUE.equals(subTask.getSubTaskTyp())) {
-            hikCallBackAgvMove.setTaskCode(subTask.getSubTaskNum());
-            SubTask tmpSubTask = taskFinishedBaseChange(hikCallBackAgvMove);
-            if (tmpSubTask != null) {
-                //节点动作
-                nodeAction(subTask, ROLLER_END);
-            }
-        } else {
-            logger.error("主任务{}在滚筒结束滚动回调时发生错误: 找不多对应的滚动任务", hikCallBackAgvMove.getTaskCode());
+        SubTask subTask = taskFinishedBaseChange(hikCallBackAgvMove);
+        if (subTask != null) {
+            //节点动作
+            nodeAction(subTask, ROLLER_END);
         }
 
     }
