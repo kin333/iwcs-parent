@@ -47,4 +47,8 @@
     </if>
     order by last_modified_time desc
   </select>
+  <select id="selectByTaskCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from imitatetest
+     where taskcode = #{taskCode}
+  </select>
 </mapper>

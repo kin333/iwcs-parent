@@ -2,6 +2,7 @@ package com.wisdom.iwcs.domain.upstream.mes;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 与MES系统交互的返回类
@@ -9,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class MesResult {
     /**
      * 成功标识

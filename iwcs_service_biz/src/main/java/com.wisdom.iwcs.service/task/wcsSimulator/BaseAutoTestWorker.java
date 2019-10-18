@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 基础的创建自动化任务的模板类,所有自动化任务可以继承本类,run方法不能重写
+ * mes自动化测试已使用
  * @author han
  */
 public abstract class BaseAutoTestWorker implements Runnable{

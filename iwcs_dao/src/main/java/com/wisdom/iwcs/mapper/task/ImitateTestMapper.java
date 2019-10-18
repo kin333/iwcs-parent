@@ -19,4 +19,6 @@ public interface ImitateTestMapper extends  MyMapperAndIds<Imitatetest> {
      * @return list
      */
     List<Imitatetest> selectPage(Map map);
+
+    Imitatetest selectByTaskCode(String taskCode);
 }
