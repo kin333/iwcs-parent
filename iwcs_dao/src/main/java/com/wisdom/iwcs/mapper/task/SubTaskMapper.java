@@ -70,6 +70,11 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return
      */
     int updateRobotCodeByBerCode(SubTask subTask);
+    /**
+     * 根据子任务编号更新机器人编号,和状态
+     * @return
+     */
+    int updateTimeBySubTaskNum(SubTask subTask);
 
     /**
      * 通过执行任务号查询子任务

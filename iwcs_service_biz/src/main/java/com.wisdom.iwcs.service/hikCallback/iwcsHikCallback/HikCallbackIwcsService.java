@@ -124,7 +124,7 @@ public class HikCallbackIwcsService {
             subTask.setTaskStartTime(new Date());
         }
         //更新子任务的执行AGV和实际任务状态以及实际任务开始时间
-        subTaskMapper.updateRobotCodeByBerCode(subTask);
+        subTaskMapper.updateTimeBySubTaskNum(subTask);
 
         subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         //向消息队列发送消息
@@ -132,9 +132,9 @@ public class HikCallbackIwcsService {
         if (subTask != null && subTask.getStartBercode() != null && !subTask.getStartBercode().equals(hikCallBackAgvMove.getWbCode())) {
             message += " (任务起始点异常, 子任务起始点为:{" + subTask.getStartBercode() + "},实际起始点为:{" + hikCallBackAgvMove.getWbCode() + "})";
         }
-        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_START,message));
 
         if (subTask != null) {
+            RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.CALLBACK_START,message));
             //节点动作
             nodeAction(subTask, PTOP_START);
         }
@@ -165,7 +165,7 @@ public class HikCallbackIwcsService {
                 logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
                 subTask.setTaskLeaveTime(new Date());
             }
-            subTaskMapper.updateRobotCodeByBerCode(subTask);
+            subTaskMapper.updateTimeBySubTaskNum(subTask);
             nodeAction(subTask, PTOP_LEAVE);
         } else {
             //subTask == null时说明没有生成任务单,这里认为此次请求为人工调用
@@ -197,14 +197,14 @@ public class HikCallbackIwcsService {
                 logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
                 subTask.setTaskEndTime(new Date());
             }
-            subTaskMapper.updateRobotCodeByBerCode(subTask);
+            subTaskMapper.updateTimeBySubTaskNum(subTask);
             //节点动作
             nodeAction(subTask, PTOP_END);
-        }
 
-        //向消息队列发送消息
-        String message = "子任务回调:子任务已结束";
-        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_END,message));
+            //向消息队列发送消息
+            String message = "子任务回调:子任务已结束";
+            RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.CALLBACK_END,message));
+        }
         return subTask;
     }
 
@@ -772,41 +772,12 @@ public class HikCallbackIwcsService {
         SubTask subTask = subTaskMapper.selectByTaskCode(taskCode);
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
 
-//        SubTask tmpSubTask = new SubTask();
-//        tmpSubTask.setWorkerTaskCode(taskCode);
-//        tmpSubTask.setWorkTaskStatus(status);
-//        subTaskMapper.updateRobotCodeByBerCode(tmpSubTask);
-
         MainTask tmpMainTask = new MainTask();
         tmpMainTask.setId(mainTask.getId());
         tmpMainTask.setBizProcess(status);
         mainTaskMapper.updateByPrimaryKeySelective(tmpMainTask);
     }
 
-    /**
-     * 通知MES 发送消息统一接口
-     */
-    public void sendMsgNotifyMES(Object msg, String method, String taskCode){
-        String address = addressMapper.selectAddressByCode(SRC_MES);
-        String url = address + applicationProperties.getMesParam().getAgvHandlingTaskUrl();
-
-        MesBaseRequest mesBaseRequest = new MesBaseRequest();
-        mesBaseRequest.setReqcode(templateRelatedServer.getRequestInfo().getReqCode());
-        mesBaseRequest.setData(msg);
-
-        BaseMsgSend baseMsgSend = new BaseMsgSend();
-        baseMsgSend.setCreatedTime(new Date());
-        baseMsgSend.setMethod(method);
-        baseMsgSend.setMsgFrom("192.168.102.95");
-        baseMsgSend.setMsgType(SRC_MES);
-        baseMsgSend.setRcptStatus("0");
-        baseMsgSend.setSendStatus("0");
-        baseMsgSend.setSendMsg(JSON.toJSONString(mesBaseRequest));
-        baseMsgSend.setTaskCode(taskCode);
-        String allUrl = url+"/" + method;
-        baseMsgSend.setUrl(allUrl);
-        baseMsgSendMapper.insertSelective(baseMsgSend);
-    }
 
     /**
      * 统一更新货架和地码信息
@@ -845,36 +816,6 @@ public class HikCallbackIwcsService {
         }
         logger.info("子任务{}在更新货架的地码编号{}时成功 ", hikCallBackAgvMove.getTaskCode(),
                 hikCallBackAgvMove.getWbCode());
-    }
-
-    /**
-     * 通知mes开门
-     * @param
-     * @param
-     * @return
-     */
-    public boolean noticeMesOpenDoor(String mainTaskNum, String pointAlias, String robotCode) {
-        ArriveDestWbWaitPortInfoDTO arriveDestWbWaitPortInfoDTO = new ArriveDestWbWaitPortInfoDTO();
-        arriveDestWbWaitPortInfoDTO.setAgvCode(robotCode);
-        arriveDestWbWaitPortInfoDTO.setTaskCode(mainTaskNum);
-        arriveDestWbWaitPortInfoDTO.setWaitPort(pointAlias);
-        arriveDestWbWaitPortInfoDTO.setArriveTime(new Date());
-
-        MesBaseRequest mesBaseRequest = new MesBaseRequest();
-        mesBaseRequest.setReqcode(templateRelatedServer.getRequestInfo().getReqCode());
-        mesBaseRequest.setData(arriveDestWbWaitPortInfoDTO);
-        String address = addressMapper.selectAddressByCode(SRC_MES);
-        String url = address + applicationProperties.getMesParam().getArriveDestWbWaitPortUrl();
-
-
-        try {
-//            String resultBody = NetWorkUtil.transferContinueTask(JSON.toJSONString(mesBaseRequest), url);
-//            iCommonService.handleMesResponse(resultBody);
-        } catch (BusinessException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
 
