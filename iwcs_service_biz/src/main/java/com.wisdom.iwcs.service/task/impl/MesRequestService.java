@@ -496,7 +496,13 @@ public class MesRequestService {
             MainTask mainTask = mainTaskMapper.selectByMainTaskNum(startSupllyAndRecyle.getTaskCode());
             String staticViaPaths = mainTask.getStaticViaPaths();
             List<String> startPoint = JSONArray.parseArray(staticViaPaths, String.class);
-            String endPoint = startSupllyAndRecyle.getCurrentWb();
+
+            //将点位信息转换为berCode
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(startSupllyAndRecyle.getRecyleWb());
+            Preconditions.checkMesBusinessError(baseMapBerth == null,
+                    startSupllyAndRecyle.getCurrentWb() + "找不到别名对应的地图编码",reqCode);
+
+            String endPoint = baseMapBerth.getBerCode();
             String jsonString = JSONArray.toJSONString(Arrays.asList(startPoint.get(1),endPoint));
             mainTask.setStaticViaPaths(jsonString);
 
