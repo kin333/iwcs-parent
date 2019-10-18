@@ -599,7 +599,11 @@ public class HikCallbackIwcsService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        taskStartBaseChange(hikCallBackAgvMove);
+        SubTask subTask = taskStartBaseChange(hikCallBackAgvMove);
+        if (subTask != null) {
+            //节点动作
+            nodeAction(subTask, ROLLER_START);
+        }
     }
     /**
      * 滚筒AGV结束滚动
@@ -610,7 +614,13 @@ public class HikCallbackIwcsService {
         subTask = subTaskList.get(subTaskList.size() - 1);
         if (ROLLER_CONTINUE.equals(subTask.getSubTaskTyp())) {
             hikCallBackAgvMove.setTaskCode(subTask.getSubTaskNum());
-            taskFinishedBaseChange(hikCallBackAgvMove);
+            SubTask tmpSubTask = taskFinishedBaseChange(hikCallBackAgvMove);
+            if (tmpSubTask != null) {
+                //节点动作
+                nodeAction(subTask, ROLLER_END);
+            }
+        } else {
+            logger.error("主任务{}在滚筒结束滚动回调时发生错误: 找不多对应的滚动任务", hikCallBackAgvMove.getTaskCode());
         }
 
     }
