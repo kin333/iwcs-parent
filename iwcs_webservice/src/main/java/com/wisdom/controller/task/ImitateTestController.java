@@ -26,28 +26,6 @@ import com.wisdom.iwcs.common.utils.Result;
 public class ImitateTestController {
     @Autowired
     ImitateTestService ImitateTestService;
-    @Autowired
-    ImitateTestMapStruct ImitateTestMapStruct;
-
-    @Autowired
-    NomalTaskCreateWorker nomalTaskCreateWorker;
-
-    @Autowired
-    RollerTaskCreateWorker rollerTaskCreateWorker;
-
-    @Autowired
-    RollerEmptyTaskCreateWorker rollerEmptyTaskCreateWorker;
-    @RequestMapping("/test")
-    String  test1()
-    { ;
-        Thread thread1=new Thread(nomalTaskCreateWorker);
-        Thread thread2=new Thread(rollerTaskCreateWorker);
-        Thread thread3=new Thread(rollerEmptyTaskCreateWorker);
-        thread1.start();
-        thread2.start();
-        thread3.start();
-         return "ok";
-    }
 
     /**
      * 根据主键ID删除
