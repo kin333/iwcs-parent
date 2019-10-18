@@ -4,9 +4,6 @@ import java.util.List;
 
 import com.wisdom.iwcs.domain.task.dto.ImitateTestDTO;
 import com.wisdom.iwcs.mapstruct.task.ImitateTestMapStruct;
-import com.wisdom.iwcs.service.task.wcsSimulator.NomalTaskCreateWorker;
-import com.wisdom.iwcs.service.task.wcsSimulator.RollerEmptyTaskCreateWorker;
-import com.wisdom.iwcs.service.task.wcsSimulator.RollerTaskCreateWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
