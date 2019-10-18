@@ -183,4 +183,14 @@ public class ContextDTO {
      */
     @ColumnName("leaveWb")
     private String leaveWb;
+    /**
+     * 超越 上报已下料数量及已接收空框数量 接料点
+     */
+    @ColumnName("supplyUnLoadWb")
+    private String supplyUnLoadWb;
+    /**
+     * 超越 上报已下料数量及已接收空框数量 下料数量
+     */
+    @ColumnName("supplyUnLoadNum")
+    private String supplyUnLoadNum;
 }
