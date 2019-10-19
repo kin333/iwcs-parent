@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -39,6 +40,59 @@ public class SimulationMesController {
     SubTaskMapper subTaskMapper;
     @Autowired
     EmptyRecyleTaskController recycleTaskController;
+
+
+    /**
+     * 总的Mes模拟调度程序
+     * @param mesRequestInfo
+     * @param model
+     * @param method
+     * @return
+     */
+    @RequestMapping(value = "/N2/http/interface.ms")
+    public MesResultInfo test(@RequestBody MesRequestInfo mesRequestInfo,
+                              @RequestParam("model") String model, @RequestParam("method") String method) {
+        if ("ALAGV".equals(model)) {
+            switch (method) {
+                case "ALAGV_AGV_MES_SUPPLY_NUM":
+                    MesReceiveUpRequest mesReceiveUpRequest = new MesReceiveUpRequest();
+                    mesReceiveUpRequest.setTaskCode(mesRequestInfo.getTaskCode());
+                    mesReceiveUpRequest.setSupplyLoadWb(mesRequestInfo.getSupplyLoadWb());
+                    mesReceiveUpRequest.setSupplyLoadNum(mesRequestInfo.getSupplyLoadNum());
+                    return receiveUpNum(mesReceiveUpRequest);
+
+                case "ALAGV_AGV_MES_RECIEVEED_RECYLE":
+                    MesReceiveDownRequest mesReceiveDownRequest = new MesReceiveDownRequest();
+                    mesReceiveDownRequest.setTaskCode(mesRequestInfo.getTaskCode());
+                    mesReceiveDownRequest.setSupplyUnLoadWb(mesRequestInfo.getSupplyUnLoadWb());
+                    mesReceiveDownRequest.setSupplyUnLoadNum(mesRequestInfo.getSupplyUnLoadNum());
+                    mesReceiveDownRequest.setEmptyRecyleNum(mesRequestInfo.getEmptyRecyleNum());
+                    return receiveDownNum(mesReceiveDownRequest);
+
+                case "ALAGV_AGV_MES_RECYLE_RESULT":
+                    MesReceiveRecycleRequest mesReceiveRecycleRequest = new MesReceiveRecycleRequest();
+                    mesReceiveRecycleRequest.setTaskCode(mesRequestInfo.getTaskCode());
+                    mesReceiveRecycleRequest.setEmptyRecyleWb(mesRequestInfo.getEmptyRecyleWb());
+                    mesReceiveRecycleRequest.setEmptyRecyleNum(mesRequestInfo.getEmptyRecyleNum());
+                    return receiveRecycleNum(mesReceiveRecycleRequest);
+                default:logger.error("mes URL参数异常");
+
+            }
+        } else if ("RECAGV".equals(model)) {
+            switch (method) {
+                case "RECAGV_STATUS_NOTICE":
+                    MesAgvChangeRequest mesAgvChangeRequest = new MesAgvChangeRequest();
+                    mesAgvChangeRequest.setTaskCode(mesRequestInfo.getTaskCode());
+                    mesAgvChangeRequest.setTaskSta(mesRequestInfo.getTaskSta());
+                    return agvRecycleProcessNotify(mesAgvChangeRequest);
+            }
+
+        }
+        System.out.println(model);
+        System.out.println(method);
+        return new MesResultInfo();
+    }
+
 
     /**
      * 模拟Mes 的 AGV节点变更(送料任务)
@@ -302,4 +356,17 @@ class MesReceiveRecycleRequest {
     private String taskCode;
     private String emptyRecyleWb;
     private Integer emptyRecyleNum;
+}
+
+@Getter
+@Setter
+class MesRequestInfo {
+    private String taskCode;
+    private String taskSta;
+    private String supplyLoadWb;
+    private Integer supplyLoadNum;
+    private String emptyRecyleWb;
+    private Integer emptyRecyleNum;
+    private String supplyUnLoadWb;
+    private Integer supplyUnLoadNum;
 }
