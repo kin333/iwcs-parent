@@ -57,15 +57,6 @@ public class MesResult {
 
     }
 
-    @Override
-    public String toString() {
-        return "MesResult{" +
-                "code='" + code + '\'' +
-                ", message='" + message + '\'' +
-                ", reqCode='" + reqCode + '\'' +
-                '}';
-    }
-
     public MesResult(String code, String message, String reqCode) {
         this.code = code;
         this.message = message;

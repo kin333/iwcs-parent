@@ -1,12 +1,12 @@
 package com.wisdom.controller.test;
 
-import com.wisdom.controller.upstream.mes.EmptyRecyleTaskController;
-import com.wisdom.controller.upstream.mes.LineFeedAndRecycleController;
 import com.wisdom.iwcs.domain.task.Imitatetest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.upstream.mes.*;
 import com.wisdom.iwcs.mapper.task.ImitateTestMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.service.task.impl.MesRequestService;
+import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -35,11 +35,11 @@ public class SimulationMesController {
     @Autowired
     ImitateTestMapper imitateTestMapper;
     @Autowired
-    LineFeedAndRecycleController feedController;
-    @Autowired
     SubTaskMapper subTaskMapper;
     @Autowired
-    EmptyRecyleTaskController recycleTaskController;
+    TaskCreateService taskCreateService;
+    @Autowired
+    MesRequestService mesRequestService;
 
 
     /**
@@ -50,7 +50,7 @@ public class SimulationMesController {
      * @return
      */
     @RequestMapping(value = "/N2/http/interface.ms")
-    public MesResultInfo test(@RequestBody MesRequestInfo mesRequestInfo,
+    public MesResult test(@RequestBody MesRequestInfo mesRequestInfo,
                               @RequestParam("model") String model, @RequestParam("method") String method) {
         if ("ALAGV".equals(model)) {
             switch (method) {
@@ -75,6 +75,11 @@ public class SimulationMesController {
                     mesReceiveRecycleRequest.setEmptyRecyleWb(mesRequestInfo.getEmptyRecyleWb());
                     mesReceiveRecycleRequest.setEmptyRecyleNum(mesRequestInfo.getEmptyRecyleNum());
                     return receiveRecycleNum(mesReceiveRecycleRequest);
+                case "STATUS_NOTICE":
+                    MesAgvChangeRequest mesAgvChangeRequest = new MesAgvChangeRequest();
+                    mesAgvChangeRequest.setTaskCode(mesRequestInfo.getTaskCode());
+                    mesAgvChangeRequest.setTaskSta(mesRequestInfo.getTaskSta());
+                    return agvProcessNotify(mesAgvChangeRequest);
                 default:logger.error("mes URL参数异常");
 
             }
@@ -85,12 +90,14 @@ public class SimulationMesController {
                     mesAgvChangeRequest.setTaskCode(mesRequestInfo.getTaskCode());
                     mesAgvChangeRequest.setTaskSta(mesRequestInfo.getTaskSta());
                     return agvRecycleProcessNotify(mesAgvChangeRequest);
+
+                default:break;
             }
 
         }
         System.out.println(model);
         System.out.println(method);
-        return new MesResultInfo();
+        return new MesResult();
     }
 
 
@@ -99,8 +106,8 @@ public class SimulationMesController {
      * @param mesAgvChangeRequest
      * @return
      */
-    @RequestMapping(value = "/api/wisdom/autoProductionLine/supplyAndRecyle/agvProcessNotify")
-    public MesResultInfo agvProcessNotify(@RequestBody MesAgvChangeRequest mesAgvChangeRequest) {
+//    @RequestMapping(value = "/N2/http/interface.ms?model=ALAGV&method=STATUS_NOTICE")
+    public MesResultInfo agvProcessNotify( MesAgvChangeRequest mesAgvChangeRequest) {
         String taskCode = mesAgvChangeRequest.getTaskCode();
         logger.info("任务{}开始请求AGV节点变更", taskCode);
         MesResultInfo mesResultInfo = new MesResultInfo();
@@ -118,10 +125,7 @@ public class SimulationMesController {
                     SupplyLoadNumNotify supplyLoadNumNotify = new SupplyLoadNumNotify();
                     supplyLoadNumNotify.setTaskCode(taskCode);
                     supplyLoadNumNotify.setSupplyLoadNum(imitatetest.getFeedingquantity());
-                    MesBaseRequest<SupplyLoadNumNotify> mesBaseRequest = new MesBaseRequest<>();
-                    mesBaseRequest.setReqcode("");
-                    mesBaseRequest.setData(supplyLoadNumNotify);
-                    MesResult mesResult = feedController.supplyLoadNum(mesBaseRequest);
+                    MesResult mesResult = mesRequestService.supplyLoadNum(supplyLoadNumNotify, "");
                     logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResult.toString());
                     return mesResultInfo;
                 }
@@ -149,11 +153,8 @@ public class SimulationMesController {
                         startSupllyAndRecyle.setEmptyRecyleNum(secondRecyleNum);
                     }
                 }
-                MesBaseRequest<StartSupllyAndRecyle> mesBaseRequest = new MesBaseRequest<>();
-                mesBaseRequest.setData(startSupllyAndRecyle);
-                mesBaseRequest.setReqcode("");
                 //通知AGV上空箱数量
-                feedController.startSupllyAndRecyle(mesBaseRequest);
+                mesRequestService.startSupllyAndRecyle(startSupllyAndRecyle, "");
                 break;
             case "6": break;
             case "7":
@@ -162,10 +163,7 @@ public class SimulationMesController {
                     mesResultInfo.setCode(MesResult.NG);
                     StartRecyle startRecyle = new StartRecyle();
                     startRecyle.setTaskCode(taskCode);
-                    MesBaseRequest<StartRecyle> baseRequest = new MesBaseRequest<>();
-                    baseRequest.setReqcode("");
-                    baseRequest.setData(startRecyle);
-                    MesResult mesResult = feedController.startRecyle(baseRequest);
+                    MesResult mesResult = mesRequestService.startRecyle(startRecyle, "");
                     logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResult.toString());
                     return mesResultInfo;
                 }
@@ -179,8 +177,8 @@ public class SimulationMesController {
     /**
      * 模拟MES接收上料结果
      */
-    @RequestMapping(value = "/N2/http/interface.ms?model=ALAGV&method=ALAGV_AGV_MES_SUPPLY_NUM")
-    public MesResultInfo receiveUpNum(@RequestBody MesReceiveUpRequest mesReceiveUpRequest) {
+//    @RequestMapping(value = "/N2/http/interface.ms?model=ALAGV&method=ALAGV_AGV_MES_SUPPLY_NUM")
+    public MesResult receiveUpNum( MesReceiveUpRequest mesReceiveUpRequest) {
         String taskCode = mesReceiveUpRequest.getTaskCode();
         Imitatetest imitatetest = imitateTestMapper.selectByTaskCode(taskCode);
 
@@ -193,20 +191,17 @@ public class SimulationMesController {
             supplyInfoNotify.setSupplyUnLoadWbSecond(imitatetest.getInskupoint2());
             supplyInfoNotify.setSupplyUnLoadWbSecondCount(imitatetest.getInskupoint2Inskuquantity());
         }
-        MesBaseRequest<SupplyInfoNotify> mesBaseRequest = new MesBaseRequest<>();
-        mesBaseRequest.setReqcode("");
-        mesBaseRequest.setData(supplyInfoNotify);
 
         //通知AGV下料点和下料数量
-        feedController.supplyUnloadWbNotify(mesBaseRequest);
-        return new MesResultInfo();
+        mesRequestService.supplyUnloadWbNotify(supplyInfoNotify, "");
+        return new MesResult();
     }
 
     /**
      * 模拟MES接收下料结果
      */
-    @RequestMapping(value = "/N2/http/interface.ms?model=ALAGV&method=ALAGV_AGV_MES_RECIEVEED_RECYLE")
-    public MesResultInfo receiveDownNum(@RequestBody MesReceiveDownRequest mesReceiveDownRequest) {
+//    @RequestMapping(value = "/N2/http/interface.ms?model=ALAGV&method=ALAGV_AGV_MES_RECIEVEED_RECYLE")
+    public MesResult receiveDownNum( MesReceiveDownRequest mesReceiveDownRequest) {
         String taskCode = mesReceiveDownRequest.getTaskCode();
 
         NotifyAgvLeave notifyAgvLeave = new NotifyAgvLeave();
@@ -218,31 +213,25 @@ public class SimulationMesController {
         } else {
             notifyAgvLeave.setFlag(LEAVE_DOWN_SECOND);
         }
-        MesBaseRequest<NotifyAgvLeave> mesBaseRequest = new MesBaseRequest<>();
-        mesBaseRequest.setReqcode("");
-        mesBaseRequest.setData(notifyAgvLeave);
         //通知AGV可离开机台
-        feedController.checkSuccess(mesBaseRequest);
-        return new MesResultInfo();
+        mesRequestService.checkSuccess(notifyAgvLeave, "");
+        return new MesResult();
     }
 
     /**
      * 模拟MES接收下料结果
      */
-    @RequestMapping(value = "/N2/http/interface.ms?model=ALAGV&method=ALAGV_AGV_MES_RECYLE_RESULT")
-    public MesResultInfo receiveRecycleNum(@RequestBody MesReceiveRecycleRequest mesReceiveRecycleRequest) {
+//    @RequestMapping(value = "/N2/http/interface.ms?model=ALAGV&method=ALAGV_AGV_MES_RECYLE_RESULT")
+    public MesResult receiveRecycleNum( MesReceiveRecycleRequest mesReceiveRecycleRequest) {
         String taskCode = mesReceiveRecycleRequest.getTaskCode();
 
         //获取请求参数
         NotifyAgvLeave notifyAgvLeave = new NotifyAgvLeave();
         notifyAgvLeave.setTaskCode(taskCode);
         notifyAgvLeave.setFlag(LEAVE_DOWN_EMPTY);
-        MesBaseRequest<NotifyAgvLeave> mesBaseRequest = new MesBaseRequest<>();
-        mesBaseRequest.setReqcode("");
-        mesBaseRequest.setData(notifyAgvLeave);
         //通知AGV可离开机台
-        feedController.checkSuccess(mesBaseRequest);
-        return new MesResultInfo();
+        mesRequestService.checkSuccess(notifyAgvLeave, "");
+        return new MesResult();
     }
 
 
@@ -252,11 +241,11 @@ public class SimulationMesController {
      * @param mesAgvChangeRequest
      * @return
      */
-    @RequestMapping(value = "/N2/http/interface.ms?model=RECAGV&method=RECAGV_STATUS_NOTICE")
-    public MesResultInfo agvRecycleProcessNotify(@RequestBody MesAgvChangeRequest mesAgvChangeRequest) {
+//    @RequestMapping(value = "/N2/http/interface.ms?model=RECAGV&method=RECAGV_STATUS_NOTICE")
+    public MesResult agvRecycleProcessNotify( MesAgvChangeRequest mesAgvChangeRequest) {
         String taskCode = mesAgvChangeRequest.getTaskCode();
         logger.info("任务{}开始请求AGV节点变更", taskCode);
-        MesResultInfo mesResultInfo = new MesResultInfo();
+        MesResult mesResult = new MesResult();
         Imitatetest imitatetest = imitateTestMapper.selectByTaskCode(taskCode);
         //随机数
         switch (mesAgvChangeRequest.getTaskSta()) {
@@ -265,12 +254,9 @@ public class SimulationMesController {
                 EmptyRecyleNotify emptyRecyleNotify = new EmptyRecyleNotify();
                 emptyRecyleNotify.setTaskCode(taskCode);
                 emptyRecyleNotify.setEmptyRecyleNum(imitatetest.getEmptyboxnumber());
-                MesBaseRequest<EmptyRecyleNotify> mesBaseRequest = new MesBaseRequest<>();
-                mesBaseRequest.setReqcode("");
-                mesBaseRequest.setData(emptyRecyleNotify);
                 //通知AGV上空框数量
-                MesResult mesResult = recycleTaskController.emptyRecyleNum(mesBaseRequest);
-                logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResult.toString());
+                MesResult mesResults = mesRequestService.emptyRecyleNum(emptyRecyleNotify, "");
+                logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResults.toString());
                 break;
             case "3": break;
             case "4":
@@ -279,31 +265,28 @@ public class SimulationMesController {
                 StartRecyle startRecyle = new StartRecyle();
                 startRecyle.setTaskCode(taskCode);
                 startRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
-                MesBaseRequest<StartRecyle> baseRequest = new MesBaseRequest<>();
-                baseRequest.setData(startRecyle);
-                baseRequest.setReqcode("");
                 //通知AGV出空箱数量
-                recycleTaskController.startRecyle(baseRequest);
+                mesRequestService.startRecyle(startRecyle, "");
                 break;
             default:break;
         }
 
-        return mesResultInfo;
+        return mesResult;
     }
 
     /**
      * 模拟Mes接收AGV上空框数量
      */
-    @RequestMapping(value = "/N2/http/interface.ms?model=RECAGV&method=RECAGV_AGV_MES_RECEIVE_NUM")
-    public MesResultInfo receiveEmptyUpNum(@RequestBody MesReceiveRecycleRequest mesReceiveRecycleRequest) {
-        return new MesResultInfo();
+//    @RequestMapping(value = "/N2/http/interface.ms?model=RECAGV&method=RECAGV_AGV_MES_RECEIVE_NUM")
+    public MesResult receiveEmptyUpNum( MesReceiveRecycleRequest mesReceiveRecycleRequest) {
+        return new MesResult();
     }
     /**
      * 模拟Mes接收AGV下空框数量
      */
-    @RequestMapping(value = "/N2/http/interface.ms?model=RECAGV&method=RECAGV_AGV_MES_RECYCLE_NUM")
-    public MesResultInfo receiveEmptyDownNum(@RequestBody MesReceiveRecycleRequest mesReceiveRecycleRequest) {
-        return new MesResultInfo();
+//    @RequestMapping(value = "/N2/http/interface.ms?model=RECAGV&method=RECAGV_AGV_MES_RECYCLE_NUM")
+    public MesResult receiveEmptyDownNum( MesReceiveRecycleRequest mesReceiveRecycleRequest) {
+        return new MesResult();
     }
 
 
@@ -324,6 +307,8 @@ class MesResultInfo extends MesResult{
      * 回收空料框数量
      */
     private String recyleCount;
+
+
 }
 
 @Getter
@@ -358,15 +343,4 @@ class MesReceiveRecycleRequest {
     private Integer emptyRecyleNum;
 }
 
-@Getter
-@Setter
-class MesRequestInfo {
-    private String taskCode;
-    private String taskSta;
-    private String supplyLoadWb;
-    private Integer supplyLoadNum;
-    private String emptyRecyleWb;
-    private Integer emptyRecyleNum;
-    private String supplyUnLoadWb;
-    private Integer supplyUnLoadNum;
-}
+
