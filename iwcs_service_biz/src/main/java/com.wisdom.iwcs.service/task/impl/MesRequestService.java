@@ -105,7 +105,9 @@ public class MesRequestService {
         //3.更新context的json字符串
         contextDTO.setSupplyUnLoadWbFirst(supplyInfoNotify.getSupplyUnLoadWbFirst());
         contextDTO.setSupplyUnLoadWbFirstCount(supplyInfoNotify.getSupplyUnLoadWbFirstCount());
-        contextDTO.setSupplyUnLoadWbSecond(supplyInfoNotify.getSupplyUnLoadWbSecond());
+        if (StringUtils.isNotEmpty(supplyInfoNotify.getSupplyUnLoadWbSecond())) {
+            contextDTO.setSupplyUnLoadWbSecond(supplyInfoNotify.getSupplyUnLoadWbSecond());
+        }
         Integer wbSecondCount = supplyInfoNotify.getSupplyUnLoadWbSecondCount();
         if (wbSecondCount != null && wbSecondCount != 0) {
             contextDTO.setSupplyUnLoadWbSecondCount(wbSecondCount);
