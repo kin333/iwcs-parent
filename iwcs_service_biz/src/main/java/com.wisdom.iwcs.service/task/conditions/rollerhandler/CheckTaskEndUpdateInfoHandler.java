@@ -37,8 +37,8 @@ public class CheckTaskEndUpdateInfoHandler implements IConditionHandler {
             String context = taskContext.getContext();
             ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
-            contextDTO.setNodeType("");
-            contextDTO.setRecyleWb("");
+            contextDTO.setNodeType(null);
+            contextDTO.setRecyleWb(null);
             contextDTO.setChaLeaveUpEmpty(false);
             contextDTO.setChaLeaveUpGood(false);
             contextDTO.setChaLeaveDownEmpty(false);
