@@ -1,6 +1,5 @@
 package com.wisdom.iwcs.domain.task.dto;
 
-import com.wisdom.base.annotation.ColumnName;
 import lombok.Data;
 
 /**
@@ -95,4 +94,13 @@ public class PublicContextDTO {
      */
     private String inWaitPointAlias;
 
+    /**
+     * 超越 回收点
+     */
+    private String recyleWb;
+
+    /**
+     * 超越 1上料点，2下料点，3回收点
+     */
+    private String nodeType;
 }
