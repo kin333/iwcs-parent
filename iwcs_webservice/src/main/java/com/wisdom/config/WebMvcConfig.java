@@ -57,6 +57,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        //以.ms为后缀的Controller请求,返回JSON格式,Mes自动化测试使用
         configurer.mediaType("ms", MediaType.APPLICATION_JSON);
         configurer.favorPathExtension(false);
     }

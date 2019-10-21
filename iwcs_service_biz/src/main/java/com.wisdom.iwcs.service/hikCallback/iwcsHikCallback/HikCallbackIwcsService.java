@@ -208,7 +208,7 @@ public class HikCallbackIwcsService {
      * @param
      * @param nodeCode
      */
-    private void nodeAction(SubTask subTask, String nodeCode) {
+    private synchronized void nodeAction(SubTask subTask, String nodeCode) {
         //1.获取节点动作模板信息
         List<TaskRelAction> taskRelActionList = taskRelActionMapper.selectByTempCodeAndNode(subTask.getTemplCode(), nodeCode);
         for (TaskRelAction taskRelAction : taskRelActionList) {

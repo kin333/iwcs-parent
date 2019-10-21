@@ -41,18 +41,22 @@ public class SimulationMesController {
     @Autowired
     MesRequestService mesRequestService;
 
+    private String TASK_CODE = "TEST";
+
 
     /**
      * 总的Mes模拟调度程序
-     * @param mesRequestInfo
+     * @param mesBaseRequest
      * @param model
      * @param method
      * @return
      */
     @RequestMapping(value = "/N2/http/interface.ms")
-    public MesResult test(@RequestBody MesRequestInfo mesRequestInfo,
+    public MesResult test(@RequestBody TestMesBaseRequest<MesRequestInfo> mesBaseRequest,
                               @RequestParam("model") String model, @RequestParam("method") String method) {
+        MesRequestInfo mesRequestInfo = mesBaseRequest.getData();
         if ("ALAGV".equals(model)) {
+            //滚筒接料任务
             switch (method) {
                 case "ALAGV_AGV_MES_SUPPLY_NUM":
                     MesReceiveUpRequest mesReceiveUpRequest = new MesReceiveUpRequest();
@@ -77,20 +81,27 @@ public class SimulationMesController {
                     return receiveRecycleNum(mesReceiveRecycleRequest);
                 case "STATUS_NOTICE":
                     MesAgvChangeRequest mesAgvChangeRequest = new MesAgvChangeRequest();
-                    mesAgvChangeRequest.setTaskCode(mesRequestInfo.getTaskCode());
-                    mesAgvChangeRequest.setTaskSta(mesRequestInfo.getTaskSta());
+                    mesAgvChangeRequest.setTaskCode(mesBaseRequest.getTaskCode());
+                    mesAgvChangeRequest.setTaskSta(mesBaseRequest.getTaskSta());
                     return agvProcessNotify(mesAgvChangeRequest);
                 default:logger.error("mes URL参数异常");
 
             }
         } else if ("RECAGV".equals(model)) {
+            //滚筒回收任务
+            MesReceiveRecycleRequest mesReceiveRecycleRequest = new MesReceiveRecycleRequest();
             switch (method) {
                 case "RECAGV_STATUS_NOTICE":
                     MesAgvChangeRequest mesAgvChangeRequest = new MesAgvChangeRequest();
-                    mesAgvChangeRequest.setTaskCode(mesRequestInfo.getTaskCode());
-                    mesAgvChangeRequest.setTaskSta(mesRequestInfo.getTaskSta());
+                    mesAgvChangeRequest.setTaskCode(mesBaseRequest.getTaskCode());
+                    mesAgvChangeRequest.setTaskSta(mesBaseRequest.getTaskSta());
                     return agvRecycleProcessNotify(mesAgvChangeRequest);
-
+                case "RECAGV_AGV_MES_RECEIVE_NUM":
+                    mesReceiveRecycleRequest.setTaskCode(mesRequestInfo.getTaskCode());
+                    return receiveEmptyUpNum(mesReceiveRecycleRequest);
+                case "RECAGV_AGV_MES_RECYCLE_NUM":
+                    mesReceiveRecycleRequest.setTaskCode(mesRequestInfo.getTaskCode());
+                    return receiveEmptyDownNum(mesReceiveRecycleRequest);
                 default:break;
             }
 
@@ -125,7 +136,7 @@ public class SimulationMesController {
                     SupplyLoadNumNotify supplyLoadNumNotify = new SupplyLoadNumNotify();
                     supplyLoadNumNotify.setTaskCode(taskCode);
                     supplyLoadNumNotify.setSupplyLoadNum(imitatetest.getFeedingquantity());
-                    MesResult mesResult = mesRequestService.supplyLoadNum(supplyLoadNumNotify, "");
+                    MesResult mesResult = mesRequestService.supplyLoadNum(supplyLoadNumNotify, TASK_CODE);
                     logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResult.toString());
                     return mesResultInfo;
                 }
@@ -144,6 +155,8 @@ public class SimulationMesController {
                     if (firstRecyleNum != null && firstRecyleNum > 0) {
                         startSupllyAndRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
                         startSupllyAndRecyle.setEmptyRecyleNum(firstRecyleNum);
+                        startSupllyAndRecyle.setSupplyLoadWb(imitatetest.getInskupoint1());
+                        startSupllyAndRecyle.setSupplyUnLoadNum(imitatetest.getInskupoint1Inskuquantity());
                     }
                 } else {
                     //到达第二个下料点
@@ -151,10 +164,12 @@ public class SimulationMesController {
                     if (secondRecyleNum != null && secondRecyleNum > 0) {
                         startSupllyAndRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
                         startSupllyAndRecyle.setEmptyRecyleNum(secondRecyleNum);
+                        startSupllyAndRecyle.setSupplyLoadWb(imitatetest.getInskupoint2());
+                        startSupllyAndRecyle.setSupplyUnLoadNum(imitatetest.getInskupoint2Inskuquantity());
                     }
                 }
                 //通知AGV上空箱数量
-                mesRequestService.startSupllyAndRecyle(startSupllyAndRecyle, "");
+                mesRequestService.startSupllyAndRecyle(startSupllyAndRecyle, TASK_CODE);
                 break;
             case "6": break;
             case "7":
@@ -163,7 +178,10 @@ public class SimulationMesController {
                     mesResultInfo.setCode(MesResult.NG);
                     StartRecyle startRecyle = new StartRecyle();
                     startRecyle.setTaskCode(taskCode);
-                    MesResult mesResult = mesRequestService.startRecyle(startRecyle, "");
+                    startRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
+                    Integer recycleNumber = imitatetest.getInskupoint2Recyclingquantity() + imitatetest.getInskupoint1Recyclingquantity();
+                    startRecyle.setRecyleCount(recycleNumber);
+                    MesResult mesResult = mesRequestService.startRecyle(startRecyle, TASK_CODE);
                     logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResult.toString());
                     return mesResultInfo;
                 }
@@ -193,7 +211,7 @@ public class SimulationMesController {
         }
 
         //通知AGV下料点和下料数量
-        mesRequestService.supplyUnloadWbNotify(supplyInfoNotify, "");
+        mesRequestService.supplyUnloadWbNotify(supplyInfoNotify, TASK_CODE);
         return new MesResult();
     }
 
@@ -208,18 +226,18 @@ public class SimulationMesController {
         notifyAgvLeave.setTaskCode(taskCode);
         //到达下料点
         List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(taskCode);
-        if (subTaskList.size() <= 5) {
+        if (subTaskList.size() <= 6) {
             notifyAgvLeave.setFlag(LEAVE_DOWN_FIRST);
         } else {
             notifyAgvLeave.setFlag(LEAVE_DOWN_SECOND);
         }
         //通知AGV可离开机台
-        mesRequestService.checkSuccess(notifyAgvLeave, "");
+        mesRequestService.checkSuccess(notifyAgvLeave, TASK_CODE);
         return new MesResult();
     }
 
     /**
-     * 模拟MES接收下料结果
+     * 模拟MES接收回收结果
      */
 //    @RequestMapping(value = "/N2/http/interface.ms?model=ALAGV&method=ALAGV_AGV_MES_RECYLE_RESULT")
     public MesResult receiveRecycleNum( MesReceiveRecycleRequest mesReceiveRecycleRequest) {
@@ -230,7 +248,7 @@ public class SimulationMesController {
         notifyAgvLeave.setTaskCode(taskCode);
         notifyAgvLeave.setFlag(LEAVE_DOWN_EMPTY);
         //通知AGV可离开机台
-        mesRequestService.checkSuccess(notifyAgvLeave, "");
+        mesRequestService.checkSuccess(notifyAgvLeave, TASK_CODE);
         return new MesResult();
     }
 
@@ -255,7 +273,7 @@ public class SimulationMesController {
                 emptyRecyleNotify.setTaskCode(taskCode);
                 emptyRecyleNotify.setEmptyRecyleNum(imitatetest.getEmptyboxnumber());
                 //通知AGV上空框数量
-                MesResult mesResults = mesRequestService.emptyRecyleNum(emptyRecyleNotify, "");
+                MesResult mesResults = mesRequestService.emptyRecyleNum(emptyRecyleNotify, TASK_CODE);
                 logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResults.toString());
                 break;
             case "3": break;
@@ -266,7 +284,7 @@ public class SimulationMesController {
                 startRecyle.setTaskCode(taskCode);
                 startRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
                 //通知AGV出空箱数量
-                mesRequestService.startRecyle(startRecyle, "");
+                mesRequestService.startRecyle(startRecyle, TASK_CODE);
                 break;
             default:break;
         }
@@ -279,6 +297,11 @@ public class SimulationMesController {
      */
 //    @RequestMapping(value = "/N2/http/interface.ms?model=RECAGV&method=RECAGV_AGV_MES_RECEIVE_NUM")
     public MesResult receiveEmptyUpNum( MesReceiveRecycleRequest mesReceiveRecycleRequest) {
+        NotifyAgvLeave notifyAgvLeave = new NotifyAgvLeave();
+        notifyAgvLeave.setTaskCode(mesReceiveRecycleRequest.getTaskCode());
+        notifyAgvLeave.setFlag(LEAVE_UP_EMPTY);
+        //通知AGV可离开上空框机台
+        mesRequestService.checkSuccess(notifyAgvLeave, TASK_CODE);
         return new MesResult();
     }
     /**
@@ -286,6 +309,11 @@ public class SimulationMesController {
      */
 //    @RequestMapping(value = "/N2/http/interface.ms?model=RECAGV&method=RECAGV_AGV_MES_RECYCLE_NUM")
     public MesResult receiveEmptyDownNum( MesReceiveRecycleRequest mesReceiveRecycleRequest) {
+        NotifyAgvLeave notifyAgvLeave = new NotifyAgvLeave();
+        notifyAgvLeave.setTaskCode(mesReceiveRecycleRequest.getTaskCode());
+        notifyAgvLeave.setFlag(LEAVE_DOWN_EMPTY);
+        //通知AGV可离开下空框机台
+        mesRequestService.checkSuccess(notifyAgvLeave, TASK_CODE);
         return new MesResult();
     }
 
