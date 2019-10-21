@@ -22,8 +22,7 @@ import com.wisdom.iwcs.common.utils.Result;
 @RequestMapping("/api/imitate_test")
 public class ImitateTestController {
     @Autowired
-    ImitateTestService ImitateTestService;
-
+  ImitateTestService ImitateTestService;
     /**
      * 根据主键ID删除
      *
@@ -113,4 +112,5 @@ public class ImitateTestController {
 
         return new Result();
     }
+
 }
