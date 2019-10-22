@@ -142,11 +142,11 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
        createTaskRequests.add(createTaskRequest);
         MesBaseRequest<List<CreateTaskRequest>> mesBaseRequest=new MesBaseRequest("1001",createTaskRequests);
 
-//        if (mainTaskMapper.selectStartSupplyAndRecycleTaskCount() < 3) {
+        if (mainTaskMapper.selectStartSupplyAndRecycleTaskCount() < 3) {
             lineFeedAndRecycleController.taskCreate(mesBaseRequest);
-//        } else
-//            {
-//            logger.warn("正在执行的滚筒上料回收任务已达到三条");
-//        }
+        } else
+            {
+           logger.warn("已创建未执行和正在执行的滚筒上料回收任务已达到三条");
+       }
     }
 }

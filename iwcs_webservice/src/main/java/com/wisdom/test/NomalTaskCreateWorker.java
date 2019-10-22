@@ -20,6 +20,7 @@ import java.util.Random;
 
 @Component
 public class NomalTaskCreateWorker extends BaseAutoTestWorker  {
+    private final Logger logger = LoggerFactory.getLogger(NomalTaskCreateWorker.class);
     @Autowired
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
@@ -73,7 +74,7 @@ public class NomalTaskCreateWorker extends BaseAutoTestWorker  {
         if (mainTaskMapper.selectStartUSpTopTaskCount() <3) {
             agvHandlingTaskController.createTask(mesBaseRequest);
         } else {
-
+          logger.warn("已创建未执行和正在执行的点对点任务已经超过三条");
         }
     }
 }
