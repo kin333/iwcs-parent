@@ -208,6 +208,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
 
     List<BaseMapBerth> selectAllRollerPoint();
     List<BaseMapBerth> selectEmptyPodNormalPoint();
+    List<BaseMapBerth> selectEmptyPod2NormalPoint();
     List<BaseMapBerth> selectPodNormalPoint();
 
 }

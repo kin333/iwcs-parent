@@ -1,5 +1,6 @@
 package com.wisdom.controller.test;
 
+import com.wisdom.iwcs.domain.mes.ArriveDestWbWaitPortRequest;
 import com.wisdom.iwcs.domain.task.Imitatetest;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.upstream.mes.*;
@@ -84,10 +85,12 @@ public class SimulationMesController {
                     mesAgvChangeRequest.setTaskCode(mesBaseRequest.getTaskCode());
                     mesAgvChangeRequest.setTaskSta(mesBaseRequest.getTaskSta());
                     return agvProcessNotify(mesAgvChangeRequest);
-                default:logger.error("mes URL参数异常");
+                default:
+                    logger.error("mes URL参数异常");
 
             }
-        } else if ("RECAGV".equals(model)) {
+        }
+        if ("RECAGV".equals(model)) {
             //滚筒回收任务
             MesReceiveRecycleRequest mesReceiveRecycleRequest = new MesReceiveRecycleRequest();
             switch (method) {
@@ -102,14 +105,34 @@ public class SimulationMesController {
                 case "RECAGV_AGV_MES_RECYCLE_NUM":
                     mesReceiveRecycleRequest.setTaskCode(mesRequestInfo.getTaskCode());
                     return receiveEmptyDownNum(mesReceiveRecycleRequest);
-                default:break;
+                default:
+                    break;
             }
 
+        }
+        if ("AGV".equals(model)) {
+            switch (method) {
+                case "arriveSrcWb":
+                    logger.info("到起点了");
+                    return arriveSrcWb();
+                case "leaveSrcWb":
+                    logger.info("离开起点了");
+                    return leaveSrcWb();
+                case "arriveSrcWD":
+                    logger.info("任务{}通知到达等待点动作为:{}", mesRequestInfo.getTaskCode(), mesRequestInfo.getDoorAction());
+                    return arriveSrcWD(mesRequestInfo.getTaskCode(),mesRequestInfo.getDoorAction());
+                case "arriveDestWb":
+                    logger.info("到终点了");
+                    return arriveDestWb();
+                default:
+                    break;
+            }
         }
         System.out.println(model);
         System.out.println(method);
         return new MesResult();
-    }
+        }
+
 
 
     /**
@@ -316,8 +339,34 @@ public class SimulationMesController {
         mesRequestService.checkSuccess(notifyAgvLeave, TASK_CODE);
         return new MesResult();
     }
-
-
+    //到达起点
+   // @RequestMapping(value="/N2/http/interface.ms?model=AGV&method=arriveSrcWb")
+   public  MesResult arriveSrcWb()
+    {
+        return new MesResult() ;
+    }
+    //离开起点
+   // @RequestMapping(value="/N2/http/interface.ms?model=AGV&method=leaveSrcWb")
+   public  MesResult leaveSrcWb()
+    {
+        return new MesResult();
+    }
+    //到达终点
+   // @RequestMapping(value="/N2/http/interface.ms?model=AGV&method=arriveDestWb")
+    public MesResult arriveDestWb()
+    {
+        return new MesResult();
+    }
+    //AGV到达（机械臂）等待点(通知开/关围栏)
+   //@RequestMapping(value="/N2/http/interface.ms?model=AGV&method=arriveSrcWD")
+    public MesResult arriveSrcWD(String taskCode,String doorStatus)
+    {
+        ConWaitToDestWbRequest conWaitToDestWb=new ConWaitToDestWbRequest();
+        conWaitToDestWb.setTaskCode(taskCode);
+        conWaitToDestWb.setDoorStatus(doorStatus);
+        mesRequestService.conWaitToDestWb(conWaitToDestWb,TASK_CODE);
+        return new MesResult() ;
+    }
 }
 
 @Getter
@@ -370,5 +419,8 @@ class MesReceiveRecycleRequest {
     private String emptyRecyleWb;
     private Integer emptyRecyleNum;
 }
+
+
+
 
 

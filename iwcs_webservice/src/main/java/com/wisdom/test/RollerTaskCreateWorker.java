@@ -59,7 +59,7 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
         String downPointTwo = "";
         //下料点二数量
         int downPointTwoNum = 0;
-        //下料点一回收数量
+        //下料点二回收数量
         int downPointTwoRecycleNum = 0;
         //回收点
         String recyclePoint = "";
@@ -67,7 +67,6 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
         List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectAllRollerPoint();
 
         Random random = new Random();
-        int inpointNumber  = random.nextInt(2) + 1;
         HashSet<Integer> hs = new HashSet<>();
         while(hs.size() <4) {
             hs.add(random.nextInt(baseMapBerths.size()));
@@ -75,9 +74,15 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
         Integer[] temp = hs.toArray(new Integer[] {});
         BaseMapBerth upPointBerth = baseMapBerths.get(temp[3]);
         upPoint=upPointBerth.getPointAlias();
+            int inpointNumber = random.nextInt(2) + 1;
 
-        upPointNum = random.nextInt(2) + 1;
-
+            if(inpointNumber==2)
+            {
+                upPointNum=2;
+            }
+            if(inpointNumber==1) {
+                upPointNum = random.nextInt(2) + 1;
+            }
         BaseMapBerth downPoint1Berth = baseMapBerths.get(temp[0]);
          downPointOne=downPoint1Berth.getPointAlias();
         BaseMapBerth downPoint2Berth = baseMapBerths.get(temp[1]);
@@ -93,6 +98,7 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
                 downPointTwoNum = 0;
         }
         downPointOneRecycleNum =random.nextInt(3) + 0;
+        //只有下料点数是2的时候，第二上料才回收空框，否则为默认值零
         if(inpointNumber==2) {
             if(downPointOneRecycleNum == 0)
             {
@@ -107,8 +113,7 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
                 downPointTwoRecycleNum = 0;
             }
         }
-
-
+        //判断是否设置回收点
         if((downPointOneRecycleNum+downPointTwoRecycleNum)!=0) {
             BaseMapBerth recyclePointBerth = baseMapBerths.get(temp[2]);
             recyclePoint = recyclePointBerth.getPointAlias();
@@ -137,10 +142,11 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
        createTaskRequests.add(createTaskRequest);
         MesBaseRequest<List<CreateTaskRequest>> mesBaseRequest=new MesBaseRequest("1001",createTaskRequests);
 
-        if (mainTaskMapper.selectStartSupplyAndRecycleTaskCount() < 3) {
+//        if (mainTaskMapper.selectStartSupplyAndRecycleTaskCount() < 3) {
             lineFeedAndRecycleController.taskCreate(mesBaseRequest);
-        } else {
-            logger.warn("正在执行的滚筒上料回收任务已达到三条");
-        }
+//        } else
+//            {
+//            logger.warn("正在执行的滚筒上料回收任务已达到三条");
+//        }
     }
 }

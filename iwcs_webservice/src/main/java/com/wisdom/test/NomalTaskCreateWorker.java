@@ -20,7 +20,6 @@ import java.util.Random;
 
 @Component
 public class NomalTaskCreateWorker extends BaseAutoTestWorker  {
-    private final Logger logger = LoggerFactory.getLogger(RollerEmptyTaskCreateWorker.class);
     @Autowired
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
@@ -34,14 +33,21 @@ public class NomalTaskCreateWorker extends BaseAutoTestWorker  {
     {
         List<BaseMapBerth> PodbaseMapBerths = baseMapBerthMapper.selectPodNormalPoint();
         List<BaseMapBerth> noPodbaseMapBerths = baseMapBerthMapper.selectEmptyPodNormalPoint();
+        List<BaseMapBerth> noPod2baseMapBerths = baseMapBerthMapper.selectEmptyPod2NormalPoint();
         //生成随机数
         Random random = new Random();
         int startNum = random.nextInt(PodbaseMapBerths.size());
-        int endNum = random.nextInt(noPodbaseMapBerths.size());
 
-       // BaseMapBerth startBerth = baseMapBerthMapper.selectByPointAlias("306");
-       BaseMapBerth startBerth = PodbaseMapBerths.get(startNum);
+        BaseMapBerth startBerth = PodbaseMapBerths.get(startNum);
         String startpoint=startBerth.getPointAlias();
+        int endNum;
+        if(startpoint.equals("306")||startpoint.equals("307")) {
+             endNum = random.nextInt(noPod2baseMapBerths.size());
+        }
+        else
+        {
+            endNum = random.nextInt(noPodbaseMapBerths.size());
+        }
         BaseMapBerth endBerth = noPodbaseMapBerths.get(endNum);
         String Endpoint=endBerth.getPointAlias();
         String podCode=startBerth.getPodCode();
@@ -67,7 +73,7 @@ public class NomalTaskCreateWorker extends BaseAutoTestWorker  {
         if (mainTaskMapper.selectStartUSpTopTaskCount() <3) {
             agvHandlingTaskController.createTask(mesBaseRequest);
         } else {
-            logger.warn("正在执行的点到点创建任务已达到三条");
+
         }
     }
 }
