@@ -1,11 +1,9 @@
 package com.wisdom.controller.test.chaoyueRollSimulation;
 
 
-import com.wisdom.controller.test.SimulationMesController;
 import com.wisdom.controller.test.TestMesBaseRequest;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.Imitatetest;
-import com.wisdom.iwcs.domain.task.dto.ImitateTestDTO;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.StartSupllyAndRecyles;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
@@ -17,25 +15,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.wisdom.controller.test.MesRequestInfo;
-import com.wisdom.controller.test.TestMesBaseRequest;
-import com.wisdom.iwcs.domain.task.Imitatetest;
-import com.wisdom.iwcs.domain.upstream.mes.MesResult;
-import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
-import com.wisdom.iwcs.mapper.task.ImitateTestMapper;
-import com.wisdom.iwcs.service.task.impl.MesRequestService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Random;
 
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.LEAVE_DOWN_GOOD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.LEAVE_GET_GOOD;
 
 @RestController
-
 public class RollSimulationController {
     private Logger logger = LoggerFactory.getLogger(RollSimulationController.class);
 
