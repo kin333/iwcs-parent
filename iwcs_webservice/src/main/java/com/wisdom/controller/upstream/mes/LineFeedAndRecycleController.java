@@ -130,7 +130,7 @@ public class LineFeedAndRecycleController {
      * 超越 通知AGV是否可以离开
      */
     @PostMapping("/supllyUnload/SupllyAndRecyleResult")
-    @SystemInterfaceLog(methodCode = SUPLLY_UNLOAD, methodName = SUPPLY_LOAD_NUM_DESC, methodThansfer = SRC_MES)
+    @SystemInterfaceLog(methodCode = SUPLLY_UNLOAD, methodName = SUPLLY_UNLOAD_DESC, methodThansfer = SRC_MES)
     public MesResult supllyUnload(@RequestBody MesBaseRequest<SupllyUnload> mesBaseRequest) {
 
         SupllyUnload data = mesBaseRequest.getData();
@@ -141,7 +141,7 @@ public class LineFeedAndRecycleController {
      * 超越 通知小车是否滚动
      */
     @PostMapping("/startSupllyAndRecyles")
-    @SystemInterfaceLog(methodCode = START_SUPLLY_AND_RECYLE, methodName = START_SUPLLY_AND_RECYLE_DESC, methodThansfer = SRC_MES)
+    @SystemInterfaceLog(methodCode = START_SUPLLY_AND_RECYLE, methodName = START_SUPLLY_AND_RECYLE_DESCS, methodThansfer = SRC_MES)
     public MesResult startSupllyAndRecyles(@RequestBody MesBaseRequest<StartSupllyAndRecyles> mesBaseRequest) {
 
         StartSupllyAndRecyles data = mesBaseRequest.getData();
