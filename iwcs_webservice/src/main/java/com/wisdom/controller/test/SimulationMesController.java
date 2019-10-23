@@ -174,19 +174,19 @@ public class SimulationMesController {
 
                 if (subTaskList.size() <= 5) {
                     //到达第一个下料点
-                    Integer firstRecyleNum = imitatetest.getInskupoint1Recyclingquantity();
+                    Integer firstRecyleNum = imitatetest.getInskupoint1Inskuquantity();
                     if (firstRecyleNum != null && firstRecyleNum > 0) {
                         startSupllyAndRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
-                        startSupllyAndRecyle.setEmptyRecyleNum(firstRecyleNum);
+                        startSupllyAndRecyle.setEmptyRecyleNum(imitatetest.getInskupoint1Recyclingquantity());
                         startSupllyAndRecyle.setSupplyLoadWb(imitatetest.getInskupoint1());
                         startSupllyAndRecyle.setSupplyUnLoadNum(imitatetest.getInskupoint1Inskuquantity());
                     }
                 } else {
                     //到达第二个下料点
-                    Integer secondRecyleNum = imitatetest.getInskupoint2Recyclingquantity();
+                    Integer secondRecyleNum = imitatetest.getInskupoint2Inskuquantity();
                     if (secondRecyleNum != null && secondRecyleNum > 0) {
                         startSupllyAndRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
-                        startSupllyAndRecyle.setEmptyRecyleNum(secondRecyleNum);
+                        startSupllyAndRecyle.setEmptyRecyleNum(imitatetest.getInskupoint2Recyclingquantity());
                         startSupllyAndRecyle.setSupplyLoadWb(imitatetest.getInskupoint2());
                         startSupllyAndRecyle.setSupplyUnLoadNum(imitatetest.getInskupoint2Inskuquantity());
                     }

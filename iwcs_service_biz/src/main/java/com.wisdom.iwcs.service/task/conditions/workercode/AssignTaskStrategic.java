@@ -21,7 +21,7 @@ public class AssignTaskStrategic implements IGetWorkerCodeStrategic {
         //获取主任务下所有子任务
         List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(autoCreateBaseInfo.getMainTaskNum());
         //获取指定步骤的子任务
-        SubTask subTask = subTaskList.get(Integer.valueOf(autoCreateBaseInfo.getValue()));
+        SubTask subTask = subTaskList.get(Integer.valueOf(autoCreateBaseInfo.getValue()) - 1);
         return subTask.getWorkerTaskCode();
     }
 }

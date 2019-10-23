@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CheckRollerTaskEndHandler implements IConditionHandler {
-    private Logger logger = LoggerFactory.getLogger(BaseLockEmptyMapService.class);
+    private Logger logger = LoggerFactory.getLogger(CheckRollerTaskEndHandler.class);
 
     @Autowired
     SubTaskMapper subTaskMapper;
