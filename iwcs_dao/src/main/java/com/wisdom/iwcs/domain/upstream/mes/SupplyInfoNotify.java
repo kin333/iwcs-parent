@@ -33,5 +33,10 @@ public class SupplyInfoNotify {
      */
     private Integer supplyUnLoadWbSecondCount;
 
+    /**
+     * 超越接料点
+     */
+    private String supplyUnLoadWb;
+
 
 }
