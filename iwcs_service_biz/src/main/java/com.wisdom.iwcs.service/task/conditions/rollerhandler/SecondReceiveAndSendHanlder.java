@@ -46,7 +46,7 @@ public class SecondReceiveAndSendHanlder implements IConditionHandler {
         hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
         Preconditions.checkBusinessError(publicContextDTO.getEndSendNumTwo() == null, "数据异常: 下料数量缺失,子任务号:" + subTaskCondition.getSubTaskNum());
         hikRollerData.setSendFull(publicContextDTO.getEndSendNumTwo().toString());
-        if (publicContextDTO.getEmptyRecycleNumTwo() != null) {
+        if (publicContextDTO.getEmptyRecycleNumTwo() != null && publicContextDTO.getEmptyRecycleNumTwo() > 0) {
             hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNumTwo().toString());
         }
         String jsonString = JSONObject.toJSONString(hikRollerData);

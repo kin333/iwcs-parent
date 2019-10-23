@@ -45,7 +45,7 @@ public class FirstReceiveAndSendHanlder implements IConditionHandler {
         hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
         Preconditions.checkBusinessError(publicContextDTO.getEndSendNum() == null, "第一下料点下料数量缺失");
         hikRollerData.setSendFull(publicContextDTO.getEndSendNum().toString());
-        if (publicContextDTO.getEmptyRecycleNumOne() != null) {
+        if (publicContextDTO.getEmptyRecycleNumOne() != null && publicContextDTO.getEmptyRecycleNumOne() > 0) {
             hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNumOne().toString());
         }
         String jsonString = JSONObject.toJSONString(hikRollerData);
