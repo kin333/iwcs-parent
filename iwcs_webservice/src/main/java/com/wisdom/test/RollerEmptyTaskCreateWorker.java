@@ -80,7 +80,7 @@ public class RollerEmptyTaskCreateWorker extends BaseAutoTestWorker {
         if (mainTaskMapper.selectStartEmptyRecycleTask() < 3) {
             emptyRecyleTaskController.taskCreate(mesBaseRequest);
         } else {
-            logger.warn("已创建未执行的和正在执行的回收空料箱任务已达到三条");
+            logger.warn("正在执行的回收空料箱任务已达到三条");
         }
 
     }

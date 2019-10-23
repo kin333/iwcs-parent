@@ -146,7 +146,7 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
             lineFeedAndRecycleController.taskCreate(mesBaseRequest);
         } else
             {
-           logger.warn("已创建未执行和正在执行的滚筒上料回收任务已达到三条");
+           logger.warn("正在执行的滚筒上料回收任务已达到三条");
        }
     }
 }
