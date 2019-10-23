@@ -425,11 +425,20 @@ public class MesRequestService {
         TaskContext taskContext = taskContextMapper.selectByMainTaskNum(emptyContainerNumber.getTaskCode());
         String context = taskContext.getContext();
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
-        contextDTO.setEmptyRecyleNum(emptyContainerNumber.getEmptyRecyleNum());
+//        contextDTO.setEmptyRecyleNum(emptyContainerNumber.getEmptyRecyleNum());
 
-        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
-        taskContext.setContext(jsonStr);
-        taskContextMapper.updateByMainTaskNum(taskContext);
+        if (emptyContainerNumber.getEmptyRecyleNum() != null) {
+            Preconditions.checkMesBusinessError(contextDTO.getSupplyUnLoadNum() != emptyContainerNumber.getSupplyUnLoadWb(),
+                    "下料数量与当前下料数量不符", reqCode);
+        }
+        if (emptyContainerNumber.getEmptyRecyleNum() != null) {
+            Preconditions.checkMesBusinessError(contextDTO.getEmptyRecyleNum() != emptyContainerNumber.getEmptyRecyleNum(),
+                    "空料箱回收数量与所回收数不符", reqCode);
+        }
+
+//        String jsonStr = TaskContextUtils.objectToJson(contextDTO);
+//        taskContext.setContext(jsonStr);
+//        taskContextMapper.updateByMainTaskNum(taskContext);
 
         return new MesResult(reqCode);
     }
