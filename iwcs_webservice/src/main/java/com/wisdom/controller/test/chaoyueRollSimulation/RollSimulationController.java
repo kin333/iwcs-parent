@@ -208,7 +208,7 @@ public class RollSimulationController {
      * 模拟SCADA接收供料结果（供料点上报已接收供料信息）
      */
     @PostMapping("/api/wisdom/autoProductionLine/supplyAndRecyle/supllyUnload/SupllyAndRecyleInfo")
-    public MesResult receiveUpNum(@RequestBody TestMesBaseRequest<MesRequestInfo> mesBaseRequest){
+    public MesResult receiveUpResult(@RequestBody TestMesBaseRequest<MesRequestInfo> mesBaseRequest){
         MesRequestInfo mesRequestInfo = mesBaseRequest.getData();
         String taskCode = mesRequestInfo.getTaskCode();
         Imitatetest imitatetest = imitateTestMapper.selectByTaskCode(taskCode);
@@ -229,7 +229,7 @@ public class RollSimulationController {
      * 模拟 SCADA 上报已下料数量及已接收空框数量
      */
     @PostMapping("/api/wisdom/autoProductionLine/supplyAndRecyle/supllyAndRecyleResult")
-    public MesResult receiveDownNum(@RequestBody TestMesBaseRequest<MesRequestInfo> mesBaseRequest){
+    public MesResult receiveDownResult(@RequestBody TestMesBaseRequest<MesRequestInfo> mesBaseRequest){
         MesRequestInfo mesRequestInfo = mesBaseRequest.getData();
         String taskCode = mesRequestInfo.getTaskCode();
         Imitatetest imitatetest = imitateTestMapper.selectByTaskCode(taskCode);
