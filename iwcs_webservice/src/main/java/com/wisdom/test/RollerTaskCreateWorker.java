@@ -85,8 +85,11 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
             }
         BaseMapBerth downPoint1Berth = baseMapBerths.get(temp[0]);
          downPointOne=downPoint1Berth.getPointAlias();
-        BaseMapBerth downPoint2Berth = baseMapBerths.get(temp[1]);
-         downPointTwo=downPoint2Berth.getPointAlias();
+   if(inpointNumber==2)
+   {
+       BaseMapBerth downPoint2Berth = baseMapBerths.get(temp[1]);
+       downPointTwo = downPoint2Berth.getPointAlias();
+   }
 
         if(inpointNumber==2)
         {
