@@ -96,7 +96,7 @@ public class RollSimulationController {
         return new MesResult();
     }
     // 供料点下料或接受空料箱
-    public MesResult arriveReceive(String taskCode, String reqCode, String currentWb) {
+    public MesResult arriveReceive(String taskCode, String currentWb, String reqCode) {
         logger.info("任务{}开始请求AGV节点变更", taskCode);
 
         Imitatetest imitatetest = imitateTestMapper.selectByTaskCode(taskCode);
@@ -119,7 +119,7 @@ public class RollSimulationController {
     }
 
     // 空上箱点滚动
-    public MesResult arriveRecyle(String taskCode, String reqCode, String currentWb) {
+    public MesResult arriveRecyle(String taskCode, String currentWb, String reqCode) {
         logger.info("任务{}开始请求AGV节点变更", taskCode);
 
         Imitatetest imitatetest = imitateTestMapper.selectByTaskCode(taskCode);
@@ -136,7 +136,7 @@ public class RollSimulationController {
     }
 
     // 回收点滚动
-    public MesResult arriveRecyleBox(String taskCode, String reqCode, String currentWb) {
+    public MesResult arriveRecyleBox(String taskCode,String currentWb, String reqCode) {
 
         logger.info("任务{}开始请求AGV节点变更", taskCode);
 
@@ -158,7 +158,7 @@ public class RollSimulationController {
      * @param rollResultInfo
      * @return
      */
-    @RequestMapping("/api/wisdom/autoProductionLine/emptyRecyleTask/srcWb /recyleResult")
+    @RequestMapping("/api/wisdom/autoProductionLine/emptyRecyleTask/srcWb/recyleResult")
     public MesResult recyleResult(@RequestBody TestMesBaseRequest<RollResultInfo> rollResultInfo) {
 
         RollResultInfo data = rollResultInfo.getData();
@@ -182,6 +182,11 @@ public class RollSimulationController {
         return new MesResult();
     }
 
+    /**
+     * 最终回收结果
+     * @param rollResultInfo
+     * @return
+     */
     @RequestMapping("/api/wisdom/autoProductionLine/emptyRecyleTask/recyleWb/recyleResult")
     public MesResult recyleBoxResult(@RequestBody TestMesBaseRequest<RollResultInfo> rollResultInfo) {
 

@@ -74,7 +74,7 @@ public class ChaoRollEmptyTaskCreateWorker extends BaseAutoTestWorker {
         MesBaseRequest<List<CreateTaskRequest>> mesBaseRequest = new MesBaseRequest("1000", createTaskRequests);
 
 
-        if (mainTaskMapper.selectStartEmptyRecycleTask() < 3) {
+        if (mainTaskMapper.selectStartEmptyRecycleTask() < 1) {
             emptyRecyleTaskController.taskCreate(mesBaseRequest);
         } else {
             logger.warn("正在执行的回收空料箱任务已达到三条");
