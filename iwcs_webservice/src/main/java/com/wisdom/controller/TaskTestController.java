@@ -15,10 +15,7 @@ import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.*;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.*;
-<<<<<<< Updated upstream
 import com.wisdom.test.ChaoRollEmptyTaskCreateWorker;
-=======
->>>>>>> Stashed changes
 import com.wisdom.test.RollerTaskCreateTestWorker;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -78,8 +75,6 @@ public class TaskTestController {
     PlToWokpwWorker plToWokpwWorker;
     @Autowired
     QuaHaulbackWorker quaHaulbackWorker;
-    @Autowired
-    RollerTaskCreateTestWorker rollerTaskCreateTestWorker;
 
     @Autowired
     MesAutoSendInfoThread mesAutoSendInfoThread;
@@ -496,10 +491,6 @@ public class TaskTestController {
 
     @GetMapping("/testRollerTask")
     public Result testRollerTask() {
-        logger.info("开始启动超越滚筒供料任务");
-        Thread supplyRoller = new Thread(rollerTaskCreateTestWorker);
-        supplyRoller.start();
-        logger.info("启动超越滚筒供料任务");
 
         logger.info("开始启动超越滚筒回收空料箱任务");
         Thread emptyRoller = new Thread(rollEmptyTaskCreateWorker);
