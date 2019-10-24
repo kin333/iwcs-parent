@@ -1,6 +1,7 @@
 package com.wisdom.controller.test.chaoyueRollSimulation;
 
 
+import com.wisdom.controller.test.MesRequestInfo;
 import com.wisdom.controller.test.TestMesBaseRequest;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.task.Imitatetest;
@@ -14,11 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.wisdom.controller.test.MesRequestInfo;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.LEAVE_DOWN_GOOD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.LEAVE_GET_GOOD;
@@ -207,7 +205,7 @@ public class RollSimulationController {
     /**
      * 模拟SCADA接收供料结果（供料点上报已接收供料信息）
      */
-    @PostMapping("/api/wisdom/autoProductionLine/supplyAndRecyle/supllyUnload/SupllyAndRecyleInfo")
+    @RequestMapping("/api/wisdom/autoProductionLine/supplyAndRecyle/supllyUnload/SupllyAndRecyleInfo")
     public MesResult receiveUpResult(@RequestBody TestMesBaseRequest<MesRequestInfo> mesBaseRequest){
         MesRequestInfo mesRequestInfo = mesBaseRequest.getData();
         String taskCode = mesRequestInfo.getTaskCode();
@@ -228,7 +226,7 @@ public class RollSimulationController {
     /**
      * 模拟 SCADA 上报已下料数量及已接收空框数量
      */
-    @PostMapping("/api/wisdom/autoProductionLine/supplyAndRecyle/supllyAndRecyleResult")
+    @RequestMapping("/api/wisdom/autoProductionLine/supplyAndRecyle/supllyAndRecyleResults")
     public MesResult receiveDownResult(@RequestBody TestMesBaseRequest<MesRequestInfo> mesBaseRequest){
         MesRequestInfo mesRequestInfo = mesBaseRequest.getData();
         String taskCode = mesRequestInfo.getTaskCode();

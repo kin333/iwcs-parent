@@ -15,7 +15,10 @@ import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.*;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.*;
+<<<<<<< Updated upstream
 import com.wisdom.test.ChaoRollEmptyTaskCreateWorker;
+=======
+>>>>>>> Stashed changes
 import com.wisdom.test.RollerTaskCreateTestWorker;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -75,6 +78,8 @@ public class TaskTestController {
     PlToWokpwWorker plToWokpwWorker;
     @Autowired
     QuaHaulbackWorker quaHaulbackWorker;
+    @Autowired
+    RollerTaskCreateTestWorker rollerTaskCreateTestWorker;
 
     @Autowired
     MesAutoSendInfoThread mesAutoSendInfoThread;
@@ -407,6 +412,31 @@ public class TaskTestController {
         }
 
         return new Result("启动成功");
+    }
+
+    /**
+     * 超越滚筒自动模拟测试
+     * @return
+     */
+    @GetMapping("/rollMainTaskTest")
+    public Result rollMainTaskTest(){
+        int time = 1000;
+        try {
+
+            logger.info("开始启动 自动产线供料、回收空料箱任务 调度线程");
+            Thread supplyAndRecycle = new Thread(rollerTaskCreateTestWorker);
+            supplyAndRecycle.start();
+            logger.info("启动 自动产线供料、回收空料箱任务 调度线程成功");
+
+            logger.info("开始 启动任务 调度器线程");
+            Thread thread = new Thread(wcsTaskScheduler);
+            thread.start();
+            logger.info("启动 任务调度器线程成功");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Result();
     }
 
 
