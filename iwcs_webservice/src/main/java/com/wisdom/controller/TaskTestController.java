@@ -15,6 +15,8 @@ import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.*;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.*;
+import com.wisdom.test.ChaoRollEmptyTaskCreateWorker;
+import com.wisdom.test.RollerTaskCreateTestWorker;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -76,6 +78,11 @@ public class TaskTestController {
 
     @Autowired
     MesAutoSendInfoThread mesAutoSendInfoThread;
+
+    @Autowired
+    ChaoRollEmptyTaskCreateWorker rollEmptyTaskCreateWorker;
+    @Autowired
+    RollerTaskCreateTestWorker rollerTaskCreateTestWorker;
 
     @GetMapping("/sendLineNotify")
     public Result sendLineNotify() {
@@ -455,5 +462,22 @@ public class TaskTestController {
 
         return new Result();
     }
+
+
+    @GetMapping("/testRollerTask")
+    public Result testRollerTask() {
+        logger.info("开始启动超越滚筒供料任务");
+        Thread supplyRoller = new Thread(rollerTaskCreateTestWorker);
+        supplyRoller.start();
+        logger.info("启动超越滚筒供料任务");
+
+        logger.info("开始启动超越滚筒回收空料箱任务");
+        Thread emptyRoller = new Thread(rollEmptyTaskCreateWorker);
+        emptyRoller.start();
+        logger.info("启动超越滚筒回收空料箱任务");
+        return new Result();
+    }
+
+
 
 }
