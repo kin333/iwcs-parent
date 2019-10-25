@@ -103,4 +103,10 @@ public class PublicContextDTO {
      * 超越 1上料点，2下料点，3回收点
      */
     private String nodeType;
+
+    /**
+     * 超越 判断是否回收空框(为true时回收空框)
+     */
+    private Boolean rollerDownGoodEmpty;
+
 }

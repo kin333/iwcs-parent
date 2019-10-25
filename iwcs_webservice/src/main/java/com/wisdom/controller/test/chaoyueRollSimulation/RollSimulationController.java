@@ -108,7 +108,7 @@ public class RollSimulationController {
             startSupllyAndRecyles.setNodeType("2");
         } else {
             startSupllyAndRecyles.setRecyleWb(null);
-            startSupllyAndRecyles.setNodeType("1");
+            startSupllyAndRecyles.setNodeType("2");
         }
         startSupllyAndRecyles.setCurrentWb(currentWb);
         startSupllyAndRecyles.setTaskCode(taskCode);
@@ -220,7 +220,7 @@ public class RollSimulationController {
         SupllyUnload supllyUnload = new SupllyUnload();
         supllyUnload.setTaskCode(taskCode);
         supllyUnload.setCurrentWb(imitatetest.getOutskupoint());
-        supllyUnload.setTaskSta(LEAVE_DOWN_GOOD);
+        supllyUnload.setTaskSta(LEAVE_GET_GOOD);
 
         //通知agv可离开
         mesRequestService.supllyUnload(supllyUnload,TASK_CODE);
@@ -241,7 +241,7 @@ public class RollSimulationController {
         SupllyUnload supllyUnload = new SupllyUnload();
         supllyUnload.setTaskCode(taskCode);
         supllyUnload.setCurrentWb(imitatetest.getInskupoint1());
-        supllyUnload.setTaskSta(LEAVE_GET_GOOD);
+        supllyUnload.setTaskSta(LEAVE_DOWN_GOOD);
 
         //通知agv可离开
         mesRequestService.supllyUnload(supllyUnload,TASK_CODE);
