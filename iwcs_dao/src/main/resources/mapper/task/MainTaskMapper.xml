@@ -102,9 +102,18 @@
         where main_task_num = #{mainTaskNum}
     </update>
 
+    <select id="selectCountbyPod" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select IFNULL(count(*),0) from ts_main_task where static_pod_code = #{pod} AND (task_status = '1' or task_status = 1 or task_status = '0' or task_status = 0)
+    </select>
+
+    <select id="selectCountbyAllPod"  resultType="java.lang.Integer">
+        select IFNULL(count(*),0) from ts_main_task where static_pod_code is not NULL AND static_pod_code!='' AND (task_status = '1' or task_status = 1 or task_status = '0' or task_status = 0)
+    </select>
+
   <select id="selectUnStartMainTaskCount" resultType="java.lang.Integer">
         select count(*) from ts_main_task where task_status = '0' or task_status = 0
   </select>
+
   <select id="selectStartMainTaskCount" resultType="java.lang.Integer">
         select count(*) from ts_main_task where task_status = '1' or task_status = 1
    </select>

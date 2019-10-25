@@ -32,48 +32,62 @@ public class NomalTaskCreateWorker extends BaseAutoTestWorker  {
     @Override
     void createTask()
     {
-        List<BaseMapBerth> PodbaseMapBerths = baseMapBerthMapper.selectPodNormalPoint();
-        List<BaseMapBerth> noPodbaseMapBerths = baseMapBerthMapper.selectEmptyPodNormalPoint();
-        List<BaseMapBerth> noPod2baseMapBerths = baseMapBerthMapper.selectEmptyPod2NormalPoint();
-        //生成随机数
-        Random random = new Random();
-        int startNum = random.nextInt(PodbaseMapBerths.size());
-
-        BaseMapBerth startBerth = PodbaseMapBerths.get(startNum);
-        String startpoint=startBerth.getPointAlias();
-        int endNum;
-        if(startpoint.equals("306")||startpoint.equals("307")) {
-             endNum = random.nextInt(noPod2baseMapBerths.size());
-        }
-        else
-        {
-            endNum = random.nextInt(noPodbaseMapBerths.size());
-        }
-        BaseMapBerth endBerth = noPodbaseMapBerths.get(endNum);
-        String Endpoint=endBerth.getPointAlias();
-        String podCode=startBerth.getPodCode();
-        String  taskcode= CodeBuilder.codeBuilder("M");
-        Imitatetest imitateTest = new Imitatetest();
-        imitateTest.setTaskcode(taskcode);
-        imitateTest.setStartingpoint(startpoint);
-        imitateTest.setEndpoint(Endpoint);
-        imitateTest.setShelfnumber(podCode);
-        imitateTestMapper.insertSelective(imitateTest);
-
-        AgvHandlingTaskCreateRequest createTaskRequest = new AgvHandlingTaskCreateRequest();
-        List<AgvHandlingTaskCreateRequest> createTaskRequests = new ArrayList<AgvHandlingTaskCreateRequest>();
-
-        createTaskRequest.setTaskCode(taskcode);
-        createTaskRequest.setPodCode(podCode);
-        createTaskRequest.setSrcWb(startpoint);
-        createTaskRequest.setDestWb(Endpoint);
-        createTaskRequest.setTaskPri("urgent");
-        createTaskRequests.add(createTaskRequest);
-        MesBaseRequest<List<AgvHandlingTaskCreateRequest>>  mesBaseRequest=new MesBaseRequest("1002",createTaskRequests);
-
         if (mainTaskMapper.selectStartUSpTopTaskCount() <3) {
-            agvHandlingTaskController.createTask(mesBaseRequest);
-        } else {
+
+            List<BaseMapBerth> PodbaseMapBerths = baseMapBerthMapper.selectPodNormalPoint();
+            List<BaseMapBerth> noPodbaseMapBerths = baseMapBerthMapper.selectEmptyPodNormalPoint();
+            List<BaseMapBerth> noPod2baseMapBerths = baseMapBerthMapper.selectEmptyPod2NormalPoint();
+            //生成随机数
+            Random random = new Random();
+            int startNum = 0;
+            BaseMapBerth startBerth = null;
+            String podCode = "";
+            String startpoint = "";
+            int count = 1;
+
+            while (count != 0) {
+                if (mainTaskMapper.selectCountbyAllPod() == 6) {
+
+                    logger.info("当前所有货架都已被占用");
+                    return ;
+                }
+                startNum = random.nextInt(PodbaseMapBerths.size());
+                startBerth = PodbaseMapBerths.get(startNum);
+                podCode = startBerth.getPodCode();
+                count = mainTaskMapper.selectCountbyPod(podCode);
+            }
+            startpoint = startBerth.getPointAlias();
+                int endNum;
+                if (startpoint.equals("306") || startpoint.equals("307")) {
+                    endNum = random.nextInt(noPod2baseMapBerths.size());
+                } else {
+                    endNum = random.nextInt(noPodbaseMapBerths.size());
+                }
+                BaseMapBerth endBerth = noPodbaseMapBerths.get(endNum);
+                String Endpoint = endBerth.getPointAlias();
+
+                String taskcode = CodeBuilder.codeBuilder("M");
+                Imitatetest imitateTest = new Imitatetest();
+                imitateTest.setTaskcode(taskcode);
+                imitateTest.setStartingpoint(startpoint);
+                imitateTest.setEndpoint(Endpoint);
+                imitateTest.setShelfnumber(podCode);
+                imitateTestMapper.insertSelective(imitateTest);
+
+                AgvHandlingTaskCreateRequest createTaskRequest = new AgvHandlingTaskCreateRequest();
+                List<AgvHandlingTaskCreateRequest> createTaskRequests = new ArrayList<AgvHandlingTaskCreateRequest>();
+
+                createTaskRequest.setTaskCode(taskcode);
+                createTaskRequest.setPodCode(podCode);
+                createTaskRequest.setSrcWb(startpoint);
+                createTaskRequest.setDestWb(Endpoint);
+                createTaskRequest.setTaskPri("urgent");
+                createTaskRequests.add(createTaskRequest);
+                MesBaseRequest<List<AgvHandlingTaskCreateRequest>> mesBaseRequest = new MesBaseRequest("1002", createTaskRequests);
+                agvHandlingTaskController.createTask(mesBaseRequest);
+            }
+
+        else {
           logger.warn("正在执行的点对点任务已经超过三条");
         }
     }

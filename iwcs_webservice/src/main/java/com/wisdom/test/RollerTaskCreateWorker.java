@@ -63,6 +63,7 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
         int downPointTwoRecycleNum = 0;
         //回收点
         String recyclePoint = "";
+        if (mainTaskMapper.selectStartSupplyAndRecycleTaskCount() < 3) {
         //生成随机数据
         List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectAllRollerPoint();
 
@@ -144,8 +145,6 @@ public class RollerTaskCreateWorker extends BaseAutoTestWorker{
         createTaskRequest.setTaskPri("urgent");
        createTaskRequests.add(createTaskRequest);
         MesBaseRequest<List<CreateTaskRequest>> mesBaseRequest=new MesBaseRequest("1001",createTaskRequests);
-
-        if (mainTaskMapper.selectStartSupplyAndRecycleTaskCount() < 3) {
             lineFeedAndRecycleController.taskCreate(mesBaseRequest);
         } else
             {

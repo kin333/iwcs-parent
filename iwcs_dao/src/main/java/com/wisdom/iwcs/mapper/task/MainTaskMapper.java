@@ -47,7 +47,14 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
     int updatePriority(@Param("mainTaskList") List<String> mainTaskList,@Param("priority") Integer priority);
 
     int updateMainTaskEleByMainTaskNum(MainTask mainTask);
-
+    /**
+     * 查询是否所有的货架都已被占用
+     */
+    Integer selectCountbyAllPod();
+    /**
+     * 查询当前货架是否被占用
+     */
+    Integer selectCountbyPod(String pod);
     /**
      * 查询未开始的主任务数量
      */

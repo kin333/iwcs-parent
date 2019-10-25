@@ -41,6 +41,7 @@ public class RollerEmptyTaskCreateWorker extends BaseAutoTestWorker {
      */
     @Override
     void createTask() {
+        if (mainTaskMapper.selectStartEmptyRecycleTask() < 3) {
         List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectAllRollerPoint();
         //生成随机数
         Random random = new Random();
@@ -77,7 +78,6 @@ public class RollerEmptyTaskCreateWorker extends BaseAutoTestWorker {
         MesBaseRequest<List<CreateTaskRequest>> mesBaseRequest = new MesBaseRequest("1000", createTaskRequests);
 
 
-        if (mainTaskMapper.selectStartEmptyRecycleTask() < 3) {
             emptyRecyleTaskController.taskCreate(mesBaseRequest);
         } else {
             logger.warn("正在执行的回收空料箱任务已达到三条");
