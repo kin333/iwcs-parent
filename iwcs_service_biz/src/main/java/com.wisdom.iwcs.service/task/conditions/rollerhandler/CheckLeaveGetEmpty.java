@@ -11,10 +11,8 @@ import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-public class CheckRollerLeave implements IConditionHandler {
+public class CheckLeaveGetEmpty implements IConditionHandler {
 
     private Logger logger = LoggerFactory.getLogger(CheckRollerContinue.class);
 
@@ -24,12 +22,13 @@ public class CheckRollerLeave implements IConditionHandler {
     TaskContextMapper taskContextMapper;
 
     /**
-     * 超越 小车是否离开 上料点
+     * 滚筒 上空料箱点离开
      * @param subTaskCondition
      * @return
      */
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
+
         logger.info("任务单{}CheckRollerLeave前置条件检查开始", subTaskCondition.getSubTaskNum());
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskCondition.getSubTaskNum());
         String mainTaskCode = subTask.getMainTaskNum();
@@ -38,11 +37,10 @@ public class CheckRollerLeave implements IConditionHandler {
         String context = taskContext.getContext();
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
-        if (contextDTO.getChaLeaveGood()) {
+        if (contextDTO.getChaLeaveDownEmpty()) {
             logger.info("任务单{}CheckRollerLeave前置条件检查成功", subTaskCondition.getSubTaskNum());
             return true;
         }
-
         return false;
     }
 

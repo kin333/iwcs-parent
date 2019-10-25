@@ -720,11 +720,11 @@ public class TaskConstants {
          */
         public final static String LEAVE_DOWN_GOOD = "4";
         /**
-         * 超越 去空料箱离开
+         * 超越 上空料箱离开
          */
         public final static String LEAVE_GOOD_EMPTY = "6";
         /**
-         * 超越 供料箱点离开
+         * 超越 下空料箱点离开
          */
         public final static String LEAVE_UP_GOOD_EMPTY = "8";
     }
