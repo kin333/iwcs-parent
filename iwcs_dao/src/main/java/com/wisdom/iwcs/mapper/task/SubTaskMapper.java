@@ -75,6 +75,11 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * @return
      */
     int updateTimeBySubTaskNum(SubTask subTask);
+    /**
+     * 根据子任务编号以及当前任务状态更新机器人编号,和状态
+     * @return
+     */
+    int updateTimeByTaskNumAndStatus(@Param("subTask")SubTask subTask,@Param("currentStatus") String currentStatus);
 
     /**
      * 通过执行任务号查询子任务

@@ -282,6 +282,26 @@
     </set>
     where sub_task_num = #{subTaskNum}
   </update>
+  <update id="updateTimeByTaskNumAndStatus">
+    update ts_sub_task
+    <set>
+      work_task_status = #{subTask.workTaskStatus},
+      <if test="robotCode != null and robotCode != ''">
+        robot_code = #{subTask.robotCode},
+      </if>
+      <if test="taskStartTime != null">
+        task_start_time = #{subTask.taskStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskLeaveTime != null">
+        task_leave_time = #{subTask.taskLeaveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskEndTime != null">
+        task_end_time = #{subTask.taskEndTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where sub_task_num = #{subTask.subTaskNum}
+    and work_task_status = #{currentStatus}
+  </update>
 
   <select id="selectByTaskCode" resultMap="BaseResultMap">
     select

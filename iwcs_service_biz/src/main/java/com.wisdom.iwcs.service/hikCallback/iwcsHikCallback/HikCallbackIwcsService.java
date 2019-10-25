@@ -119,7 +119,7 @@ public class HikCallbackIwcsService {
             subTask.setTaskStartTime(new Date());
         }
         //更新子任务的执行AGV和实际任务状态以及实际任务开始时间
-        subTaskMapper.updateTimeBySubTaskNum(subTask);
+        subTaskMapper.updateTimeByTaskNumAndStatus(subTask, TaskConstants.workTaskStatus.READY);
 
         subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         //向消息队列发送消息
