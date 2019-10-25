@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CheckRollerContinue implements IConditionHandler {
-    private Logger logger = LoggerFactory.getLogger(CheckRollerContinue.class);
+public class CheckRollerContinueFour implements IConditionHandler {
+    private Logger logger = LoggerFactory.getLogger(CheckRollerContinueFour.class);
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -23,7 +23,7 @@ public class CheckRollerContinue implements IConditionHandler {
     TaskContextMapper taskContextMapper;
 
     /**
-     * 滚动是否继续滚动 -------上料点
+     * 滚动是否继续滚动 -------
      * @param subTaskCondition
      * @return
      */
@@ -41,7 +41,7 @@ public class CheckRollerContinue implements IConditionHandler {
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
         subTaskDTO.setSubTaskNum(subTask.getSubTaskNum());
-        if (contextDTO.getRollerUpGood()){
+        if (contextDTO.getRollerUpEmpty()){
             subTaskDTO.setJsonData("");
             subTaskMapper.updateJsonData(subTaskDTO.getSubTaskNum(), subTaskDTO.getJsonData());
             return true;

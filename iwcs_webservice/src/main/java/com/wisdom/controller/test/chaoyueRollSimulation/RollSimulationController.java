@@ -126,7 +126,7 @@ public class RollSimulationController {
 
         StartSupllyAndRecyles startSupllyAndRecyles = new StartSupllyAndRecyles();
 
-        startSupllyAndRecyles.setNodeType("2");
+        startSupllyAndRecyles.setNodeType("4");
         startSupllyAndRecyles.setCurrentWb(currentWb);
         startSupllyAndRecyles.setTaskCode(taskCode);
 

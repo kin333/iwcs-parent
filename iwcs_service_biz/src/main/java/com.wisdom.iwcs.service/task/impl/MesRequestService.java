@@ -10,8 +10,8 @@ import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.upstream.mes.*;
-import com.wisdom.iwcs.domain.upstream.mes.chaoyue.*;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
+import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ReportEmptyContainerNumber;
+import com.wisdom.iwcs.domain.upstream.mes.chaoyue.StartSupllyAndRecyles;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.*;
@@ -499,6 +500,12 @@ public class MesRequestService {
             throw new MesBusinessException(reqCode, "供料点必填");
         }
 
+        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(startSupllyAndRecyle.getTaskCode());
+        String context = taskContext.getContext();
+        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
+        contextDTO.setCurrentWb(startSupllyAndRecyle.getCurrentWb());
+
+
         // 如果同时回收空料箱 更新站点集合
         if (SEND_TYPE.equals(startSupllyAndRecyle.getNodeType()) && StringUtils.isNotEmpty(startSupllyAndRecyle.getRecyleWb())) {
 
@@ -516,14 +523,20 @@ public class MesRequestService {
             mainTask.setStaticViaPaths(jsonString);
 
             mainTaskMapper.updateByPrimaryKey(mainTask);
+            contextDTO.setRecyleWb(startSupllyAndRecyle.getRecyleWb());
+            contextDTO.setRollerDownGoodEmpty(true);
         }
 
-        TaskContext taskContext = taskContextMapper.selectByMainTaskNum(startSupllyAndRecyle.getTaskCode());
-        String context = taskContext.getContext();
-        ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
-        contextDTO.setCurrentWb(startSupllyAndRecyle.getCurrentWb());
-        contextDTO.setNodeType(startSupllyAndRecyle.getNodeType());
-        contextDTO.setRecyleWb(startSupllyAndRecyle.getRecyleWb());
+        if (RECEIVE_TYPE.equals(startSupllyAndRecyle.getNodeType())){
+            contextDTO.setRollerUpGood(true);
+        }else if (SEND_TYPE.equals(startSupllyAndRecyle.getNodeType()) && StringUtils.isEmpty(startSupllyAndRecyle.getRecyleWb())){
+            contextDTO.setRollerDownGoodNOEmpty(true);
+        }else if (RECYLE_TYPE.equals(startSupllyAndRecyle.getNodeType())){
+            contextDTO.setRollerUpEmpty(true);
+        }else if (RECOVERY_TYPE.equals(startSupllyAndRecyle.getNodeType())){
+            contextDTO.setRollerRecyleEmpty(true);
+        }
+
         String jsonStr = TaskContextUtils.objectToJson(contextDTO);
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
 

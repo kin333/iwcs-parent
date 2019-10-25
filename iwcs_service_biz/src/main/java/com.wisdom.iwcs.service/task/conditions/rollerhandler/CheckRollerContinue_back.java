@@ -8,14 +8,17 @@ import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
+
 @Component
-public class CheckRollerContinue implements IConditionHandler {
-    private Logger logger = LoggerFactory.getLogger(CheckRollerContinue.class);
+public class CheckRollerContinue_back implements IConditionHandler {
+    private Logger logger = LoggerFactory.getLogger(CheckRollerContinue_back.class);
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -23,13 +26,13 @@ public class CheckRollerContinue implements IConditionHandler {
     TaskContextMapper taskContextMapper;
 
     /**
-     * 滚动是否继续滚动 -------上料点
+     * 滚动是否继续滚动
      * @param subTaskCondition
      * @return
      */
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
-        logger.info("任务单{}CheckRollerContinueTwo前置条件检查开始", subTaskCondition.getSubTaskNum());
+        logger.info("任务单{}CheckRollerContinue前置条件检查开始", subTaskCondition.getSubTaskNum());
 
         SubTask subTaskDTO = new SubTask();
 
@@ -40,9 +43,24 @@ public class CheckRollerContinue implements IConditionHandler {
         String context = taskContext.getContext();
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
-        subTaskDTO.setSubTaskNum(subTask.getSubTaskNum());
-        if (contextDTO.getRollerUpGood()){
-            subTaskDTO.setJsonData("");
+        if (!StringUtils.isEmpty(contextDTO.getNodeType())) {
+            logger.info("任务单{}CheckRollerContinue前置条件检查成功", subTaskCondition.getSubTaskNum());
+            // 判断上料还是下料
+            subTaskDTO.setSubTaskNum(subTask.getSubTaskNum());
+            // 下料
+            if (SEND_TYPE.equals(contextDTO.getNodeType())) {
+                if (StringUtils.isNotEmpty(contextDTO.getRecyleWb())) {
+                    subTaskDTO.setJsonData("1");
+                } else {
+                    subTaskDTO.setJsonData("0");
+                }
+                // 回收点
+            } else if (RECOVERY_TYPE.equals(contextDTO.getNodeType())) {
+                    subTaskDTO.setJsonData("1");
+                    // 接料
+            } else if (RECEIVE_TYPE.equals(contextDTO.getNodeType())) {
+                subTaskDTO.setJsonData("");
+            }
             subTaskMapper.updateJsonData(subTaskDTO.getSubTaskNum(), subTaskDTO.getJsonData());
             return true;
         }

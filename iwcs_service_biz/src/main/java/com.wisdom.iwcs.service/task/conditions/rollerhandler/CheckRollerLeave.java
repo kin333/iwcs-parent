@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CheckRollerLeave implements IConditionHandler {
 
-    private Logger logger = LoggerFactory.getLogger(CheckRollerContinue.class);
+    private Logger logger = LoggerFactory.getLogger(CheckRollerContinue_back.class);
 
     @Autowired
     SubTaskMapper subTaskMapper;

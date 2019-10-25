@@ -193,4 +193,35 @@ public class ContextDTO {
      */
     @ColumnName("supplyUnLoadNum")
     private String supplyUnLoadNum;
+
+    /**
+     * 超越 上料点接料滚动
+     */
+    @ColumnName("rollerUpGood")
+    private Boolean rollerUpGood;
+
+    /**
+     * 超越 下料点下料滚动(不回收空框)
+     */
+    @ColumnName("rollerDownGoodNOEmpty")
+    private Boolean rollerDownGoodNOEmpty;
+
+    /**
+     *超越 下料点下料滚动（回收空框）
+     */
+    @ColumnName("rollerDownGoodEmpty")
+    private Boolean rollerDownGoodEmpty;
+
+    /**
+     * 超越 单独回收空料箱 上箱点滚动
+     */
+    @ColumnName("rollerUpEmpty")
+    private Boolean rollerUpEmpty;
+
+    /**
+     * 超越 回收点下空料箱滚动
+     */
+    @ColumnName("rollerRecyleEmpty")
+    private Boolean rollerRecyleEmpty;
+
 }

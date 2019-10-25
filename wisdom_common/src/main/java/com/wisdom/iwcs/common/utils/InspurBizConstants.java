@@ -329,5 +329,9 @@ public class InspurBizConstants {
          * 回收
          */
         public final static String RECOVERY_TYPE = "3";
+        /**
+         * 单独回收空料箱
+         */
+        public final static String RECYLE_TYPE = "4";
     }
 }
