@@ -11,7 +11,9 @@ import com.wisdom.iwcs.service.task.conditions.conditonHandler.IConditionHandler
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CheckDownEmpty implements IConditionHandler {
     private Logger logger = LoggerFactory.getLogger(CheckRollerContinue.class);
 
