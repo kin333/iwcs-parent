@@ -46,6 +46,9 @@
     <if test="searchKey != null and searchKey != ''">
       and 1=1
     </if>
+    <if test="subTaskNum != '' and subTaskNum != null">
+      and sub_task_num = #{subTaskNum}
+    </if>
     <if test="startTime != null">
       and created_time &gt;= #{startTime,jdbcType=BIGINT}
     </if>

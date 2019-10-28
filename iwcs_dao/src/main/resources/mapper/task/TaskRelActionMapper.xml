@@ -37,6 +37,9 @@
     <if test="searchKey != null and searchKey != ''">
       and 1=1
     </if>
+    <if test="templCode != null and templCode != ''">
+      and templ_code = #{templCode}
+    </if>
     <if test="startTime != null">
       and created_time &gt;= #{startTime,jdbcType=BIGINT}
     </if>
