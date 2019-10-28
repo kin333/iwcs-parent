@@ -246,7 +246,7 @@
   <update id="updateRobotCodeByBerCode">
     update ts_sub_task
     <set>
-      work_task_status = #{workTaskStatus},
+      worker_task_code = #{workerTaskCode},
       <if test="robotCode != null and robotCode != ''">
         robot_code = #{robotCode},
       </if>
