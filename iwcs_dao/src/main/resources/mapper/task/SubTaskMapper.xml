@@ -286,16 +286,16 @@
     update ts_sub_task
     <set>
       work_task_status = #{subTask.workTaskStatus},
-      <if test="robotCode != null and robotCode != ''">
+      <if test="subTask.robotCode != null and subTask.robotCode != ''">
         robot_code = #{subTask.robotCode},
       </if>
-      <if test="taskStartTime != null">
+      <if test="subTask.taskStartTime != null">
         task_start_time = #{subTask.taskStartTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="taskLeaveTime != null">
+      <if test="subTask.taskLeaveTime != null">
         task_leave_time = #{subTask.taskLeaveTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="taskEndTime != null">
+      <if test="subTask.taskEndTime != null">
         task_end_time = #{subTask.taskEndTime,jdbcType=TIMESTAMP},
       </if>
     </set>
