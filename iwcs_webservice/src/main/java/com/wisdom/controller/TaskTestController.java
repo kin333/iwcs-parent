@@ -415,18 +415,12 @@ public class TaskTestController {
      */
     @GetMapping("/rollMainTaskTest")
     public Result rollMainTaskTest(){
-        int time = 1000;
         try {
 
             logger.info("开始启动 自动产线供料、回收空料箱任务 调度线程");
             Thread supplyAndRecycle = new Thread(rollerTaskCreateTestWorker);
             supplyAndRecycle.start();
             logger.info("启动 自动产线供料、回收空料箱任务 调度线程成功");
-
-            logger.info("开始 启动任务 调度器线程");
-            Thread thread = new Thread(wcsTaskScheduler);
-            thread.start();
-            logger.info("启动 任务调度器线程成功");
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -525,11 +525,13 @@ public class MesRequestService {
             mainTaskMapper.updateByPrimaryKey(mainTask);
             contextDTO.setRecyleWb(startSupllyAndRecyle.getRecyleWb());
             contextDTO.setRollerDownGoodEmpty(true);
+            contextDTO.setRollerDownGoodNOEmpty(false);
         }
 
         if (RECEIVE_TYPE.equals(startSupllyAndRecyle.getNodeType())){
             contextDTO.setRollerUpGood(true);
         }else if (SEND_TYPE.equals(startSupllyAndRecyle.getNodeType()) && StringUtils.isEmpty(startSupllyAndRecyle.getRecyleWb())){
+            contextDTO.setRollerDownGoodEmpty(false);
             contextDTO.setRollerDownGoodNOEmpty(true);
         }else if (RECYLE_TYPE.equals(startSupllyAndRecyle.getNodeType())){
             contextDTO.setRollerUpEmpty(true);
