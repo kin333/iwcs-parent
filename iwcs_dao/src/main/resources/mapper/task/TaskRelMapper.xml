@@ -87,7 +87,7 @@
   </select>
 
   <select id="selectByMainCode" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List" /> from ts_task_rel where main_task_type_code = #{mainCode}
+    select <include refid="Base_Column_List" /> from ts_task_rel where main_task_type_code = #{mainCode} order by sub_task_seq ASC
   </select>
   <select id="selectBySubCode" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_task_rel where

@@ -7,6 +7,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.domain.task.dto.TaskRelActionDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskRelActionMapStruct;
 import com.wisdom.iwcs.service.task.impl.TaskRelActionService;
+import com.wisdom.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.wisdom.iwcs.common.utils.Result;
@@ -115,5 +116,14 @@ public class TaskRelActionController {
         taskRelActionService.updateByPrimaryKey(taskRelActionDTO);
 
         return new Result();
+    }
+
+    /**
+     * 根据templCode查询
+     */
+    @PostMapping("/getDataByActionCode")
+    public Result selectDataByActionCode(@RequestBody TaskRelActionDTO taskRelActionDTO) {
+
+       return new Result(taskRelActionService.selectDataByTemplCode(taskRelActionDTO));
     }
 }

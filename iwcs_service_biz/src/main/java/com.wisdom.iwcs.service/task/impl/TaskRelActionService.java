@@ -9,6 +9,7 @@ import com.wisdom.iwcs.domain.task.dto.TaskRelActionDTO;
 import com.wisdom.iwcs.mapper.task.TaskRelActionMapper;
 import com.wisdom.iwcs.mapstruct.task.TaskRelActionMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
+import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,5 +236,14 @@ public class TaskRelActionService {
         mGridReturnData.setPageInfo(pageInfoFinal);
 
         return mGridReturnData;
+    }
+    /**
+     * 根据templCode查询数据
+     */
+    public List<TaskRelActionDTO> selectDataByTemplCode(TaskRelActionDTO taskRelAction) {
+
+        List<TaskRelAction> taskRelActionDTO = taskRelActionMapper.selectDataByTemplCode(taskRelAction);
+
+        return taskRelActionMapStruct.toDto(taskRelActionDTO);
     }
 }

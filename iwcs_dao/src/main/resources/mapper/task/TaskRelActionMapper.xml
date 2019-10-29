@@ -65,4 +65,9 @@
     where templ_code = #{tempCode}
     and execute_mode = '1'
   </select>
+
+  <select id="selectDataByTemplCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel_action
+    where templ_code = #{templCode} and action_code != #{actionCode}
+  </select>
 </mapper>

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.TaskRelAction;
+import com.wisdom.iwcs.domain.task.dto.TaskRelActionDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -26,4 +27,6 @@ public interface TaskRelActionMapper extends MyMapperAndIds<TaskRelAction> {
     TaskRelAction selectByActionCode(String actionCode);
 
     List<TaskRelAction> selectExecuteModeByTempCode(String tempCode);
+
+    List<TaskRelAction> selectDataByTemplCode(TaskRelActionDTO taskRelActionDTO);
 }
