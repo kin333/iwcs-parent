@@ -41,5 +41,6 @@
     <if test="reqCode != null and reqCode != ''">
       and req_code = #{reqCode}
     </if>
+    order by msg_time desc
   </select>
 </mapper>
