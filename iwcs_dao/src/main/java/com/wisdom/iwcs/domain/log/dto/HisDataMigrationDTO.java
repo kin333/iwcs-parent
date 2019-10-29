@@ -5,22 +5,34 @@ public class HisDataMigrationDTO {
     private String tableName;
     //迁移的表中的时间字段名
     private String dateColName;
+    //迁移条件
+    private String date;
     //迁移到的新表名
     private String toTableName;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public HisDataMigrationDTO() {
     }
 
-    public HisDataMigrationDTO(String tableName, String dateColName) {
+    public HisDataMigrationDTO(String tableName, String date, String dateColName) {
         super();
         this.tableName = tableName;
+        this.date= date;
         this.dateColName = dateColName;
     }
 
-    public HisDataMigrationDTO(String toTableName, String tableName, String dateColName) {
+    public HisDataMigrationDTO(String toTableName, String tableName, String date, String dateColName) {
         super();
         this.toTableName = toTableName;
         this.tableName = tableName;
+        this.date = date;
         this.dateColName = dateColName;
     }
 
