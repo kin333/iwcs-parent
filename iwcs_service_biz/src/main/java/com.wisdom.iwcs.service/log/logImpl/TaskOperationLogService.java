@@ -232,6 +232,7 @@ public class TaskOperationLogService {
             }
         });
         map.put("searchKey", gridPageRequest.getSearchKey());
+        map.put("showHistory", gridPageRequest.getShowHistory());
         // 对map中的参数的合法性进行校验
 
         String sortMyBatisByString = gridPageRequest.getSortMybatisString();
