@@ -139,7 +139,10 @@ public class TemplateRelatedServer {
         //查询任务上下文表的context信息
         TaskContext taskContext = taskContextMapper.selectByMainTaskNum(subTask.getMainTaskNum());
         checkNull(mainTask, "无对应的上下文信息:" + subTask.getMainTaskNum());
-        String context = taskContext.getContext();
+        String context = "";
+        if (taskContext != null) {
+            context = taskContext.getContext();
+        }
         PublicContextDTO publicContextDTO = JSONObject.parseObject(context, PublicContextDTO.class);
 
         //4.向发送消息体中插入消息

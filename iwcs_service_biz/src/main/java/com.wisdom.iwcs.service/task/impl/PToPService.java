@@ -99,7 +99,7 @@ public class PToPService implements IPToPService {
             basePodDetail.setPodCode(pToPRequest.getPodCode());
             basePodDetail.setLockSource(subTaskNum);
             //货架上锁
-            iMapResouceService.lockPod(basePodDetail);
+//            iMapResouceService.lockPod(basePodDetail);
 
             subTaskCreate.setStartBercode(pToPRequest.getStartPoint());
             subTaskCreate.setMapCode(startBercode.getMapCode());

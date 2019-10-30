@@ -68,6 +68,12 @@
 
   <select id="selectDataByTemplCode" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_task_rel_action
-    where templ_code = #{templCode} and action_code != #{actionCode}
+    where 1=1
+    <if test="templCode != '' and templCode != null">
+      and templ_code = #{templCode}
+    </if>
+    <if test="actionCode != null and actionCode != ''">
+      and action_code != #{actionCode}
+    </if>
   </select>
 </mapper>
