@@ -115,6 +115,7 @@ public class MapResouceService implements IMapResouceService {
         return baseMapBerth;
     }
 
+
     /**
      * 计算组包含最多点位
      * @param baseMapBerthList
@@ -140,6 +141,7 @@ public class MapResouceService implements IMapResouceService {
         }
         return berGroupList;
     }
+
 
     /**
      * 计算x值最小的位置
@@ -317,6 +319,58 @@ public class MapResouceService implements IMapResouceService {
         return new Result(needLockPod);
     }
 
+    /**
+     * 获取区域的有货或无货的货架并锁定（超越按x轴顺序）
+     * @param lockPodConditions 获取条件
+     * @return
+     */
+    public Result lockPodByConditions(List<LockPodCondition> lockPodConditions) {
+        BasePodDetail needLockPod = null;
+        LockPodCondition tmpLockPodCondition = null;
+        for (LockPodCondition lockPodCondition : lockPodConditions) {
+            //校验参数是否缺失
+            Result result = this.checkBaseLockCondition(lockPodCondition);
+            if (result.getReturnCode() != HttpStatus.OK.value()) {
+                return result;
+            }
+            if(Strings.isNullOrEmpty(lockPodCondition.getInStock())) {
+                return new Result(400,"缺少货架是否有货的条件");
+            }
+            //查找符合条件的货架
+            List<BasePodDetail> basePodDetails = basePodDetailMapper.selectByLockPodConfigtion(lockPodCondition);
+            if (basePodDetails != null && basePodDetails.size() > 0) {
+                //按照x轴顺序取
+                needLockPod = distanceRules(basePodDetails);
+                tmpLockPodCondition = lockPodCondition;
+                break;
+            }
+        }
+        if (needLockPod == null) {
+            logger.error("锁定源为{},锁定的条件{}", lockPodConditions.get(0).getLockSource(), JSON.toJSONString(lockPodConditions));
+            throw new BusinessException("找不到符合要求的货架");
+        }
+        logger.debug("开始锁定货架{},锁定源为{}", needLockPod.getPodCode(), tmpLockPodCondition.getLockSource());
+        needLockPod.setLockSource(tmpLockPodCondition.getLockSource());
+        //锁定货架操作
+        lockPod(needLockPod);
+        //返回被锁定的货架信息
+        needLockPod.setLockSource(tmpLockPodCondition.getLockSource());
+        needLockPod.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.LOCK.getCode()));
+        return new Result(needLockPod);
+    }
+
+
+    /**
+     * 计算x值最小的位置
+     * @param basePodDetailList
+     * @return
+     */
+    public BasePodDetail distanceRules(List<BasePodDetail> basePodDetailList) {
+        Optional<BasePodDetail> minMapBerth = basePodDetailList.stream().max((a,b) -> a.getCoox().compareTo(b.getCoox()));
+        return minMapBerth.get();
+    }
+
+
     public Result checkBaseLockCondition(BaseLockCondition baseLockCondition) {
         if(Strings.isNullOrEmpty(baseLockCondition.getMapCode())) {
             return new Result(400,"缺少地图编码");
@@ -374,6 +428,53 @@ public class MapResouceService implements IMapResouceService {
     }
 
     /**
+     *超越  获取区域的空闲储位并锁定（按照x轴顺序）
+     * @param baseMapBerthList
+     * @return
+     */
+    @Override
+    public Result lockEmptyStorageByBizTypList(List<LockMapBerthCondition> baseMapBerthList) {
+
+        LockMapBerthCondition selectLockMapBerthCondition = new LockMapBerthCondition();
+        BaseMapBerth selectBaseMapBerth = null;
+
+        for (LockMapBerthCondition lockMapBerthCondition:baseMapBerthList) {
+            //校验参数是否缺失
+            Result result = this.checkBaseLockCondition(lockMapBerthCondition);
+            if (result.getReturnCode() != HttpStatus.OK.value()) {
+                return result;
+            }
+            if(Strings.isNullOrEmpty(lockMapBerthCondition.getBizType())) {
+                return new Result(400,"缺少berthTypeValue");
+            }
+            if (Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
+                return new Result(400, "缺少地图编码");
+            }
+
+            //根据传入的条件找到符合储位
+            List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            if(selectBaseMapBerths.size() > 0) {
+                selectLockMapBerthCondition = lockMapBerthCondition;
+                selectBaseMapBerth = distanceRule(selectBaseMapBerths);
+                break;
+            }
+        }
+        if (selectBaseMapBerth == null) {
+            return new Result(400, "找不到空闲储位!");
+        }
+        //锁住选中的储位
+        LockStorageDto lockStorageDto = new LockStorageDto();
+        lockStorageDto.setMapCode(selectBaseMapBerth.getMapCode());
+        lockStorageDto.setBerCode(selectBaseMapBerth.getBerCode());
+        lockStorageDto.setPodCode(selectLockMapBerthCondition.getPodCode());
+        lockStorageDto.setLockSource(selectLockMapBerthCondition.getLockSource());
+        Result lockResult = lockMapBerth(lockStorageDto);
+        Preconditions.checkBusinessError(lockResult.getReturnCode() != 200,lockResult.getReturnMsg());
+        return new Result(selectBaseMapBerth);
+    }
+
+
+    /**
      *  超越  获取区域的空闲储位并锁定
      * @param baseMapBerthList
      * @return
@@ -387,7 +488,7 @@ public class MapResouceService implements IMapResouceService {
             List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
             if(selectBaseMapBerths.size() > 0) {
                 selectLockMapBerthCondition = lockMapBerthCondition;
-                selectBaseMapBerth = selectBaseMapBerths.get(0);
+                selectBaseMapBerth = distanceRule(selectBaseMapBerths);
                 break;
             }
         }

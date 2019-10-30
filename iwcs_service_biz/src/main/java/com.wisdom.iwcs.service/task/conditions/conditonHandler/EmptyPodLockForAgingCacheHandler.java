@@ -27,7 +27,7 @@ public class EmptyPodLockForAgingCacheHandler implements IConditionHandler {
         //其次查找老化区
         areaCondition2.setArea(InspurBizConstants.OperateAreaCodeConstants.AGINGREA);
 
-        return baseLockEmptyPodService.handleConditionService(subTaskCondition,
+        return baseLockEmptyPodService.handleConditionServices(subTaskCondition,
                 Arrays.asList(areaCondition1, areaCondition2),
                 InspurBizConstants.InStock.NO_GOODS);
 

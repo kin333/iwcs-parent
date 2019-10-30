@@ -31,7 +31,7 @@ public class EmptyPodForLineCacheHandler implements IConditionHandler{
         //线体缓存区空货架
         areaCondition1.setBizType(InspurBizConstants.BizTypeConstants.LINECACHEAREA);
 
-        return baseLockEmptyPodService.handleConditionService(subTaskCondition,
+        return baseLockEmptyPodService.handleConditionServices(subTaskCondition,
                                     Arrays.asList(areaCondition1),
                                     InspurBizConstants.InStock.NO_GOODS);
     }

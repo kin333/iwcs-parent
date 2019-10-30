@@ -9,19 +9,19 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 
 /**
- * 超越 检验区呼叫搬离货架 前置条件--锁定 老化缓存区 的一个空储位
- *
+ * 超越  线体缓存区补充空货架前置条件--锁定线体缓存区的一个空储位
+ * @author  snn
  */
 @Service
-public class LockAgingAreaEmptyPosHandler implements IConditionHandler{
+public class LineCacheEmptyPosLockHandler implements IConditionHandler{
     @Autowired
     BaseLockEmptyMapService baseLockEmptyMapService;
 
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
         AreaCondition areaCondition = new AreaCondition();
-        //查找老化缓存区的空点位
-        areaCondition.setArea(InspurBizConstants.BizTypeConstants.AGINGCACHEAREA);
+        //查找线体缓存区的空点位
+        areaCondition.setArea(InspurBizConstants.BizTypeConstants.LINECACHEAREA);
 
         return baseLockEmptyMapService.handleConditionServices(subTaskCondition, Arrays.asList(areaCondition));
     }
