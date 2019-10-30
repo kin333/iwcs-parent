@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.LINEWORKAREA;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.WOKPWAREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.WOKPWAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PLTOWOKPW;
 
 /**
@@ -60,7 +60,7 @@ public class PlToWokpwWorker implements Runnable {
         logger.info("开始创建 产线呼叫搬离货架 的任务");
         List<BaseMapBerth> mapBerthList = baseMapBerthMapper.selectByBizTye(LINEWORKAREA);
         Preconditions.checkBusinessError(mapBerthList.size() <= 0, "基础数据异常: 找不到线体工作区");
-        List<BaseMapBerth> berthList = baseMapBerthMapper.selectByBizTye(WOKPWAREA);
+        List<BaseMapBerth> berthList = baseMapBerthMapper.selectByOperateAreaCode(WOKPWAREA);
         Preconditions.checkBusinessError(berthList.size() <= 0, "基础数据异常: 找不到人工插线区");
         String srcWb = "";
         String map = "";

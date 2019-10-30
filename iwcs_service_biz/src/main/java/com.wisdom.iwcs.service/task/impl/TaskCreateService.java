@@ -1149,7 +1149,7 @@ public class TaskCreateService implements ITaskCreateService {
         //查询点位坐标
         BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
         Preconditions.checkBusinessError(baseMapBerth == null, "无效货架号" + createTaskRequest.getPodCode());
-        Preconditions.checkBusinessError(!WOKPWAREA.equals(baseMapBerth.getBizType()), "该货架不属于人工插线区！" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(!WOKPWAREA.equals(baseMapBerth.getOperateAreaCode()), "该货架不属于人工插线区！" + createTaskRequest.getPodCode());
 
         //判断老化区是否有空位置
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
