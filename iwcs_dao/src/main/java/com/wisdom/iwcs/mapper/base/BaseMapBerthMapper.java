@@ -47,6 +47,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     BaseMapBerth selectOneByBercode(String bercode);
 
     List<BaseMapBerth> selectEmptyStorageOfInspectionArea(LockMapBerthCondition  lockMapBerthCondition);
+    List<BaseMapBerth> selectEmptyStorageOfInspectionAreas(LockMapBerthCondition  lockMapBerthCondition);
 
     List<BaseMapBerth> selectNotEmptyStorageOfInspectionArea(LockMapBerthCondition  lockMapBerthCondition);
 
@@ -57,6 +58,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     int unlockMapBerth(LockStorageDto lockStorageDto);
 
     List<BaseMapBerth> selectEmptyStorage(LockMapBerthCondition lockMapBerthCondition);
+    List<BaseMapBerth> selectEmptyStorageAging(LockMapBerthCondition lockMapBerthCondition);
 
 
     List<BaseMapBerth> selectAlltorageByMapCode(@Param("areaCode") String areaCode, @Param("operateAreaCode") String operateAreaCode);

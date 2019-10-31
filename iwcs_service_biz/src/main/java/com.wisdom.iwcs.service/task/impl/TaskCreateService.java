@@ -1154,8 +1154,9 @@ public class TaskCreateService implements ITaskCreateService {
         //判断老化区是否有空位置
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+        lockMapBerthCondition.setBizType(AGINGCACHEAREA);
         lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
-        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionArea(lockMapBerthCondition);
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionAreas(lockMapBerthCondition);
         if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
             throw new BusinessException("老化区暂无空位置");
         }
@@ -1163,7 +1164,7 @@ public class TaskCreateService implements ITaskCreateService {
         List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
         lockMapBerthConditions.add(lockMapBerthCondition);
         //  计算空闲点位 并锁定
-        Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditions);
+        Result result = mapResouceService.lockEmptyStorageAgingByOperateAreaList(lockMapBerthConditions);
         if (result.getReturnCode() != HttpStatus.OK.value()) {
             throw new BusinessException("锁定空储位失败");
         }

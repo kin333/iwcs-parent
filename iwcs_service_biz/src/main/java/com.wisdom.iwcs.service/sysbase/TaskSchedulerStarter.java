@@ -1,16 +1,10 @@
 package com.wisdom.iwcs.service.sysbase;
 
-import com.alibaba.fastjson.JSON;
-import com.wisdom.iwcs.common.utils.constant.RabbitMQConstants;
-import com.wisdom.iwcs.common.utils.taskUtils.ConsumerThread;
-import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
-import com.wisdom.iwcs.netty.ElevatorNettyClient;
-import com.wisdom.iwcs.netty.LineNettyClient;
-import com.wisdom.iwcs.netty.NettyServer;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
-import com.wisdom.iwcs.service.task.scheduler.WorkLineScheduler;
-import com.wisdom.iwcs.service.task.wcsSimulator.*;
+import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionSendThread;
+import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionThreadService;
+import com.wisdom.iwcs.service.task.wcsSimulator.TaskLogThreadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,21 +39,21 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 
             logger.info("开始启动任务调度器线程");
             //启动消息日志
-//            threadPoolTaskExecutor.execute(taskLogThreadService);
-//
-//            //启动节点活动消费线程(发送节点通知),3为临时值,应为自动配置值
-//            for (int i = 0; i < 3; i++) {
-//                threadPoolTaskExecutor.execute(new NodeActionThreadService());
-//            }
-//
-//            logger.info("开始启动节点通知调度线程");
-//            threadPoolTaskExecutor.execute(nodeActionSendThread);
-//
-//
-//
-//            Thread taskthread = new Thread(wcsTaskScheduler);
-//            taskthread.start();
-//            logger.info("启动任务调度器线程成功");
+            threadPoolTaskExecutor.execute(taskLogThreadService);
+
+            //启动节点活动消费线程(发送节点通知),3为临时值,应为自动配置值
+            for (int i = 0; i < 3; i++) {
+                threadPoolTaskExecutor.execute(new NodeActionThreadService());
+            }
+
+            logger.info("开始启动节点通知调度线程");
+            threadPoolTaskExecutor.execute(nodeActionSendThread);
+
+
+
+            Thread taskthread = new Thread(wcsTaskScheduler);
+            taskthread.start();
+            logger.info("启动任务调度器线程成功");
 
 //            LineNettyClient lineNettyClient = LineNettyClient.getInstance();
 //            Thread lineNettyClientThread = new Thread(lineNettyClient);
