@@ -119,6 +119,49 @@ public class BaseLockEmptyMapService {
     }
 
     /**
+     * handleCondition
+     * @param subTaskCondition
+     * @param areaConditions 包含点位目标的区域以及次级区域（超越项目）
+     * @return
+     */
+    public boolean handleConditionServicesw(SubTaskCondition subTaskCondition, List<AreaCondition> areaConditions) {
+        logger.info("子任务{},开始锁定空储位", subTaskCondition.getSubTaskNum());
+        if (areaConditions.size() <= 0) {
+            throw new BusinessException("子任务{}请求异常,请初始化目标区域");
+        }
+        String subTaskNum = subTaskCondition.getSubTaskNum();
+        SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskNum);
+
+        logger.debug("子任务{},开始生成锁定条件", subTaskCondition.getSubTaskNum());
+        //添加锁定条件
+        List<LockMapBerthCondition> lockMapBerthConditions = new ArrayList<>();
+        for (AreaCondition areaCondition : areaConditions) {
+            LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+            lockMapBerthCondition.setMapCode(subTask.getMapCode());
+            lockMapBerthCondition.setOperateAreaCode(areaCondition.getArea());
+            lockMapBerthCondition.setLockSource(subTask.getSubTaskNum());
+            if (StringUtils.isNotEmpty(areaCondition.getBizSecondArea())) {
+                lockMapBerthCondition.setBizSecondAreaCode(areaCondition.getBizSecondArea());
+            }
+            lockMapBerthConditions.add(lockMapBerthCondition);
+        }
+
+        //锁定该任务点
+        Result result = mapResouceService.lockEmptyStorageByBizTypListw(lockMapBerthConditions);
+        if (result.getReturnCode() != HttpStatus.OK.value()) {
+            logger.warn("子任务{}锁定空储位失败", subTaskCondition.getSubTaskNum());
+            return false;
+        }
+        BaseMapBerth baseMapBerth = (BaseMapBerth)result.getReturnData();
+        logger.info("子任务{},已锁定空储位,开始同步子任务单信息", subTaskCondition.getSubTaskNum());
+        //更新子任务单中的结束点信息
+        subTaskMapper.updateEndCodeBySubTaskCode(subTask.getSubTaskNum(), baseMapBerth);
+
+        return true;
+    }
+
+
+    /**
      * rollbackCondition 工具方法
      * @param subTaskCondition
      * @return

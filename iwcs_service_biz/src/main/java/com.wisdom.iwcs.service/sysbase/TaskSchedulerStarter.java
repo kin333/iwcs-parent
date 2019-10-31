@@ -3,7 +3,6 @@ package com.wisdom.iwcs.service.sysbase;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionSendThread;
-import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionThreadService;
 import com.wisdom.iwcs.service.task.wcsSimulator.TaskLogThreadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
         //防止上下文多次刷新时，重复启动
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
 
-            logger.info("开始启动任务调度器线程");
+      /*      logger.info("开始启动任务调度器线程");
             //启动消息日志
             threadPoolTaskExecutor.execute(taskLogThreadService);
 
@@ -53,7 +52,7 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 
             Thread taskthread = new Thread(wcsTaskScheduler);
             taskthread.start();
-            logger.info("启动任务调度器线程成功");
+            logger.info("启动任务调度器线程成功");*/
 
 //            LineNettyClient lineNettyClient = LineNettyClient.getInstance();
 //            Thread lineNettyClientThread = new Thread(lineNettyClient);

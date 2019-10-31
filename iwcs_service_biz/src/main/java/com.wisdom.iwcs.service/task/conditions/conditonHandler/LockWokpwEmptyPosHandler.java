@@ -23,7 +23,7 @@ public class LockWokpwEmptyPosHandler implements IConditionHandler{
         //查找人工插线区的空点位
         areaCondition.setArea(InspurBizConstants.OperateAreaCodeConstants.WOKPWAREA);
 
-        return baseLockEmptyMapService.handleConditionServices(subTaskCondition, Arrays.asList(areaCondition));
+        return baseLockEmptyMapService.handleConditionServicesw(subTaskCondition, Arrays.asList(areaCondition));
     }
 
     @Override
