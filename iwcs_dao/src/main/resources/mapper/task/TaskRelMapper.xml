@@ -60,12 +60,12 @@
       and 1=1
     </if>
     <if test="startTime != null">
-      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+      and create_date &gt;= #{startTime,jdbcType=BIGINT}
     </if>
     <if test="endTime != null">
-      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+      and create_date &lt;= #{endTime,jdbcType=BIGINT}
     </if>
-    order by last_modified_time desc
+    order by create_date desc
   </select>
     <select id="selectByMainTaskType" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from ts_task_rel
