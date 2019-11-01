@@ -444,9 +444,6 @@ public class MapResouceService implements IMapResouceService {
             if (result.getReturnCode() != HttpStatus.OK.value()) {
                 return result;
             }
-            if(Strings.isNullOrEmpty(lockMapBerthCondition.getBizType())) {
-                return new Result(400,"缺少berthTypeValue");
-            }
             if (Strings.isNullOrEmpty(lockMapBerthCondition.getMapCode())) {
                 return new Result(400, "缺少地图编码");
             }
