@@ -255,6 +255,9 @@ public class HikCallbackIwcsService {
             //走出储位
             case InspurBizConstants.HikCallbackMethod.TASK_LEAVE_POINT:
                 taskLeavePoint(hikCallBackAgvMove); break;
+                // 超越初始化入库
+            case InspurBizConstants.HikCallbackMethod.TASK_LEAVE_POINT_CHAO:
+                taskLeavePointChao(hikCallBackAgvMove);
             //任务结束
             case InspurBizConstants.HikCallbackMethod.TASK_FINISHED:
                 taskFinished(hikCallBackAgvMove); break;
@@ -303,6 +306,72 @@ public class HikCallbackIwcsService {
                 throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "子任务货架号不匹配,清空货架失败,目标点货架为:"
                         + baseMapBerth.getPodCode() + " 移动货架为:" + hikCallBackAgvMove.getPodCode());
             }
+            logger.info("子任务{}开始清空地码{}的货架编号", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getWbCode());
+            BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
+            tmpBaseMapBerth.setId(baseMapBerth.getId());
+            tmpBaseMapBerth.setPodCode("");
+            //更新储位信息,加货架号,解锁
+            int changeRows = baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
+            if (changeRows <= 0) {
+                logger.error("子任务{}在清空地码{}的货架编号{}时失败", hikCallBackAgvMove.getTaskCode(),
+                        hikCallBackAgvMove.getWbCode(), baseMapBerth.getPodCode());
+            }
+            logger.info("子任务{}在清空地码{}的货架编号{}时成功", hikCallBackAgvMove.getTaskCode(),
+                    hikCallBackAgvMove.getWbCode(), baseMapBerth.getPodCode());
+            transactionManager.commit(status);
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw new BusinessException(e.getMessage());
+        }
+
+        //向消息队列发送消息
+        String message = "子任务回调:子任务已离开储位";
+        RabbitMQPublicService.successTaskLog(new TaskOperationLog(hikCallBackAgvMove.getTaskCode(), TaskConstants.operationStatus.CALLBACK_LEAVE,message));
+
+        //发送释放储位消息
+        ResPosEvt resPosEvt = new ResPosEvt();
+        resPosEvt.setBerCode(hikCallBackAgvMove.getMapDataCode());
+        resPosEvt.setCreateTime(new Date());
+        resPosEvt.setAreaCode(baseMapBerth.getOperateAreaCode());
+        resPosEvt.setResourcesType(TaskConstants.resourceType.POS_RELEASE);
+        resPosEvt.setMapCode(baseMapBerth.getMapCode());
+        resPosEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
+        String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
+        RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
+
+        String bizSecondAreaCode = baseMapBerth.getBizSecondAreaCode();
+        //如果离开的是线体工作区,则发送线体离开消息
+        if (LINEAREA.equals(baseMapBerth.getOperateAreaCode())
+                && (LINEAREAAUTOPOINT.equals(bizSecondAreaCode) || LINEAREAMANUALPOINT.equals(bizSecondAreaCode))) {
+            logger.info("通知线体,小车已经离开{} ",baseMapBerth.getPointAlias());
+            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.LEAVE);
+        }
+    }
+
+    /**
+     * 走出储位时回调的方法
+     * @param hikCallBackAgvMove
+     */
+    private void taskLeavePointChao(HikCallBackAgvMove hikCallBackAgvMove) {
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        BaseMapBerth baseMapBerth = null;
+        try {
+            //使用多个条件进行检查,防止因为网络延时等原因,没有及时接受到消息而造成的异常操作
+            SubTask subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
+            if (subTask != null) {
+                publicCheckSubTask(hikCallBackAgvMove, subTask);
+            }
+            taskLeaveBaseChange(hikCallBackAgvMove);
+
+
+            baseMapBerth = baseMapBerthMapper.selectOneByBercode(hikCallBackAgvMove.getWbCode());
+            if (baseMapBerth == null) {
+                throw new BusinessException(hikCallBackAgvMove.getWbCode() + "此地码的信息不存在");
+            }
+//            if (!hikCallBackAgvMove.getPodCode().equals(baseMapBerth.getPodCode())) {
+//                throw new BusinessException(hikCallBackAgvMove.getTaskCode() + "子任务货架号不匹配,清空货架失败,目标点货架为:"
+//                        + baseMapBerth.getPodCode() + " 移动货架为:" + hikCallBackAgvMove.getPodCode());
+//            }
             logger.info("子任务{}开始清空地码{}的货架编号", hikCallBackAgvMove.getTaskCode(), hikCallBackAgvMove.getWbCode());
             BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
             tmpBaseMapBerth.setId(baseMapBerth.getId());

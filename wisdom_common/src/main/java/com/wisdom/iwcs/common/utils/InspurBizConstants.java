@@ -186,6 +186,11 @@ public class InspurBizConstants {
          */
         public final static String TASK_LEAVE_POINT = "taskLeavePoint";
         /**
+         * 超越初始化入库
+         */
+        public final static String TASK_LEAVE_POINT_CHAO = "taskLeavePointChao";
+
+        /**
          * 任务完成
          */
         public final static String TASK_FINISHED = "taskFinished";

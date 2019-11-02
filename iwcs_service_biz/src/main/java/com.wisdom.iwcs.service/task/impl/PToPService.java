@@ -83,7 +83,7 @@ public class PToPService implements IPToPService {
 
             subTaskCreate.setPodCode(pToPRequest.getPodCode());
             subTaskCreate.setWorkerTaskCode(subTaskNum);
-
+            subTaskCreate.setTemplCode(taskRel.getTemplCode());
             //计算起点通过地图坐标查询坐标
             BaseMapBerth startBercode = baseMapBerthMapper.selectOneByBercode(pToPRequest.getStartPoint());
             subTaskCreate.setStartX(startBercode.getCoox().doubleValue());
@@ -99,7 +99,7 @@ public class PToPService implements IPToPService {
             basePodDetail.setPodCode(pToPRequest.getPodCode());
             basePodDetail.setLockSource(subTaskNum);
             //货架上锁
-//            iMapResouceService.lockPod(basePodDetail);
+            iMapResouceService.lockPod(basePodDetail);
 
             subTaskCreate.setStartBercode(pToPRequest.getStartPoint());
             subTaskCreate.setMapCode(startBercode.getMapCode());
