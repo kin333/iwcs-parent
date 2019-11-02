@@ -411,7 +411,7 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
                 basePodDetail.setCreatedTime(new Date());
                 basePodDetail.setInStock(Integer.valueOf(InspurBizConstants.InStock.NO_GOODS));
                 basePodDetail.setVersion(0);
-                basePodDetail.setInLock(LOCK);
+                basePodDetail.setInLock(UNLOCK);
                 insertBasePodDetailList.add(basePodDetail);
                 data.getBins().stream().forEach(binData -> {
                     BasePodBincode basePodBincode = new BasePodBincode();
