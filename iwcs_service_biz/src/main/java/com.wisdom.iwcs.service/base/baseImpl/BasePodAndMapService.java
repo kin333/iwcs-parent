@@ -10,7 +10,6 @@ import com.wisdom.iwcs.domain.base.dto.BasePodAndMapDTO;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.service.callHik.callHikImpl.BindPodAndBerthService;
-import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,7 @@ import java.math.BigDecimal;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class BasePodAndMapService {
-    private final Logger logger = LoggerFactory.getLogger(TaskCreateService.class);
+    private final Logger logger = LoggerFactory.getLogger(BasePodAndMapService.class);
     @Autowired
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
