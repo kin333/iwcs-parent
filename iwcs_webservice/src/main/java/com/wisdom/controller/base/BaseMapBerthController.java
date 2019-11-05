@@ -86,12 +86,13 @@ public class BaseMapBerthController {
 
     /**
      * 根据point_alias字段查询记录
+     *
      * @param
      * @return
      */
     @PostMapping(value = "/selectByPointAlias")
-    public Result selectByPointAlias(@RequestBody String pointAlias){
-        BaseMapBerthDTO baseMapBerthDTO =IBaseMapBerthService.selectByPointAlias(pointAlias);
+    public Result selectByPointAlias(@RequestBody String pointAlias) {
+        BaseMapBerthDTO baseMapBerthDTO = IBaseMapBerthService.selectByPointAlias(pointAlias);
         return new Result(baseMapBerthDTO);
     }
 
@@ -122,12 +123,13 @@ public class BaseMapBerthController {
     }
 
     /**
-     *  提供PDA查询储位信息
+     * 提供PDA查询储位信息
+     *
      * @param
      * @return
      */
     @PostMapping(value = "/getAlltorageInfo")
-    @SystemInterfaceLog(methodCode = GET_ALLTORAGE_INFO,methodName = GET_ALLTORAGE_INFO_DESC,methodThansfer = SRC_PDA)
+    @SystemInterfaceLog(methodCode = GET_ALLTORAGE_INFO, methodName = GET_ALLTORAGE_INFO_DESC, methodThansfer = SRC_PDA)
     public Result selectAlltorageInfo(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
         List<BaseMapBerthDTO> baseMapBerths = IBaseMapBerthService.selectAlltorageInfo(baseMapBerthDTO);
         return new Result(baseMapBerths);
@@ -160,6 +162,7 @@ public class BaseMapBerthController {
 
         return new Result();
     }
+
     @PostMapping("/getMapDataByBerCode")
     public Result selectMapDataByBerCode(@RequestBody BaseMapBerth baseMapBerth) {
         BaseMapBerth baseMapBerths = IBaseMapBerthService.selectMapDataByBerCode(baseMapBerth);
@@ -168,9 +171,17 @@ public class BaseMapBerthController {
     }
 
     @PostMapping("/updateMapById")
-    public Result updateMapById(@RequestBody BaseMapUpdateAreaDTO  record) {
+    public Result updateMapById(@RequestBody BaseMapUpdateAreaDTO record) {
 
         IBaseMapBerthService.updateMapById(record);
         return new Result();
+    }
+
+    @PostMapping("/updateMapByBerCode")
+    public Result updateMapByBerCode(@RequestBody BaseMapBerthDTO record) {
+
+        IBaseMapBerthService.updateMapByBerCode(record);
+        return new Result();
+
     }
 }

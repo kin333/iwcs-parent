@@ -357,6 +357,13 @@ public class BaseMapBerthService implements IBaseMapBerthService{
     }
 
     @Override
+    public int updateMapByBerCode(BaseMapBerthDTO record) {
+
+        int num = baseMapBerthMapper.updateMapByBerCode(baseMapBerthMapStruct.toEntity(record));
+        return num;
+    }
+
+    @Override
     public int updateMapBerthById(List<BaseMapBerthDTO> baseMapBerthDTO) {
 
         int num = baseMapBerthMapper.updateMapBerthById(baseMapBerthDTO);

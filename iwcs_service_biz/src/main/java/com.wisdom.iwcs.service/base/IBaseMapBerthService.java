@@ -47,4 +47,6 @@ public interface IBaseMapBerthService {
     BaseMapBerth selectMapDataByBerCode(BaseMapBerth baseMapBerth);
 
     int updateMapById(BaseMapUpdateAreaDTO record);
+
+    int updateMapByBerCode(BaseMapBerthDTO record);
 }
