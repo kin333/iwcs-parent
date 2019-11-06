@@ -449,7 +449,7 @@ public class TaskCreateService implements ITaskCreateService {
             lockMapBerthCondition.setOperateAreaCode(AGINGREA);
             List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
             Preconditions.checkBusinessError(baseMapBerthList.size() < 1, "未找到合适的目标点");
-            BaseMapBerth baseMapBerth = baseMapBerthList.get(0);
+            BaseMapBerth baseMapBerth = mapResouceService.distanceRule(baseMapBerthList);
             targetPoint = baseMapBerth.getBerCode();
         }else{
             //当前货架所在楼层，对比用户登录楼层权限//如果不在一个楼层创建失败

@@ -234,7 +234,7 @@
         <if test="berthTypeValue != null and berthTypeValue != ''">
             and berth_type_value = #{berthTypeValue}
         </if>
-        ORDER BY coox desc, cooy asc
+
     </select>
     <select id="selectEmptyStorageAging" resultType="com.wisdom.iwcs.domain.base.BaseMapBerth" resultMap="BaseResultMap">
         select
