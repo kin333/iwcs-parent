@@ -434,6 +434,7 @@
         where 1=1
         and biz_type = #{bizType}
     </select>
+<<<<<<< Updated upstream
 
     <select id="selectByOperateAreaCode" resultMap="BaseResultMap">
         select  <include refid="Base_Column_List"/> from base_map_berth
@@ -441,6 +442,11 @@
         and operate_area_code = #{operateAreaCode}
     </select>
 
+    <select id="selectPageCacheArea" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/> from base_map_berth
+        where 1=1
+        and biz_type = #{bizType} order by pod_code asc
+    </select>
     <select id="selectLikeBizTye" resultMap="BaseResultMap">
         select  <include refid="Base_Column_List"/> from base_map_berth
         where 1=1

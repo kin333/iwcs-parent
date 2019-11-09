@@ -100,7 +100,7 @@ public class EleAutoDownWorker implements Runnable{
 
     private boolean checkMapCodeEleCache(String mapCode, TaskCreateRequest taskCreateRequest) {
         //检查指定楼层对应的空货架是否有货架
-        List<BaseMapBerth> berthList = baseMapBerthMapper.selectByBizTye(PAGECACHEAREA + mapCode);
+        List<BaseMapBerth> berthList = baseMapBerthMapper.selectPageCacheArea(PAGECACHEAREA + mapCode);
 
         Preconditions.checkBusinessError(berthList.size() <= 0, "对应楼层无指定的包装体缓存区");
         BaseMapBerth baseMapBerth = berthList.get(0);

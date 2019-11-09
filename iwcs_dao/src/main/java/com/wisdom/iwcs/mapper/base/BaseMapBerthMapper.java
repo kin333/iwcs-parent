@@ -178,6 +178,13 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
     List<BaseMapBerth> selectByOperateAreaCode(String operateAreaCode);
 
 
+    /**
+     * 查询一楼包装缓存区
+     * 自动下楼专用
+     * @return
+     */
+    List<BaseMapBerth> selectPageCacheArea(String bizType);
+
     List<BaseMapBerth> selectLikeBizTye(String bizType);
 
     @Select("SELECT id FROM `iwcs_us_inspur`.`base_map_berth` WHERE `berth_type_value` = '1' and (point_alias IS NULL or point_alias = '') ORDER BY `cooy` DESC, `coox` LIMIT 1")
