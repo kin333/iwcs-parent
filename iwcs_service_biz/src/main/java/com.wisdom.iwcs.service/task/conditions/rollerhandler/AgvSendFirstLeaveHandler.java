@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * AGV离开第一个下料点前置条件
+ * AGV离开第一个下料点前/后置条件
  * @author han
  */
 @Component
