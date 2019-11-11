@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.sysbase;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionSendThread;
+import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionThreadService;
 import com.wisdom.iwcs.service.task.wcsSimulator.TaskLogThreadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
