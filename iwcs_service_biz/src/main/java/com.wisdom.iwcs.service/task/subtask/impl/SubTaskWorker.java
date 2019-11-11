@@ -123,11 +123,10 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     logger.error("子任务下发失败{},原因:{},准备回滚前置条件", subTask.getSubTaskNum(), e.getMessage());
                     SubTaskService subTaskService = (SubTaskService) SpringContextUtils.getBean("subTaskService");
                     boolean rollBackPreConResult = subTaskService.rollbackPreCondition(subTask.getSubTaskNum());
-                    logger.warn("子任务下发失败{}，将子任务重新执行标志设置为true");
                     reExecFlag.set(true);
                     e.printStackTrace();
                     try {
-                        waitLock.wait(10 * 1000);
+                        waitLock.wait(1 * 60 * 1000);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }

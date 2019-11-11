@@ -78,7 +78,7 @@ public class WcsTaskScheduler implements Runnable {
                 synchronized (this) {
                     this.dispatchMaintask();
                     logger.info("主任务调度器线程主动随眠60*1000*1");
-                    this.wait(30 * 1000 * 1);
+                    this.wait(5 * 1000 * 1);
                 }
 
             } catch (InterruptedException e) {
