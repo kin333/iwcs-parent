@@ -39,7 +39,7 @@ public class ReceiveEmptyHandler implements IConditionHandler {
         }
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
-        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
+//        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
         hikRollerData.setRcvNull(publicContextDTO.getEmptyRecycleNum().toString());
         String jsonString = JSONObject.toJSONString(hikRollerData);
 

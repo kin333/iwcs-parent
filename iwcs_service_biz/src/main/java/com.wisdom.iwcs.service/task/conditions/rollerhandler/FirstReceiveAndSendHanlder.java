@@ -42,7 +42,7 @@ public class FirstReceiveAndSendHanlder implements IConditionHandler {
 
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
-        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
+//        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
         Preconditions.checkBusinessError(publicContextDTO.getEndSendNum() == null, "第一下料点下料数量缺失");
         hikRollerData.setSendFull(publicContextDTO.getEndSendNum().toString());
         if (publicContextDTO.getEmptyRecycleNumOne() != null && publicContextDTO.getEmptyRecycleNumOne() > 0) {

@@ -40,7 +40,7 @@ public class SendEmptyHandler implements IConditionHandler {
 
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
-        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
+//        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
         Integer sum = publicContextDTO.getEmptyRecycleNum();
         hikRollerData.setSendNull(sum.toString());
         String jsonString = JSONObject.toJSONString(hikRollerData);

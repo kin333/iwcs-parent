@@ -41,7 +41,7 @@ public class ReceiveFullHandler implements IConditionHandler {
         //将接料信息转换为json
         HikRollerData hikRollerData = new HikRollerData();
         hikRollerData.setRcvFull(publicContextDTO.getStartGetNum().toString());
-        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
+//        hikRollerData.setTaskCode(subTaskCondition.getSubTaskNum());
         String jsonString = JSONObject.toJSONString(hikRollerData);
 
         //更新数据库

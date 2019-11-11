@@ -659,13 +659,13 @@ public class HikCallbackIwcsService {
      * 滚筒AGV开始滚动
      */
     private void rollStart(HikCallBackAgvMove hikCallBackAgvMove) {
-        try {
-            JSONObject jsonObject = new JSONObject(hikCallBackAgvMove.getData());
-            String taskCode = jsonObject.getString("taskCode");
-            hikCallBackAgvMove.setTaskCode(taskCode);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            JSONObject jsonObject = new JSONObject(hikCallBackAgvMove.getData());
+//            String taskCode = jsonObject.getString("taskCode");
+//            hikCallBackAgvMove.setTaskCode(taskCode);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
         SubTask subTask = taskStartBaseChange(hikCallBackAgvMove);
         if (subTask != null) {
             //节点动作
