@@ -146,6 +146,9 @@ public class MesRequestService {
             Preconditions.checkMesBusinessError(baseMapBerth == null,
                     emptyRecyleWb + "找不到别名对应的地图编码", reqCode);
             startSupllyAndRecyle.setEmptyRecyleWb(baseMapBerth.getBerCode());
+        } else if (emptyRecyleNum != null && emptyRecyleNum > 0){
+            //此时回收数量不为0,回收点不能为空
+            throw new MesBusinessException(reqCode, "回收点为空,但是回收数量不为0,请指定回收点");
         }
 
         //将点位信息转换为berCode
