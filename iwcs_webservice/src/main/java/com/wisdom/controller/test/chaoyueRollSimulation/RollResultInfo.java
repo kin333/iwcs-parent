@@ -31,4 +31,20 @@ public class RollResultInfo {
      * 任务状态
      */
     private String taskSta;
+    /**
+     * 搬运任务的起点
+     */
+    private String srcWB;
+    /**
+     * 离开时间
+     */
+    private String leaveTime;
+    /**
+     * 任务终点
+     */
+    private String destWb;
+    /**
+     * 货架号
+     */
+    private String podCode;
 }

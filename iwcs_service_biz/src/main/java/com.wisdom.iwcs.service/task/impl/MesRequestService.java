@@ -530,6 +530,7 @@ public class MesRequestService {
             mainTaskMapper.updateByPrimaryKey(mainTask);
             contextDTO.setRecyleWb(startSupllyAndRecyle.getRecyleWb());
             contextDTO.setRollerDownGoodEmpty(true);
+            contextDTO.setEmptyRecyleNum(1);
             contextDTO.setRollerDownGoodNOEmpty(false);
         }
 

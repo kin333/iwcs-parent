@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPCACHEAREA;
@@ -152,7 +149,6 @@ public class MapResouceService implements IMapResouceService {
         Optional<BaseMapBerth> minMapBerth = baseMapBerthList.stream().max((a,b) -> a.getCoox().compareTo(b.getCoox()));
         return minMapBerth.get();
     }
-
     /**
      * 锁住选中的点位并更新子任务单
      * @param lockStorageDto
@@ -370,6 +366,15 @@ public class MapResouceService implements IMapResouceService {
         return minMapBerth.get();
     }
 
+    /**
+     * 计算x值最小的位置并按ber_group升序
+     * @param baseMapBerthList
+     * @return
+     */
+    public BaseMapBerth distanceRuleByGroup(List<BaseMapBerth> baseMapBerthList) {
+        Optional<BaseMapBerth> minMapBerth = baseMapBerthList.stream().sorted(Comparator.comparing(BaseMapBerth::getBerGroup)).max((a, b) -> a.getCoox().compareTo(b.getCoox()));
+        return minMapBerth.get();
+    }
 
     public Result checkBaseLockCondition(BaseLockCondition baseLockCondition) {
         if(Strings.isNullOrEmpty(baseLockCondition.getMapCode())) {
@@ -517,7 +522,7 @@ public class MapResouceService implements IMapResouceService {
             List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorageAging(lockMapBerthCondition);
             if(selectBaseMapBerths.size() > 0) {
                 selectLockMapBerthCondition = lockMapBerthCondition;
-                selectBaseMapBerth = distanceRule(selectBaseMapBerths);
+                selectBaseMapBerth = distanceRuleByGroup(selectBaseMapBerths);
                 break;
             }
         }

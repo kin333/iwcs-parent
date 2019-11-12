@@ -33,6 +33,21 @@ public class RollSimulationController {
     private String TASK_CODE = "TEST";
 
     /**
+     * 点到点通知
+     */
+    @RequestMapping("/api/wisdom/agvHandlingTask/leaveSrcWb")
+    public MesResult leaveSrcWb(@RequestBody TestMesBaseRequest<RollResultInfo> rollRequetInfo) {
+
+        String reqCode = rollRequetInfo.getReqcode();
+        return new MesResult();
+    }
+    @RequestMapping("/api/wisdom/agvHandlingTask/arriveDestWb")
+    public MesResult arriveDestWb(@RequestBody TestMesBaseRequest<RollResultInfo> rollRequetInfo) {
+
+        String podCode = rollRequetInfo.getData().getPodCode();
+        return new MesResult();
+    }
+    /**
      * 节点变更
      */
     @RequestMapping("/api/wisdom/autoProductionLine/supplyAndRecyle/agvProcessNotify")
