@@ -369,10 +369,11 @@ public class MapResouceService implements IMapResouceService {
     /**
      * 计算x值最小的位置并按ber_group升序
      * @param baseMapBerthList
-     * @return
+     * @return .sorted(Comparator.comparing(BaseMapBerth::getBerGroup))
+     *
      */
     public BaseMapBerth distanceRuleByGroup(List<BaseMapBerth> baseMapBerthList) {
-        Optional<BaseMapBerth> minMapBerth = baseMapBerthList.stream().sorted(Comparator.comparing(BaseMapBerth::getBerGroup)).max((a, b) -> a.getCoox().compareTo(b.getCoox()));
+        Optional<BaseMapBerth> minMapBerth = baseMapBerthList.stream().max((a, b) -> a.getBerGroup().compareTo(b.getBerGroup()) & a.getCoox().compareTo(b.getCoox()));
         return minMapBerth.get();
     }
 

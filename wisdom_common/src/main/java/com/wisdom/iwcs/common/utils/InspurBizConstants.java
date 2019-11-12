@@ -69,6 +69,11 @@ public class InspurBizConstants {
         public final static String AGINGCACHEAREA = "agingCacheArea";
 
         /**
+         * 老化工作区
+         */
+        public final static String AGINGWORKAREA = "agingWorkArea";
+
+        /**
          * 检验区缓存区
          */
         public final static String QUAINSPCACHEAREA = "quaInspCacheArea";
