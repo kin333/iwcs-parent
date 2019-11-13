@@ -49,6 +49,12 @@ public class SubTaskTypService {
     public int insert(SubTaskTypDTO record) {
         SubTaskTyp SubTaskTyp = SubTaskTypMapStruct.toEntity(record);
 
+        SubTaskTyp subTaskTypList = SubTaskTypMapper.selectByTypeCode(SubTaskTyp.getSubTaskTypCode());
+
+        if (subTaskTypList != null) {
+            return 400;
+        }
+
         Integer userId = SecurityUtils.getCurrentUserId();
         SubTaskTyp.setCreateDate(new Date());
         int num = SubTaskTypMapper.insert(SubTaskTyp);

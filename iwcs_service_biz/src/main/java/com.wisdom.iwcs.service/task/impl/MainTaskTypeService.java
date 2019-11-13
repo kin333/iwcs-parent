@@ -57,7 +57,14 @@ public class MainTaskTypeService {
      * @return int
      */
     public int insert(MainTaskTypeDTO record) {
+
         MainTaskType mainTaskType = mainTaskTypeMapStruct.toEntity(record);
+
+        MainTaskType mainTaskTypeList = mainTaskTypeMapper.selectMainTypeByMainCode(mainTaskType);
+
+        if (mainTaskTypeList != null) {
+            return 400;
+        }
 
         Integer userId = SecurityUtils.getCurrentUserId();
 

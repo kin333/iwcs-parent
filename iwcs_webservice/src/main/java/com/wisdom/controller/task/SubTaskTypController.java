@@ -69,7 +69,11 @@ public class SubTaskTypController {
      */
     @PostMapping
     public Result insert(@RequestBody SubTaskTypDTO SubTaskTypDTO) {
-        SubTaskTypService.insert(SubTaskTypDTO);
+        int num = SubTaskTypService.insert(SubTaskTypDTO);
+
+        if (num == 400) {
+            return  new Result(400,"该子任务类型编号" + SubTaskTypDTO.getSubTaskTypCode() + "已存在");
+        }
 
         return new Result();
     }

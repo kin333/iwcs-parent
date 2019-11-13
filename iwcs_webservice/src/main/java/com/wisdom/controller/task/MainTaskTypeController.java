@@ -71,8 +71,11 @@ public class MainTaskTypeController {
      */
     @PostMapping
     public Result insert(@RequestBody MainTaskTypeDTO mainTaskTypeDTO) {
-        mainTaskTypeService.insert(mainTaskTypeDTO);
+        int num = mainTaskTypeService.insert(mainTaskTypeDTO);
 
+        if (num == 400) {
+            return new Result(400,"该主任务类型编号：" + mainTaskTypeDTO.getMainTaskTypeCode() + "已存在！");
+        }
         return new Result();
     }
 
