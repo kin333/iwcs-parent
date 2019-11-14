@@ -217,6 +217,10 @@ public class InspurBizConstants {
          */
         public final static String ROLL_START = "rollStart";
         /**
+         * 滚筒AGV真正开始滚动
+         */
+        public final static String ROLL_REAL_START = "rollRealStart";
+        /**
          * 滚筒AGV结束滚动
          */
         public final static String ROLL_END = "rollEnd";

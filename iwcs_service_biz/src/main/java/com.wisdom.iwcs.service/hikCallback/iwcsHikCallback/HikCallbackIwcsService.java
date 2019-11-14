@@ -624,6 +624,9 @@ public class HikCallbackIwcsService {
             //滚筒AGV开始滚动
             case InspurBizConstants.HikCallbackMethod.ROLL_START:
                 rollStart(hikCallBackAgvMove); break;
+            //滚筒AGV开始滚动
+            case InspurBizConstants.HikCallbackMethod.ROLL_REAL_START:
+                rollRealStart(hikCallBackAgvMove); break;
             //滚筒AGV结束滚动
             case InspurBizConstants.HikCallbackMethod.ROLL_END:
                 rollEnd(hikCallBackAgvMove); break;
@@ -632,6 +635,7 @@ public class HikCallbackIwcsService {
         logger.info("滚筒AGV回调处理结束,子任务{}", hikCallBackAgvMove.getTaskCode());
         return new HikSyncResponse();
     }
+
 
     /**
      * 滚筒AGV开始移动
@@ -672,6 +676,18 @@ public class HikCallbackIwcsService {
             nodeAction(subTask, ROLLER_START);
         }
     }
+
+    /**
+     * 美国浪潮滚筒AGV真正开始滚动
+     */
+    private void rollRealStart(HikCallBackAgvMove hikCallBackAgvMove) {
+        SubTask subTask = taskLeaveBaseChange(hikCallBackAgvMove);
+        if (subTask != null) {
+            //节点动作
+            nodeAction(subTask, ROLLER_START);
+        }
+    }
+
     /**
      * 滚筒AGV结束滚动
      */
