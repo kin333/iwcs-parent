@@ -4,6 +4,7 @@ package com.wisdom.iwcs.mapper.task;
 import java.util.List;
 import java.util.Map;
 
+import com.greenpineyu.fel.function.operator.Sub;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
@@ -33,4 +34,6 @@ public interface SubTaskTypMapper extends  MyMapperAndIds<SubTaskTyp> {
     SubTaskTyp selectByTypeCode(String subTaskTypCode);
 
     List<SubTaskTyp> selectByMainCode(@Param("subTaskCode") List<String> subTaskCode);
+
+    List<SubTaskTyp> selectSubTypeAll();
 }

@@ -153,4 +153,14 @@ public class MainTaskTypeController {
         MainTaskType mainTaskTypeDTO = mainTaskTypeService.selectMainTypeByMainCode(mainCode);
         return new Result(mainTaskTypeDTO);
     }
+    /**
+     * 查询所有主任务类型
+     */
+    @PostMapping("/getMainTypeAll")
+    public Result selectAll() {
+
+        List<MainTaskType> mainTaskTypeList = mainTaskTypeService.selectAll();
+
+        return new Result(mainTaskTypeList);
+    }
 }

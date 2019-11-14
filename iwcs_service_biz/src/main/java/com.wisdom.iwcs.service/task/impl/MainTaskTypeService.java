@@ -277,4 +277,11 @@ public class MainTaskTypeService {
         return mainTaskTypeDTO;
     }
 
+    public List<MainTaskType> selectAll() {
+
+        List<MainTaskType> mainTaskTypeList = mainTaskTypeMapper.selectAll();
+
+        return mainTaskTypeList;
+    }
+
 }

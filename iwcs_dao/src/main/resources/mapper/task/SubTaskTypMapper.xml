@@ -50,4 +50,8 @@
       #{item}
     </foreach>
   </select>
+
+  <select id="selectSubTypeAll" resultMap="BaseResultMap">
+    select * from ts_sub_task_typ
+  </select>
 </mapper>

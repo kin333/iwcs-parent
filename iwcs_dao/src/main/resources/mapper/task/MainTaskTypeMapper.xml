@@ -79,4 +79,7 @@
     delete from ts_main_task_type where main_task_type_code = #{searchMainCode}
   </delete>
 
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from ts_main_task_type
+  </select>
 </mapper>

@@ -130,4 +130,11 @@ public class SubTaskTypController {
 
         return new Result();
     }
+
+    @PostMapping("/getSubTypeAll")
+    public Result selectAll() {
+        List<SubTaskTyp> subTaskTypList = SubTaskTypService.selectAll();
+
+        return new Result(subTaskTypList);
+    }
 }

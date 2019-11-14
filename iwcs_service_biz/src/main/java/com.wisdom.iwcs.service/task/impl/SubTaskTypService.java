@@ -239,4 +239,11 @@ public class SubTaskTypService {
 
         return mGridReturnData;
     }
+
+    public List<SubTaskTyp> selectAll() {
+
+        List<SubTaskTyp> subTaskTypList = SubTaskTypMapper.selectSubTypeAll();
+
+        return subTaskTypList;
+    }
 }

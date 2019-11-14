@@ -33,4 +33,6 @@ public interface MainTaskTypeMapper extends MyMapperAndIds<MainTaskType> {
 
     int deleteMainTaskType(TaskModal taskModal);
 
+    List<MainTaskType> selectAll();
+
 }
