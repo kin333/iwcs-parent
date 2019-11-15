@@ -446,8 +446,13 @@ public class TaskCreateService implements ITaskCreateService {
             //筛选目标点，锁定放在创建子任务中
             LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
             lockMapBerthCondition.setMapCode(startBaseMapBerth.getMapCode());
-            lockMapBerthCondition.setOperateAreaCode(AGINGREA);
-            List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            lockMapBerthCondition.setBizType(AGINGCACHEAREA);
+            List<BaseMapBerth> baseMapBerthList = new ArrayList<>();
+            baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            if (baseMapBerthList.size() < 1) {
+                lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+                baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+            }
             Preconditions.checkBusinessError(baseMapBerthList.size() < 1, "未找到合适的目标点");
             BaseMapBerth baseMapBerth = mapResouceService.distanceRule(baseMapBerthList);
             targetPoint = baseMapBerth.getBerCode();
@@ -1154,7 +1159,7 @@ public class TaskCreateService implements ITaskCreateService {
         //判断老化区是否有空位置
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setOperateAreaCode(AGINGREA);
-        lockMapBerthCondition.setBizType(AGINGCACHEAREA);
+//        lockMapBerthCondition.setBizType(AGINGCACHEAREA);
         lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
         List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectEmptyStorageOfInspectionAreas(lockMapBerthCondition);
         if(baseMapBerthList == null || baseMapBerthList.size() <= 0) {
