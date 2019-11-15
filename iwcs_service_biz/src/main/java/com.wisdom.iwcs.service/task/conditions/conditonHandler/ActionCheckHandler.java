@@ -43,6 +43,9 @@ public class ActionCheckHandler implements IConditionHandler{
         //检查每一个Action是否已经生成并发送成功
         for (TaskRelAction action : actions) {
             SubTaskAction subTaskAction = subTaskActionMapper.selectByActionCode(action.getActionCode(), subTaskNum);
+            if (subTaskAction == null && "false".equals(action.getCreateCondition())) {
+                return true;
+            }
             if (subTaskAction == null || !SEND_SUCCESS.equals(subTaskAction.getActionStatus())) {
                 return false;
             }

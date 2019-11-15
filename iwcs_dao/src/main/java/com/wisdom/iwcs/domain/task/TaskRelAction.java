@@ -99,6 +99,20 @@ public class TaskRelAction {
     @Column(name = "response_handler")
     private String responseHandler;
 
+    /**
+     * action创建条件,true为必须创建,false为不必须创建(跳过后置条件)"
+     */
+    @Column(name = "create_condition")
+    private String createCondition;
+
+    public String getCreateCondition() {
+        return createCondition;
+    }
+
+    public void setCreateCondition(String createCondition) {
+        this.createCondition = createCondition;
+    }
+
     public String getResponseHandler() {
         return responseHandler;
     }

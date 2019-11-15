@@ -32,4 +32,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="201911151102" author="han">
+        <addColumn tableName="ts_task_rel_action">
+            <column name="create_condition" remarks="action创建条件,true为必须创建,false为不必须创建(跳过后置条件)" type="VARCHAR(64)" defaultValue="true"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
