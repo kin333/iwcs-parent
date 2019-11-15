@@ -35,6 +35,8 @@ public class ArrivedSendHandler implements IResponseHandler {
                 supplyLoadNumNotify.setSupplyLoadNum(Integer.valueOf(obj.getString("num")));
                 supplyLoadNumNotify.setTaskCode(subTask.getMainTaskNum());
                 mesRequestService.supplyLoadNum(supplyLoadNumNotify, "");
+            } else {
+                mesRespHandlerResult.setHandleResult(false);
             }
         } catch (JSONException | MesBusinessException e) {
             e.printStackTrace();
