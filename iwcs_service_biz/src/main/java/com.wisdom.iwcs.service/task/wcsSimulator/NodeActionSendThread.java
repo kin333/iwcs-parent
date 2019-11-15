@@ -45,9 +45,15 @@ public class NodeActionSendThread implements Runnable {
      * 遍历查询所有的未发送的节点通知,然后将id发送给RabbitMQ的消费者
      */
     private void nodeActionSend() {
-        List<Long> idList = subTaskActionMapper.selectIdNoSend();
-        if (idList.size() > 0) {
-            for (Long id : idList) {
+        List<Long> idListNoSend = subTaskActionMapper.selectIdNoSend();
+        List<Long> idListNoSendSuccess = subTaskActionMapper.selectIdNoSendSuccess();
+        if (idListNoSend.size() > 0) {
+            for (Long id : idListNoSend) {
+                RabbitMQUtil.basicPublicNodeAction(id.toString());
+            }
+        }
+        if (idListNoSendSuccess.size() > 0) {
+            for (Long id : idListNoSendSuccess) {
                 RabbitMQUtil.basicPublicNodeAction(id.toString());
             }
         }

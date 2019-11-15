@@ -60,7 +60,7 @@ spring:
 
 liquibase:
   contexts: dev
-  enabled: false
+  enabled: true
 
 server:
   port: 8088

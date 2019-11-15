@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.executeMode.NO_PROMISE_ARRIVE;
+import static com.wisdom.iwcs.common.utils.TaskConstants.executeMode.PROMISE_ARRIVE;
 
 /**
  * 节点活动的消费者队列线程
@@ -42,7 +43,11 @@ public class NodeActionThreadService extends ConsumerThread {
                     SubTaskAction subTaskAction = subTaskActionMapper.selectByPrimaryKey(Long.valueOf(id));
                     logger.info("开始处理子任务{}的action请求,id为{}",subTaskAction.getSubTaskNum(), id);
                     if (!CREATE.equals(subTaskAction.getActionStatus())) {
-                        return;
+                        if(RESULT_ERROR.equals(subTaskAction.getActionStatus()) && PROMISE_ARRIVE.equals(subTaskAction.getExecuteMode())) {
+                            //如果action发送错误,并且action是必达的,则再次处理
+                        } else {
+                            return;
+                        }
                     }
                     //更新消息为正在发送状态,不能使用事务!!!,因为要求立刻更新
                     SubTaskAction tmpSubTaskAction = new SubTaskAction();
@@ -80,6 +85,13 @@ public class NodeActionThreadService extends ConsumerThread {
                                 mesRespHandlerInfo.setSubTaskNum(subTaskAction.getSubTaskNum());
                                 //调用返回结果处理器
                                 mesRespHandlerResult = responseHandler.disposeResult(obj, mesRespHandlerInfo);
+                            } else {
+                                //MES 默认结果处理
+                                if (SRC_MES.equals(subTaskAction.getApp())) {
+                                    if (MesResult.NG.equals(obj.getString("code"))) {
+                                        mesRespHandlerResult.setHandleResult(false);
+                                    }
+                                }
                             }
                             if (mesRespHandlerResult.isHandleResult()) {
                                 tmpTaskAction.setActionStatus(SEND_SUCCESS);

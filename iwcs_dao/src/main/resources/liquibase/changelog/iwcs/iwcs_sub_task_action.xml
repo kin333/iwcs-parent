@@ -50,4 +50,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="201911151848" author="han">
+        <createIndex tableName="sub_task_action" indexName="action_status_index" unique="false">
+            <column name="action_status"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

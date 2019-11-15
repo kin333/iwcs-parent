@@ -24,4 +24,6 @@ public interface SubTaskActionMapper extends MyMapperAndIds<SubTaskAction> {
     SubTaskAction selectByActionCode(@Param("actionCode") String actionCode,@Param("subTaskNum") String subTaskNum);
 
     List<Long> selectIdNoSend();
+
+    List<Long> selectIdNoSendSuccess();
 }
