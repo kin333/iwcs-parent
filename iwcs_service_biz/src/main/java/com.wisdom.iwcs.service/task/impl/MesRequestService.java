@@ -1,14 +1,22 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.TaskConstants;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.control.CancelTaskRequestDTO;
+import com.wisdom.iwcs.domain.control.GenAgvSchedulingRequestDTO;
 import com.wisdom.iwcs.domain.task.MainTask;
+import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
+import com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum;
+import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.domain.upstream.mes.*;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ReportEmptyContainerNumber;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.StartSupllyAndRecyles;
@@ -18,7 +26,11 @@ import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.service.callHik.IContinueTaskService;
+import com.wisdom.iwcs.service.callHik.callHikImpl.CancelTaskService;
 import com.wisdom.iwcs.service.callHik.callHikImpl.ContinueTaskService;
+import com.wisdom.iwcs.service.callHik.callHikImpl.FreeRobotService;
+import com.wisdom.iwcs.service.security.SecurityUtils;
+import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +39,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
@@ -54,6 +69,12 @@ public class MesRequestService {
     MainTaskMapper mainTaskMapper;
     @Autowired
     ContinueTaskService continueTaskService;
+    @Autowired
+    CancelTaskService cancelTaskService;
+    @Autowired
+    WcsTaskScheduler wcsTaskScheduler;
+     @Autowired
+    FreeRobotService freeRobotService;
 
 
     /**
@@ -298,6 +319,93 @@ public class MesRequestService {
 
         mainTaskMapper.updateByPrimaryKeySelective(tmpMainTask);
         return new MesResult(reqCode);
+    }
+    /**
+     * 取消MES任务
+     * @param  mesCancelTaskRequest
+     * @return
+     */
+    public MesResult cancelMesTask(MesCancelTaskRequest mesCancelTaskRequest) {
+        String reqCode = mesCancelTaskRequest.getReqcode();
+        MesResult mesResult = new MesResult(mesCancelTaskRequest.getReqcode());
+        //1.参数校验
+        publicCheck(mesCancelTaskRequest.getTaskCode(), reqCode);
+
+        //查询对应的主任务
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mesCancelTaskRequest.getTaskCode());
+        if(mainTask == null ){
+            mesResult.setCode(MesResult.NG);
+            mesResult.setMessage(mesCancelTaskRequest.getTaskCode()+"任务不存在！");
+            return mesResult;
+        }
+        String mainTaskNum = mainTask.getMainTaskNum();
+        String curTaskStatus = mainTask.getTaskStatus();
+        if(TaskConstants.mainTaskStatus.MAIN_CANCELED.equals(curTaskStatus) || TaskConstants.mainTaskStatus.MAIN_CANCELED.equals(curTaskStatus) ){
+            logger.info("取消失败，主任务{}处于{}状态下的任务不可取消",mainTaskNum, MainTaskStatusEnum.fromCode(curTaskStatus));
+            mesResult.setCode(MesResult.NG);
+            mesResult.setMessage("取消失败，处于"+SubTaskStatusEnum.fromCode(curTaskStatus)+"状态下的任务不可取消");
+            return mesResult;
+        }else{
+            //更新主任务单号
+            MainTask mainTaskTmp = new MainTask();
+            mainTaskTmp.setId(mainTask.getId());
+            mainTaskTmp.setTaskStatus(TaskConstants.mainTaskStatus.MAIN_CANCELED);
+            mainTaskTmp.setCancelOperator(SecurityUtils.getCurrentUserId());
+            mainTaskTmp.setCancelTime(new Date());
+            mainTaskTmp.setCancelSceneRecoveryStatus(TaskConstants.CancelSceneRecoveryStatus.PENDING);
+            mainTaskMapper.updateByPrimaryKeySelective(mainTaskTmp);
+
+            List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
+            // TODO 需要区分不同执行方，目前写死，只有海康rcs
+            List<SubTask> isusedSubTasks = subTasks.stream().filter(s -> TaskConstants.subTaskStatus.SUB_ISSUED.equals(s.getTaskStatus()) && TaskConstants.SendStatus.SENDED.equals(s.getSendStatus())).distinct().collect(Collectors.toList());
+            logger.debug("筛选所有进行中的子任务{}",isusedSubTasks);
+
+            List<String> isusedWorkTaskCodes = isusedSubTasks.stream().map(t -> t.getWorkerTaskCode()).distinct().collect(Collectors.toList());
+            List<String> isusedRobotsCodes = isusedSubTasks.stream().map(t -> t.getRobotCode()).distinct().collect(Collectors.toList());
+            logger.debug("筛选所有进行中的子任务workercod ",isusedWorkTaskCodes);
+
+            logger.debug("批量更新子任务状态");
+
+            isusedSubTasks.stream().forEach(t->{
+                SubTask subTaskTmp = new SubTask();
+                subTaskTmp.setId(t.getId());
+                subTaskTmp.setCancelOperator(SecurityUtils.getCurrentUserId());
+                subTaskTmp.setCancelTime(new Date());
+                subTaskTmp.setCancelSceneRecoveryStatus(TaskConstants.CancelSceneRecoveryStatus.PENDING);
+                subTaskTmp.setTaskStatus(TaskConstants.subTaskStatus.SUB_CANCELED);
+                subTaskMapper.updateByPrimaryKeySelective(subTaskTmp);
+            });
+
+            logger.debug("循环调用执行者接口，取消任务");
+            isusedWorkTaskCodes.stream().forEach(workTaskCode->{
+                CancelTaskRequestDTO cancelTaskRequestDTO = new CancelTaskRequestDTO();
+                cancelTaskRequestDTO.setTaskCode(workTaskCode);
+                logger.info("调用取消任务接口,海康任务编号：{}",workTaskCode);
+                Result result = cancelTaskService.cancelTask(cancelTaskRequestDTO);
+                logger.info("取消海康任务结果：{}", JSON.toJSONString(result));
+                if(200 == result.getReturnCode()){
+                    logger.info("取消海康成功，{}",workTaskCode);
+                }else{
+                    logger.info("取消海康失败，{},回滚数据库",workTaskCode);
+                    throw  new BusinessException("取消AGV任务失败，请确认任务状态正确后重试！");
+                }
+            });
+            logger.info("尝试取消子任务{}执行器线程",isusedSubTasks);
+            isusedSubTasks.stream().forEach(subTask->{
+                wcsTaskScheduler.stopMainTaskThread(subTask.getMainTaskNum(),subTask.getSubTaskNum());
+            });
+
+            //释放小车
+            logger.info("尝试取消子任务占用的robot",isusedRobotsCodes);
+//            isusedRobotsCodes.stream().forEach(robot->{
+//                GenAgvSchedulingRequestDTO genAgvSchedulingRequestDTO = new GenAgvSchedulingRequestDTO();
+//                genAgvSchedulingRequestDTO.setAgvCode(robot);
+//                genAgvSchedulingRequestDTO.setRobotCode(robot);
+//                freeRobotService.freeRobot(genAgvSchedulingRequestDTO);
+//            });
+        }
+        mesResult.setMessage("任务"+mesCancelTaskRequest.getTaskCode()+"取消成功");
+        return mesResult;
     }
 
     /**

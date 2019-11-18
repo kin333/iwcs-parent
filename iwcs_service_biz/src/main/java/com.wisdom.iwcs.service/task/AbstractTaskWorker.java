@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable {
     protected AtomicBoolean waitLock = new AtomicBoolean(false);
     protected AtomicBoolean reExecFlag = new AtomicBoolean(false);
+    protected  AtomicBoolean stopMeFlag = new AtomicBoolean(false);
     private String topicTag;
     private int taskStatus;
 
@@ -40,7 +41,7 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
          *  Run task
          */
         process();
-        while (reExecFlag.get()) {
+            while (reExecFlag.get()&&!stopMeFlag.get()) {
             /**
              * Handle pre-conditions
              */
@@ -68,5 +69,8 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
 
     public AtomicBoolean getWaitLock() {
         return waitLock;
+    }
+    public void stoppedMe() {
+        this.stopMeFlag = new AtomicBoolean(true);
     }
 }

@@ -350,6 +350,28 @@ public class SubTask {
     @Column(name = "json_data")
     private String jsonData;
 
+    /**
+     * 取消操作人
+     */
+    @Column(name = "cancel_operator")
+    private Integer cancelOperator;
+
+    @Column(name = "cancel_time")
+    private Date cancelTime;
+
+    @Column(name = "cancel_remark")
+    private String cancelRemark;
+    /**
+     * 现场恢复状态,-1：无需恢复，默认值；0：待恢复；1：已恢复
+     */
+    @Column(name = "cancel_scene_recovery_status")
+    private String cancelSceneRecoveryStatus;
+    /**
+     * 恢复操作编号
+     */
+    @Column(name = "scene_recovery_num")
+    private String sceneRecoveryNum;
+
     public String getJsonData() {
         return jsonData;
     }
@@ -1150,5 +1172,45 @@ public class SubTask {
 
     public void setTemplCode(String templCode) {
         this.templCode = templCode;
+    }
+
+    public Integer getCancelOperator() {
+        return cancelOperator;
+    }
+
+    public void setCancelOperator(Integer cancelOperator) {
+        this.cancelOperator = cancelOperator;
+    }
+
+    public Date getCancelTime() {
+        return cancelTime;
+    }
+
+    public void setCancelTime(Date cancelTime) {
+        this.cancelTime = cancelTime;
+    }
+
+    public String getCancelRemark() {
+        return cancelRemark;
+    }
+
+    public void setCancelRemark(String cancelRemark) {
+        this.cancelRemark = cancelRemark;
+    }
+
+    public String getCancelSceneRecoveryStatus() {
+        return cancelSceneRecoveryStatus;
+    }
+
+    public void setCancelSceneRecoveryStatus(String cancelSceneRecoveryStatus) {
+        this.cancelSceneRecoveryStatus = cancelSceneRecoveryStatus;
+    }
+
+    public String getSceneRecoveryNum() {
+        return sceneRecoveryNum;
+    }
+
+    public void setSceneRecoveryNum(String sceneRecoveryNum) {
+        this.sceneRecoveryNum = sceneRecoveryNum;
     }
 }

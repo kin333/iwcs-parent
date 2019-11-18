@@ -58,6 +58,7 @@ public class InterfaceLogConstants {
         public final static String CARRY_NOTIFY = "carryNotify";
         public final static String CONWAIT_TO_DESTWB = "conWaitToDestWb";
         public final static String CREATE_TASK = "createTask";
+        public final static String CANCEL_TASK = "cancelTask";
 
         public final static String ARRIVE_SRC_WB = "arriveSrcWb";
         public final static String LEAVE_SRC_WB = "leaveSrcWb";
@@ -118,6 +119,9 @@ public class InterfaceLogConstants {
         public final static String CARRY_NOTIFY_DESC = "点到点搬运Agv回调";
         public final static String CONWAIT_TO_DESTWB_DESC = "通知Agv可从等待点前往终点";
         public final static String CREATE_TASK_DESC = "创建点到点任务";
+
+        public final static String CANCEL_TASK_DESC = "取消滚筒任务";
+
 
         public final static String ARRIVE_SRC_WB_DESC = "AGV到达起点";
         public final static String LEAVE_SRC_WB_DESC = "AGV离开起点";

@@ -69,4 +69,14 @@
             <column name="biz_process" type="VARCHAR(12)" remarks="主任务节点" defaultValue=""/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201911151634" author="ted">
+        <addColumn tableName="ts_main_task">
+            <column name="cancel_operator" type="int" defaultValue="" remarks="取消操作人"/>
+            <column name="cancel_time" remarks="取消时间" type="datetime(6)"/>
+            <column name="cancel_remark" type="VARCHAR(128)" defaultValue="" remarks="取消备注"/>
+            <column name="cancel_scene_recovery_status" type="VARCHAR(32)" defaultValue="-1" remarks="现场恢复状态"/>
+            <column name="scene_recovery_num" type="VARCHAR(32)"  remarks="恢复操作编号"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

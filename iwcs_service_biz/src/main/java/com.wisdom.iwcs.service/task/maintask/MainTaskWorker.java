@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 public class MainTaskWorker extends AbstractTaskWorker {
     private final Logger logger = LoggerFactory.getLogger(MainTaskWorker.class);
     private SubTaskWorker subTaskWorker;
+    private Thread subTaskWorkerThread;
     private WcsTaskScheduler wcsTaskScheduler;
 
     public MainTaskWorker(Channel channel, MainTask mainTask, WcsTaskScheduler wcsTaskScheduler) {
@@ -58,7 +59,7 @@ public class MainTaskWorker extends AbstractTaskWorker {
     public void process() {
         logger.info("主任务{}执行器线程被启动", mainTask.getMainTaskNum());
         logger.info("开始执行子任务");
-        while (true) {
+        while (true&&!stopMeFlag.get()) {
             try {
                 //若已有执行中的子任务worker，等待
                 logger.info("当前subTaskWorker{}", subTaskWorker);
@@ -100,7 +101,8 @@ public class MainTaskWorker extends AbstractTaskWorker {
 
                         //将当前已启动的subtaskWork注入主任务对象
                         this.subTaskWorker = subTaskWorker;
-                    }
+                        this.subTaskWorkerThread = subTaskWorkerThread;
+                      }
                 }
             } catch (Exception e) {
                 logger.error("调度器出错，主任务{}执行出错", mainTask.getMainTaskNum());
@@ -141,6 +143,12 @@ public class MainTaskWorker extends AbstractTaskWorker {
 
     public SubTaskWorker getSubTaskWorker() {
         return subTaskWorker;
+    }
+
+
+    public void stopCurrentSubtaskThreadAndMainTask(){
+        subTaskWorker.stoppedMe();
+        this.stoppedMe();
     }
 
     /**

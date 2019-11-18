@@ -6,6 +6,16 @@ package com.wisdom.iwcs.common.utils;
  * @Date 2019/7/3 9:57
  */
 public class TaskConstants {
+    /**
+     *
+     */
+    public static final class InLockStatus{
+
+        public final static Integer NO_LOCK = 0;
+        public final static Integer IN_LOCK = 1;
+
+    }
+
 
     /**
      * 主任务类型
@@ -153,6 +163,20 @@ public class TaskConstants {
     }
 
     /**
+     * 发送状态
+     */
+    public static final class SendStatus{
+        /**
+         * 未下发
+         */
+        public final static String  NOT_SEND = "0";
+        /**
+         * 已下发
+         */
+        public final static String  SENDED = "1";
+    }
+
+    /**
      * 主任务状态值
      */
     public static final class mainTaskStatus {
@@ -168,6 +192,11 @@ public class TaskConstants {
          * 任务完成
          */
         public final static String MAIN_FINISHED = "9";
+        /**
+         * 已取消
+         */
+        public final static String MAIN_CANCELED = "10";
+
     }
 
     /**
@@ -186,6 +215,10 @@ public class TaskConstants {
          * 任务完成
          */
         public final static String SUB_FINISHED = "9";
+        /**
+         * 已取消
+         */
+        public final static String SUB_CANCELED= "10";
     }
 
     /**
@@ -200,6 +233,50 @@ public class TaskConstants {
          * 已下发worker
          */
         public final static String HAS_SEND = "1";
+    }
+
+    /**
+     *  reSendTask 重发任务; newPToP:点到点 ；PodRemainStartPoint:货架未离开起点；handBindPod:手工绑定
+     */
+    public static final class SceneRecoveryType{
+        /**
+         * 重发任务
+         *
+         */
+       public final static String RE_SEND_TASK = "reSendTask";
+        /**
+         * 点到点
+         *
+         */
+        public final static String NEW_PTOP = "newPToP";
+        /**
+         * 货架未离开起点
+         *
+         */
+        public final static String POD_REMAIN_START_POINT = "PodRemainStartPoint";
+        /**
+         * 手工绑定
+         *
+         */
+        public final static String HAND_BIND_POD = "handBindPod";
+    }
+    /**
+     * 取消恢复状态
+     * 现场恢复状态,-1：无需恢复，默认值；0：待恢复；1：已恢复
+     */
+    public static final class CancelSceneRecoveryStatus {
+        /**
+         *-1 无需恢复，默认值
+         */
+        public final static String NO_NEED = "-1";
+        /**
+         *0：待恢复；
+         */
+        public final static String PENDING = "0";
+        /**
+         *1：已恢复；
+         */
+        public final static String HAS_RECOVER= "1";
     }
 
     /**

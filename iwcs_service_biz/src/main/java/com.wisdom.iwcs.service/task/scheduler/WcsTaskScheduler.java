@@ -21,14 +21,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component
 public class WcsTaskScheduler implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(WcsTaskScheduler.class);
-    protected AtomicBoolean waitLock = new AtomicBoolean(false);
+    public  static AtomicBoolean waitLock = new AtomicBoolean(false);
+    public static  AtomicBoolean stopped = new AtomicBoolean(false);
+
 
     @Autowired
     TaskOperationLogMapper taskOperationLogMapper;
     @Autowired
     MainTaskMapper mainTaskMapper;
 
-    private ConcurrentHashMap<String, MainTaskWorker> maintaskWorkerMaps = new ConcurrentHashMap<String, MainTaskWorker>();
+    private  ConcurrentHashMap<String, MainTaskWorker> maintaskWorkerMaps = new ConcurrentHashMap<String, MainTaskWorker>();
+    private  ConcurrentHashMap<String, Thread> maintaskWorkerThreadMaps = new ConcurrentHashMap<String, Thread>();
 
     public WcsTaskScheduler() {
 
@@ -55,6 +58,8 @@ public class WcsTaskScheduler implements Runnable {
                 thread.setName("线程主任务执行器-" + t.getMainTaskNum());
                 thread.start();
                 maintaskWorkerMaps.put(t.getMainTaskNum(), mainTaskWorker);
+                maintaskWorkerThreadMaps.put(t.getMainTaskNum(), thread);
+
                 //将主任务状态改为正在执行
                 MainTask mainTaskTmp = new MainTask();
                 mainTaskTmp.setId(t.getId());
@@ -76,7 +81,11 @@ public class WcsTaskScheduler implements Runnable {
         while (true) {
             try {
                 synchronized (this) {
+                    if(stopped.get()){
+                        logger.warn("任务调度标志位false,暂不调用任务下发");
+                    }else{
                     this.dispatchMaintask();
+                    }
                     logger.info("主任务调度器线程主动随眠60*1000*1");
                     this.wait(5 * 1000 * 1);
                 }
@@ -95,6 +104,7 @@ public class WcsTaskScheduler implements Runnable {
         if (mainTaskWorker != null) {
             logger.info("主任务在线程中存在，maintaskWorkerMaps中移除主任务{}", mainTaskNum);
             this.maintaskWorkerMaps.remove(mainTaskNum);
+            this.maintaskWorkerThreadMaps.remove(mainTaskNum);
         }
         MainTaskService mainTaskService = (MainTaskService) AppContext.getBean("mainTaskService");
         mainTaskService.loopMaintTask(mainTaskNum);
@@ -102,6 +112,22 @@ public class WcsTaskScheduler implements Runnable {
 
     public ConcurrentHashMap<String, MainTaskWorker> getMaintaskWorkerMaps() {
         return maintaskWorkerMaps;
+    }
+
+    /**
+     * 停止主任务线程
+     * @param maintaskNum
+     * @param subtaskNum
+     */
+    public void stopMainTaskThread(String maintaskNum,String subtaskNum){
+        logger.info("尝试停止任务线程，主任务{}，子任务{}",maintaskNum,subtaskNum);
+        MainTaskWorker mainTaskWorker = maintaskWorkerMaps.get(maintaskNum);
+        if(mainTaskWorker != null){
+            logger.info("查询到主任务{}正在执行,调用其stopCurrentSubtaskThreadAndMainTask方法，修改停止标记");
+            mainTaskWorker.stopCurrentSubtaskThreadAndMainTask();
+        }else{
+            logger.warn("停止任务异常，该主任务{}不在执行器中",maintaskNum);
+        }
     }
 
 }

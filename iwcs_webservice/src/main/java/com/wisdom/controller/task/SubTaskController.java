@@ -5,6 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.mapstruct.task.SubTaskMapStruct;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
@@ -127,6 +128,16 @@ public class SubTaskController {
     public Result setPriority(@RequestBody List<SubTaskDTO> subTaskDTO) {
         return subTaskService.setPriority(subTaskDTO);
     }
+//    /**
+//     * 取消子任务
+//     * @param subTaskDTO
+//     * @return
+//     */
+//    @PostMapping("/cancelSubtask")
+//    public SubTask cancleSubtask(String subtaskNum) {
+//        return subTaskService.cancleSubtask(subtaskNum);
+//    }
+
 
 
 }

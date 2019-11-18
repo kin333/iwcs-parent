@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.base.context.AppContext;
@@ -8,10 +9,12 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.control.CancelTaskRequestDTO;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
@@ -30,6 +33,7 @@ import com.wisdom.iwcs.service.task.conditions.pod.IGetPodStrategic;
 import com.wisdom.iwcs.service.task.conditions.point.IGetPointStrategic;
 import com.wisdom.iwcs.service.task.conditions.robot.IGetRobotStrategic;
 import com.wisdom.iwcs.service.task.conditions.workercode.IGetWorkerCodeStrategic;
+import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +79,8 @@ public class SubTaskService {
     MainTaskMapper mainTaskMapper;
     @Autowired
     BasePodDetailMapper basePodDetailMapper;
+    @Autowired
+    WcsTaskScheduler wcsTaskScheduler;
 
     @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
@@ -355,6 +361,55 @@ public class SubTaskService {
         }
 
     }
+
+
+//    /**
+//     * 取消子任务
+//     * @param subtaskNum
+//     * @return
+//     */
+//    public SubTask cancleSubtask(String subtaskNum) {
+//        logger.info("开始取消子任务{}",subtaskNum);
+//        //取消子任务
+//        SubTask subTask = subTaskMapper.selectBySubTaskNum(subtaskNum);
+//
+//        Preconditions.checkArgument(null != subTask,"子任务不存在"+subtaskNum);
+//        SubTask subTaskTmp = new SubTask();
+//        subTaskTmp.setId(subTask.getId());
+//        String curTaskStatus = subTask.getTaskStatus();
+//        //已完成及取消状态下的任务不可取消
+//        if(TaskConstants.subTaskStatus.SUB_FINISHED.equals(curTaskStatus) || TaskConstants.subTaskStatus.SUB_CANCELED.equals(curTaskStatus) ){
+//            logger.info("取消失败，子任务{}处于{}状态下的任务不可取消",subtaskNum,SubTaskStatusEnum.fromCode(curTaskStatus));
+//            throw new BusinessException("取消失败，处于"+SubTaskStatusEnum.fromCode(curTaskStatus)+"状态下的任务不可取消");
+//        }else{
+//            subTaskTmp.setCancelOperator(SecurityUtils.getCurrentUserId());
+//            subTaskTmp.setCancelTime(new Date());
+//            subTaskTmp.setCancelSceneRecoveryStatus(TaskConstants.CancelSceneRecoveryStatus.PENDING);
+//            subTaskTmp.setTaskStatus(TaskConstants.subTaskStatus.SUB_CANCELED);
+//            subTaskMapper.updateByPrimaryKeySelective(subTaskTmp);
+//            MainTask mainTask = mainTaskMapper.selectByMainTaskNum(subTask.getMainTaskNum());
+//            MainTask mainTaskTmp = new MainTask();
+//            mainTaskTmp.setTaskStatus(TaskConstants.mainTaskStatus.MAIN_CANCELED);
+//            mainTaskTmp.setId(mainTask.getId());
+//            mainTaskMapper.updateByPrimaryKeySelective(mainTaskTmp);
+//            logger.info("尝试取消子任务{}执行器线程",subtaskNum);
+//            wcsTaskScheduler.stopMainTaskThread(subTask.getMainTaskNum(),subtaskNum);
+//            CancelTaskRequestDTO cancelTaskRequestDTO = new CancelTaskRequestDTO();
+//            cancelTaskRequestDTO.setTaskCode(subTask.getWorkerTaskCode());
+//            logger.info("调用取消任务接口,海康任务编号：{}",subTask.getWorkerTaskCode());
+//            Result result = cancelTaskService.cancelTask(cancelTaskRequestDTO);
+//            logger.info("取消海康任务结果：{}", JSON.toJSONString(result));
+//            if(200 == result.getReturnCode()){
+//                logger.info("取消海康成功，{}",subTask.getWorkerTaskCode());
+//            }else{
+//                logger.info("取消海康失败，{},回滚数据库",subTask.getWorkerTaskCode());
+//                throw  new BusinessException("取消AGV任务失败，请确认任务状态正确后重试！");
+//            }
+//
+//        }
+//
+//        return subTask;
+//    }
 
     /**
      * 判断是否有未创建的下一子任务单,动态创建下一子任务

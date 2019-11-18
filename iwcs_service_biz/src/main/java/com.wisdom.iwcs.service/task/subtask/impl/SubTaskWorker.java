@@ -63,7 +63,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void preConditions() {
-        while (true){
+        while (true&&!stopMeFlag.get()){
             try {
                 synchronized (waitLock){
                     System.out.println("sub task is going to wait " + waitLock);
@@ -85,7 +85,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void postConditions() {
-        while (true){
+        while (true&&!stopMeFlag.get()){
             try {
                 synchronized (waitLock){
                     System.out.println("sub task is going to wait " + waitLock);
@@ -109,7 +109,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void process() {
-        while (true) {
+        while (true&&!stopMeFlag.get()) {
             synchronized (waitLock) {
                 try {
                     IwcsPublicService iwcsPublicService = (IwcsPublicService) SpringContextUtils.getBean("iwcsPublicService");
@@ -140,6 +140,7 @@ public class SubTaskWorker extends AbstractTaskWorker {
 
     @Override
     public void loginListenner() {
+        if(!stopMeFlag.get()){
         try {
             SubTaskConditionService subTaskConditionService = (SubTaskConditionService) AppContext.getBean("subTaskConditionService");
             subTaskConditionService.loginListenner(subTask.getSubTaskNum());
@@ -149,8 +150,11 @@ public class SubTaskWorker extends AbstractTaskWorker {
         }
     }
 
+    }
+
     @Override
     public void deleteListenner() {
+        if(!stopMeFlag.get()){
         try {
             SubTaskConditionService subTaskConditionService = AppContext.getBean("subTaskConditionService");
             subTaskConditionService.deleteListenner(subTask.getSubTaskNum());
@@ -158,6 +162,8 @@ public class SubTaskWorker extends AbstractTaskWorker {
             logger.error("子任务单{}消息队列取消失败", subTask.getSubTaskNum());
             e.printStackTrace();
         }
+    }
+
     }
 
     public SubTask getSubTask() {
