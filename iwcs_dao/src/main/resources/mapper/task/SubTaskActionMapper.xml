@@ -55,6 +55,12 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
+    <if test="actionStatus != null and actionStatus != ''">
+      and action_status = #{actionStatus}
+    </if>
+    <if test="executeMode != null and executeMode != ''">
+      and execute_mode = #{executeMode}
+    </if>
     order by last_modified_time desc
   </select>
 

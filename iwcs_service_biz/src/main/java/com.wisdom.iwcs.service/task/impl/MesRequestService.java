@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.sun.javafx.collections.MappingChange;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
@@ -14,6 +15,7 @@ import com.wisdom.iwcs.domain.control.CancelTaskRequestDTO;
 import com.wisdom.iwcs.domain.control.GenAgvSchedulingRequestDTO;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.SubTaskAction;
 import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum;
@@ -26,6 +28,7 @@ import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
+import com.wisdom.iwcs.mapper.task.SubTaskActionMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.service.callHik.IContinueTaskService;
@@ -44,10 +47,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
+import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.RESULT_CANCEL;
+import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.RESULT_ERROR;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
+import static com.wisdom.iwcs.common.utils.TaskConstants.executeMode.PROMISE_ARRIVE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.*;
 
@@ -77,6 +84,9 @@ public class MesRequestService {
     WcsTaskScheduler wcsTaskScheduler;
      @Autowired
     FreeRobotService freeRobotService;
+    @Autowired
+    SubTaskActionMapper subTaskActionMapper;
+
     @Autowired
     BasePodDetailMapper basePodDetailMapper;
 
@@ -377,6 +387,21 @@ public class MesRequestService {
                 subTaskTmp.setCancelSceneRecoveryStatus(TaskConstants.CancelSceneRecoveryStatus.PENDING);
                 subTaskTmp.setTaskStatus(TaskConstants.subTaskStatus.SUB_CANCELED);
                 subTaskMapper.updateByPrimaryKeySelective(subTaskTmp);
+
+                //取消action消息发送
+                Map<String, String> map = new HashMap<>(5);
+                map.put("subTaskNum", t.getSubTaskNum());
+                map.put("actionStatus", RESULT_ERROR);
+                map.put("executeMode", PROMISE_ARRIVE);
+                List<SubTaskAction> subTaskActions = subTaskActionMapper.selectPage(map);
+                if(subTaskActions != null && subTaskActions.size() > 0) {
+                    SubTaskAction tmpAction = new SubTaskAction();
+                    for (SubTaskAction subTaskAction : subTaskActions) {
+                        tmpAction.setId(subTaskAction.getId());
+                        tmpAction.setActionStatus(RESULT_CANCEL);
+                        subTaskActionMapper.updateByPrimaryKeySelective(tmpAction);
+                    }
+                }
             });
 
             logger.debug("循环调用执行者接口，取消任务");

@@ -665,6 +665,10 @@ public class TaskConstants {
          * 结果处理异常
          */
         public final static String RESULT_ERROR = "4";
+        /**
+         * 取消发送
+         */
+        public final static String RESULT_CANCEL = "5";
     }
     /**
      * 执行模型,是否重复发送
