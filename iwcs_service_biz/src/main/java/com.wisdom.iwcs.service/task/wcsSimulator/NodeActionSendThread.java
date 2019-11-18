@@ -26,7 +26,7 @@ public class NodeActionSendThread implements Runnable {
                 try {
                     logger.info("开始滚筒通知调度程序");
                     nodeActionSend();
-                    this.wait(5 * 1000);
+                    this.wait(10 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (Exception e) {

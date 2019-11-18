@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name = "sub_task_action")
 public class SubTaskAction {
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Long id;
 
     /**

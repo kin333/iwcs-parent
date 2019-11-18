@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.hikCallback.iwcsHikCallback;
 import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.InspurBizConstants;
+import com.wisdom.iwcs.common.utils.RabbitMQUtil;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
@@ -256,6 +257,8 @@ public class HikCallbackIwcsService {
             subTaskAction.setActionStatus(CREATE);
             //插入请求信息
             subTaskActionMapper.insertSelective(subTaskAction);
+            Long id = subTaskAction.getId();
+            RabbitMQUtil.basicPublicNodeAction(id.toString());
         }
 
     }
