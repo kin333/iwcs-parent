@@ -137,6 +137,7 @@ public class InterfaceLogConstants {
         public final static String SRC_INSUPR = "INSUPR";
         public final static String SRC_MES = "MES";
         public final static String SRC_PDA = "PDA";
+        public final static String SCADA = "SCADA";
     }
 
 

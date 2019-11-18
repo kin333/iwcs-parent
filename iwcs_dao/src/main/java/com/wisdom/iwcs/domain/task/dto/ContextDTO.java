@@ -224,4 +224,10 @@ public class ContextDTO {
     @ColumnName("rollerRecyleEmpty")
     private Boolean rollerRecyleEmpty;
 
+    /**
+     * 超越节点变更
+     */
+    @ColumnName("agvProcessNotify")
+    private String agvProcessNotify;
+
 }

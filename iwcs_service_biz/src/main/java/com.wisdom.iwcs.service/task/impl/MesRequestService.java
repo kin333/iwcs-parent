@@ -642,7 +642,11 @@ public class MesRequestService {
             contextDTO.setRecyleWb(startSupllyAndRecyle.getRecyleWb());
             contextDTO.setRollerDownGoodEmpty(true);
             contextDTO.setEmptyRecyleNum(1);
+            contextDTO.setAgvProcessNotify("8");
             contextDTO.setRollerDownGoodNOEmpty(false);
+        } else if (SEND_TYPE.equals(startSupllyAndRecyle.getNodeType())) {
+            contextDTO.setAgvProcessNotify("4");
+            contextDTO.setChaLeaveUpEmpty(false);
         }
 
         if (RECEIVE_TYPE.equals(startSupllyAndRecyle.getNodeType())){

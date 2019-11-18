@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SCADA;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.executeMode.NO_PROMISE_ARRIVE;
@@ -88,6 +89,10 @@ public class NodeActionThreadService extends ConsumerThread {
                             } else {
                                 //MES 默认结果处理
                                 if (SRC_MES.equals(subTaskAction.getApp())) {
+                                    if (MesResult.NG.equals(obj.getString("code"))) {
+                                        mesRespHandlerResult.setHandleResult(false);
+                                    }
+                                } else if (SCADA.equals(subTaskAction.getApp())) {
                                     if (MesResult.NG.equals(obj.getString("code"))) {
                                         mesRespHandlerResult.setHandleResult(false);
                                     }

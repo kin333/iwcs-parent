@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.task.impl;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
+import com.wisdom.iwcs.common.utils.InspurBizConstants;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.YZConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
@@ -147,6 +148,16 @@ public class MapResouceService implements IMapResouceService {
      */
     public BaseMapBerth distanceRule(List<BaseMapBerth> baseMapBerthList) {
         Optional<BaseMapBerth> minMapBerth = baseMapBerthList.stream().max((a,b) -> a.getCoox().compareTo(b.getCoox()));
+        return minMapBerth.get();
+    }
+
+    /**
+     * 计算y值
+     * @param baseMapBerthList
+     * @return
+     */
+    public BaseMapBerth distanceRuleDesc(List<BaseMapBerth> baseMapBerthList) {
+        Optional<BaseMapBerth> minMapBerth = baseMapBerthList.stream().max((a,b) -> a.getCooy().compareTo(b.getCooy()));
         return minMapBerth.get();
     }
     /**
@@ -458,7 +469,11 @@ public class MapResouceService implements IMapResouceService {
             List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
             if(selectBaseMapBerths.size() > 0) {
                 selectLockMapBerthCondition = lockMapBerthCondition;
-                selectBaseMapBerth = distanceRule(selectBaseMapBerths);
+                if (lockMapBerthCondition.getBizType().equals(InspurBizConstants.BizTypeConstants.AGINGCACHEAREA)) {
+                    selectBaseMapBerth = distanceRuleDesc(selectBaseMapBerths);
+                } else {
+                    selectBaseMapBerth = distanceRule(selectBaseMapBerths);
+                }
                 break;
             }
         }
@@ -510,7 +525,7 @@ public class MapResouceService implements IMapResouceService {
     }
 
     /**
-     *  超越  获取区域的空闲储位并锁定(老化区)
+     *  超越  获取区域的空闲储位并锁定(人工插线到老化区)
      * @param baseMapBerthList
      * @return
      */
@@ -523,7 +538,7 @@ public class MapResouceService implements IMapResouceService {
             List<BaseMapBerth> selectBaseMapBerths = baseMapBerthMapper.selectEmptyStorageAging(lockMapBerthCondition);
             if(selectBaseMapBerths.size() > 0) {
                 selectLockMapBerthCondition = lockMapBerthCondition;
-                selectBaseMapBerth = distanceRuleByGroup(selectBaseMapBerths);
+                selectBaseMapBerth = distanceRule(selectBaseMapBerths);
                 break;
             }
         }

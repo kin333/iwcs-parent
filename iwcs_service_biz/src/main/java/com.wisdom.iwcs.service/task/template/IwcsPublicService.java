@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SCADA;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_HIK;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 
@@ -86,6 +87,10 @@ public class IwcsPublicService {
             iCommonService.handleHikResponseAndThrowException(resultBody);
         } else if (SRC_MES.equals(subTaskTyp.getWorkerType())) {
             logger.info("MES发送任务:{}", jsonStr);
+            resultBody = NetWorkUtil.transferContinueTaskUTF8(jsonStr, url);
+            iCommonService.handleMesResponse(resultBody);
+        } else if (SCADA.equals(subTaskTyp.getWorkerType())) {
+            logger.info("SCADA发送任务:{}", jsonStr);
             resultBody = NetWorkUtil.transferContinueTaskUTF8(jsonStr, url);
             iCommonService.handleMesResponse(resultBody);
         } else {

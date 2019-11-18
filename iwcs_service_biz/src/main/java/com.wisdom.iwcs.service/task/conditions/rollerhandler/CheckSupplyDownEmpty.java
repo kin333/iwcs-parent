@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CheckRollerContinueThree implements IConditionHandler {
-    private Logger logger = LoggerFactory.getLogger(CheckRollerContinueThree.class);
+public class CheckSupplyDownEmpty implements IConditionHandler {
+    private Logger logger = LoggerFactory.getLogger(CheckSupplyDownEmpty.class);
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -23,16 +23,14 @@ public class CheckRollerContinueThree implements IConditionHandler {
     TaskContextMapper taskContextMapper;
 
     /**
-     * 滚动是否继续滚动 -------回收点
+     * 供送料点回收
      * @param subTaskCondition
      * @return
      */
+
     @Override
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
-        logger.info("任务单{}CheckRollerContinueTwo前置条件检查开始", subTaskCondition.getSubTaskNum());
-
-        SubTask subTaskDTO = new SubTask();
-
+        logger.info("任务单{}CheckSupplyDownEmpty前置条件检查开始", subTaskCondition.getSubTaskNum());
         SubTask subTask = subTaskMapper.selectBySubTaskNum(subTaskCondition.getSubTaskNum());
         String mainTaskCode = subTask.getMainTaskNum();
 
@@ -40,18 +38,18 @@ public class CheckRollerContinueThree implements IConditionHandler {
         String context = taskContext.getContext();
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
-        subTaskDTO.setSubTaskNum(subTask.getSubTaskNum());
-        if (contextDTO.getRollerRecyleEmpty()){
-            subTaskDTO.setJsonData("");
-            subTaskMapper.updateJsonData(subTaskDTO.getSubTaskNum(), subTaskDTO.getJsonData());
+        if (contextDTO.getAgvProcessNotify().equals("82")) {
+            logger.info("任务单{}CheckSupplyDownEmpty前置条件检查成功", subTaskCondition.getSubTaskNum());
+            return true;
+        }else if (contextDTO.getAgvProcessNotify().equals("4")) {
+            logger.info("任务单{}CheckSupplyDownEmpty前置条件检查成功", subTaskCondition.getSubTaskNum());
             return true;
         }
-
         return false;
     }
 
     @Override
     public boolean rollbackCondition(SubTaskCondition subTaskCondition) {
-        return true;
+        return false;
     }
 }

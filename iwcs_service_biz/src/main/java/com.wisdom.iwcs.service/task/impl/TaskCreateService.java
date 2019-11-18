@@ -451,6 +451,7 @@ public class TaskCreateService implements ITaskCreateService {
             baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
             if (baseMapBerthList.size() < 1) {
                 lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+                lockMapBerthCondition.setBizType(null);
                 baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
             }
             Preconditions.checkBusinessError(baseMapBerthList.size() < 1, "未找到合适的目标点");
