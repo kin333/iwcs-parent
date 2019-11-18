@@ -269,6 +269,11 @@ public class SUserService {
         Integer userId = SecurityUtils.getCurrentUserId();
         record.setLastModifiedBy(userId);
         record.setLastModifiedTime(new Date());
+        if (sUser.getPassword().equals(record.getPassword())) {
+            record.setPassword(null);
+        } else {
+            record.setPassword(GetMD5Code(record.getPassword()));
+        }
         int returnNum = sUserMapper.updateByPrimaryKeySelective(record);
 
         //更新用户角色
