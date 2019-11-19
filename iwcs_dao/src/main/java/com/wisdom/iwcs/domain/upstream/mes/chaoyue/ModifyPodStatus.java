@@ -4,6 +4,7 @@ public class ModifyPodStatus {
 
     private String podCode;
     private String podStatus;
+    private String modifyDate;
 
     public String getPodCode() {
         return podCode;
@@ -19,5 +20,13 @@ public class ModifyPodStatus {
 
     public void setPodStatus(String podStatus) {
         this.podStatus = podStatus;
+    }
+
+    public String getModifyDate() {
+        return modifyDate;
+    }
+
+    public void setModifyDate(String modifyDate) {
+        this.modifyDate = modifyDate;
     }
 }

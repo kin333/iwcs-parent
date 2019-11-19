@@ -686,7 +686,7 @@ public class MesRequestService {
         BasePodDetail basePodDetail = new BasePodDetail();
         basePodDetail.setPodCode(data.getPodCode());
         basePodDetail.setPodProp4(data.getPodStatus());
-
+        basePodDetail.setPodProp5(data.getModifyDate());
         int num = basePodDetailMapper.updatePodStatus(basePodDetail);
         return new MesResult();
     }
