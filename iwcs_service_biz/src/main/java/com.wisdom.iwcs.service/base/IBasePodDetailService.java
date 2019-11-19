@@ -44,4 +44,6 @@ public interface IBasePodDetailService {
     String returnPodLockNameByResolveLockValue(Integer taskLockValue);
 
     BasePodDetail selectPodByPodCode(BasePodDetailDTO basePodDetailDTO);
+
+    BasePodDetail selectPodData(BasePodDetailDTO recode);
 }

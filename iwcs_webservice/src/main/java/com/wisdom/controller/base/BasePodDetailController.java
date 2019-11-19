@@ -5,6 +5,7 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMap;
+import com.wisdom.iwcs.domain.base.BasePod;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.mapstruct.base.BasePodDetailMapStruct;
@@ -134,6 +135,15 @@ public class BasePodDetailController {
     public Result selectPodByPodCode(@RequestBody BasePodDetailDTO basePodDetailDTO) {
 
         BasePodDetail basePodDetail = IBasePodDetailService.selectPodByPodCode(basePodDetailDTO);
+
+        return new Result(basePodDetail);
+    }
+
+    @PostMapping("/getPodData")
+
+    public Result selectPodData(@RequestBody BasePodDetailDTO basePodDetailDTO) {
+
+        BasePodDetail basePodDetail = IBasePodDetailService.selectPodData(basePodDetailDTO);
 
         return new Result(basePodDetail);
     }

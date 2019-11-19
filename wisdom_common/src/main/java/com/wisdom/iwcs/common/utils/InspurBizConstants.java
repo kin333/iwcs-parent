@@ -348,4 +348,27 @@ public class InspurBizConstants {
          */
         public final static String RECYLE_TYPE = "4";
     }
+
+    /**
+     * 超越货架修改状态
+     * * pod_prop4
+     */
+    public static final class PodType {
+        /**
+         * 待老化 产线工作去插线的
+         */
+        public final static String NEED_TO_AGING = "needToAging";
+        /**
+         * 正在老化 pda
+         */
+        public final static String AGING_WORKING = "agingWorking";
+        /**
+         *老化结束 scada通知
+         */
+        public final static String AGING_WORKED = "agingWorked";
+        /**
+         * 待测 老化去检验任务
+         */
+        public final static String NEED_TO_TEST = "needToTest";
+    }
 }

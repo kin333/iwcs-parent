@@ -43,6 +43,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -54,6 +55,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskWork
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodType.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.connectionPointType.IN_WAIT_POINT;
 import static com.wisdom.iwcs.common.utils.TaskConstants.connectionPointType.OUT_WAIT_POINT;
 import static com.wisdom.iwcs.common.utils.TaskConstants.handlerName.ACTIONCHECKHANDLER;
@@ -1109,6 +1111,12 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException(reqCode, "该货架已被锁！");
         }
 
+        BasePodDetail basePodDetail1 = new BasePodDetail();
+        basePodDetail1.setPodProp4(NEED_TO_AGING);
+        basePodDetail1.setPodCode(basePodDetail.getPodCode());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        basePodDetail1.setPodProp5(df.format(new Date()));
+        int num = basePodDetailMapper.updatePodStatus(basePodDetail1);
 
         String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode()));
         //创建主任务
@@ -1128,8 +1136,8 @@ public class TaskCreateService implements ITaskCreateService {
         taskContextDTO.setMainTaskNum(mainTaskNum);
         taskContextDTO.setCreateTime(new Date());
         TaskContext taskContext = taskContextMapStruct.toEntity(taskContextDTO);
-        int num = taskContextMapper.insert(taskContext);
-        if (num!=1){
+        int nums = taskContextMapper.insert(taskContext);
+        if (nums!=1){
             throw new MesBusinessException("操作失败！");
         }
 
@@ -1241,6 +1249,13 @@ public class TaskCreateService implements ITaskCreateService {
             throw new BusinessException("锁定空储位失败");
         }
 
+        BasePodDetail basePodDetail1 = new BasePodDetail();
+        basePodDetail1.setPodProp4(NEED_TO_TEST);
+        basePodDetail1.setPodCode(basePodDetail.getPodCode());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        basePodDetail1.setPodProp5(df.format(new Date()));
+        int num = basePodDetailMapper.updatePodStatus(basePodDetail1);
+
         //空闲点位
         BaseMapBerth selectBaseMapBerth = (BaseMapBerth) result.getReturnData();
         String berCode = selectBaseMapBerth.getBerCode();
@@ -1261,8 +1276,8 @@ public class TaskCreateService implements ITaskCreateService {
         taskContextDTO.setMainTaskNum(mainTaskNum);
         taskContextDTO.setCreateTime(new Date());
         TaskContext taskContext = taskContextMapStruct.toEntity(taskContextDTO);
-        int num = taskContextMapper.insert(taskContext);
-        if (num!=1){
+        int num1 = taskContextMapper.insert(taskContext);
+        if (num1!=1){
             throw new BusinessException("操作失败！");
         }
 
@@ -1298,6 +1313,13 @@ public class TaskCreateService implements ITaskCreateService {
             throw new MesBusinessException("该货架已被锁！");
         }
 
+        BasePodDetail basePodDetail1 = new BasePodDetail();
+        basePodDetail1.setPodProp4("");
+        basePodDetail1.setPodCode(basePodDetail.getPodCode());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        basePodDetail1.setPodProp5(df.format(new Date()));
+        int num = basePodDetailMapper.updatePodStatus(basePodDetail1);
+
         String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode()));
         //创建主任务
         String taskType = createTaskRequest.getTaskType();
@@ -1316,8 +1338,8 @@ public class TaskCreateService implements ITaskCreateService {
         taskContextDTO.setMainTaskNum(mainTaskNum);
         taskContextDTO.setCreateTime(new Date());
         TaskContext taskContext = taskContextMapStruct.toEntity(taskContextDTO);
-        int num = taskContextMapper.insert(taskContext);
-        if (num!=1){
+        int num2 = taskContextMapper.insert(taskContext);
+        if (num2!=1){
             throw new MesBusinessException("操作失败！");
         }
 

@@ -36,8 +36,8 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         //防止上下文多次刷新时，重复启动
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
-            Thread taskthread = new Thread(wcsTaskScheduler);
-            taskthread.start();
+//            Thread taskthread = new Thread(wcsTaskScheduler);
+//            taskthread.start();
 
             logger.info("开始启动任务调度器线程");
             //启动消息日志

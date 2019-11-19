@@ -9,6 +9,7 @@ import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.control.CancelTaskRequestDTO;
 import com.wisdom.iwcs.domain.control.GenAgvSchedulingRequestDTO;
 import com.wisdom.iwcs.domain.task.MainTask;
@@ -18,10 +19,12 @@ import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.domain.upstream.mes.*;
+import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ModifyPodStatus;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ReportEmptyContainerNumber;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.StartSupllyAndRecyles;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.TaskContextMapper;
@@ -75,7 +78,8 @@ public class MesRequestService {
     WcsTaskScheduler wcsTaskScheduler;
      @Autowired
     FreeRobotService freeRobotService;
-
+    @Autowired
+    BasePodDetailMapper basePodDetailMapper;
 
     /**
      * 接收 Mes 通知 AGV 接料点目的地的请求
@@ -664,5 +668,26 @@ public class MesRequestService {
         taskContextMapper.updateByPrimaryKeySelective(new TaskContext(taskContext.getId(), jsonStr));
 
         return new MesResult(reqCode);
+    }
+
+    public MesResult modifyPodStatus(ModifyPodStatus data, String reqCode) {
+
+        if (StringUtils.isEmpty(data.getPodCode())) {
+            throw new MesBusinessException(reqCode, "货架号必填");
+        }
+        if (StringUtils.isEmpty(data.getPodStatus())) {
+            throw new MesBusinessException(reqCode, "货架状态必填");
+        }
+
+        BasePodDetail basePodDetailList = basePodDetailMapper.selectByPodCode(data.getPodCode());
+
+        Preconditions.checkMesBusinessError(basePodDetailList == null, "该货架" + data.getPodCode() + "不存在",reqCode);
+
+        BasePodDetail basePodDetail = new BasePodDetail();
+        basePodDetail.setPodCode(data.getPodCode());
+        basePodDetail.setPodProp4(data.getPodStatus());
+
+        int num = basePodDetailMapper.updatePodStatus(basePodDetail);
+        return new MesResult();
     }
 }

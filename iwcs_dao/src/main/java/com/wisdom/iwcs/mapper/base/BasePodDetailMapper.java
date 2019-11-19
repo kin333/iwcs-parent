@@ -8,6 +8,7 @@ import com.wisdom.iwcs.domain.base.BasePod;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
 import com.wisdom.iwcs.domain.base.dto.LockPodCondition;
+import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ModifyPodStatus;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -223,4 +224,11 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
     BasePodDetail selectByBerCodeAndStock(@Param("berCode") String berCode,@Param("podStock") Integer podStock);
 
     int updateLockSourceByBercode(@Param("podCode") String podCode,@Param("lockSource") String lockSource);
+
+    /**
+     * 超越修改货架状态
+     */
+    int updatePodStatus(BasePodDetail basePodDetail);
+
+    BasePodDetail selectPodData(BasePodDetail basePodDetail);
 }

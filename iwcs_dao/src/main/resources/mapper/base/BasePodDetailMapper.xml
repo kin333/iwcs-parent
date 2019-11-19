@@ -414,4 +414,17 @@
         </set>
         where pod_code = #{podCode}
     </update>
+
+    <update id="updatePodStatus">
+        update base_pod_detail
+        <set>
+            pod_prop4 = #{podProp4}
+        </set>
+        where pod_code = #{podCode}
+    </update>
+
+    <select id="selectPodData" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from base_pod_detail
+        where pod_code = #{podCode}
+    </select>
 </mapper>

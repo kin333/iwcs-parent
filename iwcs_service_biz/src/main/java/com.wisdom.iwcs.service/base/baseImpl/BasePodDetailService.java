@@ -290,6 +290,15 @@ public class BasePodDetailService implements IBasePodDetailService {
         return basePodDetails;
     }
 
+    @Override
+    public BasePodDetail selectPodData(BasePodDetailDTO recode) {
+
+        BasePodDetail basePodDetail = basePodDetailMapStruct.toEntity(recode);
+        BasePodDetail basePodDetail1 = basePodDetailMapper.selectPodData(basePodDetail);
+
+        return basePodDetail1;
+    }
+
     /**
      * 更改货架空满
      * @param
