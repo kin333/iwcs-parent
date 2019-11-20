@@ -636,7 +636,7 @@ public class MesRequestService {
             //将点位信息转换为berCode
             BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(startSupllyAndRecyle.getRecyleWb());
             Preconditions.checkMesBusinessError(baseMapBerth == null,
-                    startSupllyAndRecyle.getCurrentWb() + "找不到别名对应的地图编码",reqCode);
+                    startSupllyAndRecyle.getRecyleWb() + "找不到别名对应的地图编码",reqCode);
 
             String endPoint = baseMapBerth.getBerCode();
             String jsonString = JSONArray.toJSONString(Arrays.asList(startPoint.get(1),endPoint));
