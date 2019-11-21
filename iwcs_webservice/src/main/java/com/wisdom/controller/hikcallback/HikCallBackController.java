@@ -147,4 +147,15 @@ public class HikCallBackController {
     public HikSyncResponse carryNotify(@RequestBody HikCallBackAgvMove hikCallBackAgvMove) {
         return hikCallbackIwcsService.carryNotify(hikCallBackAgvMove);
     }
+
+    /**
+     * 自动门 AGV请求开门/关门
+     * @param
+     * @return
+     */
+    @PostMapping("/NotifyTaskInfo")
+    @SystemInterfaceLog(methodCode = NOTIFY_TASK_INFO, methodName = NOTIFY_TASK_INFO_DESC, methodThansfer = SRC_HIK)
+    public HikSyncResponse notifyTaskInfo(@RequestBody HikCallDoorSwitch hikCallDoorSwitch) {
+        return hikCallbackIwcsService.notifyTaskInfo(hikCallDoorSwitch);
+    }
 }

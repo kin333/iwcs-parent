@@ -42,6 +42,7 @@ public class InterfaceLogConstants {
         public final static String EXCUTE_TASK = "excuteTask";
         public final static String RELEASE_RESOURCE = "releaseResource";
         public final static String TASK_NOTIFY = "/iwcs/taskNotify";
+        public final static String NOTIFY_TASK_INFO="notifyTaskInfo";
 
         public final static String SAVE_INSTOCK = "saveInStock";
         public final static String SELECT_WHAREA_LIST = "selectWhAreaList";
@@ -103,6 +104,7 @@ public class InterfaceLogConstants {
         public final static String EXCUTE_TASK_DESC = "小车送货架出电梯后回调";
         public final static String RELEASE_RESOURCE_DESC = "agv接货架出电梯时回调";
         public final static String TASK_NOTIFY_DESC = "小车移动的回调接口";
+        public final static String NOTIFY_TASK_INFO_DESC="agv请求自动门开门/关门";
 
         public final static String SAVE_INSTOCK_DESC = "更新货架空满";
         public final static String SELECT_WHAREA_LIST_DESC = "拉取库区列表";

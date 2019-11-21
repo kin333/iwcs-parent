@@ -10,6 +10,7 @@ import com.wisdom.iwcs.common.utils.taskUtils.CreateRouteKeyUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.hikSync.HikCallBackAgvMove;
+import com.wisdom.iwcs.domain.hikSync.HikCallDoorSwitch;
 import com.wisdom.iwcs.domain.hikSync.HikReachCheckArea;
 import com.wisdom.iwcs.domain.hikSync.HikSyncResponse;
 import com.wisdom.iwcs.domain.log.ResPosEvt;
@@ -903,5 +904,15 @@ public class HikCallbackIwcsService {
                 hikCallBackAgvMove.getWbCode());
     }
 
+    /**
+     * agv接货架出电梯时,小车出电梯回调
+     * @param hikCallDoorSwitch
+     * @return
+     */
+    public HikSyncResponse notifyTaskInfo(HikCallDoorSwitch hikCallDoorSwitch) {
+        logger.info("小车请求开门/关门,任务:{}", hikCallDoorSwitch.getUuid());
+        //TODO 通知门开启/关闭
+        return new HikSyncResponse();
+    }
 
 }
