@@ -61,7 +61,7 @@
             and UNIX_TIMESTAMP(created_time) &lt;= (#{endTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
         </if>
         <if test="inParam != null and inParam != ''">
-            and in_param = #{inParam}
+            and in_param like CONCAT('%',#{inParam},'%')
         </if>
         <if test="outParam != null and outParam != ''">
             and out_param = #{outParam}
