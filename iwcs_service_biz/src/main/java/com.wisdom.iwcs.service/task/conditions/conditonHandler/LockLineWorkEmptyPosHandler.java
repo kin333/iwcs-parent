@@ -21,7 +21,7 @@ public class LockLineWorkEmptyPosHandler implements IConditionHandler{
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
         AreaCondition areaCondition = new AreaCondition();
         //查找线体工作区的空点位
-        areaCondition.setArea(InspurBizConstants.BizTypeConstants.LINEWORKAREA);
+        areaCondition.setBizType(InspurBizConstants.BizTypeConstants.LINEWORKAREA);
 
         return baseLockEmptyMapService.handleConditionServices(subTaskCondition, Arrays.asList(areaCondition));
     }

@@ -147,6 +147,18 @@ public class BaseMapBerthController {
         return new Result();
     }
 
+    @PostMapping("/updatePonitAlise")
+    public Result updatePonitAlise(@RequestBody BaseMapBerthDTO baseMapBerth) {
+
+        int num = IBaseMapBerthService.updatePonitAlise(baseMapBerth);
+
+        if (num == 400) {
+            return new Result(400, "该点位编号已经存在");
+        }
+        return new Result();
+    }
+
+
     @PostMapping("/getMapDataByMapCode")
     public Result selectMapDataByMapCode(@RequestBody BaseMapBerth baseMapBerth) {
 

@@ -21,7 +21,7 @@ public class LineCacheEmptyPosLockHandler implements IConditionHandler{
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
         AreaCondition areaCondition = new AreaCondition();
         //查找线体缓存区的空点位
-        areaCondition.setArea(InspurBizConstants.BizTypeConstants.LINECACHEAREA);
+        areaCondition.setBizType(InspurBizConstants.BizTypeConstants.LINECACHEAREA);
 
         return baseLockEmptyMapService.handleConditionServices(subTaskCondition, Arrays.asList(areaCondition));
     }

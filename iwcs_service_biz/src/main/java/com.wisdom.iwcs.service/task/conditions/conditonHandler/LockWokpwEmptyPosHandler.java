@@ -21,7 +21,7 @@ public class LockWokpwEmptyPosHandler implements IConditionHandler{
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
         AreaCondition areaCondition = new AreaCondition();
         //查找人工插线区的空点位
-        areaCondition.setBizType(InspurBizConstants.OperateAreaCodeConstants.WOKPWAREA);
+        areaCondition.setArea(InspurBizConstants.OperateAreaCodeConstants.WOKPWAREA);
 
         return baseLockEmptyMapService.handleConditionServices(subTaskCondition, Arrays.asList(areaCondition));
     }

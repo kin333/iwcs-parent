@@ -534,4 +534,12 @@
         where ber_code = #{berCode}
     </update>
 
+    <update id="updatePonitAlise">
+        update base_map_berth
+        <set>
+            point_alias = #{pointAlias}
+        </set>
+        where ber_code = #{berCode}
+    </update>
+
 </mapper>

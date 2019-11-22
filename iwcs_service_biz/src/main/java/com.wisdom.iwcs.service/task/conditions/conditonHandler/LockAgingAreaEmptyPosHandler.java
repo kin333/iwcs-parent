@@ -21,7 +21,7 @@ public class LockAgingAreaEmptyPosHandler implements IConditionHandler{
     public boolean handleCondition(SubTaskCondition subTaskCondition) {
         AreaCondition areaCondition = new AreaCondition();
         //查找老化缓存区的空点位
-        areaCondition.setArea(InspurBizConstants.BizTypeConstants.AGINGCACHEAREA);
+        areaCondition.setBizType(InspurBizConstants.BizTypeConstants.AGINGCACHEAREA);
 
         return baseLockEmptyMapService.handleConditionServices(subTaskCondition, Arrays.asList(areaCondition));
     }

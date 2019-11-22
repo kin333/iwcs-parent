@@ -222,4 +222,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
 
     int updateMapByBerCode(BaseMapBerth baseMapBerth);
 
+
+    int updatePonitAlise(BaseMapBerth baseMapBerth);
+
 }

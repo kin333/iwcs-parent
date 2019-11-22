@@ -319,11 +319,27 @@ public class BaseMapBerthService implements IBaseMapBerthService{
             return 0;
         }
         String pointAlias = baseMapBerthDTOList.get(0).getPointAlias();
-        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(pointAlias);
-        if (baseMapBerth != null) {
+        List<BaseMapBerth> baseMapBerth = baseMapBerthMapper.selectByPointAliass(pointAlias);
+        if (baseMapBerth.size() > 1) {
             return 500;
         }
         return baseMapBerthMapper.updateListByBerCode(baseMapBerthDTOList);
+    }
+
+    @Override
+    public int updatePonitAlise(BaseMapBerthDTO baseMapBerthDTO) {
+
+        BaseMapBerth recode = baseMapBerthMapStruct.toEntity(baseMapBerthDTO);
+
+        List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectByPointAliass(recode.getPointAlias());
+
+        if (baseMapBerths.size() > 1) {
+            return 400;
+        }
+
+        int num = baseMapBerthMapper.updatePonitAlise(recode);
+
+        return num;
     }
 
     @Override
