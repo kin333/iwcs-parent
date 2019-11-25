@@ -200,15 +200,27 @@ public class MesRequestService {
                 throw new MesBusinessException(reqCode, "未通知第一下料点");
             }
             if (contextDTO.getSupplyUnLoadWbFirst().equals(startSupllyAndRecyle.getSupplyLoadWb())) {
-                //第一下料点
+                //第一下料点请求
                 if (!supplyUnLoadNum.equals(contextDTO.getSupplyUnLoadWbFirstCount())) {
                     throw new MesBusinessException(reqCode, "下料点一的下箱数量与第一次通知不匹配");
                 }
             } else {
-                //第二下料点
+                //第二下料点请求
                 if (!supplyUnLoadNum.equals(contextDTO.getSupplyUnLoadWbSecondCount())) {
                     throw new MesBusinessException(reqCode, "下料点二的下箱数量与第一次通知不匹配");
                 }
+            }
+        }
+        //校验下箱地址
+        if (contextDTO.getEndBerCodeReady() == null) {
+            //第一下箱点的请求校验
+            if (!startSupllyAndRecyle.getSupplyLoadWb().equals(contextDTO.getSupplyUnLoadWbFirst())) {
+                throw new MesBusinessException(reqCode, "下料点一位置错误");
+            }
+        } else {
+            //第二下箱点的请求校验
+            if (!startSupllyAndRecyle.getSupplyLoadWb().equals(contextDTO.getSupplyUnLoadWbSecond())) {
+                throw new MesBusinessException(reqCode, "下料点二位置错误");
             }
         }
         //校验允许下箱请求是否已发送

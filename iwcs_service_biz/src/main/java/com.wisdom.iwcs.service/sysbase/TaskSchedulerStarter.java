@@ -38,8 +38,8 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
 //            Thread taskthread = new Thread(wcsTaskScheduler);
 //            taskthread.start();
-
             logger.info("开始启动任务调度器线程");
+//            logger.info("开始启动任务调度器线程");
             //启动消息日志
 //            threadPoolTaskExecutor.execute(taskLogThreadService);
 //
