@@ -9,12 +9,10 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.constant.ConditionMetStatus;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
-import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.exception.TaskConditionException;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.control.CancelTaskRequestDTO;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.AutoCreateBaseInfo;
@@ -475,7 +473,7 @@ public class SubTaskService {
                                 AtomicReference<Boolean> createConAllMet = new AtomicReference<>(new Boolean(true));
                                 //判断前置条件是否满足
                                 taskRelConditions.stream().forEachOrdered(t -> {
-                                    logger.info("检查子任务模板{}是否满足");
+                                    logger.info("检查子任务模板{}的条件是否满足，条件：{}", t.getTemplCode(), JSON.toJSONString(t));
                                     String conditonHandler = t.getConditonHandler();
                                     IRelConditionHandler iRelConditionHandler = (IRelConditionHandler) ApplicationContextUtils.getBean(conditonHandler);
                                     boolean met = iRelConditionHandler.handleCondition(mainTaskNum, t);
