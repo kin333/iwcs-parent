@@ -9,11 +9,13 @@ import com.wisdom.iwcs.domain.hikSync.GenAgvSchedulingTaskDTO;
 import com.wisdom.iwcs.service.callHik.IFreeRobotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.FREE_ROBOT;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.FREE_ROBOT;
 
 @Service
 public class FreeRobotService implements IFreeRobotService {
@@ -25,6 +27,7 @@ public class FreeRobotService implements IFreeRobotService {
     @Autowired
     com.wisdom.iwcs.service.base.ICommonService ICommonService;
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public Result freeRobot(GenAgvSchedulingRequestDTO genAgvSchedulingRequestDTO) {
 
