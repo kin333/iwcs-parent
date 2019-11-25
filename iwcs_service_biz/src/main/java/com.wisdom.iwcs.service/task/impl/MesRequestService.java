@@ -44,7 +44,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
@@ -401,12 +400,17 @@ public class MesRequestService {
 
             //释放小车
             logger.info("尝试取消子任务占用的robot",isusedRobotsCodes);
-//            isusedRobotsCodes.stream().forEach(robot->{
-//                GenAgvSchedulingRequestDTO genAgvSchedulingRequestDTO = new GenAgvSchedulingRequestDTO();
-//                genAgvSchedulingRequestDTO.setAgvCode(robot);
-//                genAgvSchedulingRequestDTO.setRobotCode(robot);
-//                freeRobotService.freeRobot(genAgvSchedulingRequestDTO);
-//            });
+            try {
+                isusedRobotsCodes.stream().forEach(robot -> {
+                    GenAgvSchedulingRequestDTO genAgvSchedulingRequestDTO = new GenAgvSchedulingRequestDTO();
+                    genAgvSchedulingRequestDTO.setAgvCode(robot);
+                    genAgvSchedulingRequestDTO.setRobotCode(robot);
+                    freeRobotService.freeRobot(genAgvSchedulingRequestDTO);
+                });
+            } catch (Exception e) {
+                logger.warn("取消任务时释放小车异常{},{}", subTasks, e);
+            }
+
         }
         mesResult.setMessage("任务"+mesCancelTaskRequest.getTaskCode()+"取消成功");
         return mesResult;
