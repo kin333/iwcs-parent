@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.door.DoorMsgLogMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.door.DoorMsgLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+    <result column="msg_time" jdbcType="TIMESTAMP" property="msgTime" />
+    <result column="req_code" jdbcType="VARCHAR" property="reqCode" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="door_status" jdbcType="VARCHAR" property="doorStatus" />
+    <result column="door_report_work_type" jdbcType="VARCHAR" property="doorReportWorkType" />
+    <result column="door_model" jdbcType="VARCHAR" property="doorModel" />
+    <result column="wcs_notify_work_type" jdbcType="VARCHAR" property="wcsNotifyWorkType" />
+    <result column="msg_body" jdbcType="VARCHAR" property="msgBody" />
+    <result column="send_addr" jdbcType="VARCHAR" property="sendAddr" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, msg_type, msg_time, req_code, created_time, door_status, door_report_work_type, 
+    door_model, wcs_notify_work_type, msg_body, send_addr
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from door_msg_log
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>

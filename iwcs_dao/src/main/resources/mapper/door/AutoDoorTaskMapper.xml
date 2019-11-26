@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.door.AutoDoorTaskMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.door.AutoDoorTask">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="door_code" jdbcType="VARCHAR" property="doorCode" />
+    <result column="task_code" jdbcType="VARCHAR" property="taskCode" />
+    <result column="req_time" jdbcType="TIMESTAMP" property="reqTime" />
+    <result column="task_status" jdbcType="VARCHAR" property="taskStatus" />
+    <result column="task_update_time" jdbcType="TIMESTAMP" property="taskUpdateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, door_code, task_code, req_time, task_status, task_update_time
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from auto_door_task
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>

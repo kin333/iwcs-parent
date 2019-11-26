@@ -1,16 +1,20 @@
 package com.wisdom.iwcs.service.plc;
 
 import com.wisdom.iwcs.common.utils.plcUtils.PlcRespone;
+import com.wisdom.iwcs.domain.door.DoorMsgLog;
 import com.wisdom.iwcs.domain.elevator.EleMsgLog;
 import com.wisdom.iwcs.domain.elevator.Elevator;
 import com.wisdom.iwcs.domain.elevator.ElevatorReport;
 import com.wisdom.iwcs.domain.linebody.LineBodyReport;
 import com.wisdom.iwcs.domain.linebody.LineMsgLog;
 import com.wisdom.iwcs.domain.task.EleControlTask;
+import com.wisdom.iwcs.mapper.door.DoorMsgLogMapper;
+import com.wisdom.iwcs.mapper.door.DoorReport;
 import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.elevator.EleMsgLogMapper;
 import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.linebody.LineMsgLogMapper;
+import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import org.slf4j.Logger;
@@ -43,6 +47,10 @@ public class PLCControlService {
     private ElevatorMapper elevatorMapper;
     @Autowired
     private EleControlTaskMapper eleControlTaskMapper;
+    @Autowired
+    private DoorNotifyService doorNotifyService;
+    @Autowired
+    private DoorMsgLogMapper doorMsgLogMapper;
 
     public String testService(String str){
         logger.info("BusinessService.testService({})...........", str);
@@ -92,29 +100,23 @@ public class PLCControlService {
             eleMsgLogMapper.insertSelective(eleMsgLog);
         }else if(commandType.equals("06")) {
             //TODO 线体状态
-            LineBodyReport lineBodyReport = new LineBodyReport();
-            lineBodyReport.setAddress(sendAddr);
-            lineBodyReport.setDeviceType(commandType);
-            lineBodyReport.setReqCode(reqCode);
-            String workType = msgBody.substring(12,14);
-            String workPoint = msgBody.substring(10,12);
-            if (workType.equals("01")){
-                logger.info("线体通知{}：呼叫空货架"+ plcRespone.getAddress()+":"+workPoint);
-                lineBodyReport.setWorkPoint(workPoint);
-                lineNotifyService.lineCallEmptyPod(lineBodyReport);
-            }else {
-                logger.info("线体通知{}：呼叫货架离开"+ plcRespone.getAddress()+":"+workPoint);
-                lineBodyReport.setWorkPoint(workPoint);
-                lineNotifyService.lineCallAgvPickPod(lineBodyReport);
-            }
-            //insert line_msg_log
-            LineMsgLog lineMsgLog = new LineMsgLog();
-            lineMsgLog.setCreatedTime(new Date());
-            lineMsgLog.setSendAddr(sendAddr);
-            lineMsgLog.setMsgBody(msgBody);
-            lineMsgLog.setMsgType(PLC_RECEIVE);
-            lineMsgLog.setReqCode(reqCode);
-            lineMsgLogMapper.insertSelective(lineMsgLog);
+            DoorReport doorReport = new DoorReport();
+            doorReport.setAddress(sendAddr);
+            doorReport.setDeviceType(commandType);
+            doorReport.setReqCode(reqCode);
+            String doorStatus = msgBody.substring(12,14);
+            String doorWorkType = msgBody.substring(14,16);
+            String doorModel = msgBody.substring(16,18);
+            doorNotifyService.doorReportState(doorReport);
+
+            //insert door_msg_log
+            DoorMsgLog doorMsgLog = new DoorMsgLog();
+            doorMsgLog.setDoorModel(doorModel);
+            doorMsgLog.setDoorReportWorkType(doorWorkType);
+            doorMsgLog.setDoorStatus(doorStatus);
+            doorMsgLog.setMsgBody(msgBody);
+            doorMsgLogMapper.insertSelective(doorMsgLog);
+
         }else{
             //TODO 线体状态
             LineBodyReport lineBodyReport = new LineBodyReport();
