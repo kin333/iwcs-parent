@@ -333,7 +333,7 @@ public class BaseMapBerthService implements IBaseMapBerthService{
 
         List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectByPointAliaList(recode);
 
-        if (baseMapBerths.size() > 1) {
+        if (baseMapBerths.size() != 0) {
             return 400;
         }
 
