@@ -1,0 +1,52 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="george" id="201911251545">
+        <createTable tableName="auto_door">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="door_code" remarks="门编号" type="VARCHAR(32)"/>
+            <column name="door_status " remarks="电梯状态: 正常、异常1，异常2等" type="VARCHAR(1)"/>
+            <column name="status_update_time" remarks="状态更新时间" type="datetime"/>
+            <column name="door_model" remarks="模式：1自动、2手动" type="VARCHAR(1)"/>
+            <column name="task_status " remarks="任务状态：1关门到位，2关门中，3开门中，4开门到位" type="VARCHAR(1)"/>
+            <column name="door_task_update_time" remarks="门任务状态变更时间" type="datetime"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201911251545-1">
+        <createTable tableName="auto_door_task">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="door_code" remarks="门编号" type="VARCHAR(32)"/>
+            <column name="task_code" remarks="请求编号（agv上报的uuid）" type="VARCHAR(32)"/>
+            <column name="req_time" remarks="请求时间戳" type="datetime"/>
+            <column name="task_status" remarks="任务状态：0进行中，9结束" type="VARCHAR(1)"/>
+            <column name="task_update_time" remarks="任务状态变更时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="george" id="201911251545-2">
+        <createTable tableName="door_msg_log">
+            <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="msg_type" remarks="通信类型：收receive/发send" type="VARCHAR(32)"/>
+            <column name="msg_time" remarks="发送/接收时间" type="datetime"/>
+            <column name="req_code" remarks="请求编号" type="VARCHAR(32)"/>
+            <column name="created_time" remarks="创建时间" type="datetime"/>
+            <column name="door_status" remarks="门上报的状态" type="VARCHAR(32)"/>
+            <column name="door_report_work_type" remarks="门上报的作业方式" type="VARCHAR(32)"/>
+            <column name="door_model" remarks="门上报的模式" type="VARCHAR(32)"/>
+            <column name="wcs_notify_work_type" remarks="iWCS请求门的命令" type="VARCHAR(32)"/>
+            <column name="msg_body" remarks="消息内容()" type="VARCHAR(128)"/>
+            <column name="send_addr" remarks="发送地址" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

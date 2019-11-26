@@ -142,4 +142,6 @@
 
     <include file="liquibase/changelog/iwcs/iwcs_sub_task_action.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_ts_task_rel_action.xml" relativeToChangelogFile="false"/>
+
+    <include file="liquibase/changelog/iwcs/iwcs_db_add_auto_door_changelog_20191125.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

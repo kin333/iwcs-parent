@@ -90,7 +90,32 @@ public class PLCControlService {
             eleMsgLog.setMsgType(PLC_RECEIVE);
             eleMsgLog.setReqCode(reqCode);
             eleMsgLogMapper.insertSelective(eleMsgLog);
-        }else {
+        }else if(commandType.equals("06")) {
+            //TODO 线体状态
+            LineBodyReport lineBodyReport = new LineBodyReport();
+            lineBodyReport.setAddress(sendAddr);
+            lineBodyReport.setDeviceType(commandType);
+            lineBodyReport.setReqCode(reqCode);
+            String workType = msgBody.substring(12,14);
+            String workPoint = msgBody.substring(10,12);
+            if (workType.equals("01")){
+                logger.info("线体通知{}：呼叫空货架"+ plcRespone.getAddress()+":"+workPoint);
+                lineBodyReport.setWorkPoint(workPoint);
+                lineNotifyService.lineCallEmptyPod(lineBodyReport);
+            }else {
+                logger.info("线体通知{}：呼叫货架离开"+ plcRespone.getAddress()+":"+workPoint);
+                lineBodyReport.setWorkPoint(workPoint);
+                lineNotifyService.lineCallAgvPickPod(lineBodyReport);
+            }
+            //insert line_msg_log
+            LineMsgLog lineMsgLog = new LineMsgLog();
+            lineMsgLog.setCreatedTime(new Date());
+            lineMsgLog.setSendAddr(sendAddr);
+            lineMsgLog.setMsgBody(msgBody);
+            lineMsgLog.setMsgType(PLC_RECEIVE);
+            lineMsgLog.setReqCode(reqCode);
+            lineMsgLogMapper.insertSelective(lineMsgLog);
+        }else{
             //TODO 线体状态
             LineBodyReport lineBodyReport = new LineBodyReport();
             lineBodyReport.setAddress(sendAddr);
