@@ -15,11 +15,11 @@ public class MesResult {
     /**
      * 成功标识
      */
-    public static String OK = "0";
+    public static String OK = "OK";
     /**
      * 失败标识
      */
-    public static String NG = "1";
+    public static String NG = "NG";
     /**
      * 返回值 OK-成功，NG-失败，
      */
