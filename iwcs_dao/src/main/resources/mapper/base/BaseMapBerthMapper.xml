@@ -285,7 +285,15 @@
         and delete_flag = 0
         and point_alias = #{pointAlias,jdbcType=VARCHAR}
     </select>
-
+    <select id="selectByPointAliaList"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_map_berth
+        where 1=1
+        and delete_flag = 0
+        and point_alias = #{pointAlias,jdbcType=VARCHAR}
+        and id != #{id}
+    </select>
     <select id="selectDataByPodCode"  resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

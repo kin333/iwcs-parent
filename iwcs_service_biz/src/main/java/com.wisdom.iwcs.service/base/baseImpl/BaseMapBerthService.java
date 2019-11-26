@@ -331,7 +331,7 @@ public class BaseMapBerthService implements IBaseMapBerthService{
 
         BaseMapBerth recode = baseMapBerthMapStruct.toEntity(baseMapBerthDTO);
 
-        List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectByPointAliass(recode.getPointAlias());
+        List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectByPointAliaList(recode);
 
         if (baseMapBerths.size() > 1) {
             return 400;
