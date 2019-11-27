@@ -51,12 +51,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.SupllyNodeType.*;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_HIK;
+import static com.wisdom.iwcs.common.utils.TaskConstants.SendStatus.SENDED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.RESULT_CANCEL;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.RESULT_ERROR;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.executeMode.PROMISE_ARRIVE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.*;
+import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_ISSUED;
+import static com.wisdom.iwcs.common.utils.TaskConstants.workTaskStatus.END;
 
 /**
  * Mes系统请求的业务逻辑
@@ -382,8 +386,21 @@ public class MesRequestService {
 
             List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
             // TODO 需要区分不同执行方，目前写死，只有海康rcs
-            List<SubTask> isusedSubTasks = subTasks.stream().filter(s -> TaskConstants.subTaskStatus.SUB_ISSUED.equals(s.getTaskStatus()) && TaskConstants.SendStatus.SENDED.equals(s.getSendStatus())).distinct().collect(Collectors.toList());
+            List<SubTask> isusedSubTasks = subTasks.stream().filter(s -> SUB_ISSUED.equals(s.getTaskStatus()) && SENDED.equals(s.getSendStatus())).distinct().collect(Collectors.toList());
             logger.debug("筛选所有进行中的子任务{}",isusedSubTasks);
+
+            //如果没有搜索到Hik的任务,再进行一次确认,防止偶现的Hik任务没取消的问题
+            if (isusedSubTasks.size() == 0) {
+                //检查是否是Hik的请求,如果是,判断是否已发送,且是否未完成,如果已发送且未完成,则加入到取消队列里
+                SubTask lastSubTask = subTasks.get(subTasks.size() - 1);
+                if (SRC_HIK.equals(lastSubTask.getThirdType())) {
+                    List<SubTask> listTask = subTaskMapper.selectAllByTaskCode(lastSubTask.getWorkerTaskCode());
+                    //判断是否已发送,且最后一个子任务是否未完成,如果已发送且未完成,则加入到取消队列里
+                    if (SENDED.equals(listTask.get(0).getSendStatus()) && !END.equals(listTask.get(listTask.size() - 1).getWorkTaskStatus())) {
+                        isusedSubTasks.add(lastSubTask);
+                    }
+                }
+            }
 
             List<String> isusedWorkTaskCodes = isusedSubTasks.stream().map(t -> t.getWorkerTaskCode()).distinct().collect(Collectors.toList());
             List<String> isusedRobotsCodes = isusedSubTasks.stream().map(t -> t.getRobotCode()).distinct().collect(Collectors.toList());

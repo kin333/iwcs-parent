@@ -311,6 +311,13 @@
     order by id desc
     LIMIT 1
   </select>
+  <select id="selectAllByTaskCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from ts_sub_task
+    where worker_task_code = #{taskCode}
+    order by sub_task_seq ASC
+  </select>
 
   <update id="updatePodAndBerBySubTaskCode">
     update ts_sub_task tst, base_map_berth bmb
