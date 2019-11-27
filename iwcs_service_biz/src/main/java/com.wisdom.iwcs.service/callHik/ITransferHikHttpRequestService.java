@@ -70,4 +70,12 @@ public interface ITransferHikHttpRequestService {
      */
     @SystemInterfaceLog(methodCode = FREE_ROBOT, methodName = FREE_ROBOT_NAME, methodThansfer = SRC_IWCS)
     String transferFreeRobot(GenAgvSchedulingTaskDTO genAgvSchedulingTaskDTO);
+
+    /**
+     * 自动门 开门到位/开始关门
+     * @param
+     * @return
+     */
+    @SystemInterfaceLog(methodCode = NOTIFY_EXCUTE_RESULT_INFO, methodName = NOTIFY_EXCUTE_RESULT_INFO_NAME, methodThansfer = SRC_IWCS)
+    String notifyExcuteResultInfo(NotifyExcuteResultInfoDTO notifyExcuteResultInfoDTO);
 }

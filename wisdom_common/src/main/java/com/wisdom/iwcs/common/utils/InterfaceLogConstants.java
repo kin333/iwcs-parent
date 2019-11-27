@@ -43,6 +43,7 @@ public class InterfaceLogConstants {
         public final static String RELEASE_RESOURCE = "releaseResource";
         public final static String TASK_NOTIFY = "/iwcs/taskNotify";
         public final static String NOTIFY_TASK_INFO="notifyTaskInfo";
+        public final static String NOTIFY_EXCUTE_RESULT_INFO = "NotifyExcuteResultInfo";
 
         public final static String SAVE_INSTOCK = "saveInStock";
         public final static String SELECT_WHAREA_LIST = "selectWhAreaList";
@@ -94,6 +95,7 @@ public class InterfaceLogConstants {
         public final static String GEN_AGV_SCHEDULING_TASK_NAME = "生成任务单";
         public final static String CONTINUE_TASK_NAME = "继续执行任务";
         public final static String FREE_ROBOT_NAME = "释放AGV";
+        public final static String NOTIFY_EXCUTE_RESULT_INFO_NAME = "自动门开门到位/开始关闭";
         public final static String CANCEL_TASK_NAME = "取消任务";
         public final static String Bind_And_Berth_NAME = "货架与位置绑定、解绑";
         public final static String TASK_CREATE_DESC = "浪潮搬运任务创建";

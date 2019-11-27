@@ -649,6 +649,8 @@ public class ApplicationProperties {
 
         private String finiTask;
 
+        private String notifyExcuteResultInfoUrl;
+
         public String getFiniTask() {
             return finiTask;
         }
@@ -696,7 +698,6 @@ public class ApplicationProperties {
         public void setCancelTaskUrl(String cancelTaskUrl) {
             this.cancelTaskUrl = cancelTaskUrl;
         }
-
 
         public String getMovePodUrl() {
             return movePodUrl;
@@ -760,6 +761,14 @@ public class ApplicationProperties {
 
         public void setRotatePodUrl(String rotatePodUrl) {
             this.rotatePodUrl = rotatePodUrl;
+        }
+
+        public String getNotifyExcuteResultInfoUrl() {
+            return notifyExcuteResultInfoUrl;
+        }
+
+        public void setNotifyExcuteResultInfoUrl(String notifyExcuteResultInfoUrl) {
+            this.notifyExcuteResultInfoUrl = notifyExcuteResultInfoUrl;
         }
     }
 

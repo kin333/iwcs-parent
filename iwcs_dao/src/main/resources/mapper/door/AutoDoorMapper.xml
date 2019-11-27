@@ -6,6 +6,7 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="msg_code" jdbcType="VARCHAR" property="msgCode" />
     <result column="door_code" jdbcType="VARCHAR" property="doorCode" />
     <result column="door_status" jdbcType="VARCHAR" property="doorStatus" />
     <result column="status_update_time" jdbcType="TIMESTAMP" property="statusUpdateTime" />
@@ -17,7 +18,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, door_code, door_status, status_update_time, door_model, task_status, door_task_update_time
+    id, msg_code, door_code, door_status, status_update_time, door_model, task_status, door_task_update_time
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from auto_door
@@ -33,4 +34,29 @@
     </if>
     order by last_modified_time desc
   </select>
+    <select id="selectDoorStatus" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from auto_door
+        where door_code = #{doorCode,jdbcType=VARCHAR}
+    </select>
+    <update id="updateDoorInfo">
+        update auto_door
+        <set>
+            <if test="doorStatus != null and doorStatus != ''">
+                door_status = #{doorStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="doorModel != null and doorModel != ''">
+                door_model = #{doorModel,jdbcType=VARCHAR},
+            </if>
+            <if test="taskStatus != null and taskStatus != ''">
+                task_status = #{taskStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="statusUpdateTime != null">
+                status_update_time = #{statusUpdateTime,jdbcType=BIGINT},
+            </if>
+            <if test="doorTaskUpdateTime != null">
+                door_task_update_time = #{doorTaskUpdateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where msg_code = #{msgCode}
+    </update>
 </mapper>

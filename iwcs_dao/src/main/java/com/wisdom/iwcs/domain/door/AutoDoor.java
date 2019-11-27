@@ -9,6 +9,12 @@ public class AutoDoor {
     private Integer id;
 
     /**
+     * 通信编号（三方通信协议使用(地址编号)）
+     */
+    @Column(name = "msg_code")
+    private String msgCode;
+
+    /**
      * 门编号
      */
     @Column(name = "door_code")
@@ -56,6 +62,14 @@ public class AutoDoor {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getMsgCode() {
+        return msgCode;
+    }
+
+    public void setMsgCode(String msgCode) {
+        this.msgCode = msgCode;
     }
 
     /**

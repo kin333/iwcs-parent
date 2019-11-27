@@ -129,6 +129,7 @@ application:
     returnMapOrPodUrl: http://192.168.102.96/cms/services/rest/hikRpcService/queryPodBerthAndMat
     returnTaskStatus:  http://192.168.102.96/cms/services/rest/hikRpcService/queryTaskStatus
     finiTask:  http://192.168.102.96/cms/services/rest/hikLiftService/finiTask
+    notifyExcuteResultInfoUrl:  http://192.168.102.96/cms/services/rest/liftCtlService/notifyExcuteResultInfo
     tokenCode: d2076d0915a5e6985641a7123cf708bc
     clientCode: INSPUR
   outstock:

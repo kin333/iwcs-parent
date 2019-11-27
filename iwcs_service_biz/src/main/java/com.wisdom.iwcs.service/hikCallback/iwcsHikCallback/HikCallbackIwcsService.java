@@ -9,20 +9,23 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.taskUtils.CreateRouteKeyUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
-import com.wisdom.iwcs.domain.hikSync.HikCallBackAgvMove;
-import com.wisdom.iwcs.domain.hikSync.HikCallDoorSwitch;
-import com.wisdom.iwcs.domain.hikSync.HikReachCheckArea;
-import com.wisdom.iwcs.domain.hikSync.HikSyncResponse;
+import com.wisdom.iwcs.domain.door.AutoDoor;
+import com.wisdom.iwcs.domain.door.AutoDoorTask;
+import com.wisdom.iwcs.domain.hikSync.*;
 import com.wisdom.iwcs.domain.log.ResPosEvt;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
+import com.wisdom.iwcs.mapper.door.AutoDoorMapper;
+import com.wisdom.iwcs.mapper.door.AutoDoorTaskMapper;
 import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.service.base.ICommonService;
+import com.wisdom.iwcs.service.callHik.ITransferHikHttpRequestService;
 import com.wisdom.iwcs.service.callHik.callHikImpl.ContinueTaskService;
+import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
@@ -46,6 +49,8 @@ import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAAUTOPOINT;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAMANUALPOINT;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.DoorMsgType.DOOR_CLOSE;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.DoorMsgType.DOOR_OPEN;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.HikCallbackMethod.*;
@@ -99,6 +104,14 @@ public class HikCallbackIwcsService {
     SubTaskActionMapper subTaskActionMapper;
     @Autowired
     MainTaskMapper mainTaskMapper;
+    @Autowired
+    AutoDoorMapper autoDoorMapper;
+    @Autowired
+    DoorNotifyService doorNotifyService;
+    @Autowired
+    AutoDoorTaskMapper autoDoorTaskMapper;
+    @Autowired
+    ITransferHikHttpRequestService iTransferHikHttpRequestService;
 
     /**
      * 小车开始任务的基础修改
@@ -905,14 +918,47 @@ public class HikCallbackIwcsService {
     }
 
     /**
-     * agv接货架出电梯时,小车出电梯回调
+     * agv路过有自动门的地方，上报请求开门/关闭
      * @param hikCallDoorSwitch
      * @return
      */
     public HikSyncResponse notifyTaskInfo(HikCallDoorSwitch hikCallDoorSwitch) {
         logger.info("小车请求开门/关门,任务:{}", hikCallDoorSwitch.getUuid());
-        //TODO 通知门开启/关闭
+
+        String doorCode = hikCallDoorSwitch.getDeviceType();
+        String actionTask = hikCallDoorSwitch.getActionTask();
+        if (actionTask.equals("applyLock")){
+            //查询当前门的状态
+            AutoDoor autoDoor = autoDoorMapper.selectDoorStatus(doorCode);
+            if (autoDoor !=null && !autoDoor.getTaskStatus().equals("4")){
+                //通知门开启
+                doorNotifyService.notifyDoorOpenOrClose(DOOR_OPEN);
+            }else{
+                // 通知agv通过
+                NotifyExcuteResultInfoDTO notifyExcuteResultInfoDTO = new NotifyExcuteResultInfoDTO();
+                notifyExcuteResultInfoDTO.setActionStatus("1");
+                notifyExcuteResultInfoDTO.setDeviceIndex(doorCode);
+                notifyExcuteResultInfoDTO.setDeviceType("door");
+                notifyExcuteResultInfoDTO.setUuid(hikCallDoorSwitch.getUuid());
+                String response = iTransferHikHttpRequestService.notifyExcuteResultInfo(notifyExcuteResultInfoDTO);
+                iCommonService.handleHikResponseAndThrowException(response);
+
+                //记录通过uuid 写入auto_door_task
+                AutoDoorTask autoDoorTask = new AutoDoorTask();
+                autoDoorTask.setDoorCode(doorCode);
+                autoDoorTask.setReqTime(new Date());
+                autoDoorTask.setTaskCode(hikCallDoorSwitch.getUuid());
+                autoDoorTask.setTaskStatus("0");
+                autoDoorTaskMapper.insertSelective(autoDoorTask);
+            }
+        }else{
+            //查询当前是否还有未走出当前门编号的任务，没有则通知PLC关门
+            List<AutoDoorTask> autoDoorTasks = autoDoorTaskMapper.selectUnTaskByDoorCode(doorCode);
+            if (autoDoorTasks.size()==0){
+                doorNotifyService.notifyDoorOpenOrClose(DOOR_CLOSE);
+            }
+        }
+
         return new HikSyncResponse();
     }
-
 }

@@ -21,4 +21,8 @@ public interface AutoDoorMapper extends MyMapperAndIds<AutoDoor> {
      * @return list
      */
     List<AutoDoor> selectPage(Map map);
+
+    AutoDoor selectDoorStatus(String doorCode);
+
+    int updateDoorInfo(AutoDoor autoDoor);
 }

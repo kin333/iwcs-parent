@@ -304,6 +304,11 @@ public class TransferHikHttpRequestService implements ITransferHikHttpRequestSer
         return body;
     }
 
+    /**
+     * 超越释放AGV
+     * @param
+     * @return
+     */
     @Override
     @SystemInterfaceLog(methodCode = FREE_ROBOT, methodName = FREE_ROBOT_NAME, methodThansfer = SRC_IWCS)
     public String transferFreeRobot(GenAgvSchedulingTaskDTO genAgvSchedulingTaskDTO) {
@@ -315,6 +320,31 @@ public class TransferHikHttpRequestService implements ITransferHikHttpRequestSer
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getHikParam().getFreeRobotUrl(),
+                HttpMethod.POST, requestEntity, String.class);
+
+        List<String> val = resp.getHeaders().get("Set-Cookie");
+        System.out.println(val);
+
+        String body = resp.getBody();
+        return body;
+    }
+
+    /**
+     * 自动门 开门到位/开始关门
+     * @param
+     * @return
+     */
+    @Override
+    @SystemInterfaceLog(methodCode = NOTIFY_EXCUTE_RESULT_INFO, methodName = NOTIFY_EXCUTE_RESULT_INFO_NAME, methodThansfer = SRC_IWCS)
+    public String notifyExcuteResultInfo(NotifyExcuteResultInfoDTO notifyExcuteResultInfoDTO) {
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
+
+        HttpEntity<NotifyExcuteResultInfoDTO> requestEntity = new HttpEntity<>(notifyExcuteResultInfoDTO, httpHeaders);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> resp = restTemplate.exchange(applicationProperties.getHikParam().getNotifyExcuteResultInfoUrl(),
                 HttpMethod.POST, requestEntity, String.class);
 
         List<String> val = resp.getHeaders().get("Set-Cookie");

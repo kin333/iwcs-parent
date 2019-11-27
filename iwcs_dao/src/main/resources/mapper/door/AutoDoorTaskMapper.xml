@@ -32,4 +32,8 @@
     </if>
     order by last_modified_time desc
   </select>
+    <select id="selectUnTaskByDoorCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from auto_door_task
+    where door_code = #{doorCode,jdbcType=VARCHAR}
+</select>
 </mapper>

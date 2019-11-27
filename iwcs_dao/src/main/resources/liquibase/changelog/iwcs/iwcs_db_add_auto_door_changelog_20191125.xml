@@ -4,10 +4,11 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
     <changeSet author="george" id="201911251545">
-        <createTable tableName="auto_door">
+        <createTable tableName="auto_door" remarks="自动门表">
             <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
                 <constraints primaryKey="true"/>
             </column>
+            <column name="msg_code" remarks="第三方通讯设备编号(地址)" type="VARCHAR(16)"/>
             <column name="door_code" remarks="门编号" type="VARCHAR(32)"/>
             <column name="door_status " remarks="电梯状态: 正常、异常1，异常2等" type="VARCHAR(1)"/>
             <column name="status_update_time" remarks="状态更新时间" type="datetime"/>
@@ -19,7 +20,7 @@
     </changeSet>
 
     <changeSet author="george" id="201911251545-1">
-        <createTable tableName="auto_door_task">
+        <createTable tableName="auto_door_task" remarks="自动门任务表">
             <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
                 <constraints primaryKey="true"/>
             </column>
@@ -32,7 +33,7 @@
     </changeSet>
 
     <changeSet author="george" id="201911251545-2">
-        <createTable tableName="door_msg_log">
+        <createTable tableName="door_msg_log" remarks="自动门plc通讯消息记录表">
             <column autoIncrement="true" name="id" remarks="自增主键" type="INT">
                 <constraints primaryKey="true"/>
             </column>

@@ -20,4 +20,9 @@ public interface AutoDoorTaskMapper extends MyMapperAndIds<AutoDoorTask> {
      * @return list
      */
     List<AutoDoorTask> selectPage(Map map);
+
+    /**
+     * 根据门的编号查询当前是否有未完结的过门请求
+     */
+    List<AutoDoorTask> selectUnTaskByDoorCode(String doorCode);
 }

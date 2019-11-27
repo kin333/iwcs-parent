@@ -371,4 +371,18 @@ public class InspurBizConstants {
          */
         public final static String NEED_TO_TEST = "needToTest";
     }
+
+    /**
+     * 通知门开、关
+     */
+    public static final class DoorMsgType{
+        /**
+         * 开门
+         */
+        public final static String DOOR_OPEN = "open";
+        /**
+         * 关门
+         */
+        public final static String DOOR_CLOSE = "close";
+    }
 }
