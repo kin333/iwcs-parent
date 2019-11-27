@@ -138,6 +138,15 @@ public class TaskContextService {
 
     }
 
+    public int updateTaskContent(TaskContextDTO record) {
+
+        TaskContext taskContext = taskContextMapStruct.toEntity(record);
+
+        int num = taskContextMapper.updateByMainTaskNum(taskContext);
+
+        return num;
+    }
+
     /**
      * 根据主键选择性更新
      *

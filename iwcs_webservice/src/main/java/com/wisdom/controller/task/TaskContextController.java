@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.domain.task.TaskContext;
 import com.wisdom.iwcs.domain.task.dto.TaskContextDTO;
 import com.wisdom.iwcs.mapstruct.task.TaskContextMapStruct;
 import com.wisdom.iwcs.service.task.impl.TaskContextService;
@@ -113,6 +114,13 @@ public class TaskContextController {
     @PutMapping
     public Result updateByPrimaryKey(@RequestBody TaskContextDTO taskContextDTO) {
         taskContextService.updateByPrimaryKey(taskContextDTO);
+
+        return new Result();
+    }
+
+    @PostMapping("/updateTaskContent")
+    public Result updateTaskContent(@RequestBody TaskContextDTO taskContextDTO) {
+        taskContextService.updateTaskContent(taskContextDTO);
 
         return new Result();
     }
