@@ -19,6 +19,12 @@ public class TaskRel {
     private String templCode;
 
     /**
+     *模板名称
+     */
+    @Column(name = "templ_name")
+    private String templName;
+
+    /**
      * 主任务类型编号
      */
     @Column(name = "main_task_type_code")
@@ -299,6 +305,14 @@ public class TaskRel {
      */
     public void setSubTaskTypeCode(String subTaskTypeCode) {
         this.subTaskTypeCode = subTaskTypeCode == null ? null : subTaskTypeCode.trim();
+    }
+
+    public String getTemplName() {
+        return templName;
+    }
+
+    public void setTemplName(String templName) {
+        this.templName = templName;
     }
 
     /**

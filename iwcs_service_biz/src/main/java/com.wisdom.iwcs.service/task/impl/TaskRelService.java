@@ -223,7 +223,7 @@ public class TaskRelService {
     /**
      * 根据主键逻辑删除多条记录
      *
-     * @param ids {@link List<String> }
+     * @param  {@link List<String> }
      * @return int
      */
 //    public int deleteMoreLogic(List<String> ids){
@@ -271,8 +271,8 @@ public class TaskRelService {
             taskRel.setMainTaskTypeCode(item.getMainTaskTypeCode());
             taskRel.setSubTaskTypeCode(item.getSubTaskTypeCode());
             taskRel.setSubTaskSeq(item.getSubTaskSeq());
-            taskRelCondition.setMainTaskTypeCode(item.getMainTaskTypeCode());
-            taskRelCondition.setSubTaskTypeCode(item.getSubTaskTypeCode());
+//            taskRelCondition.setMainTaskTypeCode(item.getMainTaskTypeCode());
+//            taskRelCondition.setSubTaskTypeCode(item.getSubTaskTypeCode());
 //            taskRelCondition.setSubTaskSeq(item.getSubTaskSeq());
 
             if (item.getDeleteFlag()) {
@@ -281,12 +281,12 @@ public class TaskRelService {
             } else {
                 if (StringUtils.isEmpty(item.getTemplCode())) {
                     // 插入
-                    String templCode = item.getMainTaskTypeCode().substring(0, 3) + "_" + item.getSubTaskTypeCode() + "_" + item.getSubTaskSeq();
+                    String templCode = item.getMainTaskTypeCode().substring(0, 3) + "_" + item.getSubTaskTypeCode();
                     taskRel.setTemplCode(templCode);
-                    taskRelCondition.setTemplCode(templCode);
+//                    taskRelCondition.setTemplCode(templCode);
                     taskRel.setMainTaskSeq(1);
                     insert(taskRel);
-                    TaskRelConditionMapper.insert(taskRelCondition);
+//                    TaskRelConditionMapper.insert(taskRelCondition);
                 } else {
                     // 根据templCode更新
                     taskRel.setTemplCode(item.getTemplCode());

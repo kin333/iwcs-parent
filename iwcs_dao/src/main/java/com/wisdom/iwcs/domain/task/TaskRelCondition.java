@@ -17,6 +17,12 @@ public class TaskRelCondition {
     private String templCode;
 
     /**
+     *模板名称
+     */
+    @Column(name = "templ_name")
+    private String templName;
+
+    /**
      * 主任务类型编号
      */
     @Column(name = "main_task_type_code")
@@ -105,6 +111,14 @@ public class TaskRelCondition {
     }
 
     public Long getId() { return id; }
+
+    public String getTemplName() {
+        return templName;
+    }
+
+    public void setTemplName(String templName) {
+        this.templName = templName;
+    }
 
     public void setId(Long id) {
         this.id = id;

@@ -7,6 +7,7 @@
          -->
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="templ_code" jdbcType="VARCHAR" property="templCode" />
+        <result column="templ_name" jdbcType="VARCHAR" property="templName" />
         <result column="main_task_type_code" jdbcType="VARCHAR" property="mainTaskTypeCode" />
         <result column="sub_task_type_code" jdbcType="VARCHAR" property="subTaskTypeCode" />
         <result column="conditon_handler" jdbcType="VARCHAR" property="conditonHandler" />
@@ -23,7 +24,7 @@
         <!--
           WARNING - @mbg.generated
         -->
-        id, templ_code, main_task_type_code, sub_task_type_code, conditon_handler, create_date,
+        id, templ_code, templ_name, main_task_type_code, sub_task_type_code, conditon_handler, create_date,
         point_access, date_chg, remark, conditon_triger, subscribe_event, sub_task_seq, con_expression
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">

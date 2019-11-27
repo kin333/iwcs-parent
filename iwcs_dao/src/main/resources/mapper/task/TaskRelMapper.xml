@@ -7,6 +7,7 @@
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="templ_code" jdbcType="VARCHAR" property="templCode" />
+      <result column="templ_name" jdbcType="VARCHAR" property="templName" />
     <result column="main_task_type_code" jdbcType="VARCHAR" property="mainTaskTypeCode" />
     <result column="main_task_seq" jdbcType="INTEGER" property="mainTaskSeq" />
     <result column="sub_task_type_code" jdbcType="VARCHAR" property="subTaskTypeCode" />
@@ -45,7 +46,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, templ_code, main_task_type_code, main_task_seq, sub_task_type_code, task_group_item_id, 
+    id, templ_code,templ_name, main_task_type_code, main_task_seq, sub_task_type_code, task_group_item_id,
     task_group_code, sub_task_seq, group_seq, create_date, remark, need_confirm, need_inform, 
     need_trigger, trigger_type, condition_handler, third_invoke_type, third_type, app_code,
       third_url, third_start_method, third_end_method, point_access,outflow, action_type,
