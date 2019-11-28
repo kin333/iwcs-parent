@@ -35,7 +35,7 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
-    order by create_date desc
+    order by sub_task_typ_code asc
   </select>
 
   <select id="selectByTypeCode" resultMap="BaseResultMap">

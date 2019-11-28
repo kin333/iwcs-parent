@@ -281,8 +281,9 @@ public class TaskRelService {
             } else {
                 if (StringUtils.isEmpty(item.getTemplCode())) {
                     // 插入
-                    String templCode = item.getMainTaskTypeCode().substring(0, 3) + "_" + item.getSubTaskTypeCode();
+                    String templCode = item.getMainTaskTypeCode().substring(0, 3) + "_" + item.getSubTaskTypeCode() + "_" + item.getSubTaskSeq();
                     taskRel.setTemplCode(templCode);
+                    taskRel.setCreateDate(new Date());
 //                    taskRelCondition.setTemplCode(templCode);
                     taskRel.setMainTaskSeq(1);
                     insert(taskRel);
@@ -305,6 +306,7 @@ public class TaskRelService {
         int num = updateByPrimaryKey(taskRel);
         taskRelConditionDTO.forEach(item -> {
             TaskRelCondition taskRelCondition = taskRelConditionsMapStruct.toEntity(item);
+            taskRelCondition.setCreateDate(new Date());
             if (org.springframework.util.StringUtils.isEmpty(taskRelCondition.getId())) {
                 int insertNum = TaskRelConditionMapper.insert(taskRelCondition);
             } else {
