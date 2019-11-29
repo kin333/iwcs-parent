@@ -52,7 +52,7 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
 
     Integer updateTaskByTemplCode(TaskRelDTO taskRel);
 
-    Integer deleteByTemplCode(String templCode);
+    Integer deleteByTemplCode(Integer id);
 
     List<TaskRelSubMain> selectSubTaskTypeByCode(TaskRel taskRel);
 

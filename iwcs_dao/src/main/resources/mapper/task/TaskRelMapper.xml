@@ -126,7 +126,7 @@
   </update>
 
   <delete id="deleteByTemplCode">
-    delete from ts_task_rel where templ_code = #{templCode}
+    delete from ts_task_rel where id = #{id}
   </delete>
 
     <delete id="deleteByTemplCodes">

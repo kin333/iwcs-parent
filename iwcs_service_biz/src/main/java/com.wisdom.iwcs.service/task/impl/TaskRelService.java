@@ -276,7 +276,7 @@ public class TaskRelService {
 //            taskRelCondition.setSubTaskSeq(item.getSubTaskSeq());
 
             if (item.getDeleteFlag()) {
-                TaskRelMapper.deleteByTemplCode(item.getTemplCode());
+                TaskRelMapper.deleteByTemplCode(item.getId());
                 TaskRelConditionMapper.deleteByTemplCode(item.getTemplCode());
             } else {
                 if (StringUtils.isEmpty(item.getTemplCode())) {
