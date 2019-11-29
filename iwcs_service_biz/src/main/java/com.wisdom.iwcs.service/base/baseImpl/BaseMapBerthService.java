@@ -16,6 +16,7 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -331,10 +332,12 @@ public class BaseMapBerthService implements IBaseMapBerthService{
 
         BaseMapBerth recode = baseMapBerthMapStruct.toEntity(baseMapBerthDTO);
 
-        List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectByPointAliaList(recode);
+        if (StringUtils.isNotEmpty(baseMapBerthDTO.getPointAlias())) {
+            List<BaseMapBerth> baseMapBerths = baseMapBerthMapper.selectByPointAliaList(recode);
 
-        if (baseMapBerths.size() != 0) {
-            return 400;
+            if (baseMapBerths.size() != 0) {
+                return 400;
+            }
         }
 
         int num = baseMapBerthMapper.updatePonitAlise(recode);
