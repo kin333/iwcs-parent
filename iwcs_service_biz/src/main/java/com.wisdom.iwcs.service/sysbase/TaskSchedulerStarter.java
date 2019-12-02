@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.sysbase;
 
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
+import com.wisdom.iwcs.netty.DoorNettyClient;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionSendThread;
 import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionThreadService;
@@ -51,7 +52,10 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
 //            logger.info("开始启动节点通知调度线程");
 //            threadPoolTaskExecutor.execute(nodeActionSendThread);
 
-
+            //自动门 plc连接启动
+            DoorNettyClient doorNettyClient = DoorNettyClient.getInstance();
+            Thread doorNettyClientThread = new Thread(doorNettyClient);
+            doorNettyClientThread.start();
 
 //            Thread taskthread = new Thread(wcsTaskScheduler);
 //            taskthread.start();

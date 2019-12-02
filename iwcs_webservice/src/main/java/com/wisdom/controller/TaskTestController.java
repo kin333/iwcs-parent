@@ -9,6 +9,7 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
+import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
@@ -75,6 +76,8 @@ public class TaskTestController {
     PlToWokpwWorker plToWokpwWorker;
     @Autowired
     QuaHaulbackWorker quaHaulbackWorker;
+    @Autowired
+    DoorNotifyService doorNotifyService;
 
     @Autowired
     MesAutoSendInfoThread mesAutoSendInfoThread;
@@ -83,6 +86,13 @@ public class TaskTestController {
     ChaoRollEmptyTaskCreateWorker rollEmptyTaskCreateWorker;
     @Autowired
     RollerTaskCreateTestWorker rollerTaskCreateTestWorker;
+
+    @GetMapping("/notifyDoorInfoTest/{workType}")
+    public Result notifyDoorInfoTest(@PathVariable String workType) {
+        logger.info("通知自动门 {}",workType);
+        doorNotifyService.notifyDoorTest(workType);
+        return new Result();
+    }
 
     @GetMapping("/sendLineNotify")
     public Result sendLineNotify() {

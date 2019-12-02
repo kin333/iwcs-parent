@@ -89,7 +89,7 @@ public class DoorNotifyService {
         String commandComplete = commandBody + s + "2C";
 
         //写入line_msg_log
-        this.insertDoorMsgLog("",commandComplete,PLC_SEND,randomNum);
+        this.insertDoorMsgLog("",commandBody,PLC_SEND,randomNum);
         return commandComplete;
     }
     private byte[] agvNotifyCommandBinary(String workType){
@@ -108,5 +108,13 @@ public class DoorNotifyService {
         doorMsgLog.setMsgType(msgType);
         doorMsgLog.setReqCode(reqCode);
         doorMsgLogMapper.insertSelective(doorMsgLog);
+    }
+
+    /**
+     * 发送消息test
+     */
+    public void notifyDoorTest(String workType){
+        //通知门 成功
+        notifyDoorOpenOrClose(workType);
     }
 }

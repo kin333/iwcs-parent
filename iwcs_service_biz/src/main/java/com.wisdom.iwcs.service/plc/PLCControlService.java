@@ -104,10 +104,10 @@ public class PLCControlService {
             doorReport.setAddress(sendAddr);
             doorReport.setDeviceType(commandType);
             doorReport.setReqCode(reqCode);
-            String doorStatus = msgBody.substring(12,14);
-            String doorWorkType = msgBody.substring(14,16);
-            String doorModel = msgBody.substring(16,18);
-            doorNotifyService.doorReportState(doorReport);
+            String doorStatus = msgBody.substring(8,10);
+            String doorWorkType = msgBody.substring(10,12);
+            String doorModel = msgBody.substring(12,14);
+            //doorNotifyService.doorReportState(doorReport);
 
             //insert door_msg_log
             DoorMsgLog doorMsgLog = new DoorMsgLog();
