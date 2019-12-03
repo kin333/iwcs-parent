@@ -125,12 +125,12 @@ application:
     arriveDestWbUrl: /api/wisdom/agvHandlingTask/arriveDestWb
     agvHandlingTaskUrl: /api/wisdom/agvHandlingTask
   hikParam:
-    returnPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/returnPod
-    getOutPodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/getOutPod
-    endTaskUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/endAllTasksByTps
-    rotatePodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/rotatePodByTps
-    movePodUrl: http://192.168.102.100/rcs/services/rest/hikTpsService/genMoveTaskByPod
-    genAgvSchedulingTaskUrl: http://192.168.102.100/rcs/services/rest/hikRpcService/genAgvSchedulingTask
+    returnPodUrl: http://192.168.102.95/rcs/services/rest/hikTpsService/returnPod
+    getOutPodUrl: http://192.168.102.95/rcs/services/rest/hikTpsService/getOutPod
+    endTaskUrl: http://192.168.102.95/rcs/services/rest/hikTpsService/endAllTasksByTps
+    rotatePodUrl: http://192.168.102.95/rcs/services/rest/hikTpsService/rotatePodByTps
+    movePodUrl: http://192.168.102.95/rcs/services/rest/hikTpsService/genMoveTaskByPod
+    genAgvSchedulingTaskUrl: http://192.168.102.95/rcs/services/rest/hikRpcService/genAgvSchedulingTask
     continueTaskUrl: http://192.168.102.95/rcs/services/rest/hikRpcService/continueTask
     cancelTaskUrl: http://192.168.102.95/rcs/services/rest/hikRpcService/cancelTask
     freeRobotUrl: http://192.168.102.95/rcs/services/rest/hikRpcService/freeRobot
