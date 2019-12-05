@@ -47,8 +47,10 @@ public class NodeActionSendThread implements Runnable {
     private void nodeActionSend() {
         List<Long> idListNoSend = subTaskActionMapper.selectIdNoSend();
         List<Long> idListNoSendSuccess = subTaskActionMapper.selectIdNoSendSuccess();
+        logger.info("节点发送数量{}", idListNoSend.size());
         if (idListNoSend.size() > 0) {
             for (Long id : idListNoSend) {
+                logger.info("节点发送ID{}", id);
                 RabbitMQUtil.basicPublicNodeAction(id.toString());
             }
         }
