@@ -57,6 +57,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvA
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.HikCallbackMethod.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.CREATE;
+import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.SENDING;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.createNode.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.eleFloor.SOURCE_FLOOR;
@@ -254,7 +255,7 @@ public class HikCallbackIwcsService {
             subTaskAction.setCreateTime(new Date());
             subTaskAction.setCreateNode(nodeCode);
             subTaskAction.setResponseHandler(taskRelAction.getResponseHandler());
-            subTaskAction.setActionStatus(CREATE);
+            subTaskAction.setActionStatus(SENDING);
             //插入请求信息
             subTaskActionMapper.insertSelective(subTaskAction);
             Long id = subTaskAction.getId();
