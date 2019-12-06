@@ -197,20 +197,15 @@ public class SimulationMesController {
             case "6": break;
             case "7":
                 //到达回收点
-                if (randomNum != 0) {
-                    mesResultInfo.setCode(MesResult.NG);
-                    StartRecyle startRecyle = new StartRecyle();
-                    startRecyle.setTaskCode(taskCode);
-                    startRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
-                    Integer recycleNumber = imitatetest.getInskupoint2Recyclingquantity() + imitatetest.getInskupoint1Recyclingquantity();
-                    startRecyle.setRecyleCount(recycleNumber);
-                    MesResult mesResult = mesRequestService.startRecyle(startRecyle, TASK_CODE);
-                    logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResult.toString());
-                    return mesResultInfo;
-                } else {
-                    mesResultInfo.setRecyleCount("0");
-                }
-                break;
+                mesResultInfo.setCode(MesResult.NG);
+                StartRecyle startRecyle = new StartRecyle();
+                startRecyle.setTaskCode(taskCode);
+                startRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());
+                Integer recycleNumber = imitatetest.getInskupoint2Recyclingquantity() + imitatetest.getInskupoint1Recyclingquantity();
+                startRecyle.setRecyleCount(recycleNumber);
+                MesResult mesResult = mesRequestService.startRecyle(startRecyle, TASK_CODE);
+                logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResult.toString());
+                return mesResultInfo;
             default:break;
         }
 
