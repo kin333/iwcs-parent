@@ -207,6 +207,8 @@ public class SimulationMesController {
                     MesResult mesResult = mesRequestService.startRecyle(startRecyle, TASK_CODE);
                     logger.info("任务{}请求滚筒上料数量的返回值为:{}", taskCode, mesResult.toString());
                     return mesResultInfo;
+                } else {
+                    mesResultInfo.setRecyleCount("0");
                 }
                 break;
             default:break;
