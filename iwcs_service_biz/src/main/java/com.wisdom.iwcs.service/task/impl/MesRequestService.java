@@ -399,11 +399,14 @@ public class MesRequestService {
                     if (SENDED.equals(listTask.get(0).getSendStatus()) && !END.equals(listTask.get(listTask.size() - 1).getWorkTaskStatus())) {
                         isusedSubTasks.add(lastSubTask);
                     }
+                } else {
+                    //检查其他第三方请求(如MES)
+                    isusedSubTasks.add(lastSubTask);
                 }
             }
 
-            List<String> isusedWorkTaskCodes = isusedSubTasks.stream().map(t -> t.getWorkerTaskCode()).distinct().collect(Collectors.toList());
-            List<String> isusedRobotsCodes = isusedSubTasks.stream().map(t -> t.getRobotCode()).distinct().collect(Collectors.toList());
+            List<String> isusedWorkTaskCodes = isusedSubTasks.stream().filter(t -> SRC_HIK.equals(t.getThirdType())).map(t -> t.getWorkerTaskCode()).distinct().collect(Collectors.toList());
+            List<String> isusedRobotsCodes = isusedSubTasks.stream().filter(t -> SRC_HIK.equals(t.getThirdType())).map(t -> t.getRobotCode()).distinct().collect(Collectors.toList());
             logger.debug("筛选所有进行中的子任务workercod ",isusedWorkTaskCodes);
 
             logger.debug("批量更新子任务状态");
