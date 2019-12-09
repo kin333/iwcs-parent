@@ -79,6 +79,8 @@ public class SubTaskService {
     BasePodDetailMapper basePodDetailMapper;
     @Autowired
     WcsTaskScheduler wcsTaskScheduler;
+    @Autowired
+    MessageService messageService;
 
     @Autowired
     public SubTaskService(SubTaskMapStruct SubTaskMapStruct, SubTaskMapper SubTaskMapper) {
@@ -298,8 +300,8 @@ public class SubTaskService {
                     //抛出异常
                     logger.info("{}子任务前置条件不满足,条件处理器{}", c.getSubTaskNum(), conditonHandleName);
                     //向消息队列发送消息
-                    String message = "子任务前置条件不满足,主任务号:" + subTask.getMainTaskNum()
-                            + ",条件处理器:" + conditonHandleName;
+                    String message = messageService.get("pre_condition_failure") + subTask.getMainTaskNum()
+                            + messageService.get("pre_condition_failure_2") + conditonHandleName;
                     RabbitMQPublicService.failureTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.PRE_CONDITION_FAILURE,message));
                     throw new TaskConditionException(-1, "子任务前置条件不满足", c.getSubTaskNum(), conditonHandleName);
                 }
@@ -314,8 +316,10 @@ public class SubTaskService {
 
         SubTask tmpSubTask = subTaskMapper.selectBySubTaskNum(subTask.getSubTaskNum());
         //向消息队列发送消息
-        String message = "子任务前置条件已全部满足,主任务号:" + subTask.getMainTaskNum() + ",货架号:" + tmpSubTask.getPodCode()
-                + ",起始地码:" + tmpSubTask.getStartBercode() + ",终点地码:" + tmpSubTask.getEndBercode();
+        String message =  messageService.get("pre_condition_success") + subTask.getMainTaskNum()
+                        + messageService.get("pre_condition_success_2") + tmpSubTask.getPodCode()
+                        + messageService.get("pre_condition_success_3") + tmpSubTask.getStartBercode()
+                        + messageService.get("pre_condition_success_4") + tmpSubTask.getEndBercode();
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.PRE_CONDITION_SUCCESS,message));
         return true;
     }
@@ -561,8 +565,8 @@ public class SubTaskService {
                             //抛出异常
                             logger.info("{}子任务后置条件暂时不满足不满足,条件名称{}", subTask.getSubTaskNum(), conditonHandleName);
                             //向消息队列发送消息
-                            String message = "子任务后置条件不满足,主任务号:" + subTask.getMainTaskNum()
-                                     + ",条件名称" + conditonHandleName;
+                            String message = messageService.get("post_condition_failure") + subTask.getMainTaskNum()
+                                     + messageService.get("post_condition_failure_2") + conditonHandleName;
                             RabbitMQPublicService.failureTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.POST_CONDITION_FAILURE,message));
                             transactionStatus.setRollbackOnly();
                             resultFlag.set(false);
@@ -578,7 +582,7 @@ public class SubTaskService {
                 subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.POST_CONDITION.getCode());
                 logger.info("子任务{}后置条件已全部满足", subTask.getSubTaskNum());
                 //向消息队列发送消息
-                String message = "子任务后置条件已全部满足,主任务号:" + subTask.getMainTaskNum();
+                String message = messageService.get("post_condition_success") + subTask.getMainTaskNum();
                 RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.POST_CONDITION_SUCCESS,message));
                 return resultFlag;
             }
@@ -692,7 +696,7 @@ public class SubTaskService {
         subTaskMapper.insertSelective(subTask);
 
         //向消息队列发送消息
-        String message = templateCode + "任务创建完成,主任务号:" + mainTaskNum;
+        String message = templateCode + messageService.get("create_task")+ mainTaskNum;
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTaskNum, TaskConstants.operationStatus.CREATE_TASK,message));
 
 

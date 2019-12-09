@@ -48,6 +48,8 @@ public class ApplicationProperties {
 
     private final MesParam mesParam = new MesParam();
 
+    private final Lang lang = new Lang();
+
     public Async getAsync() {
         return async;
     }
@@ -115,6 +117,8 @@ public class ApplicationProperties {
     }
 
     public MesParam getMesParam(){return mesParam;}
+
+    public Lang getLang(){return lang;}
 
     public static class Async {
 
@@ -981,6 +985,18 @@ public class ApplicationProperties {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+    }
+    public static class Lang {
+
+        private String currentLang;
+
+        public String getCurrentLang() {
+            return currentLang;
+        }
+
+        public void setCurrentLang(String currentLang) {
+            this.currentLang = currentLang;
         }
     }
 }

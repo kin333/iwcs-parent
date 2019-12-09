@@ -30,6 +30,7 @@ import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
+import com.wisdom.iwcs.service.task.impl.MessageService;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
 import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
 import org.json.JSONException;
@@ -114,6 +115,8 @@ public class HikCallbackIwcsService {
     AutoDoorTaskMapper autoDoorTaskMapper;
     @Autowired
     ITransferHikHttpRequestService iTransferHikHttpRequestService;
+    @Autowired
+    MessageService messageService;
 
     /**
      * 小车开始任务的基础修改
@@ -142,7 +145,7 @@ public class HikCallbackIwcsService {
 
         subTask = subTaskMapper.selectByTaskCode(hikCallBackAgvMove.getTaskCode());
         //向消息队列发送消息
-        String message = "子任务回调:子任务已开始搬运";
+        String message = messageService.get("callback_start");
         if (subTask != null && subTask.getStartBercode() != null && !subTask.getStartBercode().equals(hikCallBackAgvMove.getWbCode())) {
             message += " (任务起始点异常, 子任务起始点为:{" + subTask.getStartBercode() + "},实际起始点为:{" + hikCallBackAgvMove.getWbCode() + "})";
         }
@@ -216,7 +219,7 @@ public class HikCallbackIwcsService {
             nodeAction(subTask, PTOP_END);
 
             //向消息队列发送消息
-            String message = "子任务回调:子任务已结束";
+            String message = messageService.get("callback_end");
             RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.CALLBACK_END,message));
         }
         return subTask;

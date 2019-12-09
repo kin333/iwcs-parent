@@ -10,6 +10,7 @@ import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.conditions.ConditionBase;
+import com.wisdom.iwcs.service.task.impl.MessageService;
 import com.wisdom.iwcs.service.task.impl.SubTaskConditionService;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
@@ -117,8 +118,9 @@ public class SubTaskWorker extends AbstractTaskWorker {
                     reExecFlag.set(false);
                     break;
                 } catch (Exception e) {
+                    MessageService messageService = AppContext.getBean("messageService");
                     //向消息队列发送消息
-                    String message = "子任务下发失败,主任务号:" + subTask.getMainTaskNum() + ",错误信息:" + e.getMessage();
+                    String message = messageService.get("send_failure") + subTask.getMainTaskNum() + messageService.get("send_failure_2") + e.getMessage();
                     RabbitMQPublicService.failureTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.SEND_FAILURE,message));
                     logger.error("子任务下发失败{},原因:{},准备回滚前置条件", subTask.getSubTaskNum(), e.getMessage());
                     SubTaskService subTaskService = (SubTaskService) SpringContextUtils.getBean("subTaskService");

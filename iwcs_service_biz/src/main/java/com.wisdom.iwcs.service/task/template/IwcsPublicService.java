@@ -20,6 +20,7 @@ import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
+import com.wisdom.iwcs.service.task.impl.MessageService;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,6 +60,8 @@ public class IwcsPublicService {
     ApplicationProperties applicationProperties;
     @Autowired
     AddressMapper addressMapper;
+    @Autowired
+    MessageService messageService;
 
     /**
      * 根据子任务单号获取最新子任务信息,并将任务消息体取出并完善,然后发送给第三方
@@ -104,8 +107,8 @@ public class IwcsPublicService {
         //更新子任务的下发状态以及发送的消息体
         subTaskMapper.updateByPrimaryKeySelective(tmpSubask);
         //向消息队列发送消息
-        String message = " 子任务发送(下发)完成,主任务号:" + subTask.getMainTaskNum()
-                        + ",发送的消息体为:" + jsonStr;
+        String message = messageService.get("send_success") + subTask.getMainTaskNum()
+                        + messageService.get("send_success_2") + jsonStr;
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.SEND_SUCCESS,message));
     }
 

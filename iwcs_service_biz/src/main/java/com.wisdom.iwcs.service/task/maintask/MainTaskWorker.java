@@ -10,6 +10,7 @@ import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
+import com.wisdom.iwcs.service.task.impl.MessageService;
 import com.wisdom.iwcs.service.task.impl.SubTaskService;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.subtask.impl.SubTaskWorker;
@@ -95,8 +96,9 @@ public class MainTaskWorker extends AbstractTaskWorker {
                         subTaskWorkerThread.setName("subtaskWorker-" + currentPendingSubtask.getSubTaskNum() + "ThreadID-" + subTaskWorkerThread.getId());
                         subTaskWorkerThread.start();
 
+                        MessageService messageService = AppContext.getBean("messageService");
                         //向消息队列发送消息
-                        String message = "开始执行子任务";
+                        String message = messageService.get("start_task");
                         RabbitMQPublicService.successTaskLog(new TaskOperationLog(currentPendingSubtask.getSubTaskNum(), TaskConstants.operationStatus.START_TASK,message));
 
                         //将当前已启动的subtaskWork注入主任务对象
