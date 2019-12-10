@@ -154,7 +154,7 @@ application:
   warn:
     checkName: name1;name2
   lang:
-    currentLang: en_US
+    currentLang: zh_CN
 
 
 mybatis:

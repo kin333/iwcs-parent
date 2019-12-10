@@ -18,23 +18,30 @@ public class MessageService {
     @Autowired
     ApplicationProperties applicationProperties;
 
+    private Locale locale;
+
     /**
      * 获取单个国际化翻译值
      */
     public String get(String msgKey) {
         String currentLang = applicationProperties.getLang().getCurrentLang();
-        Locale locale;
-        if ("en_US".equals(currentLang)) {
-            locale = Locale.US;
-        } else if ("zh_CN".equals(currentLang)) {
-            locale = Locale.CHINA;
-        } else {
-            locale = LocaleContextHolder.getLocale();
+        if (locale == null) {
+            if ("en_US".equals(currentLang)) {
+                locale = Locale.US;
+            } else if ("zh_CN".equals(currentLang)) {
+                locale = Locale.CHINA;
+            } else {
+                locale = LocaleContextHolder.getLocale();
+            }
         }
         try {
             return messageSource.getMessage(msgKey, null, locale);
         } catch (Exception e) {
             return msgKey;
         }
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }
