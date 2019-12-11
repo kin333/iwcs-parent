@@ -227,4 +227,10 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
 
     int updatePonitAlise(BaseMapBerth baseMapBerth);
 
+    /**
+     * 查询指定别名,但是非指定地码的点位数量
+     * @param baseMapBerth
+     * @return
+     */
+    int selectByPointAliaAndBercode(BaseMapBerth baseMapBerth);
 }

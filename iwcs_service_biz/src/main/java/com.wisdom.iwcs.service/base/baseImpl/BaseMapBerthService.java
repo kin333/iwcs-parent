@@ -3,10 +3,7 @@ package com.wisdom.iwcs.service.base.baseImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Strings;
-import com.wisdom.iwcs.common.utils.DeleteFlagEnum;
-import com.wisdom.iwcs.common.utils.GridFilterInfo;
-import com.wisdom.iwcs.common.utils.GridPageRequest;
-import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
@@ -16,6 +13,7 @@ import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
+import com.wisdom.iwcs.service.task.impl.MessageService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +31,8 @@ public class BaseMapBerthService implements IBaseMapBerthService{
     private final BaseMapBerthMapper baseMapBerthMapper;
 
     private final BaseMapBerthMapStruct baseMapBerthMapStruct;
+    @Autowired
+    MessageService messageService;
 
     @Autowired
     public BaseMapBerthService(BaseMapBerthMapStruct baseMapBerthMapStruct, BaseMapBerthMapper baseMapBerthMapper) {
@@ -376,10 +376,20 @@ public class BaseMapBerthService implements IBaseMapBerthService{
     }
 
     @Override
-    public int updateMapByBerCode(BaseMapBerthDTO record) {
+    public Result updateMapByBerCode(BaseMapBerthDTO record) {
+        BaseMapBerth baseMapBerth = baseMapBerthMapStruct.toEntity(record);
 
-        int num = baseMapBerthMapper.updateMapByBerCode(baseMapBerthMapStruct.toEntity(record));
-        return num;
+        if (StringUtils.isNotEmpty(baseMapBerth.getPointAlias())) {
+            int num = baseMapBerthMapper.selectByPointAliaAndBercode(baseMapBerth);
+
+            if (num != 0) {
+                return new Result(400, messageService.get("point_alias_already_exist"));
+            }
+        }
+
+        baseMapBerthMapper.updatePonitAlise(baseMapBerth);
+
+        return new Result();
     }
 
     @Override

@@ -64,9 +64,9 @@ public class VersionController {
     @GetMapping(value = "/changeLang/{lang}")
     public Result changeLang(@PathVariable String lang) {
         Locale locale;
-        if ("en_US".equals(lang)) {
+        if ("en_US".equals(lang) || "en-US".equals(lang)) {
             locale = Locale.US;
-        } else if ("zh_CN".equals(lang)) {
+        } else if ("zh_CN".equals(lang) || "zh-CN".equals(lang)) {
             locale = Locale.CHINA;
         } else {
             locale = LocaleContextHolder.getLocale();

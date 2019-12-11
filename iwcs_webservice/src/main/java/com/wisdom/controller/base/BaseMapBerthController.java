@@ -9,6 +9,7 @@ import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
+import com.wisdom.iwcs.service.task.impl.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,8 @@ public class BaseMapBerthController {
     IBaseMapBerthService IBaseMapBerthService;
     @Autowired
     BaseMapBerthMapStruct baseMapBerthMapStruct;
+    @Autowired
+    MessageService messageService;
 
     /**
      * 根据主键ID删除
@@ -153,7 +156,7 @@ public class BaseMapBerthController {
         int num = IBaseMapBerthService.updatePonitAlise(baseMapBerth);
 
         if (num == 400) {
-            return new Result(400, "该点位编号已经存在");
+            return new Result(400, messageService.get("point_alias_already_exist"));
         }
         return new Result();
     }
@@ -189,11 +192,13 @@ public class BaseMapBerthController {
         return new Result();
     }
 
+    /**
+     * 跟新点位的别名
+     * @param record
+     * @return
+     */
     @PostMapping("/updateMapByBerCode")
     public Result updateMapByBerCode(@RequestBody BaseMapBerthDTO record) {
-
-        IBaseMapBerthService.updateMapByBerCode(record);
-        return new Result();
-
+        return IBaseMapBerthService.updateMapByBerCode(record);
     }
 }

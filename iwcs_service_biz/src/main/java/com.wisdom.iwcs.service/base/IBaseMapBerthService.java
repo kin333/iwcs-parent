@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.base;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
@@ -50,5 +51,5 @@ public interface IBaseMapBerthService {
 
     int updateMapById(BaseMapUpdateAreaDTO record);
 
-    int updateMapByBerCode(BaseMapBerthDTO record);
+    Result updateMapByBerCode(BaseMapBerthDTO record);
 }
