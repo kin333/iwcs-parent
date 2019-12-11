@@ -276,6 +276,7 @@
         where 1=1
         and delete_flag = 0
         and point_alias = #{pointAlias,jdbcType=VARCHAR}
+        limit 1
     </select>
     <select id="selectByPointAliass"  resultMap="BaseResultMap">
         select
