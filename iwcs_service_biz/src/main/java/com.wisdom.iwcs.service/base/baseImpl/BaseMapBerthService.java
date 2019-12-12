@@ -383,7 +383,7 @@ public class BaseMapBerthService implements IBaseMapBerthService{
             int num = baseMapBerthMapper.selectByPointAliaAndBercode(baseMapBerth);
 
             if (num != 0) {
-                return new Result(400, messageService.get("point_alias_already_exist"));
+                return new Result(400, messageService.getByRequest("point_alias_already_exist"));
             }
         }
 

@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.base.context.ApplicationProperties;
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,11 +18,13 @@ public class MessageService {
     private MessageSource messageSource;
     @Autowired
     ApplicationProperties applicationProperties;
+    @Autowired
+    private HttpServletRequest request;
 
     private Locale locale;
 
     /**
-     * 获取单个国际化翻译值
+     * 根据配置文件翻译(获取单个国际化翻译值)
      */
     public String get(String msgKey) {
         String currentLang = applicationProperties.getLang().getCurrentLang();
@@ -36,6 +39,19 @@ public class MessageService {
         }
         try {
             return messageSource.getMessage(msgKey, null, locale);
+        } catch (Exception e) {
+            return msgKey;
+        }
+    }
+
+    /**
+     * 根据请求翻译
+     * @param msgKey
+     * @return
+     */
+    public String getByRequest(String msgKey) {
+        try {
+            return messageSource.getMessage(msgKey, null, request.getLocale());
         } catch (Exception e) {
             return msgKey;
         }
