@@ -1,12 +1,12 @@
 package com.wisdom.iwcs.service.task.impl;
 
 import com.wisdom.base.context.ApplicationProperties;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 /**
@@ -19,7 +19,7 @@ public class MessageService {
     @Autowired
     ApplicationProperties applicationProperties;
     @Autowired
-    private HttpServletRequest request;
+    HttpServletRequest request;
 
     private Locale locale;
 
