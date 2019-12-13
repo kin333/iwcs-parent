@@ -8,6 +8,7 @@ import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
@@ -60,7 +61,11 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.executeMode.PROMISE_ARR
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_FINISHED;
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_ISSUED;
+import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_CONTINUE;
+import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_MOVE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.workTaskStatus.END;
+import static com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum.Canceled;
+import static com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum.Init;
 
 /**
  * Mes系统请求的业务逻辑
@@ -749,6 +754,55 @@ public class MesRequestService {
         basePodDetail.setPodProp4(data.getPodStatus());
         basePodDetail.setPodProp5(data.getModifyDate());
         int num = basePodDetailMapper.updatePodStatus(basePodDetail);
+        return new MesResult();
+    }
+
+    /**
+     * Mes 滚筒换车任务
+     * @param mesCancelTaskRequest
+     * @return
+     */
+    public MesResult changeAgv(MesCancelTaskRequest mesCancelTaskRequest) {
+        String robotCode = mesCancelTaskRequest.getRobotCode();
+        Preconditions.checkMesBusinessError(StringUtils.isEmpty(robotCode), "小车号不能为空");
+
+        //1.校验任务是否可以换车
+        String mainTaskNum = mesCancelTaskRequest.getTaskCode();
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
+        Preconditions.checkMesBusinessError(mainTask == null, "任务号不存在");
+        //只有已取消的任务才可以换车
+        if (!Canceled.getStatusCode().equals(mainTask.getTaskStatus())) {
+            throw new MesBusinessException("只有已取消的滚筒任务才可以换车");
+        }
+
+        //2.获取最后一组滚筒任务,判断节点是移动任务还是滚动任务
+        List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(mainTaskNum);
+        Preconditions.checkMesBusinessError(subTaskList.size() <= 0, "任务未产生子任务,无需换车");
+        SubTask lastSubTask = subTaskList.get(subTaskList.size() - 1);
+        List<Long> changeIds = new ArrayList<>();
+
+        if (ROLLER_CONTINUE.equals(lastSubTask.getSubTaskTyp())) {
+            //最后一个任务是滚筒AGV滚动任务
+            changeIds.add(subTaskList.get(subTaskList.size() - 2).getId());
+            changeIds.add(lastSubTask.getId());
+        } else if (ROLLER_MOVE.equals(lastSubTask.getSubTaskTyp())) {
+            //最后一个任务是滚筒AGV移动任务
+            changeIds.add(lastSubTask.getId());
+        } else {
+            throw new MesBusinessException("任务的最后一个子任务不是滚筒任务,不允许换车");
+        }
+        //新的第三方任务号
+        String newWorkTaskNum = CodeBuilder.codeBuilder("S");
+
+        //3.更新最后一组滚筒任务状态:任务状态,下发状态,第三方任务号,小车号
+        subTaskMapper.updateInitById(changeIds, newWorkTaskNum, robotCode);
+
+        //4.更新主任务状态
+        MainTask tmpMainTask = new MainTask();
+        tmpMainTask.setId(mainTask.getId());
+        tmpMainTask.setTaskStatus(Init.getStatusCode());
+        mainTaskMapper.updateByPrimaryKeySelective(tmpMainTask);
+
         return new MesResult();
     }
 }

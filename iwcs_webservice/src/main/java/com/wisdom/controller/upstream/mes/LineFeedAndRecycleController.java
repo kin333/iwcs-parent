@@ -79,6 +79,14 @@ public class LineFeedAndRecycleController {
         return mesRequestService.cancelMesTask(mesCancelTaskRequest);
     }
     /**
+     * mes滚筒换车
+     */
+    @PostMapping("/changeAgv")
+    @SystemInterfaceLog(methodCode = CHANGE_AGV, methodName = CHANGE_AGV_DESC, methodThansfer = SRC_MES)
+    public MesResult changeAgv(@RequestBody MesCancelTaskRequest mesCancelTaskRequest) {
+        return mesRequestService.changeAgv(mesCancelTaskRequest);
+    }
+    /**
      * 通知AGV接料点目的地
      */
     @PostMapping("/supplyUnloadWb/notify")

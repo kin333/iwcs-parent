@@ -33,6 +33,7 @@ import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.impl.MessageService;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
 import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -207,6 +208,9 @@ public class HikCallbackIwcsService {
             publicCheckSubTask(hikCallBackAgvMove, subTask);
             //更新子任务状态以及实际任务结束时间
             subTask.setWorkTaskStatus(TaskConstants.workTaskStatus.END);
+            if (StringUtils.isNotEmpty(hikCallBackAgvMove.getRobotCode())) {
+                subTask.setRobotCode(hikCallBackAgvMove.getRobotCode());
+            }
             try {
                 SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 subTask.setTaskEndTime(timeFormat.parse(hikCallBackAgvMove.getReqTime()));

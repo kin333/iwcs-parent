@@ -397,4 +397,19 @@
       FROM ts_sub_task WHERE task_status = 1 or task_status = '1'
       GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s');
   </select>
+
+  <update id="updateInitById">
+    update ts_sub_task
+    <set>
+      send_status = '0',
+      task_status = '0',
+      robot_code = #{robotCode},
+      work_task_status = '0',
+      worker_task_code = #{newWorkTaskNum}
+    </set>
+    where id in
+    <foreach collection="list" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
 </mapper>

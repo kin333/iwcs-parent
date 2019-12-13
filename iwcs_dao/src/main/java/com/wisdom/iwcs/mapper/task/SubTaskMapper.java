@@ -5,7 +5,6 @@ import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.system.ViewData;
 import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -143,4 +142,8 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
      * 查询时间段执行中的
      */
     List<ViewData> getSubStartViewData();
+
+    int updateInitById(@Param("list") List<Long> changeIds,
+                       @Param("newWorkTaskNum") String newWorkTaskNum,
+                       @Param("robotCode") String robotCode);
 }
