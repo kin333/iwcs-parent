@@ -78,4 +78,22 @@
     select id from sub_task_action
     where action_status = '4' and execute_mode = '1'
   </select>
+
+  <update id="updateStatusByIds">
+    update sub_task_action
+    <set>
+      action_status = '1'
+    </set>
+    where id in
+    <foreach collection="list" separator="," open="(" close=")" item="id">
+      #{id}
+    </foreach>
+  </update>
+  <update id="updateSendingToCreate">
+    update sub_task_action
+    <set>
+      action_status = '0'
+    </set>
+    where action_status = '1'
+  </update>
 </mapper>

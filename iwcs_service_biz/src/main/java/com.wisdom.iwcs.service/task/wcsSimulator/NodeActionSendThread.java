@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.task.wcsSimulator;
 
 import com.wisdom.iwcs.common.utils.RabbitMQUtil;
+import com.wisdom.iwcs.domain.task.SubTaskAction;
 import com.wisdom.iwcs.mapper.task.SubTaskActionMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.CREATE;
 
 /**
  * 节点通知调度发送程序
@@ -53,11 +56,13 @@ public class NodeActionSendThread implements Runnable {
                 logger.info("节点发送ID{}", id);
                 RabbitMQUtil.basicPublicNodeAction(id.toString());
             }
+            subTaskActionMapper.updateStatusByIds(idListNoSend);
         }
         if (idListNoSendSuccess.size() > 0) {
             for (Long id : idListNoSendSuccess) {
                 RabbitMQUtil.basicPublicNodeAction(id.toString());
             }
+            subTaskActionMapper.updateStatusByIds(idListNoSendSuccess);
         }
     }
 }

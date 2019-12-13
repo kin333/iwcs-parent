@@ -55,10 +55,14 @@ public class NodeActionThreadService extends ConsumerThread {
 //                    tmpSubTaskAction.setId(subTaskAction.getId());
 //                    tmpSubTaskAction.setActionStatus(SENDING);
 //                    subTaskActionMapper.updateByPrimaryKeySelective(tmpSubTaskAction);
-                    //有前置请求的,如果前置请求不满足,则不执行此次请求
+                    //有前置请求的,如果前置请求不满足,且是必达的,则不执行此次请求
                     if (StringUtils.isNotBlank(subTaskAction.getPreActions())) {
                         SubTaskAction preSubTaskAction = subTaskActionMapper.selectByActionCode(subTaskAction.getPreActions(), subTaskAction.getSubTaskNum());
-                        if (!SEND_SUCCESS.equals(preSubTaskAction.getActionStatus())) {
+                        if (!SEND_SUCCESS.equals(preSubTaskAction.getActionStatus()) && PROMISE_ARRIVE.equals(preSubTaskAction.getExecuteMode())) {
+                            SubTaskAction tmpSubTaskAction = new SubTaskAction();
+                            tmpSubTaskAction.setId(subTaskAction.getId());
+                            tmpSubTaskAction.setActionStatus(CREATE);
+                            subTaskActionMapper.updateByPrimaryKeySelective(tmpSubTaskAction);
                             return;
                         }
                     }

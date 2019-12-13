@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 
 import static com.wisdom.iwcs.common.utils.TaskConstants.notifyAgvLeaveStatus.*;
+import static com.wisdom.iwcs.domain.upstream.mes.MesResult.NG;
 
 /**
  * 模拟MES的Controller
@@ -155,7 +156,7 @@ public class SimulationMesController {
                 if (randomNum == 0) {
                     mesResultInfo.setNum(imitatetest.getFeedingquantity().toString());
                 } else {
-                    mesResultInfo.setCode(MesResult.NG);
+                    mesResultInfo.setCode(NG);
                     SupplyLoadNumNotify supplyLoadNumNotify = new SupplyLoadNumNotify();
                     supplyLoadNumNotify.setTaskCode(taskCode);
                     supplyLoadNumNotify.setSupplyLoadNum(imitatetest.getFeedingquantity());
@@ -197,7 +198,7 @@ public class SimulationMesController {
             case "6": break;
             case "7":
                 //到达回收点
-                mesResultInfo.setCode(MesResult.NG);
+                mesResultInfo.setCode(NG);
                 StartRecyle startRecyle = new StartRecyle();
                 startRecyle.setTaskCode(taskCode);
                 startRecyle.setEmptyRecyleWb(imitatetest.getRecyclingpoint());

@@ -15,6 +15,7 @@
 package com.wisdom.task;
 
 
+import com.wisdom.iwcs.mapper.task.SubTaskActionMapper;
 import com.wisdom.iwcs.quartz.ErrorRepairThread;
 import com.wisdom.iwcs.service.codec.SequenceService;
 import com.wisdom.iwcs.service.task.check.HealthCheck;
@@ -44,7 +45,8 @@ public class Task {
     ComparingVersionsConsistent comparingVersionsConsistent;
     @Autowired
     HealthCheckService healthCheckService;
-
+    @Autowired
+    SubTaskActionMapper subTaskActionMapper;
 
     /**
      * 每月1号0点执行
@@ -92,5 +94,13 @@ public class Task {
         logger.info("版本检查开始");
         comparingVersionsConsistent.compare();
         logger.info("版本检查结束");
+    }
+    /**
+     * 开机恢复正在发送的action
+     *
+     */
+    @Scheduled(initialDelay = 10L, fixedDelay = Long.MAX_VALUE)
+    public void recoverAction() {
+        subTaskActionMapper.updateSendingToCreate();
     }
 }
