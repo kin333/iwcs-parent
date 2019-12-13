@@ -29,6 +29,7 @@
     <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
     <contextName>RestAPI</contextName>
     <property name="LOG_PATH" value="logs"/>
+    <property name="maxHistory" value="30"/>
     <!--设置系统日志目录-->
     <property name="APPDIR" value="app"/>
     <!--
@@ -63,9 +64,9 @@
             命名日志文件，例如log-error-2013-12-21.0.log -->
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>30MB</maxFileSize>
-                <maxHistory>60</maxHistory>
-                <totalSizeCap>3GB</totalSizeCap>
             </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${maxHistory}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <!-- 追加方式记录日志 -->
         <append>true</append>
@@ -93,9 +94,9 @@
             命名日志文件，例如log-error-2013-12-21.0.log -->
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>30MB</maxFileSize>
-                <maxHistory>60</maxHistory>
-                <totalSizeCap>3GB</totalSizeCap>
             </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${maxHistory}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <!-- 追加方式记录日志 -->
         <append>true</append>
@@ -123,9 +124,9 @@
             命名日志文件，例如log-error-2013-12-21.0.log -->
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>30MB</maxFileSize>
-                <maxHistory>60</maxHistory>
-                <totalSizeCap>3GB</totalSizeCap>
             </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${maxHistory}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <!-- 追加方式记录日志 -->
         <append>true</append>
@@ -152,9 +153,9 @@
             命名日志文件，例如log-error-2013-12-21.0.log -->
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>30MB</maxFileSize>
-                <maxHistory>60</maxHistory>
-                <totalSizeCap>3GB</totalSizeCap>
             </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${maxHistory}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <!-- 追加方式记录日志 -->
         <append>true</append>
