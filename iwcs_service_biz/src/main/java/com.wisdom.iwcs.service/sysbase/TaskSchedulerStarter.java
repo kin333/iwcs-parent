@@ -2,6 +2,7 @@ package com.wisdom.iwcs.service.sysbase;
 
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.netty.DoorNettyClient;
+import com.wisdom.iwcs.service.robot.RobotServiceThread;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionSendThread;
 import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionThreadService;
@@ -31,12 +32,19 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
     ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired
     NodeActionSendThread nodeActionSendThread;
+    @Autowired
+    RobotServiceThread robotServiceThread;
 
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         //防止上下文多次刷新时，重复启动
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
+
+            // 如果前端项目有现场监控，不要注释
+            Thread robotThread = new Thread(robotServiceThread);
+            robotThread.start();
+
             Thread taskthread = new Thread(wcsTaskScheduler);
             taskthread.start();
             logger.info("开始启动任务调度器线程");
