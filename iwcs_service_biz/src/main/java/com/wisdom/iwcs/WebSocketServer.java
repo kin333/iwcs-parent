@@ -1,5 +1,8 @@
-package com.wisdom.iwcs.service.robot;
+package com.wisdom.iwcs;
 
+import com.wisdom.iwcs.service.robot.RobotServiceThread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -14,9 +17,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Created by Ryan.Sheng
  */
 
-//@ServerEndpoint(value = "/websocket")
+@ServerEndpoint(value = "/websocket")
 @Component
 public class WebSocketServer {
+    private final Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
+
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
     //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
@@ -96,6 +101,7 @@ public class WebSocketServer {
     public static void sendInfo(String message) throws IOException {
         for (WebSocketServer item : webSocketSet) {
             try {
+
                 item.sendMessage(message);
             } catch (IOException e) {
                 continue;

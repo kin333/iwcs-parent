@@ -18,6 +18,7 @@ public class ViewerMap {
     public Result getMap(@PathVariable Integer id) {
         StringBuilder result = new StringBuilder();
         try{
+//            System.getProperty("user.dir")
             BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/map.xml"));//构造一个BufferedReader类来读取文件
             String s = null;
             while((s = br.readLine())!=null){
