@@ -26,13 +26,7 @@
     <if test="searchKey != null and searchKey != ''">
       and 1=1
     </if>
-    <if test="startTime != null">
-      and created_time &gt;= #{startTime,jdbcType=BIGINT}
-    </if>
-    <if test="endTime != null">
-      and created_time &lt;= #{endTime,jdbcType=BIGINT}
-    </if>
-    order by last_modified_time desc
+    order by status_update_time desc
   </select>
     <select id="selectDoorStatus" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from auto_door
@@ -58,5 +52,30 @@
             </if>
         </set>
         where msg_code = #{msgCode}
+    </update>
+
+    <select id="getNormalNum" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from auto_door
+        <if test="doorStatus == 1">
+            where door_status = 1
+        </if>
+        <if test="doorStatus != 1">
+            where door_status != 1
+        </if>
+    </select>
+
+    <select id="selectDataByCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from auto_door
+        where door_code = #{doorCode}
+    </select>
+
+    <update id="updateDoorModel">
+        update auto_door
+        <set>
+        <if test="doorModel != null and doorModel != ''">
+            door_model = #{doorModel,jdbcType=VARCHAR},
+        </if>
+        </set>
+        where door_code = #{doorCode}
     </update>
 </mapper>

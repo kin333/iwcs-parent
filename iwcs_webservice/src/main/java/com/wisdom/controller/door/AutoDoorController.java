@@ -5,6 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.door.AutoDoor;
 import com.wisdom.iwcs.domain.door.dto.AutoDoorDTO;
 import com.wisdom.iwcs.mapstruct.door.AutoDoorMapStruct;
 import com.wisdom.iwcs.service.door.impl.AutoDoorService;
@@ -113,6 +114,26 @@ public class AutoDoorController {
     @PutMapping
     public Result updateByPrimaryKey(@RequestBody AutoDoorDTO autoDoorDTO) {
         autoDoorService.updateByPrimaryKey(autoDoorDTO);
+
+        return new Result();
+    }
+
+    @PostMapping("/getNumBy")
+    public Result getNormalNum(@RequestBody AutoDoorDTO autoDoorDTO) {
+        List<AutoDoorDTO> autoDoorDTOList = autoDoorService.getNormalNum(autoDoorDTO);
+
+        return new Result(autoDoorDTOList);
+    }
+    @PostMapping("/getDataByCode")
+    public Result selectDataByCode(@RequestBody AutoDoorDTO autoDoorDTO) {
+        AutoDoorDTO doorDTOList = autoDoorService.selectDataByCode(autoDoorDTO);
+
+        return new Result(doorDTOList);
+    }
+    @PostMapping("/updateDoorModel")
+    public Result updateDoorModel(@RequestBody AutoDoorDTO autoDoor) {
+
+        autoDoorService.updateDoorModel(autoDoor);
 
         return new Result();
     }

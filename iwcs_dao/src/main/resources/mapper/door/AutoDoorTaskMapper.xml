@@ -30,7 +30,7 @@
     <if test="endTime != null">
       and created_time &lt;= #{endTime,jdbcType=BIGINT}
     </if>
-    order by last_modified_time desc
+    order by task_update_time desc
   </select>
     <select id="selectUnTaskByDoorCode" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from auto_door_task

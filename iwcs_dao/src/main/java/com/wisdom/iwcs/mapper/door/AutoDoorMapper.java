@@ -25,4 +25,10 @@ public interface AutoDoorMapper extends MyMapperAndIds<AutoDoor> {
     AutoDoor selectDoorStatus(String doorCode);
 
     int updateDoorInfo(AutoDoor autoDoor);
+
+    List<AutoDoor> getNormalNum(AutoDoor autoDoor);
+
+    AutoDoor selectDataByCode(AutoDoor autoDoor);
+
+    int updateDoorModel(AutoDoor autoDoor);
 }

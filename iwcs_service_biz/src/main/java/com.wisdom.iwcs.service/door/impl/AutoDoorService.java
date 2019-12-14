@@ -53,6 +53,35 @@ public class AutoDoorService {
         return num;
     }
 
+    public List<AutoDoorDTO> getNormalNum(AutoDoorDTO recorde) {
+
+        AutoDoor autoDoor = autoDoorMapStruct.toEntity(recorde);
+
+        List<AutoDoorDTO> autoDoorDTOS = autoDoorMapStruct.toDto(autoDoorMapper.getNormalNum(autoDoor));
+
+        return autoDoorDTOS;
+
+    }
+
+    public AutoDoorDTO selectDataByCode(AutoDoorDTO recorde) {
+
+        AutoDoor autoDoor = autoDoorMapStruct.toEntity(recorde);
+
+        AutoDoorDTO autoDoorDTOS = autoDoorMapStruct.toDto(autoDoorMapper.selectDataByCode(autoDoor));
+
+        return autoDoorDTOS;
+
+    }
+
+    public int updateDoorModel(AutoDoorDTO recode) {
+
+        AutoDoor autoDoor = autoDoorMapStruct.toEntity(recode);
+
+        int num = autoDoorMapper.updateDoorModel(autoDoor);
+
+        return num;
+    }
+
     /**
      * 批量写入记录
      *
