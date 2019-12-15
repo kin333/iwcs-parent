@@ -7,8 +7,10 @@ import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.domain.door.AutoDoor;
 import com.wisdom.iwcs.domain.door.AutoDoorTask;
 import com.wisdom.iwcs.domain.door.dto.AutoDoorTaskDTO;
+import com.wisdom.iwcs.mapper.door.AutoDoorMapper;
 import com.wisdom.iwcs.mapper.door.AutoDoorTaskMapper;
 import com.wisdom.iwcs.mapstruct.door.AutoDoorTaskMapStruct;
 import org.slf4j.Logger;
@@ -30,10 +32,13 @@ public class AutoDoorTaskService {
 
     private final AutoDoorTaskMapStruct autoDoorTaskMapStruct;
 
+    private final AutoDoorMapper autoDoorMapper;
+
     @Autowired
-    public AutoDoorTaskService(AutoDoorTaskMapStruct autoDoorTaskMapStruct, AutoDoorTaskMapper autoDoorTaskMapper) {
+    public AutoDoorTaskService(AutoDoorTaskMapStruct autoDoorTaskMapStruct, AutoDoorTaskMapper autoDoorTaskMapper, AutoDoorMapper autoDoorMapper) {
         this.autoDoorTaskMapStruct = autoDoorTaskMapStruct;
         this.autoDoorTaskMapper = autoDoorTaskMapper;
+        this.autoDoorMapper = autoDoorMapper;
     }
 
     /**
@@ -117,6 +122,28 @@ public class AutoDoorTaskService {
 
         return num;
 
+    }
+
+    /**
+     * 取消任务
+     */
+
+    public int cancalDoorTask(AutoDoorTaskDTO recode) {
+
+        AutoDoor autoDoor = new AutoDoor();
+        String doorCode = recode.getDoorCode();
+        autoDoor.setDoorCode(doorCode);
+        AutoDoor autoDoorList = autoDoorMapper.selectDataByCode(autoDoor);
+
+        if (autoDoorList.getDoorModel().equals("2")) {
+            return 500;
+        }
+
+        AutoDoorTask autoDoorTask = autoDoorTaskMapStruct.toEntity(recode);
+
+        int num = autoDoorTaskMapper.cancalDoorTask(autoDoorTask);
+
+        return num;
     }
 
     /**

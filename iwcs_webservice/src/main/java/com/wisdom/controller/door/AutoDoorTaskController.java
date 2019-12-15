@@ -10,6 +10,9 @@ import com.wisdom.iwcs.mapstruct.door.AutoDoorTaskMapStruct;
 import com.wisdom.iwcs.service.door.impl.AutoDoorTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.PastOrPresent;
+
 /**
  * 对AutoDoorTask的操作
  *
@@ -112,6 +115,17 @@ public class AutoDoorTaskController {
     public Result updateByPrimaryKey(@RequestBody AutoDoorTaskDTO autoDoorTaskDTO) {
         autoDoorTaskService.updateByPrimaryKey(autoDoorTaskDTO);
 
+        return new Result();
+    }
+
+    @PostMapping("/cancalDoorTask")
+    public Result cancalDoorTask(@RequestBody AutoDoorTaskDTO autoDoorTaskDTO) {
+
+        int num = autoDoorTaskService.cancalDoorTask(autoDoorTaskDTO);
+
+        if (num == 500) {
+            return new Result(400,"当前该门" + autoDoorTaskDTO.getDoorCode() + "为手动模式");
+        }
         return new Result();
     }
 }

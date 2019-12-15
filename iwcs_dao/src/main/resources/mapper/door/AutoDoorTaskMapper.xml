@@ -36,4 +36,12 @@
     select <include refid="Base_Column_List" /> from auto_door_task
     where door_code = #{doorCode,jdbcType=VARCHAR}
 </select>
+
+  <update id="cancalDoorTask">
+    update auto_door_task
+    <set>
+      task_status = '9'
+    </set>
+    where task_code = #{taskCode} and door_code = #{doorCode}
+  </update>
 </mapper>
