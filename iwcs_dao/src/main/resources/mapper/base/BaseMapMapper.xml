@@ -21,13 +21,14 @@
         <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
         <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
         <result column="ground_type_code" jdbcType="VARCHAR" property="groundTypeCode"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, map_code, map_name, row_count, col_count, width, height, map_type, remark, valid_flag,
-        delete_flag, created_by, created_time, last_modified_by, last_modified_time,ground_type_code
+        delete_flag, created_by, created_time, last_modified_by, last_modified_time,ground_type_code,content
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select

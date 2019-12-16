@@ -1,8 +1,11 @@
 package com.wisdom.iwcs.domain.base;
 
+import com.wisdom.base.annotation.ColumnName;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.soap.Text;
 import java.util.Date;
 
 @Table(name = "base_map")
@@ -60,6 +63,12 @@ public class BaseMap {
      */
     @Column(name = "valid_flag")
     private Integer validFlag;
+
+    /**
+     * 地图数据
+     */
+    @Column(name = "content")
+    private String content;
 
     /**
      * 删除标记，0未删除，1删除
@@ -369,5 +378,13 @@ public class BaseMap {
 
     public void setGroundTypeCode(String groundTypeCode) {
         this.groundTypeCode = groundTypeCode;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

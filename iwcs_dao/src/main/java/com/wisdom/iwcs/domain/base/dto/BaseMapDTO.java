@@ -3,6 +3,7 @@ package com.wisdom.iwcs.domain.base.dto;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.soap.Text;
 import java.util.Date;
 
 @Table(name = "base_map")
@@ -96,6 +97,12 @@ public class BaseMapDTO {
      */
     @Column(name = "ground_type_code")
     private String groundTypeCode;
+
+    /**
+     * 地图数据
+     */
+    @Column(name = "content")
+    private String content;
 
     /**
      * @return id
@@ -369,5 +376,13 @@ public class BaseMapDTO {
 
     public void setGroundTypeCode(String groundTypeCode) {
         this.groundTypeCode = groundTypeCode;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
