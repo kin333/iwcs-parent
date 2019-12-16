@@ -98,6 +98,8 @@ public class MesRequestService {
 
     @Autowired
     BasePodDetailMapper basePodDetailMapper;
+    @Autowired
+    MessageService messageService;
 
     /**
      * 接收 Mes 通知 AGV 接料点目的地的请求
@@ -369,15 +371,16 @@ public class MesRequestService {
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mesCancelTaskRequest.getTaskCode());
         if(mainTask == null ){
             mesResult.setCode(MesResult.NG);
-            mesResult.setMessage(mesCancelTaskRequest.getTaskCode()+"任务不存在！");
+            mesResult.setMessage(mesCancelTaskRequest.getTaskCode() + messageService.getByRequest("no_task"));
             return mesResult;
         }
         String mainTaskNum = mainTask.getMainTaskNum();
         String curTaskStatus = mainTask.getTaskStatus();
-        if(TaskConstants.mainTaskStatus.MAIN_CANCELED.equals(curTaskStatus) || TaskConstants.mainTaskStatus.MAIN_CANCELED.equals(curTaskStatus) ){
+        if(TaskConstants.mainTaskStatus.MAIN_FINISHED.equals(curTaskStatus) || TaskConstants.mainTaskStatus.MAIN_CANCELED.equals(curTaskStatus) ){
             logger.info("取消失败，主任务{}处于{}状态下的任务不可取消",mainTaskNum, MainTaskStatusEnum.fromCode(curTaskStatus));
             mesResult.setCode(MesResult.NG);
-            mesResult.setMessage("取消失败，处于"+SubTaskStatusEnum.fromCode(curTaskStatus)+"状态下的任务不可取消");
+            mesResult.setMessage(messageService.getByRequest("cancel_fail") + SubTaskStatusEnum.fromCode(curTaskStatus)
+                    + messageService.getByRequest("cancel_fail_2"));
             return mesResult;
         }else{
             //更新主任务单号
@@ -392,10 +395,10 @@ public class MesRequestService {
             List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mainTaskNum);
             // TODO 需要区分不同执行方，目前写死，只有海康rcs
             List<SubTask> isusedSubTasks = subTasks.stream().filter(s -> SUB_ISSUED.equals(s.getTaskStatus()) && SENDED.equals(s.getSendStatus())).distinct().collect(Collectors.toList());
-            logger.debug("筛选所有进行中的子任务{}",isusedSubTasks);
+            logger.debug("筛选{}中所有进行中的子任务{}", mainTaskNum, isusedSubTasks);
 
             //如果没有搜索到Hik的任务,再进行一次确认,防止偶现的Hik任务没取消的问题
-            if (isusedSubTasks.size() == 0) {
+            if (isusedSubTasks.size() == 0 && subTasks.size() != 0) {
                 //检查是否是Hik的请求,如果是,判断是否已发送,且是否未完成,如果已发送且未完成,则加入到取消队列里
                 SubTask lastSubTask = subTasks.get(subTasks.size() - 1);
                 if (SRC_HIK.equals(lastSubTask.getThirdType())) {
@@ -452,7 +455,7 @@ public class MesRequestService {
                     logger.info("取消海康成功，{}",workTaskCode);
                 }else{
                     logger.info("取消海康失败，{},回滚数据库",workTaskCode);
-                    throw  new BusinessException("取消AGV任务失败，请确认任务状态正确后重试！");
+                    throw  new BusinessException(messageService.getByRequest("cancel_fail_3"));
                 }
             });
             logger.info("尝试取消子任务{}执行器线程",isusedSubTasks);
@@ -764,20 +767,20 @@ public class MesRequestService {
      */
     public MesResult changeAgv(MesCancelTaskRequest mesCancelTaskRequest) {
         String robotCode = mesCancelTaskRequest.getRobotCode();
-        Preconditions.checkMesBusinessError(StringUtils.isEmpty(robotCode), "小车号不能为空");
+        Preconditions.checkMesBusinessError(StringUtils.isEmpty(robotCode), messageService.getByRequest("change_robot_error"));
 
         //1.校验任务是否可以换车
         String mainTaskNum = mesCancelTaskRequest.getTaskCode();
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
-        Preconditions.checkMesBusinessError(mainTask == null, "任务号不存在");
+        Preconditions.checkMesBusinessError(mainTask == null, messageService.getByRequest("no_task"));
         //只有已取消的任务才可以换车
         if (!Canceled.getStatusCode().equals(mainTask.getTaskStatus())) {
-            throw new MesBusinessException("只有已取消的滚筒任务才可以换车");
+            throw new MesBusinessException(messageService.getByRequest("change_robot_error_2"));
         }
 
         //2.获取最后一组滚筒任务,判断节点是移动任务还是滚动任务
         List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(mainTaskNum);
-        Preconditions.checkMesBusinessError(subTaskList.size() <= 0, "任务未产生子任务,无需换车");
+        Preconditions.checkMesBusinessError(subTaskList.size() <= 0, messageService.getByRequest("change_robot_error_3"));
         SubTask lastSubTask = subTaskList.get(subTaskList.size() - 1);
         List<Long> changeIds = new ArrayList<>();
 
@@ -789,7 +792,7 @@ public class MesRequestService {
             //最后一个任务是滚筒AGV移动任务
             changeIds.add(lastSubTask.getId());
         } else {
-            throw new MesBusinessException("任务的最后一个子任务不是滚筒任务,不允许换车");
+            throw new MesBusinessException(messageService.getByRequest("change_robot_error_4"));
         }
         //新的第三方任务号
         String newWorkTaskNum = CodeBuilder.codeBuilder("S");
