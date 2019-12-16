@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.service.robot;
 
+import com.wisdom.iwcs.RobotServerSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class RobotServiceThread implements Runnable {
             while (true) {
                 try {
                     logger.info("监控：socket推送信息到前端");
-                    this.wait(2 * 1000);
+                    this.wait(5 * 1000);
                     robotServerSocket.startSocketServer("192.168.105.30", 8990);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

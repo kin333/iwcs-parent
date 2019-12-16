@@ -1,4 +1,4 @@
-package com.wisdom.iwcs.service.robot;
+package com.wisdom.iwcs;
 
 import com.wisdom.iwcs.WebSocketServer;
 import org.springframework.stereotype.Component;

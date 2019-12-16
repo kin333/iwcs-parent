@@ -25,9 +25,9 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="LNN" author="201912160909">
+    <changeSet id="201912160909" author="lnn">
         <addColumn tableName="base_map">
-            <column name="content" remarks="地图数据" type="varchar(255)"></column>
+            <column name="content" remarks="地图数据" type="LONGTEXT"></column>
         </addColumn>
     </changeSet>
 

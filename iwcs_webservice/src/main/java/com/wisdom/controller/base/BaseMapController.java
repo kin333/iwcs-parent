@@ -102,4 +102,12 @@ public class BaseMapController {
 
         return new Result();
     }
+    @PostMapping("/getMapList")
+    public Result selectMapList() {
+
+        List<BaseMapDTO> baseMapList = baseMapService.selectMapList();
+
+        return new Result(baseMapList);
+
+    }
 }

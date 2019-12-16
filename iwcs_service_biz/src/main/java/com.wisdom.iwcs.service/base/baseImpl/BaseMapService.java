@@ -63,6 +63,14 @@ public class BaseMapService implements IBaseMapService {
         return num;
     }
 
+    public List<BaseMapDTO> selectMapList() {
+
+        List<BaseMapDTO> baseMapList = baseMapMapStruct.toDto(baseMapMapper.selectMapList());
+
+        return baseMapList;
+
+    }
+
     /**
      * 批量写入记录
      *

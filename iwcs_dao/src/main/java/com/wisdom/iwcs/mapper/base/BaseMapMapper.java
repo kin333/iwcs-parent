@@ -41,5 +41,7 @@ public interface BaseMapMapper extends DeleteLogicMapper<BaseMap>, MyMapperAndId
      */
     int deleteByMapCode(String mapCode);
 
+    List<BaseMap> selectMapList();
 
+    BaseMap selectMapByCode(String mapCode);
 }
