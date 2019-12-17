@@ -55,18 +55,6 @@ public class NodeActionThreadService extends ConsumerThread {
                         subTaskAction = subTaskActionMapper.selectByPrimaryKey(Long.valueOf(id));
                     }
                     logger.info("开始处理子任务{}的action请求,id为{}",subTaskAction.getSubTaskNum(), id);
-//                    if (!CREATE.equals(subTaskAction.getActionStatus())) {
-//                        if(RESULT_ERROR.equals(subTaskAction.getActionStatus()) && PROMISE_ARRIVE.equals(subTaskAction.getExecuteMode())) {
-//                            //如果action发送错误,并且action是必达的,则再次处理
-//                        } else {
-//                            return;
-//                        }
-//                    }
-                    //更新消息为正在发送状态,不能使用事务!!!,因为要求立刻更新
-//                    SubTaskAction tmpSubTaskAction = new SubTaskAction();
-//                    tmpSubTaskAction.setId(subTaskAction.getId());
-//                    tmpSubTaskAction.setActionStatus(SENDING);
-//                    subTaskActionMapper.updateByPrimaryKeySelective(tmpSubTaskAction);
                     //有前置请求的,如果前置请求不满足,且是必达的,则不执行此次请求
                     if (StringUtils.isNotBlank(subTaskAction.getPreActions())) {
                         SubTaskAction preSubTaskAction = subTaskActionMapper.selectByActionCode(subTaskAction.getPreActions(), subTaskAction.getSubTaskNum());
@@ -143,7 +131,6 @@ public class NodeActionThreadService extends ConsumerThread {
                             }
                         }
                     }
-//                    tmpTaskAction.setActionStatus(SEND_SUCCESS);
                     subTaskActionMapper.updateByPrimaryKeySelective(tmpTaskAction);
                 });
     }
