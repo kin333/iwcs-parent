@@ -631,6 +631,7 @@ public class SubTaskService {
                 subTask.setMapCode("AB");
             }else {
                 IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
+                Preconditions.checkBusinessError(getPointStrategic == null, "获取点位策略不存在:" + taskRel.getStartPointAccess());
                 String startPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum, taskRel.getStartPointAccessValue(), taskRel));
                 subTask.setStartBercode(startPoint);
                 if (StringUtils.isNotEmpty(startPoint)) {
@@ -647,30 +648,32 @@ public class SubTaskService {
 
         //添加任务终点
         if (StringUtils.isNotBlank(taskRel.getEndPointAccess())) {
-                IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getEndPointAccess());
-                String endPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum, taskRel.getEndPointAccessValue(), taskRel));
-                subTask.setEndBercode(endPoint);
-                if (StringUtils.isNotEmpty(endPoint)) {
-                    BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endPoint);
-                    Preconditions.checkBusinessError(baseMapBerth == null, endPoint + "地图信息不存在");
-                    subTask.setEndMapCode(baseMapBerth.getMapCode());
-                    subTask.setEndAlias(baseMapBerth.getPointAlias());
-                    subTask.setEndX(baseMapBerth.getCoox().doubleValue());
-                    subTask.setEndY(baseMapBerth.getCooy().doubleValue());
-                    //锁定终点
-                    int rows = baseMapBerthMapper.updateLockSourceByBercode(endPoint, subTask.getSubTaskNum());
-                    if(rows > 0) {
-                        logger.info("子任务{}添加地码{}的锁定源成功", subTaskNum, endPoint);
-                    } else {
-                        logger.info("子任务{}添加地码{}的锁定源失败", subTaskNum, endPoint);
-                    }
+            IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getEndPointAccess());
+            Preconditions.checkBusinessError(getPointStrategic == null, "获取点位策略不存在:" + taskRel.getEndPointAccess());
+            String endPoint = getPointStrategic.getPoint(new AutoCreateBaseInfo(mainTaskNum, taskRel.getEndPointAccessValue(), taskRel));
+            subTask.setEndBercode(endPoint);
+            if (StringUtils.isNotEmpty(endPoint)) {
+                BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endPoint);
+                Preconditions.checkBusinessError(baseMapBerth == null, endPoint + "地图信息不存在");
+                subTask.setEndMapCode(baseMapBerth.getMapCode());
+                subTask.setEndAlias(baseMapBerth.getPointAlias());
+                subTask.setEndX(baseMapBerth.getCoox().doubleValue());
+                subTask.setEndY(baseMapBerth.getCooy().doubleValue());
+                //锁定终点
+                int rows = baseMapBerthMapper.updateLockSourceByBercode(endPoint, subTask.getSubTaskNum());
+                if(rows > 0) {
+                    logger.info("子任务{}添加地码{}的锁定源成功", subTaskNum, endPoint);
+                } else {
+                    logger.info("子任务{}添加地码{}的锁定源失败", subTaskNum, endPoint);
                 }
+            }
 
         }
         //添加货架
         if (StringUtils.isNotBlank(taskRel.getPodAccess())) {
-            IGetPodStrategic getPointStrategic = AppContext.getBean(taskRel.getPodAccess());
-            String podCode = getPointStrategic.getPod(new AutoCreateBaseInfo(mainTaskNum, taskRel.getPodAccessValue(), taskRel));
+            IGetPodStrategic getPodStrategic = AppContext.getBean(taskRel.getPodAccess());
+            Preconditions.checkBusinessError(getPodStrategic == null, "获取货架策略不存在:" + taskRel.getPodAccess());
+            String podCode = getPodStrategic.getPod(new AutoCreateBaseInfo(mainTaskNum, taskRel.getPodAccessValue(), taskRel));
             subTask.setPodCode(podCode);
             //锁定货架
             int rows = basePodDetailMapper.updateLockSourceByBercode(podCode, subTaskNum);
@@ -682,14 +685,16 @@ public class SubTaskService {
         }
         //添加机器人编号
         if (StringUtils.isNotBlank(taskRel.getRobotAccess())) {
-            IGetRobotStrategic getPointStrategic = AppContext.getBean(taskRel.getRobotAccess());
-            String robotCode = getPointStrategic.getRobotCode(new AutoCreateBaseInfo(mainTaskNum, taskRel.getRobotAccessValue()));
+            IGetRobotStrategic getRobotStrategic = AppContext.getBean(taskRel.getRobotAccess());
+            Preconditions.checkBusinessError(getRobotStrategic == null, "获取机器人策略不存在:" + taskRel.getRobotAccess());
+            String robotCode = getRobotStrategic.getRobotCode(new AutoCreateBaseInfo(mainTaskNum, taskRel.getRobotAccessValue()));
             subTask.setRobotCode(robotCode);
         }
         //添加任务编号(下发给Hik的任务编号)
         if (StringUtils.isNotBlank(taskRel.getWorkerTaskCodeAccess())) {
-            IGetWorkerCodeStrategic getPointStrategic = AppContext.getBean(taskRel.getWorkerTaskCodeAccess());
-            String workerCode = getPointStrategic.getWorkerCode(new AutoCreateBaseInfo(mainTaskNum, taskRel.getWorkerTaskCodeAccessValue()));
+            IGetWorkerCodeStrategic getWorkerCodeStrategic = AppContext.getBean(taskRel.getWorkerTaskCodeAccess());
+            Preconditions.checkBusinessError(getWorkerCodeStrategic == null, "获取第三方任务编号策略不存在:" + taskRel.getWorkerTaskCodeAccess());
+            String workerCode = getWorkerCodeStrategic.getWorkerCode(new AutoCreateBaseInfo(mainTaskNum, taskRel.getWorkerTaskCodeAccessValue()));
             subTask.setWorkerTaskCode(workerCode);
         }
 

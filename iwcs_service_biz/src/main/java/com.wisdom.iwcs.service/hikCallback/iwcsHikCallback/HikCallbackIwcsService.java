@@ -267,6 +267,7 @@ public class HikCallbackIwcsService {
             subTaskActionMapper.insertSelective(subTaskAction);
             Long id = subTaskAction.getId();
             RabbitMQUtil.basicPublicNodeAction(id.toString());
+            logger.info("{}action已发送", id);
         }
 
     }
