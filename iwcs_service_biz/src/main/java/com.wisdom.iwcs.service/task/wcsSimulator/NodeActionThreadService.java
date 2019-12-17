@@ -42,6 +42,15 @@ public class NodeActionThreadService extends ConsumerThread {
                     //根据id获取消息
                     SubTaskActionMapper subTaskActionMapper = AppContext.getBean("subTaskActionMapper");
                     SubTaskAction subTaskAction = subTaskActionMapper.selectByPrimaryKey(Long.valueOf(id));
+                    if (subTaskAction == null) {
+                        //如果RabbitMQ的速度快于Action数据的插入速度,会造成这里查不到,延时2秒后再次查询
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        subTaskAction = subTaskActionMapper.selectByPrimaryKey(Long.valueOf(id));
+                    }
                     logger.info("开始处理子任务{}的action请求,id为{}",subTaskAction.getSubTaskNum(), id);
 //                    if (!CREATE.equals(subTaskAction.getActionStatus())) {
 //                        if(RESULT_ERROR.equals(subTaskAction.getActionStatus()) && PROMISE_ARRIVE.equals(subTaskAction.getExecuteMode())) {
