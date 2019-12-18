@@ -50,6 +50,8 @@ public class NodeActionSendThread implements Runnable {
     private void nodeActionSend() {
         List<Long> idListNoSend = subTaskActionMapper.selectIdNoSend();
         List<Long> idListNoSendSuccess = subTaskActionMapper.selectIdNoSendSuccess();
+        //异常检查,防止RabbitMQ管理插件统计信息集合中的错误导致的消息队列不可用的问题
+        List<Long> errorSend = subTaskActionMapper.selectIdErrorSend();
         logger.info("节点发送数量{}", idListNoSend.size());
         if (idListNoSend.size() > 0) {
             for (Long id : idListNoSend) {
@@ -63,6 +65,11 @@ public class NodeActionSendThread implements Runnable {
                 RabbitMQUtil.basicPublicNodeAction(id.toString());
             }
             subTaskActionMapper.updateStatusByIds(idListNoSendSuccess);
+        }
+        if (errorSend.size() > 0) {
+            for (Long id : errorSend) {
+                RabbitMQUtil.basicPublicNodeAction(id.toString());
+            }
         }
     }
 }

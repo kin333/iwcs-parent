@@ -74,6 +74,11 @@
     select id from sub_task_action
     where action_status = '0'
   </select>
+  <select id="selectIdErrorSend" resultType="long">
+    select id from sub_task_action
+    where action_status = '1'
+    and create_time &lt;= DATE_SUB(NOW(),INTERVAL 5 MINUTE)
+  </select>
   <select id="selectIdNoSendSuccess" resultType="long">
     select id from sub_task_action
     where action_status = '4' and execute_mode = '1'

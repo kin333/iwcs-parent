@@ -39,6 +39,7 @@ public class NodeActionThreadService extends ConsumerThread {
                 RabbitMQConstants.ROUTEKEY_NODE_ACTION,
                 consumerActionInfo -> {
                     String id = consumerActionInfo.getMessage();
+                    logger.info("开始处理{}action", id);
                     //根据id获取消息
                     SubTaskActionMapper subTaskActionMapper = AppContext.getBean("subTaskActionMapper");
                     SubTaskAction subTaskAction = subTaskActionMapper.selectByPrimaryKey(Long.valueOf(id));
@@ -58,17 +59,21 @@ public class NodeActionThreadService extends ConsumerThread {
                     //有前置请求的,如果前置请求不满足,且是必达的,则不执行此次请求
                     if (StringUtils.isNotBlank(subTaskAction.getPreActions())) {
                         SubTaskAction preSubTaskAction = subTaskActionMapper.selectByActionCode(subTaskAction.getPreActions(), subTaskAction.getSubTaskNum());
+                        logger.info("{}的子任务号{},前置请求为{}",preSubTaskAction, subTaskAction.getSubTaskNum(), subTaskAction.getPreActions());
                         if (!SEND_SUCCESS.equals(preSubTaskAction.getActionStatus()) && PROMISE_ARRIVE.equals(preSubTaskAction.getExecuteMode())) {
                             SubTaskAction tmpSubTaskAction = new SubTaskAction();
                             tmpSubTaskAction.setId(subTaskAction.getId());
                             tmpSubTaskAction.setActionStatus(CREATE);
                             subTaskActionMapper.updateByPrimaryKeySelective(tmpSubTaskAction);
+                            logger.info("{}的子任务号{},前置请求{}状态为{},不满足",preSubTaskAction, subTaskAction.getSubTaskNum(),
+                                    subTaskAction.getPreActions(), preSubTaskAction.getActionStatus());
                             return;
                         }
                     }
 
                     SubTaskAction tmpTaskAction = new SubTaskAction();
                     tmpTaskAction.setId(subTaskAction.getId());
+                    logger.info("开始发送子任务{}的action请求,id为{}",subTaskAction.getSubTaskNum(), id);
 
                     while (true) {
                         try {

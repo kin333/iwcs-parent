@@ -25,6 +25,8 @@ public interface SubTaskActionMapper extends MyMapperAndIds<SubTaskAction> {
 
     List<Long> selectIdNoSend();
 
+    List<Long> selectIdErrorSend();
+
     List<Long> selectIdNoSendSuccess();
 
     int updateStatusByIds(List<Long> idListNoSend);

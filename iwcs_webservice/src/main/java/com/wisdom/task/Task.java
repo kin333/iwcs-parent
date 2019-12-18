@@ -101,6 +101,8 @@ public class Task {
      */
     @Scheduled(initialDelay = 10L, fixedDelay = Long.MAX_VALUE)
     public void recoverAction() {
-        subTaskActionMapper.updateSendingToCreate();
+        logger.info("action恢复已开始");
+        int rows = subTaskActionMapper.updateSendingToCreate();
+        logger.info("action恢复已结束:恢复数量:{}" , rows);
     }
 }
