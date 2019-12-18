@@ -338,6 +338,14 @@
     </set>
     where sub_task_num = #{subTaskNum}
   </update>
+  <update id="updateWorkTaskStatusByNum">
+    update ts_sub_task
+    <set>
+      work_task_status = #{workStatusCode},
+      date_chg = NOW()
+    </set>
+    where sub_task_num = #{subTaskNum}
+  </update>
 
   <update id="updateByMainTaskNumAndSubTaskType">
     update ts_sub_task
@@ -362,9 +370,10 @@
     select
     <include refid="Base_Column_List"/>
     from ts_sub_task
-    where task_status != #{taskStatus}
+    where task_status = #{taskStatus}
     and send_time is not null
     and send_time &lt;= DATE_SUB(NOW(),INTERVAL 5 MINUTE)
+    and third_type = 'HIK'
   </select>
 
   <update id="updateJsonData">

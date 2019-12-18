@@ -66,7 +66,7 @@ public class ErrorRepairThread implements Runnable {
 
         //查找异常的子任务,查找已经下发超过五分钟但是未完成的任务
 //        List<SubTask> subTaskList = subTaskMapper.selectUnusualTask(TaskConstants.workTaskStatus.END);
-        List<SubTask> subTaskList = subTaskMapper.selectByTaskStatus(SubTaskStatusEnum.Finished.getStatusCode());
+        List<SubTask> subTaskList = subTaskMapper.selectByTaskStatus(SubTaskStatusEnum.Executing.getStatusCode());
         if (subTaskList == null || subTaskList.size() <= 0) {
             logger.info("没有发现异常,异常处理器自动退出");
             return;
@@ -120,7 +120,7 @@ public class ErrorRepairThread implements Runnable {
 
         //2. 更新起点地码
         BaseMapBerth startMapBerth = baseMapBerthMapper.selectOneByBercode(subTask.getStartBercode());
-        if (subTask.getSubTaskNum().equals(startMapBerth.getLockSource())
+        if (startMapBerth != null && subTask.getSubTaskNum().equals(startMapBerth.getLockSource())
                 && subTask.getPodCode().equals(startMapBerth.getPodCode())) {
             BaseMapBerth baseMapBerth = new BaseMapBerth();
             //清空这个储位
@@ -138,7 +138,7 @@ public class ErrorRepairThread implements Runnable {
 
         //3. 更新终点地码
         BaseMapBerth endMapBerth = baseMapBerthMapper.selectOneByBercode(subTask.getEndBercode());
-        if (subTask.getSubTaskNum().equals(endMapBerth.getLockSource())
+        if (endMapBerth != null && subTask.getSubTaskNum().equals(endMapBerth.getLockSource())
                 && !subTask.getPodCode().equals(endMapBerth.getPodCode())) {
             BaseMapBerth baseMapBerth = new BaseMapBerth();
             //解锁这个储位
