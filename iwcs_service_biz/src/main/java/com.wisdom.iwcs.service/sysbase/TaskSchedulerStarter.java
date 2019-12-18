@@ -42,23 +42,23 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
 
             // 如果前端项目有现场监控，不要注释
-//            Thread robotThread = new Thread(robotServiceThread);
-//            robotThread.start();
+            Thread robotThread = new Thread(robotServiceThread);
+            robotThread.start();
 
-            Thread taskthread = new Thread(wcsTaskScheduler);
-            taskthread.start();
-            logger.info("开始启动任务调度器线程");
+//            Thread taskthread = new Thread(wcsTaskScheduler);
+//            taskthread.start();
 //            logger.info("开始启动任务调度器线程");
-            //启动消息日志
-            threadPoolTaskExecutor.execute(taskLogThreadService);
-
-            //启动节点活动消费线程(发送节点通知),3为临时值,应为自动配置值
-            for (int i = 0; i < 3; i++) {
-                threadPoolTaskExecutor.execute(new NodeActionThreadService());
-            }
-
-            logger.info("开始启动节点通知调度线程");
-            threadPoolTaskExecutor.execute(nodeActionSendThread);
+////            logger.info("开始启动任务调度器线程");
+//            //启动消息日志
+//            threadPoolTaskExecutor.execute(taskLogThreadService);
+//
+//            //启动节点活动消费线程(发送节点通知),3为临时值,应为自动配置值
+//            for (int i = 0; i < 3; i++) {
+//                threadPoolTaskExecutor.execute(new NodeActionThreadService());
+//            }
+//
+//            logger.info("开始启动节点通知调度线程");
+//            threadPoolTaskExecutor.execute(nodeActionSendThread);
 
             //自动门 plc连接启动
 //            DoorNettyClient doorNettyClient = DoorNettyClient.getInstance();

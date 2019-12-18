@@ -30,5 +30,10 @@
             <column name="content" remarks="地图数据" type="LONGTEXT"></column>
         </addColumn>
     </changeSet>
-
+    <changeSet id="201912182058" author="lnn">
+    <addColumn tableName="base_map">
+        <column name="version" remarks="地图版本" type="varchar(12)"></column>
+        <column name="pod_data" remarks="临时数据" type="text"></column>
+    </addColumn>
+    </changeSet>
 </databaseChangeLog>

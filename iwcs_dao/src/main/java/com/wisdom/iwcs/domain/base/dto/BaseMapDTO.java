@@ -103,6 +103,26 @@ public class BaseMapDTO {
      */
     @Column(name = "content")
     private String content;
+    @Column(name = "version")
+    private String version;
+    @Column(name = "pod_data")
+    private String podData;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getPodData() {
+        return podData;
+    }
+
+    public void setPodData(String podData) {
+        this.podData = podData;
+    }
 
     /**
      * @return id

@@ -532,6 +532,16 @@ public class SubTaskService {
         return new Result();
     }
     /**
+     * 根据主任务号查询
+     */
+    public List<SubTaskDTO> selectSubTaskByMainCode(SubTaskDTO record) {
+        SubTask subTask = subTaskMapStruct.toEntity(record);
+
+        List<SubTaskDTO> subTaskDTOList = subTaskMapStruct.toDto(subTaskMapper.selectSubTaskByMainCode(subTask));
+
+        return subTaskDTOList;
+    }
+    /**
      * 根据任务号将任务状态置为已完成
      *
      * @param subTaskNum

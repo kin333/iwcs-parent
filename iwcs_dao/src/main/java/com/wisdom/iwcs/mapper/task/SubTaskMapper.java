@@ -127,7 +127,7 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
 
     int updateJsonData(@Param("subTaskNum") String subTaskNum,@Param("jsonData") String jsonData);
 
-
+    List<SubTask> selectSubTaskByMainCode(SubTask subTask);
 
     /**
      * 查询未开始的子任务数量

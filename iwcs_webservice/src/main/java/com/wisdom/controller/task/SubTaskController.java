@@ -2,6 +2,7 @@ package com.wisdom.controller.task;
 
 import java.util.List;
 
+import com.greenpineyu.fel.function.operator.Sub;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
@@ -138,6 +139,12 @@ public class SubTaskController {
 //        return subTaskService.cancleSubtask(subtaskNum);
 //    }
 
+   @PostMapping("/getSubDataByMainCode")
+    public Result selectSubTaskByMainCode(@RequestBody SubTaskDTO subTaskDTO) {
 
+        List<SubTaskDTO> subTaskDTOList = subTaskService.selectSubTaskByMainCode(subTaskDTO);
+
+        return new Result(subTaskDTOList);
+   }
 
 }

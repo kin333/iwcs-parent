@@ -376,6 +376,11 @@
     and third_type = 'HIK'
   </select>
 
+  <select id="selectSubTaskByMainCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from ts_sub_task where main_task_num = #{mainTaskNum}
+    order by task_status ASC
+  </select>
+
   <update id="updateJsonData">
     update ts_sub_task
     <set>

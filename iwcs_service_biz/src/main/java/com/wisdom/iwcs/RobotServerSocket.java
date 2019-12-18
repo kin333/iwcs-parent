@@ -31,6 +31,7 @@ InputStream inputStream = socket.getInputStream();
             Integer len;
             while (true) {
                 try {
+                    this.wait(1 * 1000);
                     len = inputStream.read(bytes);
                     //注意指定编码格式，发送方和接收方一定要统一，建议使用UTF-8
                     if (len == 0) {
