@@ -99,7 +99,7 @@ public class Task {
      * 开机恢复正在发送的action
      *
      */
-    @Scheduled(initialDelay = 7000L, fixedDelay = Long.MAX_VALUE)
+    @Scheduled(initialDelay = 10L, fixedDelay = Long.MAX_VALUE)
     public void recoverAction() {
         subTaskActionMapper.updateSendingToCreate();
     }
