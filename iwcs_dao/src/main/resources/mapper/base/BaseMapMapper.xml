@@ -64,6 +64,6 @@
     </select>
 
     <select id="selectMapByCode" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from base_map where delete_flag = 0 and map_code =#{mapCode}
+        select <include refid="Base_Column_List"/> from base_map where delete_flag = 0 and map_code = #{mapCode}
     </select>
 </mapper>

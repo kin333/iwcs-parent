@@ -155,4 +155,6 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
                        @Param("robotCode") String robotCode);
 
     int updateTimeBySubTaskNumNotEnd(SubTask subTask);
+
+    List<SubTask> selectSubTaskByAgvCode(String robotCode);
 }

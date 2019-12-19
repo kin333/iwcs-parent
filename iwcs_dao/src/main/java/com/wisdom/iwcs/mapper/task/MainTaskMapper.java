@@ -79,4 +79,5 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
     Integer selectStartSupplyAndRecycleTaskCount();
     Integer selectStartEmptyRecycleTask();
 
+    List<MainTask> selectMainTaskByMainCode(String mainTaskNum);
 }

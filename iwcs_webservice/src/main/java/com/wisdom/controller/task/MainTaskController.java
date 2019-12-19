@@ -5,7 +5,9 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
+import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
@@ -129,6 +131,15 @@ public class MainTaskController {
     @PostMapping("/setPriority")
     public Result setPriority(@RequestBody List<MainTaskDTO> mainTask) {
         return mainTaskService.setPriority(mainTask);
+    }
+
+    @PostMapping("/getMainAllTaskByRobotCode")
+    public Result getMainAllTaskByRobotCode(@RequestBody SubTaskDTO subTaskDTO) {
+
+        List<MainTask> mainTaskList = mainTaskService.getMainAllTaskByRobotCode(subTaskDTO);
+
+        return new Result(mainTaskList);
+
     }
 
 }

@@ -19,8 +19,8 @@ public class RobotServiceThread implements Runnable {
             while (true) {
                 try {
                     logger.info("监控：socket推送信息到前端");
-                    this.wait(5 * 1000);
-                    robotServerSocket.startSocketServer("192.168.105.30", 8990);
+                    this.wait(1000);
+                    robotServerSocket.startSocketServer("192.168.102.96", 8990);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (Exception e) {

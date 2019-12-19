@@ -14,6 +14,7 @@ import com.wisdom.iwcs.domain.task.MainTaskType;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.TaskCreateRequest;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
+import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
@@ -317,6 +318,22 @@ public class MainTaskService implements IMainTaskService {
             return new Result(400, "优先级未修改");
         }
         return new Result();
+    }
+
+    /**
+     * 根据agvcode查询主任务
+     */
+    public List<MainTask> getMainAllTaskByRobotCode(SubTaskDTO subTaskDTO) {
+
+        List<MainTask> mainTaskList = null;
+
+        List<SubTask> subTaskList = subTaskMapper.selectSubTaskByAgvCode(subTaskDTO.getRobotCode());
+
+        if (subTaskList.size() != 0) {
+            mainTaskList = mainTaskMapper.selectMainTaskByMainCode(subTaskList.get(0).getMainTaskNum());
+        }
+
+        return mainTaskList;
     }
 
     /**

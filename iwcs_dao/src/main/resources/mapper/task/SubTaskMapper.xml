@@ -397,8 +397,11 @@
   </select>
 
   <select id="selectSubTaskByMainCode" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/> from ts_sub_task where main_task_num = #{mainTaskNum}
-    order by task_status ASC
+    select <include refid="Base_Column_List"/> from ts_sub_task
+      where main_task_num = #{mainTaskNum} and task_status != 9
+      <if test="robotCode != '' and robotCode != null">
+        and robot_code = #{robotCode}
+      </if>
   </select>
 
   <update id="updateJsonData">
@@ -446,4 +449,9 @@
       #{id}
     </foreach>
   </update>
+
+  <select id="selectSubTaskByAgvCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from ts_sub_task
+    where robot_code = #{robotCode} and task_status != 9 and work_task_status != 2
+  </select>
 </mapper>

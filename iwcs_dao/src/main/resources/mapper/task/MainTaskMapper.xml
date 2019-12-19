@@ -143,4 +143,9 @@
       FROM ts_main_task WHERE task_status = 1 or task_status = '1'
       GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(create_date)-(UNIX_TIMESTAMP(create_date)%(60*60)),'%Y-%m-%d %H:%i:%s');
   </select>
+
+    <select id="selectMainTaskByMainCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from ts_main_task
+        where task_status != 9 and main_task_num = #{mainTaskNum}
+    </select>
 </mapper>
