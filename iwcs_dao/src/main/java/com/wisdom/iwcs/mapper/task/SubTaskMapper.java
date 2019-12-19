@@ -153,4 +153,6 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
     int updateInitById(@Param("list") List<Long> changeIds,
                        @Param("newWorkTaskNum") String newWorkTaskNum,
                        @Param("robotCode") String robotCode);
+
+    int updateTimeBySubTaskNumNotEnd(SubTask subTask);
 }

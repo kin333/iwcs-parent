@@ -183,7 +183,10 @@ public class HikCallbackIwcsService {
                 logger.error("时间格式不正确:" + hikCallBackAgvMove.getReqTime());
                 subTask.setTaskLeaveTime(new Date());
             }
-            subTaskMapper.updateTimeBySubTaskNum(subTask);
+            int rows = subTaskMapper.updateTimeBySubTaskNumNotEnd(subTask);
+            if(rows <= 0) {
+                subTaskMapper.updateRobotCodeByBerCode(subTask);
+            }
             nodeAction(subTask, PTOP_LEAVE);
         } else {
             //subTask == null时说明没有生成任务单,这里认为此次请求为人工调用
