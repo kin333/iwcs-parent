@@ -3,6 +3,7 @@ package com.wisdom.controller.upstream.mes;
 import com.wisdom.base.annotation.SystemInterfaceLog;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.domain.upstream.mes.*;
+import com.wisdom.iwcs.service.task.action.RouseMainTaskAction;
 import com.wisdom.iwcs.service.task.impl.MesRequestService;
 import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,14 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.EMPTYRECYC
  * @author han
  */
 @RestController
-@Transactional(rollbackFor = Exception.class)
 @RequestMapping("/api/wisdom/autoProductionLine/emptyRecyleTask")
 public class EmptyRecyleTaskController {
     @Autowired
     TaskCreateService taskCreateService;
     @Autowired
     MesRequestService mesRequestService;
+    @Autowired
+    RouseMainTaskAction rouseMainTaskAction;
 
     /**
      * 创建自动产线回收任务
@@ -54,6 +56,7 @@ public class EmptyRecyleTaskController {
     public MesResult startRecyle(@RequestBody MesBaseRequest<StartRecyle> mesBaseRequest) {
         StartRecyle data = mesBaseRequest.getData();
         mesRequestService.startRecyle(data, mesBaseRequest.getReqcode());
+        rouseMainTaskAction.rouseMainTaskByMain(data.getTaskCode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
@@ -65,6 +68,7 @@ public class EmptyRecyleTaskController {
     public MesResult emptyRecyleNum(@RequestBody MesBaseRequest<EmptyRecyleNotify> mesBaseRequest) {
         EmptyRecyleNotify data = mesBaseRequest.getData();
         mesRequestService.emptyRecyleNum(data, mesBaseRequest.getReqcode());
+        rouseMainTaskAction.rouseMainTaskByMain(data.getTaskCode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 }

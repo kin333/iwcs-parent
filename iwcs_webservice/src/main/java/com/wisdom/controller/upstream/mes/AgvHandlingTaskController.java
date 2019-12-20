@@ -6,6 +6,7 @@ import com.wisdom.iwcs.domain.upstream.mes.AgvHandlingTaskCreateRequest;
 import com.wisdom.iwcs.domain.upstream.mes.ConWaitToDestWbRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesBaseRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
+import com.wisdom.iwcs.service.task.action.RouseMainTaskAction;
 import com.wisdom.iwcs.service.task.impl.MesRequestService;
 import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class AgvHandlingTaskController {
     private MesRequestService mesRequestService;
     @Autowired
     private ITaskCreateService iTaskCreateService;
+    @Autowired
+    RouseMainTaskAction rouseMainTaskAction;
 
     /**
      * 创建任务
@@ -66,6 +69,7 @@ public class AgvHandlingTaskController {
             e.printStackTrace();
             return new MesResult(MesResult.NG, e.getMessage(), mesBaseRequest.getReqcode());
         }
+        rouseMainTaskAction.rouseMainTaskByMain(data.getTaskCode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 }

@@ -30,6 +30,7 @@ import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
+import com.wisdom.iwcs.service.task.action.RouseMainTaskAction;
 import com.wisdom.iwcs.service.task.impl.MessageService;
 import com.wisdom.iwcs.service.task.scheduler.CheckEleArrivedThread;
 import com.wisdom.iwcs.service.task.template.TemplateRelatedServer;
@@ -118,6 +119,8 @@ public class HikCallbackIwcsService {
     ITransferHikHttpRequestService iTransferHikHttpRequestService;
     @Autowired
     MessageService messageService;
+    @Autowired
+    RouseMainTaskAction rouseMainTaskAction;
 
     /**
      * 小车开始任务的基础修改
@@ -725,6 +728,7 @@ public class HikCallbackIwcsService {
         if (subTask != null) {
             //节点动作
             nodeAction(subTask, ROLLER_END);
+            rouseMainTaskAction.rouseMainTaskBySubTask(hikCallBackAgvMove.getTaskCode());
         }
 
     }

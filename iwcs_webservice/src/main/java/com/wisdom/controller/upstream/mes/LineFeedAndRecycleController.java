@@ -5,6 +5,7 @@ import com.wisdom.iwcs.domain.upstream.mes.*;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.ReportEmptyContainerNumber;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.StartSupllyAndRecyles;
 import com.wisdom.iwcs.domain.upstream.mes.chaoyue.SupllyUnload;
+import com.wisdom.iwcs.service.task.action.RouseMainTaskAction;
 import com.wisdom.iwcs.service.task.impl.MesRequestService;
 import com.wisdom.iwcs.service.task.impl.TaskCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,14 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.SUPPLYANDR
  * @author han
  */
 @RestController
-@Transactional(rollbackFor = Exception.class)
 @RequestMapping("/api/wisdom/autoProductionLine/supplyAndRecyle")
 public class LineFeedAndRecycleController {
     @Autowired
     TaskCreateService taskCreateService;
     @Autowired
     MesRequestService mesRequestService;
+    @Autowired
+    RouseMainTaskAction rouseMainTaskAction;
 
     /**
      * 创建自动产线供料、回收任务
@@ -68,6 +70,7 @@ public class LineFeedAndRecycleController {
     public MesResult supplyLoadNum(@RequestBody MesBaseRequest<SupplyLoadNumNotify> mesBaseRequest) {
         SupplyLoadNumNotify data = mesBaseRequest.getData();
         mesRequestService.supplyLoadNum(data, mesBaseRequest.getReqcode());
+        rouseMainTaskAction.rouseMainTaskByMain(data.getTaskCode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
     /**
@@ -94,6 +97,7 @@ public class LineFeedAndRecycleController {
     public MesResult supplyUnloadWbNotify(@RequestBody MesBaseRequest<SupplyInfoNotify> mesBaseRequest) {
         SupplyInfoNotify data = mesBaseRequest.getData();
         mesRequestService.supplyUnloadWbNotify(data, mesBaseRequest.getReqcode());
+        rouseMainTaskAction.rouseMainTaskByMain(data.getTaskCode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
@@ -105,6 +109,7 @@ public class LineFeedAndRecycleController {
     public MesResult startSupllyAndRecyle(@RequestBody MesBaseRequest<StartSupllyAndRecyle> mesBaseRequest) {
         StartSupllyAndRecyle data = mesBaseRequest.getData();
         mesRequestService.startSupllyAndRecyle(data, mesBaseRequest.getReqcode());
+        rouseMainTaskAction.rouseMainTaskByMain(data.getTaskCode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
@@ -116,6 +121,7 @@ public class LineFeedAndRecycleController {
     public MesResult startRecyle(@RequestBody MesBaseRequest<StartRecyle> mesBaseRequest) {
         StartRecyle data = mesBaseRequest.getData();
         mesRequestService.startRecyle(data, mesBaseRequest.getReqcode());
+        rouseMainTaskAction.rouseMainTaskByMain(data.getTaskCode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
@@ -127,6 +133,7 @@ public class LineFeedAndRecycleController {
     public MesResult checkSuccess(@RequestBody MesBaseRequest<NotifyAgvLeave> mesBaseRequest) {
         NotifyAgvLeave data = mesBaseRequest.getData();
         mesRequestService.checkSuccess(data, mesBaseRequest.getReqcode());
+        rouseMainTaskAction.rouseMainTaskByMain(data.getTaskCode());
         return new MesResult(mesBaseRequest.getReqcode());
     }
 
