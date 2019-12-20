@@ -42,11 +42,10 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
 
             // 如果前端项目有现场监控，不要注释
-            Thread robotThread = new Thread(robotServiceThread);
-            robotThread.start();
+//            Thread robotThread = new Thread(robotServiceThread);
+//            robotThread.start();
 
-            Thread taskthread = new Thread(wcsTaskScheduler);
-            taskthread.start();
+            threadPoolTaskExecutor.execute(wcsTaskScheduler);
             logger.info("开始启动任务调度器线程");
 
             //启动消息日志
