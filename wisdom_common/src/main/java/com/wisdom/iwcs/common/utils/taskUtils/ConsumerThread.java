@@ -26,6 +26,9 @@ public class ConsumerThread implements Runnable {
      */
     private String routeKey;
 
+    private Connection connection;
+    private Channel channel;
+
     /**
      * 消费动作
      */
@@ -47,15 +50,22 @@ public class ConsumerThread implements Runnable {
 
     @Override
     public void run() {
-        while (true){
+        try {
+            createNewEvent();
+            synchronized (lock) {
+                lock.wait();
+            }
+        } catch (InterruptedException e) {
+            logger.info("{}队列已关闭", queueName);
             try {
-                createNewEvent();
-                synchronized (lock) {
-                    lock.wait();
+                if (channel != null) {
+                    channel.close();
                 }
-                break;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (IOException | TimeoutException ex) {
+                ex.printStackTrace();
             }
         }
     }
@@ -65,8 +75,7 @@ public class ConsumerThread implements Runnable {
      * @return 连接key,删除连接时使用
      */
     private void createNewEvent() {
-        Connection connection = RabbitMQUtil.getConnection();
-        Channel channel;
+        connection = RabbitMQUtil.getConnection();
         try {
             channel = connection.createChannel();
             String queue = channel.queueDeclare(queueName, false, false, true, null).getQueue();

@@ -92,7 +92,6 @@ public class WcsTaskScheduler implements Runnable {
 
             } catch (InterruptedException e) {
                 logger.error("主任务调度器线程尝试休眠失败！");
-                e.printStackTrace();
             }
         }
     }

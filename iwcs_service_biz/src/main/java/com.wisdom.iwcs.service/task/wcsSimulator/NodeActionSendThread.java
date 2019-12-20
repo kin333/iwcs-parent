@@ -27,11 +27,12 @@ public class NodeActionSendThread implements Runnable {
         synchronized (this) {
             while (true) {
                 try {
-                    logger.info("开始滚筒通知调度程序");
+                    logger.info("开始节点通知调度程序");
                     nodeActionSend();
                     this.wait(10 * 1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.info("节点通知调度程序已关闭");
+                    break;
                 } catch (Exception e) {
                     logger.info("MES发送报错:", e);
                     try {

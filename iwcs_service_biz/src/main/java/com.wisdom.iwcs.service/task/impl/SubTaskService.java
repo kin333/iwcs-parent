@@ -669,7 +669,7 @@ public class SubTaskService {
                 subTask.setEndAlias(baseMapBerth.getPointAlias());
                 subTask.setEndX(baseMapBerth.getCoox().doubleValue());
                 subTask.setEndY(baseMapBerth.getCooy().doubleValue());
-                //锁定终点
+                //修改终点锁定源
                 int rows = baseMapBerthMapper.updateLockSourceByBercode(endPoint, subTask.getSubTaskNum());
                 if(rows > 0) {
                     logger.info("子任务{}添加地码{}的锁定源成功", subTaskNum, endPoint);
@@ -685,7 +685,7 @@ public class SubTaskService {
             Preconditions.checkBusinessError(getPodStrategic == null, "获取货架策略不存在:" + taskRel.getPodAccess());
             String podCode = getPodStrategic.getPod(new AutoCreateBaseInfo(mainTaskNum, taskRel.getPodAccessValue(), taskRel));
             subTask.setPodCode(podCode);
-            //锁定货架
+            //更新货架锁定源
             int rows = basePodDetailMapper.updateLockSourceByBercode(podCode, subTaskNum);
             if(rows > 0) {
                 logger.info("子任务{}添加货架{}的锁定源成功", subTaskNum, podCode);
