@@ -399,8 +399,8 @@
   <select id="selectSubTaskByMainCode" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/> from ts_sub_task
       where main_task_num = #{mainTaskNum} and task_status != 9
-      <if test="robotCode != '' and robotCode != null">
-        and robot_code = #{robotCode}
+      <if test="subTaskNum != '' and subTaskNum != null">
+        and sub_task_num like CONCAT('%', #{subTaskNum}, '%')
       </if>
   </select>
 
