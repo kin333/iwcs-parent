@@ -833,6 +833,7 @@ public class TaskCreateService implements ITaskCreateService {
             subTaskCondition.setConditonTriger(taskRelCondition.getConditonTriger());
             subTaskCondition.setConditonHandler(taskRelCondition.getConditonHandler());
             subTaskCondition.setCreateDate(new Date());
+            subTaskCondition.setStrategyCode(taskRelCondition.getStrategyCode());
             subTaskConditionMapper.insertSelective(subTaskCondition);
         }
 

@@ -16,5 +16,12 @@ public class AreaCondition {
      */
     private String bizSecondArea;
 
+    /**
+     * 点位业务类型
+     */
     private String bizType;
+    /**
+     * 货架类型
+     */
+    private String podType;
 }

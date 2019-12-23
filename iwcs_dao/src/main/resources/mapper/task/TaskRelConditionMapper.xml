@@ -19,13 +19,14 @@
         <result column="subscribe_event" jdbcType="VARCHAR" property="subscribeEvent" />
         <result column="sub_task_seq" jdbcType="INTEGER" property="subTaskSeq" />
         <result column="con_expression" jdbcType="INTEGER" property="conExpression" />
+        <result column="strategy_code" jdbcType="VARCHAR" property="strategyCode" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, templ_code, templ_name, main_task_type_code, sub_task_type_code, conditon_handler, create_date,
-        point_access, date_chg, remark, conditon_triger, subscribe_event, sub_task_seq, con_expression
+        point_access, date_chg, remark, conditon_triger, subscribe_event, sub_task_seq, con_expression, strategy_code
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from ts_task_rel_condition

@@ -39,4 +39,10 @@
             <column name="sub_task_num"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="201912231526" author="han">
+        <addColumn tableName="ts_sub_task_condition">
+            <column name="strategy_code" type="VARCHAR(32)" remarks="策略编号" defaultValue=""/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

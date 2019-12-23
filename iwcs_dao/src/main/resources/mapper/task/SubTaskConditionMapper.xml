@@ -16,13 +16,14 @@
         <result column="conditon_triger" jdbcType="VARCHAR" property="conditonTriger" />
         <result column="subscribe_event" jdbcType="VARCHAR" property="subscribeEvent" />
         <result column="meet_time" jdbcType="TIMESTAMP" property="meetTime" />
+        <result column="strategy_code" jdbcType="VARCHAR" property="strategyCode" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, sub_task_num, conditon_handler, create_date, point_access, date_chg, condition_met_status,
-        remark, conditon_triger, subscribe_event, meet_time
+        remark, conditon_triger, subscribe_event, meet_time, strategy_code
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from ts_sub_task_condition

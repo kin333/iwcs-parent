@@ -5,12 +5,15 @@ import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.task.MainTask;
+import com.wisdom.iwcs.domain.task.SubTaskCondition;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
+import com.wisdom.iwcs.service.task.conditions.conditonHandler.PublicComputeEndPointHandler;
+import com.wisdom.iwcs.service.task.conditions.conditonHandler.PublicComputePodHandler;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
 import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.*;
@@ -501,6 +504,29 @@ public class TaskTestController {
         emptyRoller.start();
         logger.info("启动超越滚筒回收空料箱任务");
         return new Result();
+    }
+
+    @Autowired
+    PublicComputePodHandler podHandler;
+    @GetMapping("/testPodHandler")
+    public Result testPodHandler() {
+        SubTaskCondition subTaskCondition = new SubTaskCondition();
+        subTaskCondition.setSubTaskNum("S248368378798080");
+        subTaskCondition.setStrategyCode("pod_test1");
+        boolean result = podHandler.handleCondition(subTaskCondition);
+        return new Result(result);
+    }
+
+    @Autowired
+    PublicComputeEndPointHandler endPointHandler;
+    @GetMapping("/testEndPointHandler")
+    public Result testEndPointHandler() {
+        SubTaskCondition subTaskCondition = new SubTaskCondition();
+        subTaskCondition.setSubTaskNum("S248368378798080");
+        subTaskCondition.setStrategyCode("point_test1");
+        boolean result = endPointHandler.handleCondition(subTaskCondition);
+
+        return new Result(result);
     }
 
 

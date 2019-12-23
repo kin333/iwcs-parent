@@ -36,4 +36,10 @@
             <column name="con_expression" type="VARCHAR(200)" remarks="条件表达式" defaultValue=""/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201912231514" author="han">
+        <addColumn tableName="ts_task_rel_condition">
+            <column name="strategy_code" type="VARCHAR(32)" remarks="策略编号" defaultValue=""/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

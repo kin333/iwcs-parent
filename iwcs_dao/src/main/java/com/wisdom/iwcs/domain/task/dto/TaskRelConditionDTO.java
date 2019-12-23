@@ -88,6 +88,20 @@ public class TaskRelConditionDTO {
     @Column(name = "con_expression")
     private String conExpression;
 
+    /**
+     * 策略编号
+     */
+    @Column(name = "strategy_code")
+    private String strategyCode;
+
+    public String getStrategyCode() {
+        return strategyCode;
+    }
+
+    public void setStrategyCode(String strategyCode) {
+        this.strategyCode = strategyCode;
+    }
+
     public String getConExpression() {
         return conExpression;
     }
