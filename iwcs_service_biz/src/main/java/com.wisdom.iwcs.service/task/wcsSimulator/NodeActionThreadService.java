@@ -62,6 +62,7 @@ public class NodeActionThreadService extends ConsumerThread {
                         logger.info("{}的子任务号{},前置请求为{}",preSubTaskAction, subTaskAction.getSubTaskNum(), subTaskAction.getPreActions());
                         if (preSubTaskAction == null) {
                             //前置请求未生成
+                            logger.info("子任务号{},前置请求{}不存在", subTaskAction.getSubTaskNum(), subTaskAction.getPreActions());
                             return;
                         }
                         if (!SEND_SUCCESS.equals(preSubTaskAction.getActionStatus()) && PROMISE_ARRIVE.equals(preSubTaskAction.getExecuteMode())) {
