@@ -100,13 +100,13 @@ public class WcsTaskScheduler implements Runnable {
         logger.info("主任务收到结束信号{}：", mainTaskNum);
         MainTaskWorker mainTaskWorker = maintaskWorkerMaps.get(mainTaskNum);
         logger.info("主任务在线程中");
+        MainTaskService mainTaskService = (MainTaskService) AppContext.getBean("mainTaskService");
+        mainTaskService.loopMaintTask(mainTaskNum);
         if (mainTaskWorker != null) {
             logger.info("主任务在线程中存在，maintaskWorkerMaps中移除主任务{}", mainTaskNum);
             this.maintaskWorkerMaps.remove(mainTaskNum);
             this.maintaskWorkerThreadMaps.remove(mainTaskNum);
         }
-        MainTaskService mainTaskService = (MainTaskService) AppContext.getBean("mainTaskService");
-        mainTaskService.loopMaintTask(mainTaskNum);
     }
 
     public ConcurrentHashMap<String, MainTaskWorker> getMaintaskWorkerMaps() {
