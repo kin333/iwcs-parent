@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="han" id="201912240921">
+        <createTable tableName="map_pod_filter_strategy">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="strategy_code" remarks="策略编号" type="VARCHAR(32)"/>
+            <column name="operate_area_code" remarks="作业区域(如老化区、检验区)" type="VARCHAR(100)"/>
+            <column name="biz_type" type="VARCHAR(32)"/>
+            <column name="biz_second_area_code" remarks="业务次级区域(如老化区下的自动区、手动区)" type="VARCHAR(100)"/>
+            <column defaultValueNumeric="0" name="pod_stock" remarks="空满状态，0为空，1为满" type="INT"/>
+            <column name="pod_type" type="VARCHAR(32)"/>
+            <column name="priority" remarks="优先级" type="INT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -285,6 +285,7 @@
     <select id="selectByLockPodConfigtion" resultMap="BaseResultMap">
         select <include refid="Table_Column_List"/> from base_pod_detail bpd
         LEFT JOIN base_map_berth bmb ON bpd.ber_code = bmb.ber_code
+        LEFT JOIN base_pod bp ON bp.pod_code = bpd.pod_code
         where bpd.delete_flag = 0
         and bpd.in_lock != 1
         <if test="mapCode != null and mapCode != ''">
@@ -301,6 +302,9 @@
         </if>
         <if test="inStock != null and inStock != ''">
             and bpd.in_stock = #{inStock}
+        </if>
+        <if test="podType != null and podType != ''">
+            and bp.pod_type_code = #{podType}
         </if>
     </select>
 
