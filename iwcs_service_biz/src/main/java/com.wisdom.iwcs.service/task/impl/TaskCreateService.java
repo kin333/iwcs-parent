@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.task.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.base.Strings;
+import com.wisdom.iwcs.common.utils.CompanyFinancialStatusEnum;
 import com.wisdom.iwcs.common.utils.FloorMapEnum;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
@@ -1382,10 +1383,13 @@ public class TaskCreateService implements ITaskCreateService {
         if (StringUtils.isNotBlank(targetBaseMapBerth.getPodCode())){
             throw  new BusinessException("搬运目标点已存在货架");
         }
-        if (targetBaseMapBerth.getInLock()==1 || StringUtils.isNotBlank(targetBaseMapBerth.getLockSource())){
+        if (targetBaseMapBerth.getInLock()==1){
             throw  new BusinessException("目标点位已锁定");
         }
 
+        // 目标点上锁
+        targetBaseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.LOCK.getCode()));
+        baseMapBerthMapper.updateByPrimaryKeySelective(targetBaseMapBerth);
 
         //写入站点集合
         String jsonString = JSONArray.toJSONString(Arrays.asList(startBaseMapBerth.getBerCode(),
