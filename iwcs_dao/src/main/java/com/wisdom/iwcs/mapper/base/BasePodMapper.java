@@ -85,4 +85,5 @@ public interface BasePodMapper extends DeleteLogicMapper<BasePod>, MyMapperAndId
      */
     List<ShowPodInfoResultDTO> showPodInfo(ShowPodInfoCondDTO param);
 
+    BasePod selectByPodCode(String podCode);
 }

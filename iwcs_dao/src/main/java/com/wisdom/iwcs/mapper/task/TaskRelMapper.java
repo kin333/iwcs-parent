@@ -58,4 +58,8 @@ public interface TaskRelMapper extends MyMapperAndIds<TaskRel> {
 
     Integer deleteByTemplCodes(@Param("templCodeList") List<String> templCodeList);
     Integer deleteByMainCode(@Param("mainTaskCode") String mainTaskCode);
+
+    int selectByMainTaskTypeAndStaticPod(String mainTaskType);
+
+    List<TaskRel> selectByMainTaskTypeAndStaticPoint(String mainTaskType);
 }

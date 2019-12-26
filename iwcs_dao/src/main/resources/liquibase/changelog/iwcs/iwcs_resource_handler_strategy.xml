@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="201912251109" author="han">
+        <createTable tableName="resource_handler_strategy" remarks="资源处理策略表">
+            <column autoIncrement="true" name="id" remarks="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="strategy_code" remarks="编码" type="VARCHAR(32)" defaultValue=""/>
+            <column name="strategy_name" remarks="策略名称" type="VARCHAR(32)" defaultValue=""/>
+            <column name="strategy_type" remarks="策略类型:校验策略validation,操作策略operation" type="VARCHAR(32)" defaultValue=""/>
+            <column name="resource_type" remarks="资源类型(货架:pod/点位:point)" type="VARCHAR(16)" defaultValue=""/>
+            <column name="strategy_handler" remarks="策略处理器" type="VARCHAR(32)" defaultValue=""/>
+            <column name="strategy_params" remarks="策略参数(json格式)" type="VARCHAR(255)" defaultValue=""/>
+            <column name="valid_flag" remarks="有效标记，0有效，1无效" type="INT" defaultValueNumeric="0" />
+            <column name="delete_flag" remarks="删除标记，0未删除，1删除" type="INT" defaultValueNumeric="0" />
+            <column name="remark" remarks="备注" type="VARCHAR(100)" defaultValue=""/>
+            <column name="create_time" remarks="创建时间" type="DATETIME(3)"/>
+            <column name="last_modified_time" remarks="最后修改时间" type="DATETIME(3)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

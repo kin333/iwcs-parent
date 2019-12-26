@@ -152,4 +152,15 @@
         on r.sub_task_type_code = s.sub_task_typ_code
         where r.main_task_type_code = #{mainTaskTypeCode} and r.sub_task_type_code != #{subTaskTypeCode}
     </select>
+
+    <select id="selectByMainTaskTypeAndStaticPod" resultType="int">
+        select COUNT(*) from ts_task_rel
+        where main_task_type_code = #{mainTaskType,jdbcType=VARCHAR}
+          and pod_access = 'mainTaskRelatedStrategic'
+    </select>
+    <select id="selectByMainTaskTypeAndStaticPoint" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from ts_task_rel
+        where main_task_type_code = #{mainTaskType,jdbcType=VARCHAR}
+        and (start_point_access = 'staticViaPathsStrategic' or end_point_access = 'staticViaPathsStrategic')
+    </select>
 </mapper>

@@ -606,4 +606,32 @@ public class MapResouceService implements IMapResouceService {
         return new Result();
     }
 
+    /**
+     * 锁住选中的点位
+     * @param lockStorageDto
+     * @return
+     */
+    public Result lockMapBer(LockStorageDto lockStorageDto) {
+        Result validateResult = validateLockParams(lockStorageDto);
+        if (validateResult.getReturnCode() != 200){
+            return validateResult;
+        }
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(lockStorageDto.getBerCode());
+        if (YZConstants.LOCK.equals(baseMapBerth.getInLock())) {
+            return new Result(400, baseMapBerth.getBerCode() + "该储位已被锁定");
+        }
+        if(!Strings.isNullOrEmpty(baseMapBerth.getPodCode())) {
+            return new Result(400,baseMapBerth.getBerCode() + "该储位存在货架:"+baseMapBerth.getPodCode()+"，请稍后执行");
+        }
+        //锁住选中的点位
+        lockStorageDto.setVersion(baseMapBerth.getVersion());
+        int count = baseMapBerthMapper.lockMapBerthByBercode(lockStorageDto);
+        if(count < 1) {
+            return new Result(400,"该储位在进行其他操作中，请稍后执行");
+        }
+        logger.info("点位锁定成功:{} 锁定源为:{} 乐观锁版本号:{}", baseMapBerth.getBerCode(),
+                lockStorageDto.getLockSource(), baseMapBerth.getVersion());
+        return new Result();
+    }
+
 }
