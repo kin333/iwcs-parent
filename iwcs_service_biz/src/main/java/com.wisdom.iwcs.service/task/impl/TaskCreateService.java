@@ -1391,6 +1391,13 @@ public class TaskCreateService implements ITaskCreateService {
         targetBaseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.LOCK.getCode()));
         baseMapBerthMapper.updateByPrimaryKeySelective(targetBaseMapBerth);
 
+        // 货架锁定
+        BasePodDetail tmpBasePodDetail = new BasePodDetail();
+        tmpBasePodDetail.setId(basePodDetail.getId());
+        tmpBasePodDetail.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.LOCK.getCode()));
+        basePodDetailMapper.updateByPrimaryKeySelective(tmpBasePodDetail);
+
+
         //写入站点集合
         String jsonString = JSONArray.toJSONString(Arrays.asList(startBaseMapBerth.getBerCode(),
                 targetBaseMapBerth.getBerCode()));
