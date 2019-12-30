@@ -289,7 +289,7 @@ public class HikCallbackIwcsService {
                 taskLeavePoint(hikCallBackAgvMove); break;
                 // 超越初始化入库
             case InspurBizConstants.HikCallbackMethod.TASK_LEAVE_POINT_CHAO:
-                taskLeavePointChao(hikCallBackAgvMove);
+                taskLeavePointChao(hikCallBackAgvMove); break;
             //任务结束
             case InspurBizConstants.HikCallbackMethod.TASK_FINISHED:
                 taskFinished(hikCallBackAgvMove); break;

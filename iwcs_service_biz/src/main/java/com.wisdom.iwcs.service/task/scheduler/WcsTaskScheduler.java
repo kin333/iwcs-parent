@@ -123,7 +123,7 @@ public class WcsTaskScheduler implements Runnable {
         logger.info("尝试停止任务线程，主任务{}，子任务{}",maintaskNum,subtaskNum);
         MainTaskWorker mainTaskWorker = maintaskWorkerMaps.get(maintaskNum);
         if(mainTaskWorker != null){
-            logger.info("查询到主任务{}正在执行,调用其stopCurrentSubtaskThreadAndMainTask方法，修改停止标记");
+            logger.info("查询到主任务{}正在执行,调用其stopCurrentSubtaskThreadAndMainTask方法，修改停止标记", maintaskNum);
             mainTaskWorker.stopCurrentSubtaskThreadAndMainTask();
             maintaskWorkerMaps.remove(maintaskNum);
         }else{
