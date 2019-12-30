@@ -231,4 +231,6 @@ public interface BasePodDetailMapper extends DeleteLogicMapper<BasePodDetail>, M
     int updatePodStatus(BasePodDetail basePodDetail);
 
     BasePodDetail selectPodData(BasePodDetail basePodDetail);
+
+    int updateCleanPodLocation(String podCode);
 }

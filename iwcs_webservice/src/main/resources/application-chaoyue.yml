@@ -120,14 +120,14 @@ application:
     nettyServerHost: 192.168.102.97
     nettyServerPort: 9234
   hikParam:
-    returnPodUrl: http://192.168.102.100/cms/services/rest/hikTpsService/returnPod
-    getOutPodUrl: http://192.168.102.100/cms/services/rest/hikTpsService/getOutPod
-    endTaskUrl: http://192.168.102.100/cms/services/rest/hikTpsService/endAllTasksByTps
-    rotatePodUrl: http://192.168.102.100/cms/services/rest/hikTpsService/rotatePodByTps
-    movePodUrl: http://192.168.102.100/cms/services/rest/hikTpsService/genMoveTaskByPod
+    returnPodUrl: http://192.168.102.96/cms/services/rest/hikTpsService/returnPod
+    getOutPodUrl: http://192.168.102.96/cms/services/rest/hikTpsService/getOutPod
+    endTaskUrl: http://192.168.102.96/cms/services/rest/hikTpsService/endAllTasksByTps
+    rotatePodUrl: http://192.168.102.96/cms/services/rest/hikTpsService/rotatePodByTps
+    movePodUrl: http://192.168.102.96/cms/services/rest/hikTpsService/genMoveTaskByPod
     genAgvSchedulingTaskUrl: http://192.168.102.96/cms/services/rest/hikRpcService/genAgvSchedulingTask
     continueTaskUrl: http://192.168.102.96/cms/services/rest/hikRpcService/continueTask
-    cancelTaskUrl: http://192.168.102.100/cms/services/rest/hikRpcService/cancelTask
+    cancelTaskUrl: http://192.168.102.96/cms/services/rest/hikRpcService/cancelTask
     freeRobotUrl: http://192.168.102.96/cms/services/rest/hikRpcService/freeRobot
     returnMapOrPodUrl: http://192.168.102.96/cms/services/rest/hikRpcService/queryPodBerthAndMat
     returnTaskStatus:  http://192.168.102.96/cms/services/rest/hikRpcService/queryTaskStatus

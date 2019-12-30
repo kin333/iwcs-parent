@@ -2,7 +2,7 @@ package com.wisdom.iwcs.common.utils;
 
 public enum AddressEnum {
 
-    BIND_POD_AND_BERTH("bindPodAndMatUrl", "/rcs/services/rest/hikRpcService/bindPodAndBerth","海康接口的地址绑定解绑操作");
+    BIND_POD_AND_BERTH("bindPodAndMatUrl", "/cms/services/rest/hikRpcService/bindPodAndBerth","海康接口的地址绑定解绑操作");
     //代码
     private String code;
     //值

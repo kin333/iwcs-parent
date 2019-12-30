@@ -82,6 +82,14 @@ public class LineFeedAndRecycleController {
         return mesRequestService.cancelMesTask(mesCancelTaskRequest);
     }
     /**
+     * 顶升式通用的取消任务
+     */
+    @PostMapping("/publicCancelTask")
+    @SystemInterfaceLog(methodCode = PUBLIC_CANCEL_TASK, methodName = PUBLIC_CANCEL_TASK_DESC, methodThansfer = SRC_MES)
+    public MesResult publicCancelTask(@RequestBody MesCancelTaskRequest mesCancelTaskRequest) {
+        return mesRequestService.publicCancelTask(mesCancelTaskRequest);
+    }
+    /**
      * mes滚筒换车
      */
     @PostMapping("/changeAgv")

@@ -431,4 +431,16 @@
         select <include refid="Base_Column_List"/> from base_pod_detail
         where pod_code = #{podCode}
     </select>
+
+    <update id="updateCleanPodLocation">
+        update base_pod_detail
+        <set>
+            ber_code = '',
+            lock_source = '',
+            in_lock = 0,
+            coox = '',
+            cooy = ''
+        </set>
+        where pod_code = #{podCode}
+    </update>
 </mapper>

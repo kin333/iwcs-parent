@@ -810,5 +810,19 @@ public class TaskConstants {
         public final static String LEAVE_UP_GOOD_EMPTY = "8";
     }
 
+    /**
+     * 绑定解绑
+     */
+    public static final class indBind {
+        /**
+         * 绑定
+         */
+        public final static String BIND = "1";
+        /**
+         * 解绑
+         */
+        public final static String UNBIND = "0";
+    }
+
 
 }

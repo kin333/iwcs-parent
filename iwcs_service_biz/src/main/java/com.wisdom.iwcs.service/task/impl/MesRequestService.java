@@ -2,7 +2,6 @@ package com.wisdom.iwcs.service.task.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.sun.javafx.collections.MappingChange;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
@@ -12,6 +11,7 @@ import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskContextUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.control.CancelTaskRequestDTO;
 import com.wisdom.iwcs.domain.control.GenAgvSchedulingRequestDTO;
 import com.wisdom.iwcs.domain.task.MainTask;
@@ -45,9 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,6 +61,7 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskStatus.SUB_ISSUE
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_CONTINUE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_MOVE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.workTaskStatus.END;
+import static com.wisdom.iwcs.common.utils.YZConstants.LOCK;
 import static com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum.Canceled;
 import static com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum.Init;
 
@@ -100,6 +98,8 @@ public class MesRequestService {
     BasePodDetailMapper basePodDetailMapper;
     @Autowired
     MessageService messageService;
+    @Autowired
+    MapResouceService mapResouceService;
 
     /**
      * 接收 Mes 通知 AGV 接料点目的地的请求
@@ -480,6 +480,113 @@ public class MesRequestService {
         mesResult.setMessage("任务"+mesCancelTaskRequest.getTaskCode()+"取消成功");
         return mesResult;
     }
+
+    /**
+     * 顶升式通用的取消任务
+     * @param  mesCancelTaskRequest
+     * @return
+     */
+    public MesResult publicCancelTask(MesCancelTaskRequest mesCancelTaskRequest) {
+        //取消WCS和HIK任务
+        MesResult mesResult = cancelMesTask(mesCancelTaskRequest);
+
+        // TODO 需要区分不同执行方，目前写死，只有海康rcs
+        List<SubTask> subTasks = subTaskMapper.selectByMainTaskNum(mesCancelTaskRequest.getTaskCode());
+        List<SubTask> isusedSubTasks = subTasks.stream().filter(s -> SUB_ISSUED.equals(s.getTaskStatus()) && SENDED.equals(s.getSendStatus())).distinct().collect(Collectors.toList());
+        logger.debug("筛选{}中所有进行中子任务{}", mesCancelTaskRequest.getTaskCode(), isusedSubTasks);
+
+        //如果没有搜索到Hik的任务,再进行一次确认,防止偶现的Hik任务没取消的问题
+        if (isusedSubTasks.size() == 0 && subTasks.size() != 0) {
+            //检查是否是Hik的请求,如果是,判断是否已发送,且是否未完成,如果已发送且未完成,则加入到取消队列里
+            SubTask lastSubTask = subTasks.get(subTasks.size() - 1);
+            if (SRC_HIK.equals(lastSubTask.getThirdType())) {
+                List<SubTask> listTask = subTaskMapper.selectAllByTaskCode(lastSubTask.getWorkerTaskCode());
+                //判断是否已发送,且最后一个子任务是否未完成,如果已发送且未完成,则加入到取消队列里
+                if (SENDED.equals(listTask.get(0).getSendStatus()) && !END.equals(listTask.get(listTask.size() - 1).getWorkTaskStatus())) {
+                    isusedSubTasks.add(lastSubTask);
+                }
+            }
+        }
+        if (isusedSubTasks.size() <= 0) {
+            //主任务未开始执行的情况
+            MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mesCancelTaskRequest.getTaskCode());
+            String staticPodCode = mainTask.getStaticPodCode();
+            String staticViaPaths = mainTask.getStaticViaPaths();
+            //解锁地码
+            if (StringUtils.isNotEmpty(staticViaPaths)) {
+                List<String> berCodes = JSONArray.parseArray(staticViaPaths, String.class);
+                if (berCodes != null && berCodes.size() > 0) {
+                    for (String berCode : berCodes) {
+                        checkAndUnlockBerCode(berCode, mainTask.getMainTaskNum());
+                    }
+                }
+            }
+            //解锁货架
+            if (StringUtils.isNotEmpty(staticPodCode)) {
+                BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(staticPodCode);
+                if (basePodDetail != null && LOCK.equals(basePodDetail.getInLock()) && mainTask.getMainTaskNum().equals(basePodDetail.getLockSource())) {
+                    mapResouceService.unlockPodByCode(staticPodCode);
+                }
+            }
+            return mesResult;
+        }
+
+        List<String> needBindingPods = new ArrayList<>();
+        for (SubTask isusedSubTask : isusedSubTasks) {
+            logger.info("任务取消开始处理子任务{}", isusedSubTask.getSubTaskNum());
+            //恢复货架,解锁终点
+            //解锁终点: 检查终点是否被锁定,且是这个任务锁定的
+            BaseMapBerth endMapBerth = baseMapBerthMapper.selectOneByBercode(isusedSubTask.getEndBercode());
+            //如果点位存在,且被锁定,且锁定源是这个子任务
+            if (endMapBerth != null && LOCK.equals(endMapBerth.getInLock())
+                    && isusedSubTask.getWorkerTaskCode().equals(endMapBerth.getLockSource())) {
+                LockStorageDto lockStorageDto = new LockStorageDto();
+                lockStorageDto.setBerCode(endMapBerth.getBerCode());
+                lockStorageDto.setMapCode(endMapBerth.getBerCode().substring(6,8));
+                Result result = mapResouceService.unlockMapBerth(lockStorageDto);
+                logger.info("子任务{}的终点{}解锁结果:{}", isusedSubTask.getSubTaskNum(), isusedSubTask.getEndBercode(), result.getReturnMsg());
+            }
+            //解锁货架和恢复货架
+            BaseMapBerth startMapBerth = baseMapBerthMapper.selectOneByBercode(isusedSubTask.getStartBercode());
+            //如果起点上的货架已经不是子任务的货架了,则需要开始恢复货架
+            if (StringUtils.isEmpty(startMapBerth.getPodCode())
+                    || !startMapBerth.getPodCode().equals(isusedSubTask.getPodCode())) {
+                int row = basePodDetailMapper.updateCleanPodLocation(isusedSubTask.getPodCode());
+                if (row > 0) {
+                    needBindingPods.add(isusedSubTask.getPodCode());
+                    logger.info("{}子任务的{}货架清空完成", isusedSubTask.getSubTaskNum(), isusedSubTask.getPodCode());
+                }
+            } else if (StringUtils.isNotEmpty(startMapBerth.getPodCode())
+                    && startMapBerth.getPodCode().equals(isusedSubTask.getPodCode())) {
+                mapResouceService.unlockPodByCode(isusedSubTask.getPodCode());
+            }
+        }
+        if (needBindingPods.size() > 0) {
+            mesResult.setMessage(JSONArray.toJSON(needBindingPods) + "货架需人工绑定");
+        }
+
+        return mesResult;
+    }
+
+    /**
+     * 检查并解锁地码
+     * @param berCode
+     * @param lockSource
+     */
+    public void checkAndUnlockBerCode(String berCode, String lockSource) {
+        BaseMapBerth endMapBerth = baseMapBerthMapper.selectOneByBercode(berCode);
+        //如果点位存在,且被锁定,且锁定源是这个子任务
+        if (endMapBerth != null && LOCK.equals(endMapBerth.getInLock())
+                && lockSource.equals(endMapBerth.getLockSource())) {
+            LockStorageDto lockStorageDto = new LockStorageDto();
+            lockStorageDto.setBerCode(endMapBerth.getBerCode());
+            lockStorageDto.setMapCode(endMapBerth.getBerCode().substring(6,8));
+            Result result = mapResouceService.unlockMapBerth(lockStorageDto);
+            logger.info("任务{}的终点{}解锁结果:{}", lockSource, berCode, result.getReturnMsg());
+        }
+    }
+
+
 
     /**
      * 除创建任务之外的其他接口的校验

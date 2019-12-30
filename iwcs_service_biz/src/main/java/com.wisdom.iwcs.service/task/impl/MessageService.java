@@ -50,8 +50,14 @@ public class MessageService {
      * @return
      */
     public String getByRequest(String msgKey) {
+        Locale locale;
+        if (request == null) {
+            locale = LocaleContextHolder.getLocale();
+        } else {
+            locale = request.getLocale();
+        }
         try {
-            return messageSource.getMessage(msgKey, null, request.getLocale());
+            return messageSource.getMessage(msgKey, null, locale);
         } catch (Exception e) {
             return msgKey;
         }

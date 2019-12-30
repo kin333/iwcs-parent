@@ -480,6 +480,7 @@ public class HikCallbackIwcsService {
         }
         //解锁这个储位
         baseMapBerth.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
+        baseMapBerth.setLockSource("");
         baseMapBerth.setPodCode("");
         //更新储位信息,加货架号,解锁
         baseMapBerthMapper.updateByPrimaryKeySelective(baseMapBerth);
@@ -824,12 +825,11 @@ public class HikCallbackIwcsService {
         }
 
         //清空储位
-        BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
-        tmpBaseMapBerth.setId(baseMapBerth.getId());
-        tmpBaseMapBerth.setPodCode("");
-        //更新储位信息,加货架号,解锁
-        baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
-
+//        BaseMapBerth tmpBaseMapBerth = new BaseMapBerth();
+//        tmpBaseMapBerth.setId(baseMapBerth.getId());
+//        tmpBaseMapBerth.setPodCode("");
+//        //更新储位信息,加货架号,解锁
+//        baseMapBerthMapper.updateByPrimaryKeySelective(tmpBaseMapBerth);
         updateMapInfoNoCheck(hikCallBackAgvMove);
 
         //修改任务标记

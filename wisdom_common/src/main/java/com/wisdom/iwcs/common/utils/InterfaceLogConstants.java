@@ -62,6 +62,7 @@ public class InterfaceLogConstants {
         public final static String CONWAIT_TO_DESTWB = "conWaitToDestWb";
         public final static String CREATE_TASK = "createTask";
         public final static String CANCEL_TASK = "cancelTask";
+        public final static String PUBLIC_CANCEL_TASK = "publicCancelTask";
         public final static String CHANGE_AGV = "changeAgv";
 
         public final static String ARRIVE_SRC_WB = "arriveSrcWb";
@@ -128,6 +129,7 @@ public class InterfaceLogConstants {
         public final static String CREATE_TASK_DESC = "创建点到点任务";
 
         public final static String CANCEL_TASK_DESC = "取消滚筒任务";
+        public final static String PUBLIC_CANCEL_TASK_DESC = "顶升式通用的取消任务";
         public final static String CHANGE_AGV_DESC = "滚筒换车任务";
 
 
