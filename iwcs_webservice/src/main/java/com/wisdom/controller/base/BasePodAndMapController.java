@@ -18,9 +18,25 @@ public class BasePodAndMapController {
     BasePodAndMapService basePodAndMapService;
 
 
-    @PostMapping
-    public Result updatePodDetailAndMapBerth(@RequestBody BasePodAndMapDTO basePodAndMapDTO) {
-        basePodAndMapService.updatePodAndMap(basePodAndMapDTO);
+    /**
+     * 解绑
+     * @param basePodAndMapDTO
+     * @return
+     */
+    @PostMapping("/untying")
+    public Result untying(@RequestBody BasePodAndMapDTO basePodAndMapDTO) {
+        basePodAndMapService.untying(basePodAndMapDTO);
+        return new Result();
+    }
+
+    /**
+     * 绑定
+     * @param basePodAndMapDTO
+     * @return
+     */
+    @PostMapping("/bind")
+    public Result bind(@RequestBody BasePodAndMapDTO basePodAndMapDTO) {
+        basePodAndMapService.bind(basePodAndMapDTO);
         return new Result();
     }
 
