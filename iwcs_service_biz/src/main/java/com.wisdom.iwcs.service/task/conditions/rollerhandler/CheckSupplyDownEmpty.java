@@ -38,7 +38,7 @@ public class CheckSupplyDownEmpty implements IConditionHandler {
         String context = taskContext.getContext();
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
-        if (contextDTO.getAgvProcessNotify().equals("82")) {
+        if (contextDTO.getAgvProcessNotify().equals("8")) {
             logger.info("任务单{}CheckSupplyDownEmpty前置条件检查成功", subTaskCondition.getSubTaskNum());
             return true;
         }else if (contextDTO.getAgvProcessNotify().equals("4")) {
