@@ -20,7 +20,6 @@ import java.util.Date;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.CANCEL_TASK_CODE;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class CancelTaskService implements ICancelTaskService {
     private final Logger logger = LoggerFactory.getLogger(CancelTaskService.class);
 

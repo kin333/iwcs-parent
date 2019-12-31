@@ -64,6 +64,8 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.workTaskStatus.END;
 import static com.wisdom.iwcs.common.utils.YZConstants.LOCK;
 import static com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum.Canceled;
 import static com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum.Init;
+import static com.wisdom.iwcs.domain.upstream.mes.MesResult.NG;
+import static com.wisdom.iwcs.domain.upstream.mes.MesResult.OK;
 
 /**
  * Mes系统请求的业务逻辑
@@ -370,7 +372,7 @@ public class MesRequestService {
         //查询对应的主任务
         MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mesCancelTaskRequest.getTaskCode());
         if(mainTask == null ){
-            mesResult.setCode(MesResult.NG);
+            mesResult.setCode(NG);
             mesResult.setMessage(mesCancelTaskRequest.getTaskCode() + messageService.getByRequest("no_task"));
             return mesResult;
         }
@@ -378,7 +380,7 @@ public class MesRequestService {
         String curTaskStatus = mainTask.getTaskStatus();
         if(TaskConstants.mainTaskStatus.MAIN_FINISHED.equals(curTaskStatus) || TaskConstants.mainTaskStatus.MAIN_CANCELED.equals(curTaskStatus) ){
             logger.info("取消失败，主任务{}处于{}状态下的任务不可取消",mainTaskNum, MainTaskStatusEnum.fromCode(curTaskStatus));
-            mesResult.setCode(MesResult.NG);
+            mesResult.setCode(NG);
             mesResult.setMessage(messageService.getByRequest("cancel_fail") + SubTaskStatusEnum.fromCode(curTaskStatus)
                     + messageService.getByRequest("cancel_fail_2"));
             return mesResult;
@@ -449,7 +451,14 @@ public class MesRequestService {
                 CancelTaskRequestDTO cancelTaskRequestDTO = new CancelTaskRequestDTO();
                 cancelTaskRequestDTO.setTaskCode(workTaskCode);
                 logger.info("调用取消任务接口,海康任务编号：{}",workTaskCode);
-                Result result = cancelTaskService.cancelTask(cancelTaskRequestDTO);
+                Result result = new Result();
+                try {
+                    result = cancelTaskService.cancelTask(cancelTaskRequestDTO);
+                } catch (BusinessException e) {
+                    logger.error("取消海康失败，{}, 错误信息:{}",workTaskCode, e.getMsg());
+                    mesResult.setCode(NG);
+                    mesResult.setMessage("WCS任务取消成功,Hik任务取消异常:" + e.getMsg());
+                }
                 logger.info("取消海康任务结果：{}", JSON.toJSONString(result));
                 if(200 == result.getReturnCode()){
                     logger.info("取消海康成功，{}",workTaskCode);
@@ -477,7 +486,9 @@ public class MesRequestService {
             }
 
         }
-        mesResult.setMessage("任务"+mesCancelTaskRequest.getTaskCode()+"取消成功");
+        if (OK.equals(mesResult.getCode())) {
+            mesResult.setMessage("任务" + mesCancelTaskRequest.getTaskCode() + "取消成功");
+        }
         return mesResult;
     }
 
@@ -562,7 +573,7 @@ public class MesRequestService {
             }
         }
         if (needBindingPods.size() > 0) {
-            mesResult.setMessage(JSONArray.toJSON(needBindingPods) + "货架需人工绑定");
+            mesResult.setMessage(mesResult.getMessage() + "     " + JSONArray.toJSON(needBindingPods) + "货架需人工绑定");
         }
 
         return mesResult;

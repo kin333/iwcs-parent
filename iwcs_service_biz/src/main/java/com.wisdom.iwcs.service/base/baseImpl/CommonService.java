@@ -34,7 +34,6 @@ import static com.wisdom.iwcs.common.utils.taskUtils.AgvTaskConstants.AgvTaskSta
 import static com.wisdom.iwcs.common.utils.taskUtils.AgvTaskConstants.AgvTaskStatusConstants.TASK_ENDED;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class CommonService implements ICommonService {
     private final Logger logger = LoggerFactory.getLogger(CommonService.class);
 
@@ -131,6 +130,7 @@ public class CommonService implements ICommonService {
      * @param changePodCode：发生库存变动podCode
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updatePodStockInfoByChangePodCode(String changePodCode) {
         List<BaseBincodeDetail> baseBincodeDetailList = baseBincodeDetailMapper.selectByPodCodeAndValidFlagAndDeletedFlag(changePodCode, ValidFlagEnum.VALID.getStatus(), NOT_DELETED.getStatus());
 
@@ -163,6 +163,7 @@ public class CommonService implements ICommonService {
      * @param taskType
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updatePodLockByPodCodes(List<String> podCodes, String taskType, String taskStatus) {
         Integer podTaskValue = PodTaskLockEnum.returnTaskValueByType(taskType);
         switch (taskStatus) {
@@ -291,6 +292,7 @@ public class CommonService implements ICommonService {
         return returnBincode;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public List<String> underBizOrderNoByWbCode(String bizOrderNo) {
 
         return wbAgvTaskMapper.underBizOrderNoByWbCode(bizOrderNo);
