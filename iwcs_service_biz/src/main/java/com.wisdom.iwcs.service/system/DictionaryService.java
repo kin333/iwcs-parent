@@ -165,6 +165,31 @@ public class DictionaryService {
         return new Result(200, "分页查询成功", gridReturnData);
     }
 
+    public GridReturnData<DictionaryDto> selectPage(GridPageRequest gridPageRequest) {
+        GridReturnData<DictionaryDto> mGridReturnData = new GridReturnData<>();
+        List<GridFilterInfo> filterList = gridPageRequest.getFilterList();
+        Map<String, Object> map = new HashMap<>(2);
+        filterList.forEach(gridFilterInfo -> {
+            if (gridFilterInfo.getFilterKey() != null && gridFilterInfo.getFilterValue() != null) {
+                map.put(gridFilterInfo.getFilterKey(), gridFilterInfo.getFilterValue());
+            }
+        });
+        map.put("searchKey", gridPageRequest.getSearchKey());
+        // 对map中的参数的合法性进行校验
+
+        String sortMyBatisByString = gridPageRequest.getSortMybatisString();
+        PageHelper.startPage(gridPageRequest.getPageNum(), gridPageRequest.getPageSize(), sortMyBatisByString);
+
+        List<DictionaryDto> list = dictionaryMapper.selectPage(map);
+
+        PageInfo<DictionaryDto> pageInfo = new PageInfo<>(list);
+        PageInfo<DictionaryDto> pageInfoFinal = new PageInfo<>(list);
+        pageInfoFinal.setTotal(pageInfo.getTotal());
+        mGridReturnData.setPageInfo(pageInfoFinal);
+
+        return mGridReturnData;
+    }
+
     /* (non-Javadoc)
      * @see com.wisdom.iwcs.service.system.DictionaryService#selectByDictType(java.lang.String)
      */

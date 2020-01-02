@@ -1,8 +1,10 @@
 package com.wisdom.controller.system;
 
 import com.wisdom.iwcs.common.utils.GridPageRequest;
+import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.system.Dictionary;
+import com.wisdom.iwcs.domain.system.dto.DictionaryDto;
 import com.wisdom.iwcs.service.system.DictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,17 @@ public class DictionaryController {
     }
 
     /**
+     * 分页查询记录
+     *
+     * @param gridPageRequest {@link GridPageRequest }
+     * @return {@link Result }
+     */
+    @PostMapping(value = "/page")
+    public Result selectPage(@RequestBody GridPageRequest gridPageRequest) {
+        GridReturnData<DictionaryDto> records = dictionaryService.selectPage(gridPageRequest);
+
+        return new Result(records);
+    }    /**
      * 返回所有字典
      *
      * @param response

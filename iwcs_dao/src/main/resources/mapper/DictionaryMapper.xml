@@ -44,6 +44,10 @@
     a.id, a.dict_type, a.dict_type_name, a.dict_name, a.dict_value, a.sort_code,
     a.status, a.created_by, a.created_time, a.last_modified_by, a.last_modified_time ,a.delete_flag,a.judge_type
   </sql>
+    <sql id="Base_Column_List2">
+    id, dict_type, dict_type_name, dict_name, dict_value, sort_code,
+    status, created_by, created_time, last_modified_by, last_modified_time ,delete_flag,judge_type
+  </sql>
 
     <select id="selectBaseTypeList" resultMap="DictionaryDtoResultMap" parameterType="java.util.Map">
         SELECT A.id, A.dict_type, A.dict_type_name, A.dict_name, A.dict_value, A.sort_code,
@@ -220,6 +224,23 @@
       last_modified_time = unix_timestamp(now())
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+    <select id="selectPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List2"/>
+        from s_dictionary
+        where 1=1
+        <if test="searchKey != null and searchKey != ''">
+            and 1=1
+        </if>
+        <if test="startTime != null">
+            and UNIX_TIMESTAMP(created_time) >= (#{startTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
+        </if>
+        <if test="endTime != null">
+            and UNIX_TIMESTAMP(created_time) &lt;= (#{endTime, jdbcType=BIGINT} / 1000) + 8 * 60 * 60
+        </if>
+        order by last_modified_time desc
+    </select>
 
     <select id="selectByDictTypePager" resultMap="DictionaryDtoResultMap" parameterType="java.util.Map">
         SELECT aa.* from (

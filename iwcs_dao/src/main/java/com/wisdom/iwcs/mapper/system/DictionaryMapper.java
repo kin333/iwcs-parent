@@ -1,5 +1,6 @@
 package com.wisdom.iwcs.mapper.system;
 
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.system.Dictionary;
 import com.wisdom.iwcs.domain.system.dto.DictionaryDto;
 import org.apache.ibatis.annotations.Param;
@@ -25,6 +26,8 @@ public interface DictionaryMapper {
     int updateByPrimaryKey(Dictionary record);
 
     List<Dictionary> selectAll();
+
+    List<DictionaryDto> selectPage(Map map);
 
     List<DictionaryDto> selectByDictTypePager(Map map);
 
