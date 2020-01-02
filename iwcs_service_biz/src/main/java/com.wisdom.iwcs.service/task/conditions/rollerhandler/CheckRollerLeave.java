@@ -38,7 +38,7 @@ public class CheckRollerLeave implements IConditionHandler {
         String context = taskContext.getContext();
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
-        if (contextDTO.getChaLeaveGood()) {
+        if (contextDTO.getChaLeaveGood() != null && contextDTO.getChaLeaveGood()) {
             logger.info("任务单{}CheckRollerLeave前置条件检查成功", subTaskCondition.getSubTaskNum());
             return true;
         }

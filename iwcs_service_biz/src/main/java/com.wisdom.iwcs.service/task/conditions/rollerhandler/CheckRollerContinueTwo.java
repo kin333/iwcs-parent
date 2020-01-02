@@ -42,11 +42,11 @@ public class CheckRollerContinueTwo implements IConditionHandler {
 
         subTaskDTO.setSubTaskNum(subTask.getSubTaskNum());
         //判断是否需要回收空框
-        if (contextDTO.getRollerDownGoodEmpty()){
+        if (contextDTO.getRollerDownGoodEmpty() != null && contextDTO.getRollerDownGoodEmpty()){
             subTaskDTO.setJsonData("1");
             subTaskMapper.updateJsonData(subTaskDTO.getSubTaskNum(), subTaskDTO.getJsonData());
             return true;
-        }else if (contextDTO.getRollerDownGoodNOEmpty()){
+        }else if (contextDTO.getRollerDownGoodNOEmpty() != null && contextDTO.getRollerDownGoodNOEmpty()){
             subTaskDTO.setJsonData("0");
             subTaskMapper.updateJsonData(subTaskDTO.getSubTaskNum(), subTaskDTO.getJsonData());
             return true;

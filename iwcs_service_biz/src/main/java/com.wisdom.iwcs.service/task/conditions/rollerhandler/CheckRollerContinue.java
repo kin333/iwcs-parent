@@ -41,7 +41,7 @@ public class CheckRollerContinue implements IConditionHandler {
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
         subTaskDTO.setSubTaskNum(subTask.getSubTaskNum());
-        if (contextDTO.getRollerUpGood()){
+        if (contextDTO.getRollerUpGood() != null && contextDTO.getRollerUpGood()){
             subTaskDTO.setJsonData("");
             subTaskMapper.updateJsonData(subTaskDTO.getSubTaskNum(), subTaskDTO.getJsonData());
             return true;

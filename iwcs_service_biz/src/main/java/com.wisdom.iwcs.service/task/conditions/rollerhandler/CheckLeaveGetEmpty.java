@@ -39,7 +39,7 @@ public class CheckLeaveGetEmpty implements IConditionHandler {
         String context = taskContext.getContext();
         ContextDTO contextDTO = TaskContextUtils.jsonToObject(context, ContextDTO.class);
 
-        if (contextDTO.getChaLeaveDownEmpty()) {
+        if (contextDTO.getChaLeaveDownEmpty() != null && contextDTO.getChaLeaveDownEmpty()) {
             logger.info("任务单{}CheckRollerLeave前置条件检查成功", subTaskCondition.getSubTaskNum());
             return true;
         }
