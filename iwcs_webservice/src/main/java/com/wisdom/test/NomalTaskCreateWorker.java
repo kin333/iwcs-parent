@@ -32,7 +32,7 @@ public class NomalTaskCreateWorker extends BaseAutoTestWorker  {
     @Override
     void createTask()
     {
-        if (mainTaskMapper.selectStartUSpTopTaskCount() <3) {
+        if (mainTaskMapper.selectStartUSpTopTaskCount() <5) {
 
             List<BaseMapBerth> PodbaseMapBerths = baseMapBerthMapper.selectPodNormalPoint();
             List<BaseMapBerth> noPodbaseMapBerths = baseMapBerthMapper.selectEmptyPodNormalPoint();
