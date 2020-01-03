@@ -81,6 +81,28 @@ public class DictionaryController {
         return result;
     }
 
+    @PostMapping
+    public Result saveData(@RequestBody Dictionary dictionary) {
+
+        dictionaryService.saveData(dictionary);
+
+        return new Result();
+    }
+
+    @PutMapping
+    public Result updateData(@RequestBody Dictionary dictionary) {
+        dictionaryService.updateData(dictionary);
+
+        return new Result();
+    }
+
+    @DeleteMapping
+    public Result deleteMoreByIds(@RequestBody List<String> ids) {
+        dictionaryService.deleteMoreByIds(ids);
+
+        return new Result();
+    }
+
     /**
      * 2. 某Type类型下的所有子字典
      *

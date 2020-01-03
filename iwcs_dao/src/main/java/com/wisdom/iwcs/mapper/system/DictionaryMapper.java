@@ -17,6 +17,8 @@ public interface DictionaryMapper {
 
     int insert(Dictionary record);
 
+    int deleteByPrimaryKeyList(@Param("id") List<String> id);
+
     int insertSelective(Dictionary record);
 
     Dictionary selectByPrimaryKey(Integer id);

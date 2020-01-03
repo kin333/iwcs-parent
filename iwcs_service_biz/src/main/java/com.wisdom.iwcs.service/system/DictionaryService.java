@@ -3,6 +3,8 @@ package com.wisdom.iwcs.service.system;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.iwcs.common.utils.*;
+import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
+import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.system.Dictionary;
 import com.wisdom.iwcs.domain.system.dto.DictionaryDto;
 import com.wisdom.iwcs.mapper.system.DictionaryMapper;
@@ -196,6 +198,47 @@ public class DictionaryService {
     public Result selectByDictType(String dictType) {
         List<Dictionary> dics = dictionaryMapper.selectByDictType(dictType);
         return new Result(200, "分页查询成功", dics);
+    }
+
+    public int deleteMoreByIds(List<String> ids) {
+        int num = dictionaryMapper.deleteByPrimaryKeyList(ids);
+
+        return num;
+    }
+    /**
+     * 更新
+     * @param dictionary
+     * @return
+     */
+    public int updateData(Dictionary dictionary) {
+
+        Integer userId = SecurityUtils.getCurrentUserId();
+        dictionary.setLastModifiedBy(userId);
+        dictionary.setLastModifiedTime(new Date().getTime());
+
+        int num = dictionaryMapper.updateByPrimaryKey(dictionary);
+        Preconditions.checkArgument(num == 1, ApplicationErrorEnum.COMMON_FAIL);
+
+        return num;
+    }
+
+    /**
+     * 新增字典
+     * @param dictionary
+     * @return
+     */
+    public int saveData(Dictionary dictionary) {
+
+        Integer userId = SecurityUtils.getCurrentUserId();
+        dictionary.setDeleteFlag(DeleteFlagEnum.NOT_DELETED.getStatus());
+        dictionary.setCreatedTime(new Date().getTime());
+        dictionary.setCreatedBy(userId);
+        dictionary.setLastModifiedBy(userId);
+        dictionary.setLastModifiedTime(new Date().getTime());
+
+        int num = dictionaryMapper.insertSelective(dictionary);
+
+        return num;
     }
 
     public Result selectBaseTypeList(GridPageRequest gridPageRequest) {
