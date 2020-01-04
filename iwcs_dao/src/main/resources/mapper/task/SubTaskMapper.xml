@@ -157,7 +157,9 @@
     <if test="mainTaskType != null and mainTaskType != ''">
       and main_task_type = #{mainTaskType}
     </if>
-
+    <if test="robotCode != null and robotCode != ''">
+      and robot_code = #{robotCode}
+    </if>
     <if test="sendStatus != null and sendStatus != ''">
       and send_status = #{sendStatus}
     </if>
