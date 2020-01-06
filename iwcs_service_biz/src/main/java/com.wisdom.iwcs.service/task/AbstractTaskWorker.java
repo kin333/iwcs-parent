@@ -18,6 +18,7 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
         super(channel);
     }
 
+
     public abstract void preConditions();
     public abstract void postConditions();
     public abstract void process();
@@ -28,42 +29,52 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
     @Override
     public void run() {
         reExecFlag.set(false);
-        /**
-         * 订阅消费者
-         */
-        loginListenner();
-        /**
-         * Handle pre-conditions
-         */
-        preConditions();
+        if(stillRunable()){
+            /**
+             * 订阅消费者
+             */
+            loginListenner();
+        }
 
-        /**
-         *  Run task
-         */
-        process();
-            while (reExecFlag.get()&&!stopMeFlag.get()) {
+        if(stillRunable()){
             /**
              * Handle pre-conditions
              */
             preConditions();
-
+        }
+        if(stillRunable()){
             /**
              *  Run task
              */
             process();
         }
+        if(stillRunable()){
+            while (reExecFlag.get()&&stillRunable()) {
+                /**
+                 * Handle pre-conditions
+                 */
+                preConditions();
 
+                /**
+                 *  Run task
+                 */
+                process();
+            }
+        }
 
+        if(stillRunable()){
+            /**
+             * Some post works after the task finished.
+             */
+            postConditions();
+        }
+        if(stillRunable()){
 
-        /**
-         * Some post works after the task finished.
-         */
-        postConditions();
-        /**
-         * 取消订阅
-         */
-        deleteListenner();
-
+            /**
+             * 取消订阅
+             */
+            deleteListenner();
+        }
 
     }
 
@@ -73,4 +84,15 @@ public abstract class AbstractTaskWorker extends WcsConsumer implements Runnable
     public void stoppedMe() {
         this.stopMeFlag = new AtomicBoolean(true);
     }
+
+    /**
+     * 是否可继续执行
+     * @return
+     */
+    public boolean stillRunable(){
+        return !stopMeFlag.get()&&!Thread.interrupted();
+    }
+
+
+
 }

@@ -13,16 +13,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
-public class WcsTaskScheduler implements Runnable {
+public class WcsTaskScheduler implements Runnable, ServletContextListener {
     private final Logger logger = LoggerFactory.getLogger(WcsTaskScheduler.class);
     public  static AtomicBoolean waitLock = new AtomicBoolean(false);
     public static  AtomicBoolean stopped = new AtomicBoolean(false);
+    public static  AtomicBoolean suspendDispatch = new AtomicBoolean(false);
 
 
     @Autowired
@@ -78,10 +81,10 @@ public class WcsTaskScheduler implements Runnable {
     @Override
     public void run() {
         // 检查主任务列表，拿到所有可以执行的主任务列表，判断主任务是否可以执行，以主任务当前的子任务是否可以执行为标准
-        while (true) {
+        while (true&&stopped.get()) {
             try {
                 synchronized (this) {
-                    if(stopped.get()){
+                    if(suspendDispatch.get()){
                         logger.warn("任务调度标志位false,暂不调用任务下发");
                     }else{
                     this.dispatchMaintask();
@@ -146,6 +149,41 @@ public class WcsTaskScheduler implements Runnable {
         }
     }
 
+    /**
+     * 停止所有主任务线程
+     * @param
+     * @param
+     */
+    public void stopAllMainTaskThread(){
+        logger.info("尝试停止所有任务线程");
+        ConcurrentHashMap.KeySetView<String, MainTaskWorker> mainTaskKeySets = maintaskWorkerMaps.keySet();
+        for (String mainTaskKey:
+                mainTaskKeySets ) {
+            logger.info("尝试停止所有任务线程");
+            MainTaskWorker mainTaskWorker = maintaskWorkerMaps.get(mainTaskKey);
+            if(mainTaskWorker != null){
+                logger.info("查询到主任务{}正在执行,调用其stopCurrentSubtaskThreadAndMainTask方法，修改停止标记");
+                mainTaskWorker.stopCurrentSubtaskThreadAndMainTask();
+            }else{
+                logger.warn("停止任务异常，该主任务{}不在执行器中",mainTaskKey);
+            }
+
+        }
+
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        logger.info("容器已停止，停止主任务线程");
+        stopAllMainTaskThread();
+        //停止该线程
+        stopped.set(true);
+    }
 }
 
 
