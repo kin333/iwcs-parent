@@ -1320,7 +1320,8 @@ public class TaskCreateService implements ITaskCreateService {
         //筛选目标点，锁定
         LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
         lockMapBerthCondition.setMapCode(startBaseMapBerth.getMapCode());
-        lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+        // 新一代往老化缓存区放
+        lockMapBerthCondition.setBizType(AGINGCACHEAREA);
         List<BaseMapBerth> baseMapBerthList = new ArrayList<>();
         baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
         Preconditions.checkBusinessError(baseMapBerthList.size() < 1, "未找到合适的目标点");
