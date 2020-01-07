@@ -133,6 +133,7 @@ public class NodeActionThreadService extends ConsumerThread {
                             if (NO_PROMISE_ARRIVE.equals(subTaskAction.getExecuteMode())) {
                                 break;
                             }
+                            subTaskActionMapper.updateByPrimaryKeySelective(tmpTaskAction);
                             try {
                                 //循环请求需要循环调用
                                 Thread.sleep(1000 * 20);
