@@ -56,4 +56,10 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="202001081447" author="han">
+        <createIndex tableName="sub_task_action" indexName="sub_task_index" unique="false">
+            <column name="sub_task_num"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
