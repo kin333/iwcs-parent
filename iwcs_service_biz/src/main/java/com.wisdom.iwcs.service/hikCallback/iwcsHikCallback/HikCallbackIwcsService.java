@@ -949,10 +949,10 @@ public class HikCallbackIwcsService {
         if (actionTask.equals("applyLock")){
             //查询当前门的状态
             AutoDoor autoDoor = autoDoorMapper.selectDoorStatus(doorCode);
-            if (autoDoor !=null && !autoDoor.getTaskStatus().equals("4")){
+            if (autoDoor !=null && autoDoor.getTaskStatus().equals("4")){
                 //通知门开启
-                doorNotifyService.notifyDoorOpenOrClose(DOOR_OPEN);
-            }else{
+//                doorNotifyService.notifyDoorOpenOrClose(DOOR_OPEN);
+//            }else{
                 // 通知agv通过
                 NotifyExcuteResultInfoDTO notifyExcuteResultInfoDTO = new NotifyExcuteResultInfoDTO();
                 notifyExcuteResultInfoDTO.setActionStatus("1");
@@ -970,13 +970,14 @@ public class HikCallbackIwcsService {
                 autoDoorTask.setTaskStatus("0");
                 autoDoorTaskMapper.insertSelective(autoDoorTask);
             }
-        }else{
-            //查询当前是否还有未走出当前门编号的任务，没有则通知PLC关门
-            List<AutoDoorTask> autoDoorTasks = autoDoorTaskMapper.selectUnTaskByDoorCode(doorCode);
-            if (autoDoorTasks.size()==0){
-                doorNotifyService.notifyDoorOpenOrClose(DOOR_CLOSE);
-            }
         }
+//        else{
+//            //查询当前是否还有未走出当前门编号的任务，没有则通知PLC关门
+//            List<AutoDoorTask> autoDoorTasks = autoDoorTaskMapper.selectUnTaskByDoorCode(doorCode);
+//            if (autoDoorTasks.size()==0){
+//                doorNotifyService.notifyDoorOpenOrClose(DOOR_CLOSE);
+//            }
+//        }
 
         return new HikSyncResponse();
     }
