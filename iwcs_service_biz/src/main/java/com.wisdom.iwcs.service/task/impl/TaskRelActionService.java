@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.domain.task.TaskRelAction;
+import com.wisdom.iwcs.domain.task.dto.TaskContextDTO;
 import com.wisdom.iwcs.domain.task.dto.TaskRelActionDTO;
 import com.wisdom.iwcs.mapper.task.TaskRelActionMapper;
 import com.wisdom.iwcs.mapstruct.task.TaskRelActionMapStruct;
@@ -245,5 +246,13 @@ public class TaskRelActionService {
         List<TaskRelAction> taskRelActionDTO = taskRelActionMapper.selectDataByTemplCode(taskRelAction);
 
         return taskRelActionMapStruct.toDto(taskRelActionDTO);
+    }
+
+    /**
+     * 通过actionCode
+     */
+    public TaskRelActionDTO selectActionDataByCode(TaskRelActionDTO taskRelAction) {
+
+        return taskRelActionMapStruct.toDto(taskRelActionMapper.selectActionDataByCode(taskRelAction));
     }
 }

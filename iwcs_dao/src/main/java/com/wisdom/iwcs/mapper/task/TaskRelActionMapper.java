@@ -29,4 +29,6 @@ public interface TaskRelActionMapper extends MyMapperAndIds<TaskRelAction> {
     List<TaskRelAction> selectExecuteModeByTempCode(String tempCode);
 
     List<TaskRelAction> selectDataByTemplCode(TaskRelActionDTO taskRelActionDTO);
+
+    TaskRelAction selectActionDataByCode(TaskRelActionDTO taskRelActionDTO);
 }

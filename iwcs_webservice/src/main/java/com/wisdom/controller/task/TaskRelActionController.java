@@ -126,4 +126,10 @@ public class TaskRelActionController {
 
        return new Result(taskRelActionService.selectDataByTemplCode(taskRelActionDTO));
     }
+
+    @PostMapping("/getActionDataByCode")
+    public Result selectActionDataByCode(@RequestBody TaskRelActionDTO taskRelActionDTO) {
+
+        return new Result(taskRelActionService.selectActionDataByCode(taskRelActionDTO));
+    }
 }

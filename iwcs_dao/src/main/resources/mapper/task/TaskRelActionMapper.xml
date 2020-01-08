@@ -77,4 +77,9 @@
       and action_code != #{actionCode}
     </if>
   </select>
+
+  <select id="selectActionDataByCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from ts_task_rel_action
+    where action_code = #{actionCode}
+  </select>
 </mapper>
