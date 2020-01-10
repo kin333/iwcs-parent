@@ -32,4 +32,6 @@ public interface SubTaskActionMapper extends MyMapperAndIds<SubTaskAction> {
     int updateStatusByIds(List<Long> idListNoSend);
 
     int updateSendingToCreate();
+
+    int updateTimeByActionCode(@Param("actionCode") String actionCode,@Param("subTaskNum") String subTaskNum);
 }

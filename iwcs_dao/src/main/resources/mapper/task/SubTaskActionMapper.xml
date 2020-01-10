@@ -101,4 +101,13 @@
     </set>
     where action_status = '1'
   </update>
+
+  <update id="updateTimeByActionCode">
+    update sub_task_action
+    <set>
+      remark = ''
+    </set>
+    where action_code = #{actionCode}
+    and sub_task_num = #{subTaskNum}
+  </update>
 </mapper>

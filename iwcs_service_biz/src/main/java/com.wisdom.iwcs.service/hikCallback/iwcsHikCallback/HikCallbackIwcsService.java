@@ -240,12 +240,14 @@ public class HikCallbackIwcsService {
      * @param
      * @param nodeCode
      */
-    private synchronized void nodeAction(SubTask subTask, String nodeCode) {
+    @Transactional(rollbackFor = Exception.class)
+    public void nodeAction(SubTask subTask, String nodeCode) {
         //1.获取节点动作模板信息
         List<TaskRelAction> taskRelActionList = taskRelActionMapper.selectByTempCodeAndNode(subTask.getTemplCode(), nodeCode);
         for (TaskRelAction taskRelAction : taskRelActionList) {
-            SubTaskAction checkActionNum = subTaskActionMapper.selectByActionCode(taskRelAction.getActionCode(), subTask.getSubTaskNum());
-            if (checkActionNum != null) {
+            int num = subTaskActionMapper.updateTimeByActionCode(taskRelAction.getActionCode(), subTask.getSubTaskNum());
+//            SubTaskAction checkActionNum = subTaskActionMapper.selectByActionCode(taskRelAction.getActionCode(), subTask.getSubTaskNum());
+            if (num > 0) {
                 continue;
             }
 
