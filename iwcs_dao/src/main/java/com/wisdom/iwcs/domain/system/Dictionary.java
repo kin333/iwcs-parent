@@ -17,6 +17,7 @@ public class Dictionary implements Serializable {
     private Long lastModifiedTime;//更新时间
     private Integer deleteFlag;//删除标记 0为删除 1为正常
     private String judgeType;// 判断策略方式
+    private String searchKey; // 模糊查找
 
     public String getJudgeType() {
         return judgeType;
@@ -122,6 +123,14 @@ public class Dictionary implements Serializable {
         this.deleteFlag = deleteFlag;
     }
 
+    public String getSearchKey() {
+        return searchKey;
+    }
+
+    public void setSearchKey(String searchKey) {
+        this.searchKey = searchKey;
+    }
+
     public enum DictType {
         ROLE_RIGHTT_LEVEL("ROLE_RIGHTT_LEVEL"),//角色权级
         DEPARTMENT_POWER_LEVEL("DEPARTMENT_POWER_LEVEL"),//部门权级
@@ -157,6 +166,7 @@ public class Dictionary implements Serializable {
         public void setValue(String value) {
             this.value = value;
         }
+
 
     }
 

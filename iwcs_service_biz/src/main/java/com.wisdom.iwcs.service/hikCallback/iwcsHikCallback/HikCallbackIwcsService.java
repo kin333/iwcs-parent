@@ -950,6 +950,7 @@ public class HikCallbackIwcsService {
             //查询当前门的状态
             AutoDoor autoDoor = autoDoorMapper.selectDoorStatus(doorCode);
             if (autoDoor !=null && autoDoor.getTaskStatus().equals("4")){
+                logger.info("自动门已开，agv开始通过{}", hikCallDoorSwitch);
                 //通知门开启
 //                doorNotifyService.notifyDoorOpenOrClose(DOOR_OPEN);
 //            }else{

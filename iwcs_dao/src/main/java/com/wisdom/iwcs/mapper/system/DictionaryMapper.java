@@ -39,4 +39,6 @@ public interface DictionaryMapper {
     List<DictionaryDto> selectBaseTypeList(Map map);
 
     Dictionary selectByDictName(String dictName);
+
+    List<Dictionary> selectDicByValue(Dictionary dictionary);
 }

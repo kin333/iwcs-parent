@@ -340,4 +340,11 @@ public class DictionaryService {
         }
         return dicResultList;
     }
+
+    public List<Dictionary> selectDicByValue(Dictionary dictionary) {
+
+        List<Dictionary> list = dictionaryMapper.selectDicByValue(dictionary);
+
+        return list;
+    }
 }

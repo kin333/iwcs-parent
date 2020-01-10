@@ -185,4 +185,14 @@ public class DictionaryController {
         List<Dictionary> result = dictionaryService.getStrategicType(dictType);
         return new Result(result);
     }
+
+    @PostMapping("/getDicByValue")
+    public Result selectDicByValue(@RequestBody Dictionary dictionary) {
+
+        List<Dictionary> result = dictionaryService.selectDicByValue(dictionary);
+
+        return new Result(result);
+
+    }
+
 }

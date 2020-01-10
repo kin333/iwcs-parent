@@ -300,4 +300,13 @@
         AND a.status = 1
         AND a.dict_name = #{dictName}
     </select>
+
+    <select id="selectDicByValue" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List2"/> from s_dictionary
+        where 1=1
+        <if test="searchKey != null and searchKey != ''" >
+            and dict_name like CONCAT('%', #{searchKey}, '%')
+        </if>
+        and dict_type = #{dictType}
+    </select>
 </mapper>
