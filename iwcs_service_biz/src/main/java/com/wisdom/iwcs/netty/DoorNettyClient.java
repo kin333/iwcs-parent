@@ -25,7 +25,7 @@ public class DoorNettyClient extends BaseNettyClient implements Runnable {
 
     private static final DoorNettyClient doorNettyClient = new DoorNettyClient();
 
-    public  String host = "192.168.59.206";
+    public  String host = "10.50.6.50";
     public  int port = 2000;
     private  Channel ch;
     private Bootstrap bootstrap;

@@ -136,6 +136,10 @@
     </foreach>
   </delete>
 
+    <delete id="deleteByMainCode">
+       delete from ts_task_rel where main_task_type_code = #{mainTaskCode}
+    </delete>
+
     <select id="selectSubTaskTypeByCode" resultType="com.wisdom.iwcs.domain.task.TaskRelSubMain">
         select
         r.id as id,

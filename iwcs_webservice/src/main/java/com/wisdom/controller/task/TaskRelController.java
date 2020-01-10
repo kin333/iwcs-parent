@@ -3,10 +3,12 @@ package com.wisdom.controller.task;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.hikSync.ResolveDirectionDto;
+import com.wisdom.iwcs.domain.system.dto.MenuTreeDto;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.RelAndConditionDTO;
 import com.wisdom.iwcs.domain.task.dto.TaskRelDTO;
@@ -126,7 +128,10 @@ public class TaskRelController {
 
     @PostMapping("/getPageByGroup")
     public Result selectPageByGroup() {
-        return new Result(TaskRelService.selectByGroup());
+        List<MenuTreeDto> tree = TaskRelService.selectByGroup();
+        Map<String, Object> data = Maps.newHashMapWithExpectedSize(1);
+        data.put("baseTree", tree);
+        return new Result(data);
     }
 
     @PostMapping("/getDataByTaskCode")
@@ -180,6 +185,14 @@ public class TaskRelController {
     @PostMapping("/deleteByTemplCodes")
     public Result deleteByTemplCodes(@RequestBody List<TaskRel> taskRelList) {
         TaskRelService.deleteByTemplCodes(taskRelList);
+        return new Result();
+    }
+    // 前端模板复制
+    @PostMapping("/copyTemplByMainCode")
+    public Result copyTemplByMainCode(@RequestBody TaskRel taskRel) {
+
+        TaskRelService.copyTemplByMainCode(taskRel);
+
         return new Result();
     }
 }

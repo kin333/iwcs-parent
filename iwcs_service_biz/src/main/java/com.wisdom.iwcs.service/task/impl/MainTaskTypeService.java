@@ -11,6 +11,7 @@ import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.dto.MainTaskTypeAndAreaCode;
 import com.wisdom.iwcs.domain.task.MainTaskType;
 import com.wisdom.iwcs.domain.task.TaskModal;
+import com.wisdom.iwcs.domain.task.TaskRel;
 import com.wisdom.iwcs.domain.task.dto.MainTaskTypeDTO;
 import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
 import com.wisdom.iwcs.mapper.task.TaskRelMapper;
@@ -22,10 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -262,8 +260,15 @@ public class MainTaskTypeService {
      * 根据主任务code删除
      */
     public int deleteMainTaskType(TaskModal taskModal) {
-        List<String> templCodeList = taskModal.getTemplCodeList();
-        int rellNum = TaskRelMapper.deleteByTemplCodes(templCodeList);
+
+        List<TaskRel> taskRelList = TaskRelMapper.selectByMainTaskType(taskModal.getSearchMainCode());
+        List<String> templCodeList = new ArrayList<>();
+        int rellNum = TaskRelMapper.deleteByMainCode(taskModal.getSearchMainCode());
+
+        taskRelList.forEach(item -> {
+            templCodeList.add(item.getTemplCode());
+        });
+
         int conNum = TaskRelConditionMapper.deleteByTemplCodes(templCodeList);
         // 主任务表删除
         int num = mainTaskTypeMapper.deleteMainTaskType(taskModal);
