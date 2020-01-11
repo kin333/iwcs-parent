@@ -16,4 +16,6 @@ public interface ITaskCreateService {
     void subTaskConditionCommonAdd(String mainTaskTypeCode, String subTaskTypeCode, String subTaskNum);
 
     MesResult agvHandlingTaskCreate(AgvHandlingTaskCreateRequest agvHandlingTaskCreateRequest, String reqCode);
+
+    MesResult generalInterface(CreateTaskRequest createTaskRequest,String reqCode);
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.TASK_CREATE;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.GENERAL_INTERFACE;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.PToP_TASK_CREATE;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
 
@@ -58,4 +59,15 @@ public class PToPHandlingTaskController {
         return new Result();
     }
 
+    /**
+     * 通用模板调用接口
+     */
+    @PostMapping("/generalInterface")
+    @SystemInterfaceLog(methodCode = TASK_CREATE, methodName =GENERAL_INTERFACE, methodThansfer = SRC_MES)
+    public Result generalInterface(@RequestBody CreateTaskRequest mesBaseRequest) {
+
+        String reqCode = "";
+        taskCreateService.generalInterface(mesBaseRequest, reqCode);
+        return new Result();
+    }
 }

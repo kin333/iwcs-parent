@@ -54,6 +54,10 @@ public class TaskConstants {
          */
         public final static String PLBUFSUPPLY = "plBufSupply";
         /**
+         * 通用模板滚筒
+         */
+        public final static String ROLLTASK = "rollerTask";
+        /**
          * 产线去老化区搬运
          */
         public final static String PLTOAGING = "plToAging";

@@ -798,8 +798,6 @@ public class TaskCreateService implements ITaskCreateService {
     }
 
 
-
-
     /**
      * 添加子任务条件
      * @param mainTaskTypeCode,subTaskTypeCode,subTaskNum
@@ -1829,4 +1827,89 @@ public class TaskCreateService implements ITaskCreateService {
 
         return new MesResult();
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public MesResult generalInterface(CreateTaskRequest createTaskRequest, String reqCode) {
+        String taskCode = createTaskRequest.getTaskCode();
+        logger.info("通用模板调用{}开始创建主任务", taskCode);
+        String taskType = createTaskRequest.getTaskType();
+        //参数校验
+        if (StringUtils.isBlank(taskType)) {
+            throw new MesBusinessException(reqCode, "主任务类型不能为空");
+        }
+        switch (taskType){
+            case ROLLTASK:
+                rollTask(createTaskRequest, reqCode);
+                break;
+            case PTOP:
+                pTopFun(createTaskRequest);
+                break;
+            default:
+                logger.error("错误的主任务类型:{}",taskType);
+        }
+        return new MesResult();
+    }
+
+    public MesResult rollTask(CreateTaskRequest data, String reqCode) {
+
+        logger.info("通用滚筒任务开启{}", data.getTaskType());
+
+        Preconditions.checkMesBusinessError(StringUtils.isEmpty(data.getStartPointAlias()), "起点不能为空");
+        Preconditions.checkMesBusinessError(StringUtils.isEmpty(data.getTargetPointAlias()), "终点不能为空");
+
+
+        BaseMapBerth startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(data.getStartPointAlias());
+        BaseMapBerth endBaseMapBerth = baseMapBerthMapper.selectByPointAlias(data.getTargetPointAlias());
+
+        Preconditions.checkMesBusinessError(startBaseMapBerth == null, "起点点位编号未在地图数据中查到");
+        Preconditions.checkMesBusinessError(endBaseMapBerth == null, "终点点位编号未在地图数据中查到");
+        Preconditions.checkMesBusinessError(!LINEAREA.equals(startBaseMapBerth.getOperateAreaCode()), "起点点位不属于线体区域");
+        Preconditions.checkMesBusinessError(!LINEAREA.equals(endBaseMapBerth.getOperateAreaCode()), "终点点位不属于线体区域");
+
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(startBaseMapBerth.getBerCode(),
+                endBaseMapBerth.getBerCode()));
+
+        //创建主任务
+        String taskType = data.getTaskType();
+        String taskPri = "normal";
+        String mainTaskNum = createMainTasks(taskType,taskPri,jsonString);
+
+        //将主任务号插入 task_context 表
+        TaskContextDTO taskContextDTO = new TaskContextDTO();
+        taskContextDTO.setMainTaskNum(mainTaskNum);
+        taskContextDTO.setCreateTime(new Date());
+        TaskContext taskContext = taskContextMapStruct.toEntity(taskContextDTO);
+        taskContextMapper.insert(taskContext);
+
+        return new MesResult();
+    }
+
+    /**
+     * 通用主任务
+     * @param taskType
+     * @param
+     * @param taskPri
+     * @return
+     */
+    public String createMainTasks(String taskType,String taskPri,String jsonString){
+        String mainTaskNum = "";
+        MainTask mainTaskCreate = new MainTask();
+        mainTaskNum = CodeBuilder.codeBuilder("M");
+        mainTaskCreate.setMainTaskNum(mainTaskNum);
+        mainTaskCreate.setCreateDate(new Date());
+        if (StringUtils.isNotEmpty(taskPri)){
+            mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(taskPri));
+        }
+        mainTaskCreate.setMainTaskTypeCode(taskType);
+        // mainTaskCreate.setAreaCode(areaCode);
+        if (StringUtils.isNotEmpty(jsonString)){
+            mainTaskCreate.setStaticViaPaths(jsonString);
+        }
+        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskMapper.insertSelective(mainTaskCreate);
+        return mainTaskNum;
+    }
+
 }

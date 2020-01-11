@@ -104,6 +104,7 @@ public class InterfaceLogConstants {
         public final static String MOVE_TASK_CREATE = "美国浪潮移载式AGV搬运任务创建";
         public final static String MOVE_TASK_CREAT = "超越移载式AGV搬运任务创建";
         public final static String PToP_TASK_CREATE = "超越点到点移载式AGV搬运任务创建";
+        public final static String GENERAL_INTERFACE = "通用模板接口调用";
         public final static String APPLY_RESOURCE_DESC = "小车到达检验点回调";
         public final static String EXCUTE_TASK_DESC = "小车送货架出电梯后回调";
         public final static String RELEASE_RESOURCE_DESC = "agv接货架出电梯时回调";
