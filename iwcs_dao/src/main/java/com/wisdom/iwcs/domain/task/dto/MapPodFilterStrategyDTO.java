@@ -39,6 +39,34 @@ public class MapPodFilterStrategyDTO {
 
     @Column(name = "priority")
     private Integer priority;
+
+    /**
+     * 策略名称
+     */
+    @Column(name = "strategy_name")
+    private String strategyName;
+
+    /**
+     * 备注
+     */
+    @Column(name = "remark")
+    private String remark;
+
+    public String getStrategyName() {
+        return strategyName;
+    }
+
+    public void setStrategyName(String strategyName) {
+        this.strategyName = strategyName;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
     /**
      * @return id
      */

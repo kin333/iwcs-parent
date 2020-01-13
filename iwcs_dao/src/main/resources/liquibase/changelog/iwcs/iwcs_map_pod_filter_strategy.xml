@@ -17,4 +17,11 @@
             <column name="priority" remarks="优先级" type="INT"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="202001131407" author="han">
+        <addColumn tableName="map_pod_filter_strategy">
+            <column name="strategy_name" remarks="策略名称" type="VARCHAR(32)" defaultValue=""/>
+            <column name="remark" remarks="备注" type="VARCHAR(128)" defaultValue=""/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

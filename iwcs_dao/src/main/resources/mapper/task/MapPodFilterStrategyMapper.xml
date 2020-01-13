@@ -12,11 +12,13 @@
     <result column="biz_second_area_code" jdbcType="VARCHAR" property="bizSecondAreaCode" />
     <result column="pod_stock" jdbcType="INTEGER" property="podStock" />
     <result column="pod_type" jdbcType="VARCHAR" property="podType" />
+    <result column="strategy_name" jdbcType="VARCHAR" property="strategyName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Base_Column_List">
 
     id, strategy_code, operate_area_code, biz_type, biz_second_area_code, pod_stock, 
-    pod_type
+    pod_type, strategy_name, remark
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from map_pod_filter_strategy
