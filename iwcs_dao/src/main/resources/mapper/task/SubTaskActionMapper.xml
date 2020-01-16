@@ -81,7 +81,8 @@
   </select>
   <select id="selectIdNoSendSuccess" resultType="long">
     select id from sub_task_action
-    where action_status = '4' and execute_mode = '1'
+    where (action_status = '4' or action_status = '3')
+    and (execute_mode = '1' or resend_count &lt; #{retryNum})
   </select>
 
   <update id="updateStatusByIds">

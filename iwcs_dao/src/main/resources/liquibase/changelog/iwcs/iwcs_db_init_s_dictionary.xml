@@ -24,4 +24,7 @@
     <changeSet id="201907051144" author="han">
         <sqlFile path="liquibase/init_insert/s_dictionary.sql"/>
     </changeSet>
+    <changeSet id="202001161518" author="han">
+        <sqlFile path="liquibase/init_insert/s_dictionary_action.sql"/>
+    </changeSet>
 </databaseChangeLog>
