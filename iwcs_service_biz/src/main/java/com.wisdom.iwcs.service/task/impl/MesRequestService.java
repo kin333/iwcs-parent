@@ -672,19 +672,27 @@ public class MesRequestService {
                 Result result = mapResouceService.unlockMapBerth(lockStorageDto);
                 logger.info("子任务{}的终点{}解锁结果:{}", isusedSubTask.getSubTaskNum(), isusedSubTask.getEndBercode(), result.getReturnMsg());
             }
+            if (endMapBerth != null && endMapBerth.getPodCode() != null
+                    && endMapBerth.getPodCode().equals(isusedSubTask.getPodCode())) {
+                //如果货架已到终点,则不进行恢复操作,仅进行货架解锁
+                mapResouceService.unlockPodByCode(isusedSubTask.getPodCode());
+                return mesResult;
+            }
             //解锁货架和恢复货架
             BaseMapBerth startMapBerth = baseMapBerthMapper.selectOneByBercode(isusedSubTask.getStartBercode());
-            //如果起点上的货架已经不是子任务的货架了,则需要开始恢复货架
-            if (StringUtils.isEmpty(startMapBerth.getPodCode())
-                    || !startMapBerth.getPodCode().equals(isusedSubTask.getPodCode())) {
-                int row = basePodDetailMapper.updateCleanPodLocation(isusedSubTask.getPodCode());
-                if (row > 0) {
-                    needBindingPods.add(isusedSubTask.getPodCode());
-                    logger.info("{}子任务的{}货架清空完成", isusedSubTask.getSubTaskNum(), isusedSubTask.getPodCode());
+            if (startMapBerth != null) {
+                //如果起点上的货架已经不是子任务的货架了,则需要开始恢复货架
+                if (StringUtils.isEmpty(startMapBerth.getPodCode())
+                        || !startMapBerth.getPodCode().equals(isusedSubTask.getPodCode())) {
+                    int row = basePodDetailMapper.updateCleanPodLocation(isusedSubTask.getPodCode());
+                    if (row > 0) {
+                        needBindingPods.add(isusedSubTask.getPodCode());
+                        logger.info("{}子任务的{}货架清空完成", isusedSubTask.getSubTaskNum(), isusedSubTask.getPodCode());
+                    }
+                } else if (StringUtils.isNotEmpty(startMapBerth.getPodCode())
+                        && startMapBerth.getPodCode().equals(isusedSubTask.getPodCode())) {
+                    mapResouceService.unlockPodByCode(isusedSubTask.getPodCode());
                 }
-            } else if (StringUtils.isNotEmpty(startMapBerth.getPodCode())
-                    && startMapBerth.getPodCode().equals(isusedSubTask.getPodCode())) {
-                mapResouceService.unlockPodByCode(isusedSubTask.getPodCode());
             }
         }
         if (needBindingPods.size() > 0) {
