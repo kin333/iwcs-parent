@@ -470,7 +470,7 @@ public class MesRequestService {
         MesResult mesResult = new MesResult();
         List<String> isusedWorkTaskCodes = isusedSubTasks.stream().filter(t -> SRC_HIK.equals(t.getThirdType())).map(t -> t.getWorkerTaskCode()).distinct().collect(Collectors.toList());
         List<String> isusedRobotsCodes = isusedSubTasks.stream().filter(t -> SRC_HIK.equals(t.getThirdType())).map(t -> t.getRobotCode()).distinct().collect(Collectors.toList());
-        logger.debug("筛选所有进行中的子任务workercod{}",isusedWorkTaskCodes);
+        logger.debug("筛选所有进行中的子任务{}",isusedWorkTaskCodes.size());
         logger.debug("循环调用执行者接口，取消任务");
         isusedWorkTaskCodes.stream().forEach(workTaskCode->{
             CancelTaskRequestDTO cancelTaskRequestDTO = new CancelTaskRequestDTO();
