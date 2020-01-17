@@ -32,6 +32,10 @@ public class MesResult {
      * 返回请求code
      */
     private String reqCode;
+    /**
+     * 返回数据
+     */
+    private Object data;
 
     /**
      * 构造方法

@@ -9,13 +9,12 @@ import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.common.utils.constant.SendStatus;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
+import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
 import com.wisdom.iwcs.domain.task.SubTaskTyp;
-import com.wisdom.iwcs.domain.task.dto.FindPodOrMapResult;
-import com.wisdom.iwcs.domain.task.dto.HikFindBerCode;
-import com.wisdom.iwcs.domain.task.dto.HikFindPodCode;
-import com.wisdom.iwcs.domain.task.dto.TempdateRelatedContext;
+import com.wisdom.iwcs.domain.task.dto.*;
 import com.wisdom.iwcs.mapper.task.AddressMapper;
+import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskTypMapper;
 import com.wisdom.iwcs.service.base.ICommonService;
@@ -39,6 +38,7 @@ import java.util.List;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SCADA;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_HIK;
 import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_MES;
+import static com.wisdom.iwcs.domain.task.dto.MainTaskStatusEnum.Canceled;
 
 /**
  * iwcs的公共服务
@@ -62,6 +62,8 @@ public class IwcsPublicService {
     AddressMapper addressMapper;
     @Autowired
     MessageService messageService;
+    @Autowired
+    MainTaskMapper mainTaskMapper;
 
     /**
      * 根据子任务单号获取最新子任务信息,并将任务消息体取出并完善,然后发送给第三方
@@ -84,6 +86,9 @@ public class IwcsPublicService {
         String resultBody;
         String address = addressMapper.selectAddressByCode(subTaskTyp.getWorkerType());
         String url = address + subTaskTyp.getWorkerUrl();
+        if (!checkTaskNoCancel(subTask.getMainTaskNum())) {
+            return;
+        }
         if (SRC_HIK.equals(subTaskTyp.getWorkerType())) {
             //如果执行者类型是海康,则调用海康的接口
             resultBody = NetWorkUtil.transferContinueTask(jsonStr, url);
@@ -110,6 +115,16 @@ public class IwcsPublicService {
         String message = messageService.get("send_success") + subTask.getMainTaskNum()
                         + messageService.get("send_success_2") + jsonStr;
         RabbitMQPublicService.successTaskLog(new TaskOperationLog(subTask.getSubTaskNum(), TaskConstants.operationStatus.SEND_SUCCESS,message));
+    }
+
+    /**
+     * 检查任务是否已取消
+     * @param mainTaskNum
+     * @return 未取消返回true
+     */
+    private boolean checkTaskNoCancel(String mainTaskNum) {
+        MainTask mainTask = mainTaskMapper.selectByMainTaskNum(mainTaskNum);
+        return !Canceled.getStatusCode().equals(mainTask.getTaskStatus());
     }
 
     /**

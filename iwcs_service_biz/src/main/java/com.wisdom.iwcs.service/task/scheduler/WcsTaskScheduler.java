@@ -130,6 +130,21 @@ public class WcsTaskScheduler implements Runnable {
             logger.warn("停止任务异常，该主任务{}不在执行器中",maintaskNum);
         }
     }
+    /**
+     * 停止主任务线程
+     * @param maintaskNum
+     */
+    public void stopMainTaskThread(String maintaskNum){
+        logger.info("尝试停止任务线程，主任务{}",maintaskNum);
+        MainTaskWorker mainTaskWorker = maintaskWorkerMaps.get(maintaskNum);
+        if(mainTaskWorker != null){
+            logger.info("查询到主任务{}正在执行,调用其stopCurrentSubtaskThreadAndMainTask方法，修改停止标记", maintaskNum);
+            mainTaskWorker.stopCurrentSubtaskThreadAndMainTask();
+            maintaskWorkerMaps.remove(maintaskNum);
+        }else{
+            logger.warn("停止任务异常，该主任务{}不在执行器中",maintaskNum);
+        }
+    }
 
 }
 
