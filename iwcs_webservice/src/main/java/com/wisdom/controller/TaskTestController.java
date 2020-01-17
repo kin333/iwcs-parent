@@ -19,6 +19,7 @@ import com.wisdom.iwcs.service.task.maintask.MainTaskWorker;
 import com.wisdom.iwcs.service.task.scheduler.*;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.*;
+import com.wisdom.test.CancelTaskTestWork;
 import com.wisdom.test.ChaoRollEmptyTaskCreateWorker;
 import com.wisdom.test.RollerTaskCreateTestWorker;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +50,8 @@ public class TaskTestController {
     private WcsTaskScheduler wcsTaskScheduler;
     @Autowired
     private TestWcsTaskScheduler testWcsTaskScheduler;
+    @Autowired
+    CancelTaskTestWork cancelTaskTestWork;
 
 
     @Autowired
@@ -420,6 +423,18 @@ public class TaskTestController {
         }
 
         return new Result("启动成功");
+    }
+
+    /**
+     * 取消任务自动化测试
+     * @return
+     */
+    @GetMapping("/testCancelTask")
+    public Result testCancelTask() {
+        cancelTaskTestWork.setWaitTime(10 * 1000);
+        Thread thread = new Thread(cancelTaskTestWork);
+        thread.start();
+        return new Result();
     }
 
     /**

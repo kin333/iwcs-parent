@@ -197,6 +197,14 @@
         where main_task_num = #{mainTaskNum,jdbcType= VARCHAR}
         order by sub_task_seq ASC
     </select>
+    <select id="selectByMainTaskNumAndPodCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ts_sub_task
+        where main_task_num = #{mainTaskNum}
+        and pod_code = #{podCode}
+        order by sub_task_seq ASC
+    </select>
 
     <select id="selectBySubTaskNum" resultMap="BaseResultMap">
         select

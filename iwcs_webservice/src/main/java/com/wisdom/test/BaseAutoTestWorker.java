@@ -12,6 +12,8 @@ public abstract class BaseAutoTestWorker implements Runnable{
 
     private final Logger logger = LoggerFactory.getLogger(BaseAutoTestWorker.class);
 
+    private long waitTime = 60 * 1000;
+
     @Override
     public final void run() {
         while (true) {
@@ -21,7 +23,7 @@ public abstract class BaseAutoTestWorker implements Runnable{
                 //程序休眠
                 synchronized (this) {
                     logger.info("创建任务调度器线程主动随眠60*1000*1");
-                    this.wait(60 * 1000 * 1);
+                    this.wait(waitTime);
                 }
 
             } catch (InterruptedException e) {
@@ -44,4 +46,8 @@ public abstract class BaseAutoTestWorker implements Runnable{
      * 创建任务逻辑
      */
     abstract void createTask();
+
+    public void setWaitTime(long waitTime) {
+        this.waitTime = waitTime;
+    }
 }

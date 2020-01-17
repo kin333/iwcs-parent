@@ -27,6 +27,8 @@ public interface SubTaskMapper extends MyMapperAndIds<SubTask> {
 
     List<SubTask> selectByMainTaskNum(String mainTaskNum);
 
+    List<SubTask> selectByMainTaskNumAndPodCode(@Param("mainTaskNum") String mainTaskNum,@Param("podCode") String podCode);
+
     /**
      * 根据子任务编号查询数据
      * @param subTaskNum

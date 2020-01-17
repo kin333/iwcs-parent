@@ -41,7 +41,7 @@ public class PlBufSupplyWorker implements Runnable {
             synchronized (this) {
                 try {
                     autoTask();
-                    this.wait(30 * 1000);
+                    this.wait(10 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
