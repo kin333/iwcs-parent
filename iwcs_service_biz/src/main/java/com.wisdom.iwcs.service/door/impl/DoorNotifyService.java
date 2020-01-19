@@ -50,9 +50,9 @@ public class DoorNotifyService {
 
         AutoDoor autoDoor = new AutoDoor();
         autoDoor.setMsgCode(doorReport.getAddress());
-        autoDoor.setTaskStatus(taskStatus);
-        autoDoor.setDoorModel(doorModel);
-        autoDoor.setDoorStatus(doorStatus);
+        autoDoor.setTaskStatus(Integer.toString(Integer.parseInt(taskStatus)));
+//        autoDoor.setDoorModel(doorModel);
+        autoDoor.setDoorStatus(Integer.toString(Integer.parseInt(doorStatus)));
         autoDoorMapper.updateDoorInfo(autoDoor);
     }
 

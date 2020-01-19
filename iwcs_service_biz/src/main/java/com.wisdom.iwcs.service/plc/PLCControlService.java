@@ -99,15 +99,17 @@ public class PLCControlService {
             eleMsgLog.setReqCode(reqCode);
             eleMsgLogMapper.insertSelective(eleMsgLog);
         }else if(commandType.equals("06")) {
-            //TODO 线体状态
-            DoorReport doorReport = new DoorReport();
-            doorReport.setAddress(sendAddr);
-            doorReport.setDeviceType(commandType);
-            doorReport.setReqCode(reqCode);
+            //TODO 门状态
             String doorStatus = msgBody.substring(8,10);
             String doorWorkType = msgBody.substring(10,12);
             String doorModel = msgBody.substring(12,14);
-            //doorNotifyService.doorReportState(doorReport);
+
+            DoorReport doorReport = new DoorReport();
+            doorReport.setDoorWorkType(doorWorkType);
+            doorReport.setDoorStatus(doorStatus);
+            doorReport.setDoorModel(doorModel);
+            doorReport.setAddress(sendAddr);
+            doorNotifyService.doorReportState(doorReport);
 
             //insert door_msg_log
             DoorMsgLog doorMsgLog = new DoorMsgLog();
