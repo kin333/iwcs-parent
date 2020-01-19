@@ -50,6 +50,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAAUTOPOINT;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAMANUALPOINT;
@@ -73,7 +75,10 @@ import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.YES;
 @Service
 public class HikCallbackIwcsService {
     private static final Logger logger = LoggerFactory.getLogger(HikCallbackIwcsService.class);
-
+    /**
+     * 锁
+     */
+    private Lock lock = new ReentrantLock();
 
     @Autowired
     SubTaskMapper subTaskMapper;
@@ -242,42 +247,51 @@ public class HikCallbackIwcsService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void nodeAction(SubTask subTask, String nodeCode) {
-        //1.获取节点动作模板信息
-        List<TaskRelAction> taskRelActionList = taskRelActionMapper.selectByTempCodeAndNode(subTask.getTemplCode(), nodeCode);
-        for (TaskRelAction taskRelAction : taskRelActionList) {
-            int num = subTaskActionMapper.updateTimeByActionCode(taskRelAction.getActionCode(), subTask.getSubTaskNum());
-//            SubTaskAction checkActionNum = subTaskActionMapper.selectByActionCode(taskRelAction.getActionCode(), subTask.getSubTaskNum());
-            if (num > 0) {
-                continue;
+        lock.lock();
+        try {
+            //1.获取节点动作模板信息
+            List<TaskRelAction> taskRelActionList = taskRelActionMapper.selectByTempCodeAndNode(subTask.getTemplCode(), nodeCode);
+            for (TaskRelAction taskRelAction : taskRelActionList) {
+//            int num = subTaskActionMapper.updateTimeByActionCode(taskRelAction.getActionCode(), subTask.getSubTaskNum());
+                SubTaskAction checkActionNum = subTaskActionMapper.selectByActionCode(taskRelAction.getActionCode(), subTask.getSubTaskNum());
+                logger.info("子任务{}的节点{}的action开始创建", subTask.getSubTaskNum(), taskRelAction.getActionCode());
+                if (checkActionNum != null) {
+                    logger.info("子任务{}的节点{}的action已创建,跳过", subTask.getSubTaskNum(), taskRelAction.getActionCode());
+                    continue;
+                }
+//            if (num > 0) {
+//                continue;
+//            }
+
+                //2.生成消息体和地址
+                String jsonStr = templateRelatedServer.actionTemplateInfo(subTask, taskRelAction.getActionCode());
+                String address = addressMapper.selectAddressByCode(taskRelAction.getApp());
+                String url = address + taskRelAction.getUrl();
+                //3.获取生成子任务节点动作
+                SubTaskAction subTaskAction = new SubTaskAction();
+                subTaskAction.setSubTaskNum(subTask.getSubTaskNum());
+                subTaskAction.setActionCode(taskRelAction.getActionCode());
+                subTaskAction.setTemplCode(taskRelAction.getTemplCode());
+                subTaskAction.setActionType(taskRelAction.getActionType());
+                subTaskAction.setContent(jsonStr);
+                subTaskAction.setUrl(url);
+                subTaskAction.setApp(taskRelAction.getApp());
+                subTaskAction.setThirdInvokeType(taskRelAction.getThirdInvokeType());
+                subTaskAction.setExecuteMode(taskRelAction.getExecuteMode());
+                subTaskAction.setPreActions(taskRelAction.getPreActions());
+                subTaskAction.setCreateTime(new Date());
+                subTaskAction.setCreateNode(nodeCode);
+                subTaskAction.setResponseHandler(taskRelAction.getResponseHandler());
+                subTaskAction.setActionStatus(SENDING);
+                //插入请求信息
+                subTaskActionMapper.insertSelective(subTaskAction);
+                Long id = subTaskAction.getId();
+                RabbitMQUtil.basicPublicNodeAction(id.toString());
+                logger.info("{}action已发送", id);
             }
-
-            //2.生成消息体和地址
-            String jsonStr = templateRelatedServer.actionTemplateInfo(subTask, taskRelAction.getActionCode());
-            String address = addressMapper.selectAddressByCode(taskRelAction.getApp());
-            String url = address + taskRelAction.getUrl();
-            //3.获取生成子任务节点动作
-            SubTaskAction subTaskAction = new SubTaskAction();
-            subTaskAction.setSubTaskNum(subTask.getSubTaskNum());
-            subTaskAction.setActionCode(taskRelAction.getActionCode());
-            subTaskAction.setTemplCode(taskRelAction.getTemplCode());
-            subTaskAction.setActionType(taskRelAction.getActionType());
-            subTaskAction.setContent(jsonStr);
-            subTaskAction.setUrl(url);
-            subTaskAction.setApp(taskRelAction.getApp());
-            subTaskAction.setThirdInvokeType(taskRelAction.getThirdInvokeType());
-            subTaskAction.setExecuteMode(taskRelAction.getExecuteMode());
-            subTaskAction.setPreActions(taskRelAction.getPreActions());
-            subTaskAction.setCreateTime(new Date());
-            subTaskAction.setCreateNode(nodeCode);
-            subTaskAction.setResponseHandler(taskRelAction.getResponseHandler());
-            subTaskAction.setActionStatus(SENDING);
-            //插入请求信息
-            subTaskActionMapper.insertSelective(subTaskAction);
-            Long id = subTaskAction.getId();
-            RabbitMQUtil.basicPublicNodeAction(id.toString());
-            logger.info("{}action已发送", id);
+        } finally {
+            lock.unlock();
         }
-
     }
 
 
