@@ -8,6 +8,7 @@ import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTOD;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
@@ -352,8 +353,8 @@ public class BaseMapBerthService implements IBaseMapBerthService{
     }
 
     @Override
-    public List<BaseMapBerth> selectMapList(BaseMapBerth baseMapBerth) {
-        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectBerthList(baseMapBerth.getMapCode());
+    public List<BaseMapBerthDTOD> selectMapList(BaseMapBerth baseMapBerth) {
+        List<BaseMapBerthDTOD> baseMapBerthList = baseMapBerthMapper.selectBerthList(baseMapBerth.getMapCode());
         return baseMapBerthList;
     }
 

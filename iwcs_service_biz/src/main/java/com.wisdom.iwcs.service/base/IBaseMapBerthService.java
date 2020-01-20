@@ -5,6 +5,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTOD;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public interface IBaseMapBerthService {
 
     List<BaseMapBerth> selectMapDataByMapCode(BaseMapBerth baseMapBerth);
 
-    List<BaseMapBerth> selectMapList(BaseMapBerth baseMapBerth);
+    List<BaseMapBerthDTOD> selectMapList(BaseMapBerth baseMapBerth);
 
     BaseMapBerth selectMapDataByBerCode(BaseMapBerth baseMapBerth);
 

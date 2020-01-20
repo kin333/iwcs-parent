@@ -6,6 +6,7 @@ import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
+import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTOD;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
@@ -173,7 +174,7 @@ public class BaseMapBerthController {
     @PostMapping("/getMapDataList")
     public Result selectMapList(@RequestBody BaseMapBerth baseMapBerth) {
 
-        List<BaseMapBerth> baseMapBerthList = IBaseMapBerthService.selectMapList(baseMapBerth);
+        List<BaseMapBerthDTOD> baseMapBerthList = IBaseMapBerthService.selectMapList(baseMapBerth);
 
         return new Result(baseMapBerthList);
     }

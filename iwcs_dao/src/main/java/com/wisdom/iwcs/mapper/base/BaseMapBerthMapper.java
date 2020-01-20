@@ -3,10 +3,7 @@ package com.wisdom.iwcs.mapper.base;
 import com.wisdom.iwcs.common.utils.mapper.LogicDelete.DeleteLogicMapper;
 import com.wisdom.iwcs.common.utils.mapper.MyMapperAndIds;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
-import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
-import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
-import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
+import com.wisdom.iwcs.domain.base.dto.*;
 import com.wisdom.iwcs.domain.task.MapPodFilterStrategy;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -101,7 +98,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     List<BaseMapBerth> selectBerthCodeByMapCode(String mapCode);
-    List<BaseMapBerth> selectBerthList(String mapCode);
+    List<BaseMapBerthDTOD> selectBerthList(String mapCode);
     /**
      * 批量更新
      * @param baseMapBerthList
