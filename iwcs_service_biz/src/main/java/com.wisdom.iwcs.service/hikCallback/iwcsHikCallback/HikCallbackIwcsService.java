@@ -959,8 +959,8 @@ public class HikCallbackIwcsService {
      */
     public HikSyncResponse notifyTaskInfo(HikCallDoorSwitch hikCallDoorSwitch) {
         logger.info("小车请求开门/关门,任务:{}", hikCallDoorSwitch.getUuid());
-
-        String doorCode = hikCallDoorSwitch.getDeviceType();
+        // 门的编号
+        String doorCode = hikCallDoorSwitch.getDeviceIndex();
         String actionTask = hikCallDoorSwitch.getActionTask();
         if (actionTask.equals("applyLock")){
             //查询当前门的状态
@@ -980,12 +980,12 @@ public class HikCallbackIwcsService {
                 iCommonService.handleHikResponseAndThrowException(response);
 
                 //记录通过uuid 写入auto_door_task
-                AutoDoorTask autoDoorTask = new AutoDoorTask();
-                autoDoorTask.setDoorCode(doorCode);
-                autoDoorTask.setReqTime(new Date());
-                autoDoorTask.setTaskCode(hikCallDoorSwitch.getUuid());
-                autoDoorTask.setTaskStatus("0");
-                autoDoorTaskMapper.insertSelective(autoDoorTask);
+//                AutoDoorTask autoDoorTask = new AutoDoorTask();
+//                autoDoorTask.setDoorCode(doorCode);
+//                autoDoorTask.setReqTime(new Date());
+//                autoDoorTask.setTaskCode(hikCallDoorSwitch.getUuid());
+//                autoDoorTask.setTaskStatus("0");
+//                autoDoorTaskMapper.insertSelective(autoDoorTask);
             }
         }
 //        else{
