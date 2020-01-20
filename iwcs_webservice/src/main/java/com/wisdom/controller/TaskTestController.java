@@ -434,6 +434,10 @@ public class TaskTestController {
         cancelTaskTestWork.setWaitTime(10 * 1000);
         Thread thread = new Thread(cancelTaskTestWork);
         thread.start();
+        logger.info("开始启动 线体缓存区补充空货架 任务生成器");
+        Thread plBufSupplyThread = new Thread(plBufSupplyWorker);
+        plBufSupplyThread.start();
+        logger.info("启动 线体缓存区补充空货架 任务生成器成功");
         return new Result();
     }
 

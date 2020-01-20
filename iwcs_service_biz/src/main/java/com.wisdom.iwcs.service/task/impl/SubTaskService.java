@@ -636,7 +636,7 @@ public class SubTaskService {
         //添加任务起始点
         if (StringUtils.isNotBlank(taskRel.getStartPointAccess())) {
             if (("calculateByPropStrategic").equals(taskRel.getStartPointAccess())) {
-                subTask.setMapCode("AA");
+                subTask.setMapCode("AB");
             }else {
                 IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
                 Preconditions.checkBusinessError(getPointStrategic == null, "获取点位策略不存在:" + taskRel.getStartPointAccess());
