@@ -101,7 +101,7 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     List<BaseMapBerth> selectBerthCodeByMapCode(String mapCode);
-
+    List<BaseMapBerth> selectBerthList(String mapCode);
     /**
      * 批量更新
      * @param baseMapBerthList

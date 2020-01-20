@@ -352,6 +352,12 @@ public class BaseMapBerthService implements IBaseMapBerthService{
     }
 
     @Override
+    public List<BaseMapBerth> selectMapList(BaseMapBerth baseMapBerth) {
+        List<BaseMapBerth> baseMapBerthList = baseMapBerthMapper.selectBerthList(baseMapBerth.getMapCode());
+        return baseMapBerthList;
+    }
+
+    @Override
     public BaseMapBerth selectMapDataByBerCode(BaseMapBerth baseMapBerth) {
         BaseMapBerth baseMapBerths = baseMapBerthMapper.selectMapDataByBerCode(baseMapBerth);
 

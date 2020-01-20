@@ -40,6 +40,14 @@
         last_modified_by, last_modified_time,berth_type_value,pod_code,lock_source,in_lock,area_code,biz_type,
         relation_piont_code,point_alias,ber_group,version,operate_area_code,biz_second_area_code,ber_row,ber_column
     </sql>
+    <sql id="Base_Column_List1">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        a.id, a.map_code, a.ber_code, a.coox, a.cooy, a.valid_flag, a.delete_flag, a.berth_type_value, a.pod_code, a.lock_source, a.in_lock, a.area_code, a.biz_type,
+        a.relation_piont_code, a.point_alias, a.ber_group, a.version, a.operate_area_code, a.biz_second_area_code,
+        b.pod_prop4, b.pod_prop1, b.pod_prop5, b.pod_prop3, b.pod_prop2, b.in_stock
+    </sql>
     <update id="lockMapBerth">
         update base_map_berth
         <set>
@@ -318,6 +326,9 @@
        select <include refid="Base_Column_List"/> from base_map_berth WHERE map_code = #{mapCode} order by coox
     </select>
 
+    <select id="selectBerthList" resultType="com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTOD">
+        select <include refid="Base_Column_List1"/> from base_map_berth a left join base_pod_detail b on a.pod_code = b.pod_code WHERE a.map_code = #{mapCode} order by a.coox
+    </select>
     <update id="updateList">
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update base_map_berth

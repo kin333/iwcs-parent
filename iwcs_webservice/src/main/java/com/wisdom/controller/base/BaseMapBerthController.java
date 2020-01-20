@@ -170,6 +170,13 @@ public class BaseMapBerthController {
         return new Result(baseMapBerthList);
     }
 
+    @PostMapping("/getMapDataList")
+    public Result selectMapList(@RequestBody BaseMapBerth baseMapBerth) {
+
+        List<BaseMapBerth> baseMapBerthList = IBaseMapBerthService.selectMapList(baseMapBerth);
+
+        return new Result(baseMapBerthList);
+    }
 
     @PostMapping("/updateMapBerthById")
     public Result updateMapBerthById(@RequestBody List<BaseMapBerthDTO> baseMapBerthDTO) {
