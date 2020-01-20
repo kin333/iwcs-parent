@@ -235,7 +235,8 @@ public class DictionaryService {
         dictionary.setCreatedBy(userId);
         dictionary.setLastModifiedBy(userId);
         dictionary.setLastModifiedTime(new Date().getTime());
-
+        dictionary.setSortCode(1);
+        dictionary.setStatus(Byte.valueOf("1"));
         int num = dictionaryMapper.insertSelective(dictionary);
 
         return num;
