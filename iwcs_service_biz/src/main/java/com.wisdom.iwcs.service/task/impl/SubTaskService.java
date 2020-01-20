@@ -307,8 +307,6 @@ public class SubTaskService {
                 }
             }
         });
-        //将子任务的状态改为正在执行
-        subTaskMapper.updateTaskStatusByNum(subTask.getSubTaskNum(), SubTaskStatusEnum.Executing.getStatusCode());
         //将子任务条件表中的条件状态改为已符合
         subTaskConditionMapper.updateMetStatusBySubTaskNum(subTask.getSubTaskNum(), TaskConstants.metStatus.CONFORM, CondtionTriger.PRE_CONDITION.getCode());
 
@@ -638,7 +636,7 @@ public class SubTaskService {
         //添加任务起始点
         if (StringUtils.isNotBlank(taskRel.getStartPointAccess())) {
             if (("calculateByPropStrategic").equals(taskRel.getStartPointAccess())) {
-                subTask.setMapCode("AB");
+                subTask.setMapCode("AA");
             }else {
                 IGetPointStrategic getPointStrategic = AppContext.getBean(taskRel.getStartPointAccess());
                 Preconditions.checkBusinessError(getPointStrategic == null, "获取点位策略不存在:" + taskRel.getStartPointAccess());

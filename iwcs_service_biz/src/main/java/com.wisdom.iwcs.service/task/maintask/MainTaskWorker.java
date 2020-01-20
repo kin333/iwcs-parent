@@ -7,6 +7,8 @@ import com.wisdom.iwcs.common.utils.TaskConstants;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.SubTask;
+import com.wisdom.iwcs.domain.task.dto.SubTaskStatusEnum;
+import com.wisdom.iwcs.mapper.task.SubTaskMapper;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.AbstractTaskWorker;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
@@ -95,6 +97,10 @@ public class MainTaskWorker extends AbstractTaskWorker {
                         Thread subTaskWorkerThread = new Thread(subTaskWorker);
                         subTaskWorkerThread.setName("subtaskWorker-" + currentPendingSubtask.getSubTaskNum() + "ThreadID-" + subTaskWorkerThread.getId());
                         subTaskWorkerThread.start();
+
+                        SubTaskMapper subTaskMapper = (SubTaskMapper) AppContext.getBean("subTaskMapper");
+                        //将子任务的状态改为正在执行
+                        subTaskMapper.updateTaskStatusByNum(currentPendingSubtask.getSubTaskNum(), SubTaskStatusEnum.Executing.getStatusCode());
 
                         MessageService messageService = AppContext.getBean("messageService");
                         //向消息队列发送消息
