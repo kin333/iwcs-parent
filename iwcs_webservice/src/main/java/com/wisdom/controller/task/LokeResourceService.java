@@ -62,7 +62,7 @@ public class LokeResourceService {
              }
              else{
                  record.setInLock(Integer.valueOf(CompanyFinancialStatusEnum.NO_LOCK.getCode()));
-                 record.setLockSource(" ");
+                 record.setLockSource(null);
              }
 
          });
