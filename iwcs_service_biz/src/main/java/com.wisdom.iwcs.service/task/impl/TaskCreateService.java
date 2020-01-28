@@ -1417,7 +1417,7 @@ public class TaskCreateService implements ITaskCreateService {
         }
 
         BasePodDetail basePodDetail1 = new BasePodDetail();
-        basePodDetail1.setPodProp4("");
+        basePodDetail1.setPodProp4(null);
         basePodDetail1.setPodCode(basePodDetail.getPodCode());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         basePodDetail1.setPodProp5(df.format(new Date()));
@@ -1562,6 +1562,14 @@ public class TaskCreateService implements ITaskCreateService {
             throw new BusinessException( "锁定空储位失败");
         }
 
+        // 清除货架状态
+        BasePodDetail basePodDetail1 = new BasePodDetail();
+        basePodDetail1.setPodProp4(null);
+        basePodDetail1.setPodCode(basePodDetail.getPodCode());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        basePodDetail1.setPodProp5(df.format(new Date()));
+        basePodDetailMapper.updatePodStatus(basePodDetail1);
+
         //空闲点位
         BaseMapBerth selectBaseMapBerth = (BaseMapBerth) result.getReturnData();
         String berCode = selectBaseMapBerth.getBerCode();
@@ -1627,6 +1635,13 @@ public class TaskCreateService implements ITaskCreateService {
             throw new BusinessException("锁定空储位失败");
         }
 
+        // 清除货架状态
+        BasePodDetail basePodDetail1 = new BasePodDetail();
+        basePodDetail1.setPodProp4(null);
+        basePodDetail1.setPodCode(basePodDetail.getPodCode());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        basePodDetail1.setPodProp5(df.format(new Date()));
+        basePodDetailMapper.updatePodStatus(basePodDetail1);
         //空闲点位
         BaseMapBerth selectBaseMapBerth = (BaseMapBerth) result.getReturnData();
         String berCode = selectBaseMapBerth.getBerCode();
