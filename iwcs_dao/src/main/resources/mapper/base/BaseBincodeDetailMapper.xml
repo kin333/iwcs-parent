@@ -19,13 +19,17 @@
         <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy"/>
         <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime"/>
         <result column="layer" jdbcType="INTEGER" property="layer"/>
+        <result column="lock_source" jdbcType="VARCHAR" property="lockSource"/>
+        <result column="vehicle_type" jdbcType="VARCHAR" property="vehicleType"/>
+        <result column="vehicle_code" jdbcType="VARCHAR" property="vehicleCode"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, bincode, pod_code, area_code, map_code, cargo_capacity_status, lock_stat, valid_flag,
-        delete_flag, created_by, created_time, last_modified_by, last_modified_time,layer
+        delete_flag, created_by, created_time, last_modified_by, last_modified_time,layer, lock_source,
+        vehicle_type, vehicle_code
     </sql>
     <select id="selectPage" resultMap="BaseResultMap">
         select

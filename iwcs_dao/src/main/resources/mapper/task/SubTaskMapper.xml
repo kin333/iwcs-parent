@@ -116,7 +116,10 @@
     <result column="templ_code" jdbcType="VARCHAR" property="templCode"/>
     <result column="json_data" jdbcType="VARCHAR" property="jsonData"/>
 
-
+    <result column="vehicle_type" jdbcType="VARCHAR" property="vehicleType"/>
+    <result column="vehicle_code" jdbcType="VARCHAR" property="vehicleCode"/>
+    <result column="start_bincode" jdbcType="VARCHAR" property="startBincode"/>
+    <result column="end_bincode" jdbcType="VARCHAR" property="endBincode"/>
 
   </resultMap>
   <sql id="Base_Column_List">
@@ -131,7 +134,7 @@
       end_remark, worker_task_code, area_code, sub_task_biz_prop, robot_code, work_task_status, task_start_time,
     task_leave_time, task_end_time, send_time,start_alias,end_alias, start_bercode_auto, end_bercode_auto,templ_code,
       task_leave_time, task_end_time, send_time,start_alias,end_alias, start_bercode_auto, end_bercode_auto,
-      end_map_code, json_data
+      end_map_code, json_data, vehicle_type, vehicle_code, start_bincode, end_bincode
   </sql>
   <select id="selectPage" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from ts_sub_task

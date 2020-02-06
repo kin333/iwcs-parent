@@ -84,6 +84,45 @@ public class BaseBincodeDetail {
      * 层数，冗余，方便查询
      */
     private Integer layer;
+    /**
+     * 锁定源
+     */
+    @Column(name = "lock_source")
+    private String lockSource;
+    /**
+     * 载具类型
+     */
+    @Column(name = "vehicle_type")
+    private String vehicleType;
+    /**
+     * 载具编号
+     */
+    @Column(name = "vehicle_code")
+    private String vehicleCode;
+
+    public String getLockSource() {
+        return lockSource;
+    }
+
+    public void setLockSource(String lockSource) {
+        this.lockSource = lockSource;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public String getVehicleCode() {
+        return vehicleCode;
+    }
+
+    public void setVehicleCode(String vehicleCode) {
+        this.vehicleCode = vehicleCode;
+    }
 
     public Integer getLayer() {
         return layer;

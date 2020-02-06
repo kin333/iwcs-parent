@@ -364,6 +364,59 @@ public class SubTaskDTO {
     @Column(name = "json_data")
     private String jsonData;
 
+    /**
+     * 载具类型
+     */
+    @Column(name = "vehicle_type")
+    private String vehicleType;
+    /**
+     * 载具编号
+     */
+    @Column(name = "vehicle_code")
+    private String vehicleCode;
+    /**
+     * 起点仓位
+     */
+    @Column(name = "start_bincode")
+    private String startBincode;
+    /**
+     * 终点仓位
+     */
+    @Column(name = "end_bincode")
+    private String endBincode;
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public String getVehicleCode() {
+        return vehicleCode;
+    }
+
+    public void setVehicleCode(String vehicleCode) {
+        this.vehicleCode = vehicleCode;
+    }
+
+    public String getStartBincode() {
+        return startBincode;
+    }
+
+    public void setStartBincode(String startBincode) {
+        this.startBincode = startBincode;
+    }
+
+    public String getEndBincode() {
+        return endBincode;
+    }
+
+    public void setEndBincode(String endBincode) {
+        this.endBincode = endBincode;
+    }
+
     public String getJsonData() {
         return jsonData;
     }

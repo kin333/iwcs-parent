@@ -199,4 +199,13 @@
             <column name="scene_recovery_num" type="VARCHAR(32)"  remarks="恢复操作编号"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="202002061448" author="han">
+        <addColumn tableName="ts_sub_task">
+            <column name="vehicle_type" remarks="载具类型" type="VARCHAR(16)" defaultValue=""/>
+            <column name="vehicle_code" remarks="载具编号" type="VARCHAR(32)" defaultValue=""/>
+            <column name="start_bincode" remarks="起点仓位" type="VARCHAR(32)" defaultValue=""/>
+            <column name="end_bincode" remarks="终点仓位" type="VARCHAR(32)" defaultValue=""/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

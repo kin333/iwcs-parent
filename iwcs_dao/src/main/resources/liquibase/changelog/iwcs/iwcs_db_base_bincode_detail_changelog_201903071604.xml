@@ -16,4 +16,12 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="202002061440" author="han">
+        <addColumn tableName="base_bincode_detail">
+            <column name="lock_source" remarks="锁定源" type="VARCHAR(64)" defaultValue=""/>
+            <column name="vehicle_type" remarks="载具类型" type="VARCHAR(16)" defaultValue=""/>
+            <column name="vehicle_code" remarks="载具编号" type="VARCHAR(32)" defaultValue=""/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

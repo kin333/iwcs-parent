@@ -145,4 +145,5 @@
 
     <include file="liquibase/changelog/iwcs/iwcs_db_add_auto_door_changelog_20191125.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/iwcs/iwcs_map_pod_filter_strategy.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/iwcs/iwcs_db_base_ctnr_type.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

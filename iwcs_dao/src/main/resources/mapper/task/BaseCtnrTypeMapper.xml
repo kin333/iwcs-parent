@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisdom.iwcs.mapper.task.BaseCtnrTypeMapper">
+  <resultMap id="BaseResultMap" type="com.wisdom.iwcs.domain.task.BaseCtnrType">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ctnr_typ_code" jdbcType="VARCHAR" property="ctnrTypCode" />
+    <result column="ctnr_typ_text" jdbcType="VARCHAR" property="ctnrTypText" />
+    <result column="length" jdbcType="VARCHAR" property="length" />
+    <result column="width" jdbcType="VARCHAR" property="width" />
+    <result column="height" jdbcType="VARCHAR" property="height" />
+    <result column="valid_flag" jdbcType="INTEGER" property="validFlag" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+    <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="last_modified_by" jdbcType="INTEGER" property="lastModifiedBy" />
+    <result column="last_modified_time" jdbcType="TIMESTAMP" property="lastModifiedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, ctnr_typ_code, ctnr_typ_text, length, width, height, valid_flag, delete_flag, 
+    created_by, created_time, last_modified_by, last_modified_time
+  </sql>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from base_ctnr_type
+     where 1=1
+    <if test="searchKey != null and searchKey != ''">
+      and 1=1
+    </if>
+    <if test="startTime != null">
+      and created_time &gt;= #{startTime,jdbcType=BIGINT}
+    </if>
+    <if test="endTime != null">
+      and created_time &lt;= #{endTime,jdbcType=BIGINT}
+    </if>
+    order by last_modified_time desc
+  </select>
+</mapper>
