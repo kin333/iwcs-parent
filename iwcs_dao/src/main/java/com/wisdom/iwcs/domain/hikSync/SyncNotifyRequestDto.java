@@ -37,6 +37,8 @@ public class SyncNotifyRequestDto {
      * wareHouseInfo:仓库信息同步
      * elcMapInfo:地图信息同步
      * workBenchInfo:工作台同步
+     * channelInfo:巷道同步
+     * ctnrTypInfo:容器类型同步
      */
     private String notifyType;
 

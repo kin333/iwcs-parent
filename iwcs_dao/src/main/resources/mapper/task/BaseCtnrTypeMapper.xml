@@ -39,4 +39,9 @@
     </if>
     order by last_modified_time desc
   </select>
+
+  <select id="selectByCtnrTypeAndValidAndDelete" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from base_ctnr_type
+    WHERE ctnr_typ_code = #{CtnrTypeCode} and valid_flag = #{validFlag} and delete_flag = #{deleteFlag}
+  </select>
 </mapper>

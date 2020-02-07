@@ -41,6 +41,10 @@ public class SyncNotifyTypeConstants {
      * 工作台同步
      */
     public static final String SYNC_WORK_BENCH = "workBenchInfo";
+    /**
+     * 容器类型同步
+     */
+    public static final String SYNC_CTNR_TYP = "ctnrTypInfo";
 
 
 }

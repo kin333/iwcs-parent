@@ -5,8 +5,10 @@ import com.wisdom.iwcs.common.utils.XmlToBeanUtils;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.domain.base.*;
 import com.wisdom.iwcs.domain.hikSync.*;
+import com.wisdom.iwcs.domain.task.BaseCtnrType;
 import com.wisdom.iwcs.mapper.base.*;
 import com.wisdom.iwcs.mapper.stock.StockMapper;
+import com.wisdom.iwcs.mapper.task.BaseCtnrTypeMapper;
 import com.wisdom.iwcs.mapper.task.WbAgvTaskMapper;
 import com.wisdom.iwcs.mapper.task.WbTaskDetailMapper;
 import com.wisdom.iwcs.service.hikCallback.IHikCallBackSyncService;
@@ -85,6 +87,8 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
     private BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
     private BasePodLayerStkMapper basePodLayerStkMapper;
+    @Autowired
+    private BaseCtnrTypeMapper baseCtnrTypeMapper;
 
     /**
      * 同步海康基础数据
@@ -138,10 +142,46 @@ public class HikCallBackSyncService implements IHikCallBackSyncService {
              */
             case SYNC_WORK_BENCH:
                 return syncWorkBenchInfo(syncNotifyRequestDto);
+            /**
+             * 容器类型同步
+             */
+            case SYNC_CTNR_TYP:
+                return syncCtnrTypInfo(syncNotifyRequestDto);
             default:
                 logger.error("错误的同步类型，{}", requestNotifyType);
                 throw new BusinessException("错误的同步类型");
         }
+    }
+
+    /**
+     * 容器类型同步
+     * @param syncNotifyRequestDto
+     * @return
+     */
+    private HikSyncResponse syncCtnrTypInfo(SyncNotifyRequestDto syncNotifyRequestDto) {
+        syncNotifyRequestDto.getData().stream().forEach(data -> {
+            String requestCtnrTypeCode = data.getCtnrTypCode();
+            BaseCtnrType existsCtnrType = baseCtnrTypeMapper.selectByCtnrTypeAndValidAndDelete(requestCtnrTypeCode, VALID.getStatus(), NOT_DELETED.getStatus());
+            if (isHikDataSyncDelOpt(data) && existsCtnrType != null) {
+                baseCtnrTypeMapper.deleteByPrimaryKey(existsCtnrType.getId());
+            } else if (isHikDataSyncMergeOpt(data)) {
+                BaseCtnrType baseCtnrType = new BaseCtnrType();
+                baseCtnrType.setCtnrTypCode(data.getCtnrTypCode());
+                baseCtnrType.setCtnrTypText(data.getCtnrTypText());
+                baseCtnrType.setHeight(data.getHeight());
+                baseCtnrType.setLength(data.getLength());
+                baseCtnrType.setWidth(data.getWidth());
+                if (existsCtnrType == null) {
+                    baseCtnrType.setCreatedTime(new Date());
+                    baseCtnrTypeMapper.insertSelective(baseCtnrType);
+                } else {
+                    baseCtnrType.setId(existsCtnrType.getId());
+                    baseCtnrType.setLastModifiedTime(new Date());
+                    baseCtnrTypeMapper.updateByPrimaryKeySelective(baseCtnrType);
+                }
+            }
+        });
+        return new HikSyncResponse();
     }
 
     /**

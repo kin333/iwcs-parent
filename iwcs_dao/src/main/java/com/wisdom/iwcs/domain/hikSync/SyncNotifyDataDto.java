@@ -191,6 +191,31 @@ public class SyncNotifyDataDto {
 
     private List<SyncNotifyBinsDto> bins;
 
+    /**
+     * 容器编号
+     */
+    private String ctnrTypCode;
+    /**
+     * 容器类型
+     */
+    private String ctnrTypText;
+
+    public String getCtnrTypCode() {
+        return ctnrTypCode;
+    }
+
+    public void setCtnrTypCode(String ctnrTypCode) {
+        this.ctnrTypCode = ctnrTypCode;
+    }
+
+    public String getCtnrTypText() {
+        return ctnrTypText;
+    }
+
+    public void setCtnrTypText(String ctnrTypText) {
+        this.ctnrTypText = ctnrTypText;
+    }
+
     public String getPodCode() {
         return podCode;
     }
