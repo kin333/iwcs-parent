@@ -1,25 +1,30 @@
 package com.wisdom.iwcs.service.task.impl;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
+import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskPriorityEnum;
+import com.wisdom.iwcs.domain.base.BaseBincodeDetail;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
-import com.wisdom.iwcs.domain.task.MainTask;
-import com.wisdom.iwcs.domain.task.MainTaskType;
-import com.wisdom.iwcs.domain.task.SubTask;
-import com.wisdom.iwcs.domain.task.TaskCreateRequest;
+import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.dto.ContextDTO;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
+import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
 import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
+import com.wisdom.iwcs.mapper.base.BaseBincodeDetailMapper;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskTypeMapper;
 import com.wisdom.iwcs.mapper.task.SubTaskMapper;
+import com.wisdom.iwcs.mapper.task.TaskContextMapper;
 import com.wisdom.iwcs.mapstruct.task.MainTaskMapStruct;
 import com.wisdom.iwcs.service.security.SecurityUtils;
 import com.wisdom.iwcs.service.task.intf.IMainTaskService;
@@ -31,6 +36,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
+import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PTOP_FORKLIFT;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -49,6 +57,10 @@ public class MainTaskService implements IMainTaskService {
     SubTaskMapper subTaskMapper;
     @Autowired
     BaseMapBerthMapper baseMapBerthMapper;
+    @Autowired
+    BaseBincodeDetailMapper baseBincodeDetailMapper;
+    @Autowired
+    TaskContextMapper taskContextMapper;
 
     @Autowired
     public MainTaskService(MainTaskMapStruct mainTaskMapStruct, MainTaskMapper mainTaskMapper) {
@@ -373,4 +385,80 @@ public class MainTaskService implements IMainTaskService {
         taskCreateService.pToPHandlingTask(createTaskRequest, "");
     }
 
+    /**
+     * 创建叉车任务
+     * @param forkliftTaskRequest
+     * @return
+     */
+    public Result createForkliftTask(ForkliftTaskRequest forkliftTaskRequest) {
+        List<String> staticViaPaths = new ArrayList<>();
+        //1.参数校验
+        String startBinCode = forkliftTaskRequest.getStartBinCode();
+        String endBinCode = forkliftTaskRequest.getEndBinCode();
+        String startPoint = forkliftTaskRequest.getStartPoint();
+        String endPoint = forkliftTaskRequest.getEndPoint();
+        if (StringUtils.isEmpty(endBinCode) && StringUtils.isEmpty(endPoint)) {
+            throw new BusinessException("请填入终点信息");
+        }
+        if (StringUtils.isEmpty(startBinCode) && StringUtils.isEmpty(startPoint)) {
+            throw new BusinessException("请填入起点信息");
+        }
+
+        //2.获取起点和终点仓位
+        if (StringUtils.isNotEmpty(startBinCode)) {
+            BaseBincodeDetail startBinCodeDetail = baseBincodeDetailMapper.selectByBincode(startBinCode);
+            Preconditions.checkBusinessError(startBinCodeDetail == null, "起点仓位" + startBinCode + "不存在");
+        } else {
+            staticViaPaths.add(startPoint);
+            startBinCode = selectBincodeByPoint(startPoint);
+        }
+
+        if (StringUtils.isNotEmpty(endBinCode)) {
+            BaseBincodeDetail endBinCodeDetail = baseBincodeDetailMapper.selectByBincode(endBinCode);
+            Preconditions.checkBusinessError(endBinCodeDetail == null, "终点仓位" + endBinCode + "不存在");
+        } else {
+            staticViaPaths.add(endPoint);
+            endBinCode = selectBincodeByPoint(endPoint);
+        }
+
+        //3.创建主任务
+        String mainTaskNum = CodeBuilder.codeBuilder("M");
+        MainTask mainTaskCreate = new MainTask();
+        mainTaskCreate.setMainTaskNum(mainTaskNum);
+        mainTaskCreate.setCreateDate(new Date());
+        mainTaskCreate.setPriority(1);
+        mainTaskCreate.setMainTaskTypeCode(PTOP_FORKLIFT);
+        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        String jsonString = JSONArray.toJSONString(staticViaPaths);
+        mainTaskCreate.setStaticViaPaths(jsonString);
+        mainTaskMapper.insertSelective(mainTaskCreate);
+
+        //4.创建子任务共享数据区域--任务上下文
+        TaskContext taskContext = new TaskContext();
+        taskContext.setMainTaskNum(mainTaskNum);
+        taskContext.setCreateTime(new Date());
+
+        PublicContextDTO publicContextDTO = new PublicContextDTO();
+        publicContextDTO.setStartBincode(startBinCode);
+        publicContextDTO.setEndBincode(endBinCode);
+        taskContext.setContext(JSONObject.toJSONString(publicContextDTO));
+        taskContextMapper.insertSelective(taskContext);
+
+
+        return new Result();
+    }
+
+    /**
+     * 根据点位别名获取仓位
+     * @return
+     */
+    private String selectBincodeByPoint(String point) {
+        BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(point);
+        Preconditions.checkBusinessError(baseMapBerth == null, "点位" + point + "不存在");
+        String podCode = baseMapBerth.getPodCode();
+        Preconditions.checkBusinessError(StringUtils.isEmpty(podCode), "点位" + point + "无货架");
+        List<BaseBincodeDetail> baseBincodeDetails = baseBincodeDetailMapper.selectByPodCode(podCode);
+        Preconditions.checkBusinessError(baseBincodeDetails.size() == 0, "货架" + podCode + "无仓位");
+        return baseBincodeDetails.get(0).getBincode();
+    }
 }

@@ -113,4 +113,19 @@
     <select id="selectCountByPodCodeAndNotCargoCapacityStatusAndLayer" resultType="java.lang.Integer">
     SELECT COUNT(1) FROM base_bincode_detail WHERE pod_code = #{podCode} and cargo_capacity_status != #{capacityStatus} and layer = #{layer}
   </select>
+
+    <select id="selectByBincode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_bincode_detail
+        where 1=1
+        and bincode = #{binCode}
+    </select>
+    <select id="selectByPodCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_bincode_detail
+        where 1=1
+        and pod_code = #{podCode}
+    </select>
 </mapper>

@@ -109,4 +109,13 @@ public class PublicContextDTO {
      */
     private Boolean rollerDownGoodEmpty;
 
+    /**
+     * 起点仓位
+     */
+    private String startBincode;
+    /**
+     * 终点仓位
+     */
+    private String endBincode;
+
 }

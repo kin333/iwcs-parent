@@ -5,6 +5,7 @@ import java.util.List;
 import com.wisdom.iwcs.common.utils.GridPageRequest;
 import com.wisdom.iwcs.common.utils.GridReturnData;
 import com.wisdom.iwcs.common.utils.Result;
+import com.wisdom.iwcs.domain.task.ForkliftTaskRequest;
 import com.wisdom.iwcs.domain.task.MainTask;
 import com.wisdom.iwcs.domain.task.dto.MainTaskDTO;
 import com.wisdom.iwcs.domain.task.dto.SubTaskDTO;
@@ -142,4 +143,13 @@ public class MainTaskController {
 
     }
 
+    /**
+     * 创建叉车任务
+     * @return
+     */
+    @PostMapping("/createForkliftTask")
+    public Result createForkliftTask(@RequestBody ForkliftTaskRequest forkliftTaskRequest) {
+        mainTaskService.createForkliftTask(forkliftTaskRequest);
+        return new Result();
+    }
 }

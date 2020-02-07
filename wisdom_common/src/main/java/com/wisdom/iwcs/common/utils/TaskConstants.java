@@ -122,9 +122,10 @@ public class TaskConstants {
          * 美国浪潮终点有两个等待点的点到点
          */
         public final static String PTOP_END_WAIT_TWO = "pTopEndWaitTwo";
-
-
-
+        /**
+         * 叉车点到点任务
+         */
+        public final static String PTOP_FORKLIFT = "pTop_forklift";
 
     }
 

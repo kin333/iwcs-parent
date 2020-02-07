@@ -141,4 +141,7 @@ public interface BaseBincodeDetailMapper extends DeleteLogicMapper<BaseBincodeDe
      */
     int selectCountByPodCodeAndNotCargoCapacityStatusAndLayer(@Param("podCode") String podCode, @Param("capacityStatus") String capacityStatus, @Param("layer") Integer layer);
 
+    BaseBincodeDetail selectByBincode(String binCode);
+
+    List<BaseBincodeDetail> selectByPodCode(String podCode);
 }
