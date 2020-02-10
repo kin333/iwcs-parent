@@ -363,27 +363,15 @@ public class MainTaskService implements IMainTaskService {
         if (loopExec == null || "".equals(loopExec) || TaskConstants.loopExec.NOT_LOOP.equals(loopExec)) {
             return;
         }
-        //TODO 因增加通用主任务创建,循环任务需要重写
-//        //创建循环的任务
-//        TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
-//        taskCreateRequest.setPriority(mainTaskType.getPriority());
-//        taskCreateRequest.setTaskTypeCode(mainTaskType.getMainTaskTypeCode());
-//        taskCreateRequest.setAreaCode(mainTask.getAreaCode());
-//        //设置目标点(进自动补充产线时使用)
-//        if (TaskConstants.taskCodeType.PLAUTOWBCALLPOD.equals(mainTaskType.getMainTaskTypeCode())) {
-//            List<SubTask> subTaskList = subTaskMapper.selectByMainTaskNum(mainTaskNum);
-//            if (subTaskList == null || subTaskList.size() != 1) {
-//                throw new BusinessException("循环任务" + mainTaskNum + "子任务单信息异常(未查找到或查询到多条子任务)");
-//            }
-//            String endBercode = subTaskList.get(0).getEndBercode();
-//            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectOneByBercode(endBercode);
-//            taskCreateRequest.setTargetPointAlias(baseMapBerth.getPointAlias());
-//        }
-//        taskCreateService.creatTask(taskCreateRequest);
-//        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-//        createTaskRequest.setTaskType(mainTaskType.getMainTaskTypeCode());
-//        createTaskRequest.setTaskPri(TaskPriorityEnum.getCodeByPriority(mainTask.getPriority()));
-//        taskCreateService.pToPHandlingTask(createTaskRequest, "");
+        //创建循环的任务
+        MainTask newMainTask = new MainTask();
+        newMainTask.setPriority(mainTaskType.getPriority());
+        newMainTask.setMainTaskTypeCode(mainTaskType.getMainTaskTypeCode());
+        newMainTask.setAreaCode(mainTask.getAreaCode());
+        newMainTask.setMainTaskNum(CodeBuilder.codeBuilder("M"));
+        newMainTask.setCreateDate(new Date());
+        newMainTask.setTaskStatus(MAIN_NOT_ISSUED);
+        mainTaskMapper.insertSelective(newMainTask);
     }
 
     /**
