@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.domain.task;
 
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
+import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,6 +39,10 @@ public class CreateMainTaskRequest {
      * 地图编号
      */
     private String mapCode;
+    /**
+     * 上下文信息,里面的信息将以JSON的格式放入数据库
+     */
+    private PublicContextDTO context;
 
     /**
      * 获取点位资源

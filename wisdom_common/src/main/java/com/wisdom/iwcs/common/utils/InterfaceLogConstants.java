@@ -70,6 +70,8 @@ public class InterfaceLogConstants {
         public final static String ARRIVE_DEST_WB_WAIT_PORT = "arriveDestWbWaitPort";
         public final static String ARRIVE_DEST_WB = "arriveDestWb";
 
+        public final static String PUBLIC_TASK_CREATE = "publicTaskCreate";
+
     }
 
     public static final class InterfaceName {
@@ -138,6 +140,7 @@ public class InterfaceLogConstants {
         public final static String LEAVE_SRC_WB_DESC = "AGV离开起点";
         public final static String ARRIVE_DEST_WB_WAIT_PORT_DESC = "AGV到达（机械臂）等待点";
         public final static String ARRIVE_DEST_WB_DESC = "AGV到达终点";
+        public final static String PUBLIC_TASK_CREATE_DECS = "通用的创建主任务接口";
     }
 
     public static final class SrcClientCode {

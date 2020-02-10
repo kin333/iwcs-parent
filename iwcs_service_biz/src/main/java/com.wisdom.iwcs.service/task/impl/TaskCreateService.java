@@ -11,6 +11,7 @@ import com.wisdom.iwcs.common.utils.taskUtils.TaskPriorityEnum;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.task.*;
+import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
@@ -182,6 +183,10 @@ public class TaskCreateService implements ITaskCreateService {
         TaskContext taskContext = new TaskContext();
         taskContext.setMainTaskNum(mainTask.getMainTaskNum());
         taskContext.setCreateTime(new Date());
+        PublicContextDTO context = createRequest.getContext();
+        if (context != null) {
+            taskContext.setContext(JSONObject.toJSONString(context));
+        }
         taskContextMapper.insertSelective(taskContext);
 
 
