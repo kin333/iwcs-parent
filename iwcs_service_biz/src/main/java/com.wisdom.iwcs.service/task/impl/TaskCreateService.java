@@ -177,6 +177,11 @@ public class TaskCreateService implements ITaskCreateService {
         //3.创建主任务
         mainTask.setCreateDate(new Date());
         mainTask.setTaskStatus(MAIN_NOT_ISSUED);
+        Integer priority = createRequest.getPriority();
+        if (priority != null) {
+            Preconditions.checkBusinessError(priority < 1 || priority > 5, "优先级范围为1-5");
+            mainTask.setPriority(priority);
+        }
         mainTaskMapper.insertSelective(mainTask);
 
         //4.创建子任务共享数据区域--任务上下文

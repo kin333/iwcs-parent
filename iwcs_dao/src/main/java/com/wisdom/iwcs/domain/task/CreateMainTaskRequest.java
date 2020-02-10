@@ -40,6 +40,10 @@ public class CreateMainTaskRequest {
      */
     private String mapCode;
     /**
+     * 优先级
+     */
+    private Integer priority;
+    /**
      * 上下文信息,里面的信息将以JSON的格式放入数据库
      */
     private PublicContextDTO context;
