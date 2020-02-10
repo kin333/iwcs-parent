@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 @Component("relCreateConditionHandler")
 public class RelConditionHandler implements IRelConditionHandler {
-    private final Logger logger = LoggerFactory.getLogger(EnterWorkLineHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(RelConditionHandler.class);
     @Autowired
     TemplateRelatedServer templateRelatedServer;
 

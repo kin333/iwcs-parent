@@ -11,7 +11,6 @@ import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
 import com.wisdom.iwcs.mapper.task.MainTaskMapper;
 import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
-import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.PublicComputeEndPointHandler;
 import com.wisdom.iwcs.service.task.conditions.conditonHandler.PublicComputePodHandler;
 import com.wisdom.iwcs.service.task.impl.MainTaskService;
@@ -20,8 +19,6 @@ import com.wisdom.iwcs.service.task.scheduler.*;
 import com.wisdom.iwcs.service.task.template.IwcsPublicService;
 import com.wisdom.iwcs.service.task.wcsSimulator.*;
 import com.wisdom.test.CancelTaskTestWork;
-import com.wisdom.test.ChaoRollEmptyTaskCreateWorker;
-import com.wisdom.test.RollerTaskCreateTestWorker;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -67,31 +64,10 @@ public class TaskTestController {
     @Autowired
     TaskOperationLogMapper taskOperationLogMapper;
     @Autowired
-    EleAutoDownWorker eleAutoDownWorker;
-    @Autowired
-    EleAutoUpWorker eleAutoUpWorker;
-    @Autowired
-    PackWlCacheWorker packWlCacheWorker;
-    @Autowired
-    LineNotifyService lineNotifyService;
-    @Autowired
-    PlBufSupplyWorker plBufSupplyWorker;
-    @Autowired
-    PlAutoWbCallPodWorker plAutoWbCallPodWorker;
-    @Autowired
-    PlToWokpwWorker plToWokpwWorker;
-    @Autowired
-    QuaHaulbackWorker quaHaulbackWorker;
-    @Autowired
     DoorNotifyService doorNotifyService;
 
     @Autowired
     MesAutoSendInfoThread mesAutoSendInfoThread;
-
-    @Autowired
-    ChaoRollEmptyTaskCreateWorker rollEmptyTaskCreateWorker;
-    @Autowired
-    RollerTaskCreateTestWorker rollerTaskCreateTestWorker;
 
     @GetMapping("/notifyDoorInfoTest/{workType}")
     public Result notifyDoorInfoTest(@PathVariable String workType) {
@@ -100,26 +76,6 @@ public class TaskTestController {
         return new Result();
     }
 
-    @GetMapping("/sendLineNotify")
-    public Result sendLineNotify() {
-        logger.info("发送线体调试通知");
-        lineNotifyService.testSend();
-        return new Result();
-    }
-
-    @GetMapping("/notifyOneLineInfoTest/{agvTaskType}")
-    public Result notifyOneLineInfoTest(@PathVariable String agvTaskType) {
-        logger.info("通知1线体 {}",agvTaskType);
-        lineNotifyService.notifyOneLineTest(agvTaskType);
-        return new Result();
-    }
-
-    @GetMapping("/notifyTwoLineInfoTest/{agvTaskType}")
-    public Result notifyTwoLineInfoTest(@PathVariable String agvTaskType) {
-        logger.info("通知2线体 {}",agvTaskType);
-        lineNotifyService.notifyTwoLineTest(agvTaskType);
-        return new Result();
-    }
 
 
     @GetMapping("/startWcsTaskScheduler")
@@ -128,22 +84,6 @@ public class TaskTestController {
         wcsTaskScheduler.dispatchMaintask();
         return new Result();
     }
-
-    @GetMapping("/testQuaAutoCallPodWorker")
-    public Result testQuaAutoCallPodWorker() {
-        QuaAutoCallPodWorker quaAutoCallPodWorker = new QuaAutoCallPodWorker("AB");
-        quaAutoCallPodWorker.checkEmptyQua();
-        return new Result();
-    }
-
-    @GetMapping("/testQuaAutoToAgingWorkerr")
-    public Result checkQuaHavePodThenToAging() {
-        QuaAutoToAgingWorker quaAutoToAgingWorker = new QuaAutoToAgingWorker("AB");
-        quaAutoToAgingWorker.checkQuaHavePodThenToAging();
-        return new Result();
-    }
-
-
 
     @GetMapping("/startMainTask/{mainTaskId}")
     public Result startSubtask(@PathVariable Long mainTaskId) {
@@ -286,146 +226,6 @@ public class TaskTestController {
     }
 
     /**
-     * 为了方便关闭而抽取出的线程
-     */
-    private Thread workLineThread1;
-    private Thread workLineThread2;
-    private Thread quaAutoToAgingThread;
-    private Thread quaAutoCallPodThread;
-    private Thread quaAutoToAgingThread2;
-    private Thread quaAutoCallPodThread2;
-    @GetMapping("/testMainTask")
-    public Result testMainTask(){
-
-        int time = 1000;
-        try {
-
-
-            logger.info("开始电梯下楼任务生成器");
-            Thread eleAutoThread = new Thread(eleAutoDownWorker);
-            eleAutoThread.start();
-            logger.info("启动电梯下楼任务生成器");
-
-            Thread.sleep(time);
-
-            logger.info("开始电梯上楼任务生成器");
-            Thread eleAutoUpThread = new Thread(eleAutoUpWorker);
-            eleAutoUpThread.start();
-            logger.info("启动电梯上楼任务生成器");
-
-            Thread.sleep(time);
-
-            logger.info("开始缓存区去包装区任务生成器");
-            Thread packWlCacheThread = new Thread(packWlCacheWorker);
-            packWlCacheThread.start();
-            logger.info("启动缓存区去包装区任务生成器");
-
-            Thread.sleep(time);
-
-            logger.info("开始产线工作台任务生成器");
-            workLineThread2 = new Thread(new WorkLineScheduler("DD"));
-            workLineThread2.start();
-            logger.info("启动产线工作台任务生成器成功");
-
-            Thread.sleep(time);
-
-//        logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-            logger.info("开始启动模拟创建检验区货架到电梯缓存区任务调度器线程");
-            quaAutoToAgingThread = new Thread(new QuaAutoToAgingWorker("DD"));
-            quaAutoToAgingThread.start();
-//        logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
-            logger.info("启动模拟创建检验区货架到电梯缓存区任务调度器线程成功");
-
-            Thread.sleep(time);
-
-            logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-            quaAutoCallPodThread = new Thread(new QuaAutoCallPodWorker("DD"));
-            quaAutoCallPodThread.start();
-            logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
-
-            Thread.sleep(time);
-
-            logger.info("开始产线工作台任务生成器");
-            workLineThread1 = new Thread(new WorkLineScheduler("AB"));
-            workLineThread1.start();
-            logger.info("启动产线工作台任务生成器成功");
-
-            Thread.sleep(time);
-
-            logger.info("开始启动模拟创建检验区货架到老化区任务调度器线程");
-            quaAutoToAgingThread2 = new Thread(new QuaAutoToAgingWorker("AB"));
-            quaAutoToAgingThread2.start();
-            logger.info("启动模拟创建检验区货架到老化区任务调度器线程成功");
-
-            Thread.sleep(time);
-
-            logger.info("开始启动创建模拟老化区货架到检验区任务调度器线程");
-            quaAutoCallPodThread2 = new Thread(new QuaAutoCallPodWorker("AB"));
-            quaAutoCallPodThread2.start();
-            logger.info("启动创建模拟老化区货架到检验区调度器线程成功");
-
-            logger.info("开始启动任务调度器线程");
-            Thread thread = new Thread(wcsTaskScheduler);
-            thread.start();
-            logger.info("启动任务调度器线程成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return new Result("启动成功");
-    }
-
-
-    /**
-     * 超越 点到点任务 自动模拟调度
-     * @return
-     */
-
-    @GetMapping("/mainTaskTest")
-    public Result mainTaskTest(){
-        int time = 1000;
-        try {
-
-            logger.info("开始启动 线体缓存区补充空货架 任务生成器");
-            Thread plBufSupplyThread = new Thread(plBufSupplyWorker);
-            plBufSupplyThread.start();
-            logger.info("启动 线体缓存区补充空货架 任务生成器成功");
-
-            Thread.sleep(time);
-
-            logger.info("开始启动 线体工作区补充空货架 任务生成器");
-            Thread plAutoWbCallPodThread = new Thread(plAutoWbCallPodWorker);
-            plAutoWbCallPodThread.start();
-            logger.info("启动 线体工作区补充空货架 任务生成器成功");
-
-            Thread.sleep(time);
-
-            logger.info("开始启动 产线呼叫搬离货架 任务调度器线程");
-            Thread plToWokpwThread = new Thread(plToWokpwWorker);
-            plToWokpwThread.start();
-            logger.info("启动 产线呼叫搬离货架 任务调度器线程成功");
-
-            Thread.sleep(time);
-
-
-            logger.info("开始启动 检验区呼叫搬离货架 任务调度器线程");
-            Thread quaHaulbackThread = new Thread(quaHaulbackWorker);
-            quaHaulbackThread.start();
-            logger.info("启动 检验区呼叫搬离货架 任务调度器线程成功");
-
-            logger.info("开始 启动任务 调度器线程");
-            Thread thread = new Thread(wcsTaskScheduler);
-            thread.start();
-            logger.info("启动 任务调度器线程成功");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return new Result("启动成功");
-    }
-
-    /**
      * 取消任务自动化测试
      * @return
      */
@@ -435,49 +235,9 @@ public class TaskTestController {
         Thread thread = new Thread(cancelTaskTestWork);
         thread.start();
         logger.info("开始启动 线体缓存区补充空货架 任务生成器");
-        Thread plBufSupplyThread = new Thread(plBufSupplyWorker);
-        plBufSupplyThread.start();
+//        Thread plBufSupplyThread = new Thread(plBufSupplyWorker);
+//        plBufSupplyThread.start();
         logger.info("启动 线体缓存区补充空货架 任务生成器成功");
-        return new Result();
-    }
-
-    /**
-     * 超越滚筒自动模拟测试
-     * @return
-     */
-    @GetMapping("/rollMainTaskTest")
-    public Result rollMainTaskTest(){
-        try {
-
-            logger.info("开始启动 自动产线供料、回收空料箱任务 调度线程");
-            Thread supplyAndRecycle = new Thread(rollerTaskCreateTestWorker);
-            supplyAndRecycle.start();
-            logger.info("启动 自动产线供料、回收空料箱任务 调度线程成功");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new Result();
-    }
-
-
-
-    @GetMapping("/testStopCreateTask")
-    public Result testStopCreateTask() {
-        logger.info("开始停止任务生成器");
-        if (workLineThread1 != null) {
-            workLineThread1.interrupt();
-        }
-        if (workLineThread2 != null) {
-            workLineThread2.interrupt();
-        }
-        if (quaAutoToAgingThread != null) {
-            quaAutoToAgingThread.interrupt();
-        }
-        if (quaAutoCallPodThread != null) {
-            quaAutoCallPodThread.interrupt();
-        }
-        logger.info("停止任务生成器完成");
         return new Result();
     }
 
@@ -511,17 +271,6 @@ public class TaskTestController {
         Thread mesThread = new Thread(mesAutoSendInfoThread);
         mesThread.start();
 
-        return new Result();
-    }
-
-
-    @GetMapping("/testRollerTask")
-    public Result testRollerTask() {
-
-        logger.info("开始启动超越滚筒回收空料箱任务");
-        Thread emptyRoller = new Thread(rollEmptyTaskCreateWorker);
-        emptyRoller.start();
-        logger.info("启动超越滚筒回收空料箱任务");
         return new Result();
     }
 

@@ -363,6 +363,7 @@ public class MainTaskService implements IMainTaskService {
         if (loopExec == null || "".equals(loopExec) || TaskConstants.loopExec.NOT_LOOP.equals(loopExec)) {
             return;
         }
+        //TODO 因增加通用主任务创建,循环任务需要重写
 //        //创建循环的任务
 //        TaskCreateRequest taskCreateRequest = new TaskCreateRequest();
 //        taskCreateRequest.setPriority(mainTaskType.getPriority());
@@ -379,10 +380,10 @@ public class MainTaskService implements IMainTaskService {
 //            taskCreateRequest.setTargetPointAlias(baseMapBerth.getPointAlias());
 //        }
 //        taskCreateService.creatTask(taskCreateRequest);
-        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-        createTaskRequest.setTaskType(mainTaskType.getMainTaskTypeCode());
-        createTaskRequest.setTaskPri(TaskPriorityEnum.getCodeByPriority(mainTask.getPriority()));
-        taskCreateService.pToPHandlingTask(createTaskRequest, "");
+//        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
+//        createTaskRequest.setTaskType(mainTaskType.getMainTaskTypeCode());
+//        createTaskRequest.setTaskPri(TaskPriorityEnum.getCodeByPriority(mainTask.getPriority()));
+//        taskCreateService.pToPHandlingTask(createTaskRequest, "");
     }
 
     /**

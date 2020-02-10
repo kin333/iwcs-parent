@@ -11,7 +11,6 @@ import com.wisdom.iwcs.common.utils.taskUtils.CreateRouteKeyUtils;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.door.AutoDoor;
-import com.wisdom.iwcs.domain.door.AutoDoorTask;
 import com.wisdom.iwcs.domain.hikSync.*;
 import com.wisdom.iwcs.domain.log.ResPosEvt;
 import com.wisdom.iwcs.domain.log.TaskOperationLog;
@@ -28,7 +27,6 @@ import com.wisdom.iwcs.service.callHik.ITransferHikHttpRequestService;
 import com.wisdom.iwcs.service.callHik.callHikImpl.ContinueTaskService;
 import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
-import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.action.RouseMainTaskAction;
 import com.wisdom.iwcs.service.task.impl.MessageService;
@@ -50,23 +48,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAAUTOPOINT;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAMANUALPOINT;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.DoorMsgType.DOOR_CLOSE;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.DoorMsgType.DOOR_OPEN;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.HikCallbackMethod.*;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
-import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.CREATE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.SENDING;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.createNode.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.eleFloor.SOURCE_FLOOR;
-import static com.wisdom.iwcs.common.utils.TaskConstants.subTaskType.ROLLER_CONTINUE;
 import static com.wisdom.iwcs.common.utils.TaskConstants.yesOrNo.YES;
 
 /**
@@ -90,8 +82,6 @@ public class HikCallbackIwcsService {
     EleControlTaskMapper eleControlTaskMapper;
     @Autowired
     BaseConnectionPointMapper baseConnectionPointMapper;
-    @Autowired
-    private LineNotifyService lineNotifyService;
     @Autowired
     private BaseMsgSendMapper baseMsgSendMapper;
     @Autowired
@@ -374,14 +364,6 @@ public class HikCallbackIwcsService {
         resPosEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
         String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
-
-        String bizSecondAreaCode = baseMapBerth.getBizSecondAreaCode();
-        //如果离开的是线体工作区,则发送线体离开消息
-        if (LINEAREA.equals(baseMapBerth.getOperateAreaCode())
-                && (LINEAREAAUTOPOINT.equals(bizSecondAreaCode) || LINEAREAMANUALPOINT.equals(bizSecondAreaCode))) {
-            logger.info("通知线体,小车已经离开{} ",baseMapBerth.getPointAlias());
-            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.LEAVE);
-        }
     }
 
     /**
@@ -440,14 +422,6 @@ public class HikCallbackIwcsService {
         resPosEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
         String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
-
-        String bizSecondAreaCode = baseMapBerth.getBizSecondAreaCode();
-        //如果离开的是线体工作区,则发送线体离开消息
-        if (LINEAREA.equals(baseMapBerth.getOperateAreaCode())
-                && (LINEAREAAUTOPOINT.equals(bizSecondAreaCode) || LINEAREAMANUALPOINT.equals(bizSecondAreaCode))) {
-            logger.info("通知线体,小车已经离开{} ",baseMapBerth.getPointAlias());
-            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.LEAVE);
-        }
     }
 
     /**

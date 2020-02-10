@@ -16,7 +16,6 @@ import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.linebody.LineMsgLogMapper;
 import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
-import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +40,6 @@ public class PLCControlService {
     private LineMsgLogMapper lineMsgLogMapper;
     @Autowired
     private ElevatorNotifyService elevatorNotifyService;
-    @Autowired
-    private LineNotifyService lineNotifyService;
     @Autowired
     private ElevatorMapper elevatorMapper;
     @Autowired
@@ -130,11 +127,11 @@ public class PLCControlService {
             if (workType.equals("01")){
                 logger.info("线体通知{}：呼叫空货架"+ plcRespone.getAddress()+":"+workPoint);
                 lineBodyReport.setWorkPoint(workPoint);
-                lineNotifyService.lineCallEmptyPod(lineBodyReport);
+//                lineNotifyService.lineCallEmptyPod(lineBodyReport);
             }else {
                 logger.info("线体通知{}：呼叫货架离开"+ plcRespone.getAddress()+":"+workPoint);
                 lineBodyReport.setWorkPoint(workPoint);
-                lineNotifyService.lineCallAgvPickPod(lineBodyReport);
+//                lineNotifyService.lineCallAgvPickPod(lineBodyReport);
             }
             //insert line_msg_log
             LineMsgLog lineMsgLog = new LineMsgLog();
