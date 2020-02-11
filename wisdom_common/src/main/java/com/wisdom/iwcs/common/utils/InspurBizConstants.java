@@ -172,9 +172,17 @@ public class InspurBizConstants {
          */
         public final static String NO_GOODS = "0";
         /**
+         * 无货
+         */
+        public final static Integer NO_GOODS_INT = 0;
+        /**
          * 有货
          */
         public final static String HAVE_GOODS = "1";
+        /**
+         * 有货
+         */
+        public final static Integer HAVE_GOODS_INT = 1;
     }
 
     /**
