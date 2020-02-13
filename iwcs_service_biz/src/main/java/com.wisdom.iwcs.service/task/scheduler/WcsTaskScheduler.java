@@ -81,7 +81,7 @@ public class WcsTaskScheduler implements Runnable, ServletContextListener {
     @Override
     public void run() {
         // 检查主任务列表，拿到所有可以执行的主任务列表，判断主任务是否可以执行，以主任务当前的子任务是否可以执行为标准
-        while (true&&stopped.get()) {
+        while (true&&!stopped.get()) {
             try {
                 synchronized (this) {
                     if(suspendDispatch.get()){

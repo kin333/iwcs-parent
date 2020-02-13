@@ -141,6 +141,7 @@ public class InterfaceLogConstants {
         public final static String ARRIVE_DEST_WB_WAIT_PORT_DESC = "AGV到达（机械臂）等待点";
         public final static String ARRIVE_DEST_WB_DESC = "AGV到达终点";
         public final static String PUBLIC_TASK_CREATE_DECS = "通用的创建主任务接口";
+        public final static String CHANGCHUN_PToP_TASK_CREATE = "长春手持";
     }
 
     public static final class SrcClientCode {

@@ -70,6 +70,12 @@ public class TaskConstants {
          */
         public final static String PTOP = "pTop";
         /**
+         * 长春老化区前往检验缓存区
+         */
+        public final static String AGINGTOINSPCACHE = "agingToInspCache";
+
+
+        /**
          * 自动检验缓冲区去检验点
          */
         public final static String QUABUFTOQUA = "quaBufToQua";

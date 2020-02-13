@@ -1,43 +1,54 @@
 package com.wisdom.iwcs.service.task.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wisdom.base.context.AppContext;
+import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
+import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.MesBusinessException;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.idUtils.CodeBuilder;
 import com.wisdom.iwcs.common.utils.taskUtils.TaskPriorityEnum;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
+import com.wisdom.iwcs.domain.base.dto.LockMapBerthCondition;
+import com.wisdom.iwcs.domain.base.dto.LockStorageDto;
 import com.wisdom.iwcs.domain.task.*;
 import com.wisdom.iwcs.domain.task.dto.PublicContextDTO;
+import com.wisdom.iwcs.domain.task.dto.TaskContextDTO;
+import com.wisdom.iwcs.domain.upstream.mes.CreateTaskRequest;
 import com.wisdom.iwcs.domain.upstream.mes.MesResult;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
-import com.wisdom.iwcs.mapper.base.BaseWhAreaMapper;
-import com.wisdom.iwcs.mapper.elevator.EleControlTaskMapper;
-import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.task.*;
 import com.wisdom.iwcs.mapstruct.task.TaskContextMapStruct;
-import com.wisdom.iwcs.service.base.ICommonService;
 import com.wisdom.iwcs.service.task.conditions.strategy.IStrategyHandler;
-import com.wisdom.iwcs.service.task.intf.*;
+import com.wisdom.iwcs.service.task.intf.ITaskCreateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPCACHEAREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.AGINGREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.QUAINSPAREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.handlerName.ACTIONCHECKHANDLER;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
+import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.AGINGTOINSPCACHE;
+import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PTOP;
 import static com.wisdom.iwcs.common.utils.YZConstants.LOCK;
 
 /**
@@ -73,6 +84,8 @@ public class TaskCreateService implements ITaskCreateService {
     private BasePodDetailMapper basePodDetailMapper;
     @Autowired
     private TaskRelMapper taskRelMapper;
+    @Autowired
+    private TaskContextMapStruct taskContextMapStruct;
     @Autowired
     ResourceHandlerStrategyMapper resourceHandlerStrategyMapper;
 
@@ -345,4 +358,197 @@ public class TaskCreateService implements ITaskCreateService {
         }
         return mainTask;
     }
+
+    /**
+     *  长春手持
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public MesResult pToPTaskCreate(CreateTaskRequest createTaskRequest){
+        logger.info("长春手持点到点搬运开始创建主任务");
+        String taskType = createTaskRequest.getTaskType();
+        //参数校验
+        if (StringUtils.isBlank(taskType)) {
+            throw new MesBusinessException("主任务类型不能为空");
+        }
+        switch (taskType){
+            case AGINGTOINSPCACHE:
+                logger.info("老化区去检验缓存区:{}",JSON.toJSONString(createTaskRequest));
+                pToPFromAreaFun(createTaskRequest);
+                break;
+            case PTOP:
+                pTopFun(createTaskRequest);
+                break;
+            default:
+                logger.error("未知的主任务类型！:{}",taskType);
+        }
+        return new MesResult();
+    }
+
+    /**
+     * 长春 点到点（终点从区域中选点） PDA
+     * @param createTaskRequest
+     * @return
+     */
+    public Result pToPFromAreaFun(CreateTaskRequest createTaskRequest){
+        if (StringUtils.isBlank(createTaskRequest.getPodCode())){
+            throw new BusinessException("货架号不能为空");
+        }
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(basePodDetail == null, "无效货架号" + createTaskRequest.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new BusinessException("该货架已被锁！");
+        }
+
+        //查询点位坐标
+        BaseMapBerth baseMapBerth =  baseMapBerthMapper.selectDataByPodCode(createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(baseMapBerth == null, "货架号未初始化！" + createTaskRequest.getPodCode());
+        Preconditions.checkBusinessError(!AGINGREA.equals(baseMapBerth.getOperateAreaCode()), "该货架不属于老化区" + createTaskRequest.getPodCode());
+
+        //提前生成主任务号
+        String mainTaskNum = CodeBuilder.codeBuilder("M");
+        //校验成功后，锁定该货架
+        basePodDetail.setLockSource(mainTaskNum);
+        mapResouceService.lockPod(basePodDetail);
+
+        //  计算空闲点位 并锁定
+        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+        List<LockMapBerthCondition> lockMapBerthConditionList = new ArrayList<>();
+        //判断检验缓存区是否有空位置
+        lockMapBerthCondition.setOperateAreaCode(QUAINSPAREA);
+        lockMapBerthCondition.setBizType(QUAINSPCACHEAREA);
+        lockMapBerthCondition.setMapCode(baseMapBerth.getMapCode());
+        lockMapBerthConditionList.add(lockMapBerthCondition);
+
+        Result result = mapResouceService.lockEmptyStorageByOperateAreaList(lockMapBerthConditionList);
+        if (result.getReturnCode() != HttpStatus.OK.value()) {
+            throw new BusinessException(result.getReturnMsg());
+        }
+        //空闲点位
+        BaseMapBerth selectBaseMapBerth = (BaseMapBerth) result.getReturnData();
+        String berCode = selectBaseMapBerth.getBerCode();
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(baseMapBerth.getBerCode(),
+                berCode));
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String taskPri ="";
+        String staticPodCode = createTaskRequest.getPodCode();
+        int ret =  createMainTask(taskType,taskPri,jsonString,staticPodCode,mainTaskNum);
+        if (ret!=1){
+            throw new MesBusinessException("创建主任务失败！");
+        }
+        //将主任务号插入 task_context 表
+        mainTaskNumToContext(mainTaskNum);
+        return new Result();
+    }
+
+    /**
+     * 添加主任务
+     * @param taskType
+     * @param
+     * @param taskPri
+     * @return
+     */
+    public int createMainTask(String taskType,String taskPri,String jsonString,String staticPodCode,String mainTaskNum){
+        MainTask mainTaskCreate = new MainTask();
+        mainTaskCreate.setMainTaskNum(mainTaskNum);
+        mainTaskCreate.setCreateDate(new Date());
+        if (StringUtils.isNotEmpty(taskPri)){
+            mainTaskCreate.setPriority(TaskPriorityEnum.getPriorityByCode(taskPri));
+        }
+        mainTaskCreate.setMainTaskTypeCode(taskType);
+        if (StringUtils.isNotEmpty(jsonString)){
+            mainTaskCreate.setStaticViaPaths(jsonString);
+        }
+        if (StringUtils.isNotEmpty(staticPodCode)){
+            mainTaskCreate.setStaticPodCode(staticPodCode);
+        }
+        mainTaskCreate.setTaskStatus(MAIN_NOT_ISSUED);
+        int ret = mainTaskMapper.insertSelective(mainTaskCreate);
+        return ret;
+    }
+
+    /**
+     * 长春 点到点任务
+     * @param createTaskRequest
+     */
+    public Result pTopFun(CreateTaskRequest createTaskRequest){
+        String startPointAlias = createTaskRequest.getStartPointAlias();
+        String targetPointAlias = createTaskRequest.getTargetPointAlias();
+        if (StringUtils.isBlank(startPointAlias)){
+            throw  new BusinessException("搬运起点不能为空！");
+        }
+        if (StringUtils.isBlank(targetPointAlias)){
+            throw  new BusinessException("搬运目标点不能为空！");
+        }
+
+        //查询起点 点位坐标
+        BaseMapBerth startBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(startPointAlias);
+        Preconditions.checkBusinessError(startBaseMapBerth == null, "无效搬运起点编码" + startPointAlias);
+        if (StringUtils.isBlank(startBaseMapBerth.getPodCode())){
+            throw new BusinessException("搬运起点无货架");
+        }
+        //校验该货架是否被锁
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(startBaseMapBerth.getPodCode());
+        if (StringUtils.isNotEmpty(basePodDetail.getLockSource()) || NOT_EMPTY_POD.equals(basePodDetail.getInLock())){
+            throw new BusinessException("该货架已被锁！");
+        }
+
+        //提前生成主任务号
+        String mainTaskNum = CodeBuilder.codeBuilder("M");
+        //校验成功后，锁定该货架
+        basePodDetail.setLockSource(mainTaskNum);
+        mapResouceService.lockPod(basePodDetail);
+
+        //查询目标点 点位坐标
+        BaseMapBerth targetBaseMapBerth =  baseMapBerthMapper.selectByPointAlias(targetPointAlias);
+        Preconditions.checkBusinessError(targetBaseMapBerth == null, "无效搬运目标点编码" + targetPointAlias);
+        if (StringUtils.isNotBlank(targetBaseMapBerth.getPodCode())){
+            throw  new BusinessException("搬运目标点已存在货架");
+        }
+        if (targetBaseMapBerth.getInLock()==1 || StringUtils.isNotBlank(targetBaseMapBerth.getLockSource())){
+            throw  new BusinessException("目标点位已锁定");
+        }
+        //校验通过，锁定该点
+        LockStorageDto lockStorageDto = new LockStorageDto();
+        lockStorageDto.setMapCode(targetBaseMapBerth.getMapCode());
+        lockStorageDto.setBerCode(targetBaseMapBerth.getBerCode());
+        lockStorageDto.setLockSource(mainTaskNum);
+        Result lockResult = mapResouceService.lockMapBer(lockStorageDto);
+        Preconditions.checkBusinessError(lockResult.getReturnCode() != 200,lockResult.getReturnMsg());
+
+        //写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(startBaseMapBerth.getBerCode(),
+                targetBaseMapBerth.getBerCode()));
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String taskPri = "";
+        String staticPodCode = startBaseMapBerth.getPodCode();
+        int ret = createMainTask(taskType,taskPri,jsonString,staticPodCode,mainTaskNum);
+        if (ret!=1){
+            throw new BusinessException("创建主任务失败！");
+        }
+        //将主任务号插入 task_context 表
+        mainTaskNumToContext(mainTaskNum);
+        return new Result();
+    }
+
+    /**
+     * 长春 将主任务号插入 task_context 表
+     */
+    public int mainTaskNumToContext(String mainTaskNum){
+        TaskContextDTO taskContextDTO = new TaskContextDTO();
+        taskContextDTO.setMainTaskNum(mainTaskNum);
+        taskContextDTO.setCreateTime(new Date());
+        TaskContext taskContext = taskContextMapStruct.toEntity(taskContextDTO);
+        int num = taskContextMapper.insert(taskContext);
+        if (num!=1){
+            throw new BusinessException("操作失败！");
+        }
+        return num;
+    }
+
 }

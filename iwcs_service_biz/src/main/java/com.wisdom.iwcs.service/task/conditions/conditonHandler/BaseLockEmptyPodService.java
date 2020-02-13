@@ -50,7 +50,11 @@ public class BaseLockEmptyPodService {
         for (AreaCondition areaCondition : areaConditions) {
             //优先条件
             LockPodCondition lockPodCondition = new LockPodCondition();
-            lockPodCondition.setMapCode(subTask.getMapCode());
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(subTask.getMapCode())){
+                lockPodCondition.setMapCode(subTask.getMapCode());
+            }else {
+                lockPodCondition.setMapCode(subTask.getEndMapCode());
+            }
             lockPodCondition.setLockSource(subTask.getSubTaskNum());
             lockPodCondition.setOperateAreaCode(areaCondition.getArea());
             lockPodCondition.setBizType(areaCondition.getBizType());
