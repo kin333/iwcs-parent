@@ -148,4 +148,12 @@
         select <include refid="Base_Column_List"/> from ts_main_task
         where task_status != 9 and main_task_num = #{mainTaskNum}
     </select>
+
+    <select id="selectByMainTaskTypeCode" resultType="com.wisdom.iwcs.domain.task.MainTask">
+        select
+        <include refid="Base_Column_List"/>
+        from ts_main_task
+        where (task_status = '0' or task_status = '1')
+        and main_task_type_code = #{mainTaskTypeCode}
+    </select>
 </mapper>

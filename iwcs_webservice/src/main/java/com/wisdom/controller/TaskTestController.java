@@ -297,6 +297,61 @@ public class TaskTestController {
         return new Result(result);
     }
 
+    /**
+     * 长春 点到点任务 自动模拟调度
+     */
+    @GetMapping("/pToPAutoTest")
+    public Result pToPAutoTest(){
+        int time = 1000;
+        try {
+            logger.info("开始启动 产线下线区呼叫空车  任务生成器");
+            Thread lineInsertingAreaCallThread = new Thread(new CallTaskWorker("lineInsertingAreaCall"));
+            lineInsertingAreaCallThread.start();
+            logger.info("启动 产线下线区呼叫空车  任务生成器成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动 产线下线区至老化区  任务生成器");
+            Thread lineInsertingAreaLeaveThread = new Thread(new LeaveTaskWorker("lineInsertingAreaLeave"));
+            lineInsertingAreaLeaveThread.start();
+            logger.info("启动  产线下线区至老化区 任务生成器成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动  检验缓存区至检验区  任务生成器");
+            Thread quaInspAreaCallThread = new Thread(new CallTaskWorker("quaInspAreaCall"));
+            quaInspAreaCallThread.start();
+            logger.info("启动  检验缓存区至检验区 任务生成器成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动 检验区空货架返回   任务生成器");
+            Thread quaInspAreaLeaveThread = new Thread(new LeaveTaskWorker("quaInspAreaLeave"));
+            quaInspAreaLeaveThread.start();
+            logger.info("启动  检验区空货架返回 任务生成器成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动  老化区至检验缓存区 任务生成器");
+            Thread agingToInspCacheThread = new Thread(new PDATaskWorker("agingToInspCache"));
+            agingToInspCacheThread.start();
+            logger.info("启动 老化区至检验缓存区  任务生成器成功");
+
+            Thread.sleep(time);
+
+            logger.info("开始启动  产线缓存区自动补充空老化车 任务生成器");
+            Thread prodCacheAutoSupplyThread = new Thread(new AutoTaskWorker("prodCacheAutoSupply"));
+            prodCacheAutoSupplyThread.start();
+            logger.info("启动 产线缓存区自动补充空老化车  任务生成器成功");
+
+            Thread.sleep(time);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Result("启动成功");
+    }
+
 
 
 }

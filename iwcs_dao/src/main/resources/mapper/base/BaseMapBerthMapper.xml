@@ -202,12 +202,20 @@
         and bmb.pod_code != ''
         and bmb.pod_code is not null
         and bpd.in_lock = 0
+        <if test=" inStock!= null ">
+            and bpd.in_stock = #{inStock}
+        </if>
         <if test="mapCode != null and mapCode != ''">
             and bmb.map_code = #{mapCode}
         </if>
-        <if test="bizType != null and bizType != ''">
-            and bmb.biz_type = #{bizType}
-        </if>
+        <choose>
+            <when test="bizType != null and bizType != ''">
+                and bmb.biz_type = #{bizType}
+            </when>
+            <otherwise>
+                and (bmb.biz_type is null or bmb.biz_type = '')
+            </otherwise>
+        </choose>
         <if test="bizSecondAreaCode != null and bizSecondAreaCode != ''">
             and bmb.biz_second_area_code = #{bizSecondAreaCode}
         </if>
@@ -230,9 +238,14 @@
         <if test="mapCode != null and mapCode != ''">
             and map_code = #{mapCode}
         </if>
-        <if test="bizType != null and bizType != ''">
-            and biz_type = #{bizType}
-        </if>
+        <choose>
+            <when test="bizType != null and bizType != ''">
+                and biz_type = #{bizType}
+            </when>
+            <otherwise>
+                and (biz_type is null or biz_type = '')
+            </otherwise>
+        </choose>
         <if test="bizSecondAreaCode != null and bizSecondAreaCode != ''">
             and biz_second_area_code = #{bizSecondAreaCode}
         </if>

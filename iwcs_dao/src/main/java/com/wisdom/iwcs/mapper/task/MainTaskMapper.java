@@ -80,4 +80,8 @@ public interface MainTaskMapper extends MyMapperAndIds<MainTask> {
     Integer selectStartEmptyRecycleTask();
 
     List<MainTask> selectMainTaskByMainCode(String mainTaskNum);
+    /**
+     * 根据主任务类型查询
+     */
+    List<MainTask> selectByMainTaskTypeCode(@Param("mainTaskTypeCode") String mainTaskTypeCode);
 }

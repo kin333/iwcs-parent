@@ -31,6 +31,13 @@ public class BaseLockCondition {
     private String operateAreaCode;
 
     /**
+     * 货架空满
+     * @return
+     */
+    @Column(name = "in_stock")
+    private String inStock;
+
+    /**
      * 业务次级区域(如老化区下的自动区、手动区)
      */
     @Column(name = "biz_second_area_code")
@@ -74,5 +81,13 @@ public class BaseLockCondition {
 
     public void setBizSecondAreaCode(String bizSecondAreaCode) {
         this.bizSecondAreaCode = bizSecondAreaCode;
+    }
+
+    public String getInStock() {
+        return inStock;
+    }
+
+    public void setInStock(String inStock) {
+        this.inStock = inStock;
     }
 }

@@ -73,7 +73,26 @@ public class TaskConstants {
          * 长春老化区前往检验缓存区
          */
         public final static String AGINGTOINSPCACHE = "agingToInspCache";
-
+        /**
+         * 长春产线下线区至老化区
+         */
+        public final static String LINEINSERTINGAREALEAVE = "lineInsertingAreaLeave";
+        /**
+         *长春 产线下线区呼叫空车
+         */
+        public final static String LINEINSERTINGAREACALL = "lineInsertingAreaCall";
+        /**
+         *长春 检验区空货架返回
+         */
+        public final static String QUAINSPAREALEAVE = "quaInspAreaLeave";
+        /**
+         *长春 检验缓存区至检验区
+         */
+        public final static String QUAINSPAREACALL = "quaInspAreaCall";
+        /**
+         *长春 产线缓存区自动补充空老化车
+         */
+        public final static String PRODCACHEAUTOSUPPLY = "prodCacheAutoSupply";
 
         /**
          * 自动检验缓冲区去检验点
