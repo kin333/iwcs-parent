@@ -80,14 +80,14 @@ public class MainTaskWorker extends AbstractTaskWorker {
                     SubTask currentPendingSubtask = getCurrentPendingSubtask();
                     String mainTaskNum = mainTask.getMainTaskNum();
                     if (currentPendingSubtask == null) {
-                        if (wcsTaskScheduler != null) {
-                            logger.info("主任务{}没有待完成的子任务,上报任务调度器，主任务完成", mainTaskNum);
-                            wcsTaskScheduler.onMainTaskEnd(mainTaskNum);
-                        }
                         MainTaskService mainTaskService = (MainTaskService) AppContext.getBean("mainTaskService");
                         logger.info("调用更新{}主任务结束方法", mainTaskNum);
                         boolean endMainTaskRes = mainTaskService.endMainTask(mainTaskNum);
                         logger.debug("结束主任务{}结果：{}", mainTask.getMainTaskNum(), endMainTaskRes);
+                        if (wcsTaskScheduler != null) {
+                            logger.info("主任务{}没有待完成的子任务,上报任务调度器，主任务完成", mainTaskNum);
+                            wcsTaskScheduler.onMainTaskEnd(mainTaskNum);
+                        }
                         break;
                     } else {
                         logger.info("检测到主任务{}包含有未结束子任务单{}，开始启动子任务执行线程开始执行", mainTask.getMainTaskNum(), currentPendingSubtask.getSubTaskNum());
