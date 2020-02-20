@@ -16,6 +16,7 @@ import com.wisdom.iwcs.mapper.elevator.ElevatorMapper;
 import com.wisdom.iwcs.mapper.linebody.LineMsgLogMapper;
 import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
+import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,8 @@ public class PLCControlService {
     private DoorNotifyService doorNotifyService;
     @Autowired
     private DoorMsgLogMapper doorMsgLogMapper;
+    @Autowired
+    private LineNotifyService lineNotifyService;
 
     public String testService(String str){
         logger.info("BusinessService.testService({})...........", str);
@@ -122,16 +125,16 @@ public class PLCControlService {
             lineBodyReport.setAddress(sendAddr);
             lineBodyReport.setDeviceType(commandType);
             lineBodyReport.setReqCode(reqCode);
-            String workType = msgBody.substring(12,14);
-            String workPoint = msgBody.substring(10,12);
+            String workType = msgBody.substring(2,4);
+            String workPoint = msgBody.substring(0,2);
             if (workType.equals("01")){
-                logger.info("线体通知{}：呼叫空货架"+ plcRespone.getAddress()+":"+workPoint);
+                logger.info("线体通知{}：呼叫货架补入"+ plcRespone.getAddress()+":"+workPoint);
                 lineBodyReport.setWorkPoint(workPoint);
-//                lineNotifyService.lineCallEmptyPod(lineBodyReport);
-            }else {
+                lineNotifyService.lineCallEmptyPod(lineBodyReport);
+            }else if (workType.equals("02")){
                 logger.info("线体通知{}：呼叫货架离开"+ plcRespone.getAddress()+":"+workPoint);
                 lineBodyReport.setWorkPoint(workPoint);
-//                lineNotifyService.lineCallAgvPickPod(lineBodyReport);
+                lineNotifyService.lineCallAgvPickPod(lineBodyReport);
             }
             //insert line_msg_log
             LineMsgLog lineMsgLog = new LineMsgLog();

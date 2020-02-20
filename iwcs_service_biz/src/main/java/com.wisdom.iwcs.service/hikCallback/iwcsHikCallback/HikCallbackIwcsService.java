@@ -27,6 +27,7 @@ import com.wisdom.iwcs.service.callHik.ITransferHikHttpRequestService;
 import com.wisdom.iwcs.service.callHik.callHikImpl.ContinueTaskService;
 import com.wisdom.iwcs.service.door.impl.DoorNotifyService;
 import com.wisdom.iwcs.service.elevator.impl.ElevatorNotifyService;
+import com.wisdom.iwcs.service.linebody.impl.LineNotifyService;
 import com.wisdom.iwcs.service.log.logImpl.RabbitMQPublicService;
 import com.wisdom.iwcs.service.task.action.RouseMainTaskAction;
 import com.wisdom.iwcs.service.task.impl.MessageService;
@@ -49,12 +50,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAAUTOPOINT;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizSecondAreaCodeTypeConstants.LINEAREAMANUALPOINT;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.HikCallbackMethod.*;
-import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.SENDING;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.createNode.*;
@@ -70,6 +68,8 @@ public class HikCallbackIwcsService {
 
     @Autowired
     SubTaskMapper subTaskMapper;
+    @Autowired
+    private LineNotifyService lineNotifyService;
     @Autowired
     BaseMapBerthMapper baseMapBerthMapper;
     @Autowired
@@ -364,6 +364,12 @@ public class HikCallbackIwcsService {
         resPosEvt.setSubTaskNum(hikCallBackAgvMove.getTaskCode());
         String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
+
+         /*if ((LINEAREA.equals(baseMapBerth.getOperateAreaCode()) && LINEWORKAREA.equals(baseMapBerth.getBizType()))
+                 ||(QUAINSPAREA.equals(baseMapBerth.getOperateAreaCode()) && !QUAINSPCACHEAREA.equals(baseMapBerth.getBizType()))) {
+            logger.info("通知线体,小车已经离开{} ",baseMapBerth.getPointAlias());
+            lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.LEAVE);
+        }*/
     }
 
     /**

@@ -17,14 +17,14 @@ public class InboundHexStrToResponseInterceptor extends ChannelInboundHandlerAda
             String msgStr = (String) msg;
             PlcRespone plcRespone = new PlcRespone();
             logger.info("接收到PLC Server消息..........."+msgStr);
-            //01 03 01 02 03 04 01 01 01,
+            //01 04 01 01 01,
             String address = msgStr.substring(0, 2);
             String deviceType = msgStr.substring(2,4);
             int dataLength10 = 1;
             if (deviceType.equals("03")){
                 dataLength10 = 20;
             }else {
-                dataLength10 = 18;
+                dataLength10 = 10;
             }
             String dataBody = msgStr.substring(4,dataLength10);
             plcRespone.setAddress(address.toUpperCase());
