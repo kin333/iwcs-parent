@@ -120,19 +120,19 @@ application:
     nettyServerHost: 192.168.102.97
     nettyServerPort: 9234
   hikParam:
-    returnPodUrl: http://192.168.102.103/cms/services/rest/hikTpsService/returnPod
-    getOutPodUrl: http://192.168.102.103/cms/services/rest/hikTpsService/getOutPod
-    endTaskUrl: http://192.168.102.103/cms/services/rest/hikTpsService/endAllTasksByTps
-    rotatePodUrl: http://192.168.102.103/cms/services/rest/hikTpsService/rotatePodByTps
-    movePodUrl: http://192.168.102.103/cms/services/rest/hikTpsService/genMoveTaskByPod
-    genAgvSchedulingTaskUrl: http://192.168.102.103/cms/services/rest/hikRpcService/genAgvSchedulingTask
-    continueTaskUrl: http://192.168.102.103/cms/services/rest/hikRpcService/continueTask
-    cancelTaskUrl: http://192.168.102.103/cms/services/rest/hikRpcService/cancelTask
-    freeRobotUrl: http://192.168.102.103/cms/services/rest/hikRpcService/freeRobot
-    returnMapOrPodUrl: http://192.168.102.103/cms/services/rest/hikRpcService/queryPodBerthAndMat
-    returnTaskStatus:  http://192.168.102.103/cms/services/rest/hikRpcService/queryTaskStatus
-    finiTask:  http://192.168.102.103/cms/services/rest/hikLiftService/finiTask
-    notifyExcuteResultInfoUrl:  http://192.168.102.103/cms/services/rest/liftCtlService/notifyExcuteResultInfo
+    returnPodUrl: http://192.168.102.105/cms/services/rest/hikTpsService/returnPod
+    getOutPodUrl: http://192.168.102.105/cms/services/rest/hikTpsService/getOutPod
+    endTaskUrl: http://192.168.102.105/cms/services/rest/hikTpsService/endAllTasksByTps
+    rotatePodUrl: http://192.168.102.105/cms/services/rest/hikTpsService/rotatePodByTps
+    movePodUrl: http://192.168.102.105/cms/services/rest/hikTpsService/genMoveTaskByPod
+    genAgvSchedulingTaskUrl: http://192.168.102.105/cms/services/rest/hikRpcService/genAgvSchedulingTask
+    continueTaskUrl: http://192.168.102.105/cms/services/rest/hikRpcService/continueTask
+    cancelTaskUrl: http://192.168.102.105/cms/services/rest/hikRpcService/cancelTask
+    freeRobotUrl: http://192.168.102.105/cms/services/rest/hikRpcService/freeRobot
+    returnMapOrPodUrl: http://192.168.102.105/cms/services/rest/hikRpcService/queryPodBerthAndMat
+    returnTaskStatus:  http://192.168.102.105/cms/services/rest/hikRpcService/queryTaskStatus
+    finiTask:  http://192.168.102.105/cms/services/rest/hikLiftService/finiTask
+    notifyExcuteResultInfoUrl:  http://192.168.102.105/cms/services/rest/liftCtlService/notifyExcuteResultInfo
     tokenCode: d2076d0915a5e6985641a7123cf708bc
     clientCode: INSPUR
   outstock:
@@ -140,7 +140,7 @@ application:
     allowHandOutstockSupplyCall: true
     forceKeepOutstockProcess: true
   rabbitmq:
-    host: 192.168.102.103
+    host: 192.168.102.105
     port: 5672
     username: admin
     password: admin
@@ -148,7 +148,7 @@ application:
   warn:
     checkName: name1;name2
   downPda:
-    url: http://192.168.102.103:8088
+    url: http://192.168.102.105:8088
   lang:
     currentLang: zh_CN
 
