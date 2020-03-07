@@ -54,11 +54,6 @@ public class DictionaryConstants {
         public static final String OUTSTOCK_CURRENT_SUPPLY_CHOICE = "currentSupplyChoice";
 
         /**
-         * 历史数据迁移条件
-         */
-        public static final String HISTORYDATE = "HISTORYDATE";
-
-        /**
          * 需要迁移的表
          */
         public static final String MIGRATIONTABLE = "MIGRATIONTABLE";
