@@ -21,13 +21,6 @@ public class HisDataMigrationDTO {
     public HisDataMigrationDTO() {
     }
 
-    public HisDataMigrationDTO(String tableName, String date, String dateColName) {
-        super();
-        this.tableName = tableName;
-        this.date= date;
-        this.dateColName = dateColName;
-    }
-
     public HisDataMigrationDTO(String toTableName, String tableName, String date, String dateColName) {
         super();
         this.toTableName = toTableName;

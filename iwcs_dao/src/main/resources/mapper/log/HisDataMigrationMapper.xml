@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wisdom.iwcs.mapper.log.HisDataMigrationMapper">
-  <insert id="taskOperationLogHis" >
-    INSERT INTO ${toTableName}
-        SELECT * FROM ${tableName}
-        where DATE_SUB(CURDATE(), ${date}) > date(${dateColName})
-  </insert>
+    <sql id="Base_Column_List">
+        a.*
+    </sql>
 
-  <delete id="taskOperationLog">
+    <insert id="taskOperationLogHis" >
+        INSERT INTO ${toTableName}
+        SELECT <include refid="Base_Column_List" />  FROM ${tableName} a
+        where DATE_SUB(CURDATE(), ${date}) > date(${dateColName})
+    </insert>
+
+    <delete id="taskOperationLog">
     DELETE from ${tableName} where DATE_SUB(CURDATE(), ${date}) > date(${dateColName})
   </delete>
 
