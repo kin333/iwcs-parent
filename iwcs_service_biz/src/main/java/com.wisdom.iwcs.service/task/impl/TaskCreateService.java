@@ -3,6 +3,7 @@ package com.wisdom.iwcs.service.task.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Strings;
 import com.wisdom.base.context.AppContext;
 import com.wisdom.iwcs.common.utils.Result;
 import com.wisdom.iwcs.common.utils.constant.CondtionTriger;
@@ -47,8 +48,7 @@ import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeCon
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.PodInStockConstants.NOT_EMPTY_POD;
 import static com.wisdom.iwcs.common.utils.TaskConstants.handlerName.ACTIONCHECKHANDLER;
 import static com.wisdom.iwcs.common.utils.TaskConstants.mainTaskStatus.MAIN_NOT_ISSUED;
-import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.AGINGTOINSPCACHE;
-import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.PTOP;
+import static com.wisdom.iwcs.common.utils.TaskConstants.taskCodeType.*;
 import static com.wisdom.iwcs.common.utils.YZConstants.LOCK;
 
 /**
@@ -379,10 +379,84 @@ public class TaskCreateService implements ITaskCreateService {
             case PTOP:
                 pTopFun(createTaskRequest);
                 break;
+            case PTOPWITHOUTPODCHECK:
+                initFun(createTaskRequest);
+                break;
             default:
                 logger.error("未知的主任务类型！:{}",taskType);
         }
         return new MesResult();
+    }
+
+    /**
+     * 长春  点到点 / 初始化入库
+     * 参数：计算起点，目标点(上锁),货架(上锁)
+     * 参数：起点、货架号、目标点
+     * 初始化入库：参数 货架号、起始点 必传
+     * @param
+     * @return
+     */
+    public Result initFun(CreateTaskRequest createTaskRequest){
+        logger.info("点到点初始化货架:{}",JSON.toJSONString(createTaskRequest));
+        String podCode = createTaskRequest.getPodCode();
+        String startPointAlias = createTaskRequest.getStartPointAlias();
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(startPointAlias), "起始点不能为空");
+        Preconditions.checkBusinessError(Strings.isNullOrEmpty(podCode), "货架号不能为空");
+        String startPoint = "";
+        String targetPoint = "";
+
+        BaseMapBerth startBaseMapBerth = new BaseMapBerth();
+        if (!Strings.isNullOrEmpty(startPointAlias)){
+            startBaseMapBerth = baseMapBerthMapper.selectByPointAlias(startPointAlias);
+            Preconditions.checkBusinessError(startBaseMapBerth == null, "根据起点点位编号获取点位信息为空");
+            startPoint = startBaseMapBerth.getBerCode();
+        }
+
+        //初始化入库
+        //校验货架号是否为未初始化货架
+        BasePodDetail basePodDetail = basePodDetailMapper.selectUnInitPodByPodCode(podCode);
+        Preconditions.checkBusinessError(basePodDetail==null, "初始化货架：IWCS中未查找到该货架");
+        //更新货架原始楼层
+        basePodDetailMapper.updateSourceMapByPodCode(podCode,startBaseMapBerth.getMapCode(), startBaseMapBerth.getAreaCode());
+
+        //校验成功后，锁定该货架
+        String mainTaskNum = CodeBuilder.codeBuilder("M");
+        basePodDetail.setLockSource(mainTaskNum);
+        mapResouceService.lockPod(basePodDetail);
+
+        //筛选目标点，锁定
+        LockMapBerthCondition lockMapBerthCondition = new LockMapBerthCondition();
+        lockMapBerthCondition.setMapCode(startBaseMapBerth.getMapCode());
+        lockMapBerthCondition.setOperateAreaCode(AGINGREA);
+        List<BaseMapBerth> baseMapBerthList = new ArrayList<>();
+        baseMapBerthList = baseMapBerthMapper.selectEmptyStorage(lockMapBerthCondition);
+        Preconditions.checkBusinessError(baseMapBerthList.size() < 1, "未找到合适的目标点");
+        BaseMapBerth baseMapBerth = mapResouceService.distanceRule(baseMapBerthList);
+        targetPoint = baseMapBerth.getBerCode();
+        Preconditions.checkBusinessError(startPoint.equals(targetPoint), "搬运起点与目标点不能一致");
+        //锁定选中的点
+        LockStorageDto lockStorageDto = new LockStorageDto();
+        lockStorageDto.setMapCode(baseMapBerth.getMapCode());
+        lockStorageDto.setBerCode(baseMapBerth.getBerCode());
+        lockStorageDto.setLockSource(mainTaskNum);
+        Result lockResult = mapResouceService.lockMapBer(lockStorageDto);
+        Preconditions.checkBusinessError(lockResult.getReturnCode() != 200,lockResult.getReturnMsg());
+
+        //将起点终点写入站点集合
+        String jsonString = JSONArray.toJSONString(Arrays.asList(startPoint,targetPoint));
+
+        //创建主任务
+        String taskType = createTaskRequest.getTaskType();
+        String taskPri = "";
+        String staticPodCode = podCode;
+        int ret = createMainTask(taskType,taskPri,jsonString,staticPodCode,mainTaskNum);
+        if (ret!=1){
+            throw new BusinessException("创建主任务失败！");
+        }
+
+        //将主任务号插入 task_context 表
+        mainTaskNumToContext(mainTaskNum);
+        return new Result();
     }
 
     /**
