@@ -7,9 +7,10 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.common.utils.podUtils.PodTaskLockEnum;
-import com.wisdom.iwcs.domain.base.BasePod;
+import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BasePodDetailDTO;
+import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
 import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapstruct.base.BasePodDetailMapStruct;
 import com.wisdom.iwcs.service.base.IBasePodDetailService;
@@ -34,10 +35,13 @@ public class BasePodDetailService implements IBasePodDetailService {
 
     private final BasePodDetailMapStruct basePodDetailMapStruct;
 
+    private final BaseMapBerthMapper baseMapBerthMapper;
+
     @Autowired
-    public BasePodDetailService(BasePodDetailMapStruct basePodDetailMapStruct, BasePodDetailMapper basePodDetailMapper) {
+    public BasePodDetailService(BasePodDetailMapStruct basePodDetailMapStruct, BasePodDetailMapper basePodDetailMapper, BaseMapBerthMapper baseMapBerthMapper) {
         this.basePodDetailMapStruct = basePodDetailMapStruct;
         this.basePodDetailMapper = basePodDetailMapper;
+        this.baseMapBerthMapper = baseMapBerthMapper;
     }
 
     /**
@@ -311,6 +315,26 @@ public class BasePodDetailService implements IBasePodDetailService {
         BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(record.getPodCode());
         Preconditions.checkBusinessError(basePodDetail == null,"货架："+record.getPodCode()+"不存在");
         basePodDetailMapper.updateInStock(record.getPodCode(),record.getInStock());
+        return new Result();
+    }
+
+    /**
+     * 修改货架表最新位置berCode
+     */
+    @Override
+    public Result savePodBercode(String podCode,String pointAlias){
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(podCode);
+        if (basePodDetail == null) {
+            return new Result(400,"未查询到货架号，请先添加该货架号");
+        }
+        List<BaseMapBerth> baseMapBerth = baseMapBerthMapper.selectByPiontAliass(pointAlias);
+        if (baseMapBerth == null){
+            return new Result(400,"未查到该点位信息");
+        }
+        if (baseMapBerth.size() >1 ){
+            return new Result(400,"查询到该点位多条数据，请先修正改点位编号唯一性");
+        }
+        basePodDetailMapper.savePodBercode(podCode,baseMapBerth.get(0).getBerCode());
         return new Result();
     }
 }

@@ -8,8 +8,10 @@ import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTOD;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
+import com.wisdom.iwcs.domain.base.dto.MapBerthAndPodDetailInfo;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
+import com.wisdom.iwcs.service.base.IBasePodDetailService;
 import com.wisdom.iwcs.service.task.impl.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +37,8 @@ public class BaseMapBerthController {
     BaseMapBerthMapStruct baseMapBerthMapStruct;
     @Autowired
     MessageService messageService;
-
+    @Autowired
+    private IBasePodDetailService iBasePodDetailService;
     /**
      * 根据主键ID删除
      *
@@ -209,4 +212,53 @@ public class BaseMapBerthController {
     public Result updateMapByBerCode(@RequestBody BaseMapBerthDTO record) {
         return IBaseMapBerthService.updateMapByBerCode(record);
     }
+
+    /**
+     * 修改货架表最新位置berCode
+     * @param  podCode,pointAlias
+     * @return
+     */
+    @PostMapping("/savePodBercode")
+    @SystemInterfaceLog(methodThansfer = SRC_INSUPR,methodName = SAVE_POD_BERCODE_DESC,methodCode = SAVE_POD_BERCODE)
+    public Result savePodBercode(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
+        Result result = iBasePodDetailService.savePodBercode(baseMapBerthDTO.getPodCode(),baseMapBerthDTO.getPointAlias());
+        return result;
+    }
+
+    /**
+     * 更改地图数据中货架位置
+     * @param  podCode,pointAlias
+     * @return
+     */
+    @PostMapping("/saveMapPodPosition")
+    @SystemInterfaceLog(methodThansfer = SRC_INSUPR,methodName = SAVE_MAP_POD_POSITIOIN_DESC,methodCode = SAVE_MAP_POD_POSITIOIN)
+    public Result saveMapPodPosition(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
+        Result result = IBaseMapBerthService.saveMapPodPosition(baseMapBerthDTO.getPodCode(),baseMapBerthDTO.getPointAlias());
+        return result;
+    }
+
+    /**
+     * 根据货架号或点位
+     * @param  podCode,pointAlias
+     * @return mapBerthAndPodDetailInfo
+     */
+    @PostMapping("/selectMapDataAndPodInfoByPodCode")
+    @SystemInterfaceLog(methodThansfer = SRC_INSUPR,methodName = GET_MAPDATA_BY_PODCODE_DESC,methodCode = GET_MAPDATA_BY_PODCODE)
+    public Result selectMapDataAndPodInfoByPodCode(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
+        MapBerthAndPodDetailInfo mapBerthAndPodDetailInfo = IBaseMapBerthService.selectMapDataAndPodInfoByPodCode(baseMapBerthDTO.getPodCode(),baseMapBerthDTO.getPointAlias());
+        return new Result(mapBerthAndPodDetailInfo);
+    }
+
+    /**
+     * 清除地图数据中的货架号
+     * @param  pointAlias
+     * @return
+     */
+    @PostMapping("/cleanMapPod")
+    @SystemInterfaceLog(methodThansfer = SRC_INSUPR,methodName = CLEAN_MAP_POD_DESC,methodCode = CLEAN_MAP_POD)
+    public Result cleanMapPod(@RequestBody BaseMapBerthDTO baseMapBerthDTO) {
+        Result result = IBaseMapBerthService.cleanMapPod(baseMapBerthDTO.getPointAlias());
+        return result;
+    }
+
 }

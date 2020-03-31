@@ -230,4 +230,13 @@ public interface BaseMapBerthMapper extends DeleteLogicMapper<BaseMapBerth>, MyM
      * @return
      */
     int selectByPointAliaAndBercode(BaseMapBerth baseMapBerth);
+
+    List<BaseMapBerth> selectByPiontAliass(String pointAlias);
+
+    /**
+     * 清空地图数据中的pod_code信息
+     * @return
+     */
+    @Update("update base_map_berth set pod_code = '' where ber_code = #{berCode,jdbcType=VARCHAR}")
+    int cleanPodCodeByBerCode(String berCode);
 }

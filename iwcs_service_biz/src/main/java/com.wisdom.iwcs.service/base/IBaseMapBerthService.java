@@ -7,6 +7,7 @@ import com.wisdom.iwcs.domain.base.BaseMapBerth;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTOD;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
+import com.wisdom.iwcs.domain.base.dto.MapBerthAndPodDetailInfo;
 
 import java.util.List;
 
@@ -55,4 +56,10 @@ public interface IBaseMapBerthService {
     int updateMapById(BaseMapUpdateAreaDTO record);
 
     Result updateMapByBerCode(BaseMapBerthDTO record);
+
+    Result saveMapPodPosition(String podCode,String pointAlias);
+
+    MapBerthAndPodDetailInfo selectMapDataAndPodInfoByPodCode(String podCode, String pointAlias);
+
+    Result cleanMapPod(String pointAlias);
 }

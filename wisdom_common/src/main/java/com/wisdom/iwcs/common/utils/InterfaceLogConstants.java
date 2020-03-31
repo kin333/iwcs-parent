@@ -64,7 +64,10 @@ public class InterfaceLogConstants {
         public final static String CANCEL_TASK = "cancelTask";
         public final static String PUBLIC_CANCEL_TASK = "publicCancelTask";
         public final static String CHANGE_AGV = "changeAgv";
-
+        public final static String CLEAN_MAP_POD = "cleanMapPod";
+        public final static String GET_MAPDATA_BY_PODCODE = "getMapDataByPodCodeOrPointAlias";
+        public final static String SAVE_MAP_POD_POSITIOIN = "saveMapPodPosition";
+        public final static String SAVE_POD_BERCODE = "savePodBercode";
         public final static String ARRIVE_SRC_WB = "arriveSrcWb";
         public final static String LEAVE_SRC_WB = "leaveSrcWb";
         public final static String ARRIVE_DEST_WB_WAIT_PORT = "arriveDestWbWaitPort";
@@ -113,6 +116,10 @@ public class InterfaceLogConstants {
         public final static String TASK_NOTIFY_DESC = "小车移动的回调接口";
         public final static String NOTIFY_TASK_INFO_DESC="agv请求自动门开门/关门";
 
+        public final static String CLEAN_MAP_POD_DESC = "清除地图数据中的货架号";
+        public final static String GET_MAPDATA_BY_PODCODE_DESC = "编辑点位或货架解锁上锁";
+        public final static String SAVE_MAP_POD_POSITIOIN_DESC = "更改地图数据中货架位置";
+        public final static String SAVE_POD_BERCODE_DESC = "修改货架表最新位置berCode";
         public final static String SAVE_INSTOCK_DESC = "更新货架空满";
         public final static String SELECT_WHAREA_LIST_DESC = "拉取库区列表";
         public final static String GET_ALLTORAGE_INFO_DESC = "提供PDA查询储位信息";

@@ -7,10 +7,13 @@ import com.wisdom.iwcs.common.utils.*;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
 import com.wisdom.iwcs.common.utils.exception.Preconditions;
 import com.wisdom.iwcs.domain.base.BaseMapBerth;
+import com.wisdom.iwcs.domain.base.BasePodDetail;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTO;
 import com.wisdom.iwcs.domain.base.dto.BaseMapBerthDTOD;
 import com.wisdom.iwcs.domain.base.dto.BaseMapUpdateAreaDTO;
+import com.wisdom.iwcs.domain.base.dto.MapBerthAndPodDetailInfo;
 import com.wisdom.iwcs.mapper.base.BaseMapBerthMapper;
+import com.wisdom.iwcs.mapper.base.BasePodDetailMapper;
 import com.wisdom.iwcs.mapstruct.base.BaseMapBerthMapStruct;
 import com.wisdom.iwcs.service.base.IBaseMapBerthService;
 import com.wisdom.iwcs.service.security.SecurityUtils;
@@ -32,13 +35,17 @@ public class BaseMapBerthService implements IBaseMapBerthService{
     private final BaseMapBerthMapper baseMapBerthMapper;
 
     private final BaseMapBerthMapStruct baseMapBerthMapStruct;
+
+    private final BasePodDetailMapper basePodDetailMapper;
+
     @Autowired
     MessageService messageService;
 
     @Autowired
-    public BaseMapBerthService(BaseMapBerthMapStruct baseMapBerthMapStruct, BaseMapBerthMapper baseMapBerthMapper) {
+    public BaseMapBerthService(BaseMapBerthMapStruct baseMapBerthMapStruct, BaseMapBerthMapper baseMapBerthMapper, BasePodDetailMapper basePodDetailMapper) {
         this.baseMapBerthMapStruct = baseMapBerthMapStruct;
         this.baseMapBerthMapper = baseMapBerthMapper;
+        this.basePodDetailMapper = basePodDetailMapper;
     }
 
     /**
@@ -404,6 +411,77 @@ public class BaseMapBerthService implements IBaseMapBerthService{
 
         int num = baseMapBerthMapper.updateMapBerthById(baseMapBerthDTO);
         return num;
+    }
+
+    @Override
+    public Result saveMapPodPosition(String podCode, String pointAlias){
+        List<BaseMapBerth> baseMapBerth = baseMapBerthMapper.selectByPiontAliass(pointAlias);
+        if (baseMapBerth == null){
+            return new Result(400,"未查到该点位信息");
+        }
+        if (baseMapBerth.size() >1 ){
+            return new Result(400,"查询到该点位多条数据，请先修正改点位编号唯一性");
+        }
+        BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(podCode);
+        if (basePodDetail == null) {
+            return new Result(400,"未查询到货架号，请先添加该货架号");
+        }
+        if(basePodDetail.getValidFlag() == 1){
+            return new Result(400,"该货架还未初始化，请先初始化");
+        }
+        baseMapBerthMapper.updatePodCodeByBerCode(podCode,baseMapBerth.get(0).getBerCode());
+        return new Result();
+    }
+
+    /**
+     * 根据货架号或点位编号 查询货架与地图 底码是否一致
+     * @param
+     * @return
+     */
+    @Override
+    public MapBerthAndPodDetailInfo selectMapDataAndPodInfoByPodCode(String podCode, String pointAlias){
+        MapBerthAndPodDetailInfo mapBerthAndPodDetailInfo  = new MapBerthAndPodDetailInfo();
+        if (podCode != null){
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectDataByPodCode(podCode);
+            BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(podCode);
+            if (baseMapBerth != null) {
+                mapBerthAndPodDetailInfo.setMapBerCode(baseMapBerth.getBerCode());
+                mapBerthAndPodDetailInfo.setMapPodCode(baseMapBerth.getPodCode());
+                mapBerthAndPodDetailInfo.setPointAlias(baseMapBerth.getPointAlias());
+            }
+            if (basePodDetail != null) {
+                mapBerthAndPodDetailInfo.setPodBerCode(basePodDetail.getBerCode());
+                mapBerthAndPodDetailInfo.setPodCode(basePodDetail.getPodCode());
+            }
+        }else if (pointAlias != null){
+            BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(pointAlias);
+            if (baseMapBerth != null){
+                mapBerthAndPodDetailInfo.setMapBerCode(baseMapBerth.getBerCode());
+                mapBerthAndPodDetailInfo.setMapPodCode(baseMapBerth.getPodCode());
+                mapBerthAndPodDetailInfo.setPointAlias(baseMapBerth.getPointAlias());
+                BasePodDetail basePodDetail = basePodDetailMapper.selectByPodCode(baseMapBerth.getPodCode());
+                if (basePodDetail != null) {
+                    mapBerthAndPodDetailInfo.setPodBerCode(basePodDetail.getBerCode());
+                    mapBerthAndPodDetailInfo.setPodCode(basePodDetail.getPodCode());
+                }
+            }
+        }else{
+            mapBerthAndPodDetailInfo = null;
+        }
+
+        return mapBerthAndPodDetailInfo;
+    }
+    @Override
+    public Result cleanMapPod(String pointAlias){
+        List<BaseMapBerth> baseMapBerth = baseMapBerthMapper.selectByPiontAliass(pointAlias);
+        if (baseMapBerth == null){
+            return new Result(400,"未查到该点位信息");
+        }
+        if (baseMapBerth.size() >1 ){
+            return new Result(400,"查询到该点位多条数据，请先修正改点位编号唯一性");
+        }
+        baseMapBerthMapper.cleanPodCodeByBerCode(baseMapBerth.get(0).getBerCode());
+        return new Result();
     }
 
 }

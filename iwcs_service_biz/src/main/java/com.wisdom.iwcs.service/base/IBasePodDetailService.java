@@ -46,4 +46,6 @@ public interface IBasePodDetailService {
     BasePodDetail selectPodByPodCode(BasePodDetailDTO basePodDetailDTO);
 
     BasePodDetail selectPodData(BasePodDetailDTO recode);
+
+    Result savePodBercode(String podCode,String pointAlias);
 }
