@@ -60,7 +60,7 @@ public class LineNotifyService {
         String workPoint = lineBodyReport.getWorkPoint();
         //查询这点有货架或没有完结的任务没
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(workPoint);
-        if (baseMapBerth.getInLock() != 0 || !Strings.isNullOrEmpty(baseMapBerth.getPodCode())){
+        if (baseMapBerth !=null && (baseMapBerth.getInLock() != 0 || !Strings.isNullOrEmpty(baseMapBerth.getPodCode()))){
             msgStatus = "02";
         }else {
             //创建 呼叫货架补入 任务
@@ -152,7 +152,7 @@ public class LineNotifyService {
         //获取随机码
         String randomNum = iCommonService.randomHexString(8);
         //写死询命令
-        String commandBody = msgCode + "05" + randomNum + workPoint + agvTaskType;
+        String commandBody = msgCode + "05"  + workPoint + agvTaskType;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
         String commandComplete = commandBody + s + "2C";
@@ -172,7 +172,7 @@ public class LineNotifyService {
      */
     private String lineMsgReturnCommandStr(String controllerNo, String controllerType, String msgStatus, String randomNum){
         //写死询命令
-        String commandBody = controllerNo + controllerType + msgStatus + randomNum ;
+        String commandBody = controllerNo + controllerType + msgStatus;
         byte[] str16Tobyte = CRCUtils.hexStringToBytes(commandBody);
         String s = CRCUtils.Make_CRC(str16Tobyte);
         String commandComplete = commandBody + s + "2C";

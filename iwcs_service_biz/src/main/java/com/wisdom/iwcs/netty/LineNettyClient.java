@@ -1,24 +1,18 @@
 package com.wisdom.iwcs.netty;
 
-import com.wisdom.base.context.ApplicationProperties;
 import com.wisdom.iwcs.common.utils.exception.ApplicationErrorEnum;
-import com.wisdom.iwcs.common.utils.exception.BusinessException;
 import com.wisdom.iwcs.common.utils.exception.ThirdAppConnectionExecption;
-import com.wisdom.iwcs.domain.codec.BusinessCode;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,8 +25,8 @@ public class LineNettyClient extends BaseNettyClient implements Runnable {
 
     private static final LineNettyClient lineNettyClient = new LineNettyClient();
 
-    public  String host = "192.168.0.12";
-    public  int port = 6000;
+    public  String host = "192.168.102.105";
+    public  int port = 8234;
     private  Channel ch;
     private Bootstrap bootstrap;
     /**

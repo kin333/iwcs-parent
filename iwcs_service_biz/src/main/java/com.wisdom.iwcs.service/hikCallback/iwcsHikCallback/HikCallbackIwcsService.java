@@ -50,9 +50,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.LINEWORKAREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.BizTypeConstants.QUAINSPCACHEAREA;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_RECEIVE;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.EleControlTaskAgvAction.AGV_SEND;
 import static com.wisdom.iwcs.common.utils.InspurBizConstants.HikCallbackMethod.*;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.LINEAREA;
+import static com.wisdom.iwcs.common.utils.InspurBizConstants.OperateAreaCodeConstants.QUAINSPAREA;
 import static com.wisdom.iwcs.common.utils.TaskConstants.actionStatus.SENDING;
 import static com.wisdom.iwcs.common.utils.TaskConstants.bizProcess.*;
 import static com.wisdom.iwcs.common.utils.TaskConstants.createNode.*;
@@ -365,11 +369,11 @@ public class HikCallbackIwcsService {
         String routeKey = CreateRouteKeyUtils.createPosRelease(baseMapBerth.getMapCode(), baseMapBerth.getOperateAreaCode());
         RabbitMQPublicService.sendInfoByRouteKey(routeKey, resPosEvt);
 
-         /*if ((LINEAREA.equals(baseMapBerth.getOperateAreaCode()) && LINEWORKAREA.equals(baseMapBerth.getBizType()))
+         if ((LINEAREA.equals(baseMapBerth.getOperateAreaCode()) && LINEWORKAREA.equals(baseMapBerth.getBizType()))
                  ||(QUAINSPAREA.equals(baseMapBerth.getOperateAreaCode()) && !QUAINSPCACHEAREA.equals(baseMapBerth.getBizType()))) {
             logger.info("通知线体,小车已经离开{} ",baseMapBerth.getPointAlias());
             lineNotifyService.agvStatusIne(baseMapBerth.getPointAlias(), TaskConstants.agvTaskType.LEAVE);
-        }*/
+        }
     }
 
     /**

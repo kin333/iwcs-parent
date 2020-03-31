@@ -1,6 +1,7 @@
 package com.wisdom.iwcs.service.sysbase;
 
 import com.wisdom.iwcs.mapper.log.TaskOperationLogMapper;
+import com.wisdom.iwcs.netty.LineNettyClient;
 import com.wisdom.iwcs.service.robot.RobotServiceThread;
 import com.wisdom.iwcs.service.task.scheduler.WcsTaskScheduler;
 import com.wisdom.iwcs.service.task.wcsSimulator.NodeActionSendThread;
@@ -67,9 +68,9 @@ public class TaskSchedulerStarter implements ApplicationListener<ContextRefreshe
             taskthread.start();
             logger.info("启动任务调度器线程成功");*/
 
-//            LineNettyClient lineNettyClient = LineNettyClient.getInstance();
-//            Thread lineNettyClientThread = new Thread(lineNettyClient);
-//            lineNettyClientThread.start();
+            LineNettyClient lineNettyClient = LineNettyClient.getInstance();
+            Thread lineNettyClientThread = new Thread(lineNettyClient);
+            lineNettyClientThread.start();
 ////
 //            ElevatorNettyClient elevatorNettyClient = ElevatorNettyClient.getInstance();
 //            Thread elevatorThread = new Thread(elevatorNettyClient);

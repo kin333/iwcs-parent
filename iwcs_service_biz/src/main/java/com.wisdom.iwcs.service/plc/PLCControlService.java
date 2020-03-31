@@ -63,7 +63,7 @@ public class PLCControlService {
         String sendAddr = plcRespone.getAddress();
         String commandType = plcRespone.getCommandType();
         String msgBody = plcRespone.getReturnBodyBytes();
-        String reqCode = msgBody.substring(4,8);
+        String reqCode = msgBody.substring(1,5);
         if (commandType.equals("03")){
             //TODO 电梯状态
             ElevatorReport elevatorReport = new ElevatorReport();
@@ -125,8 +125,8 @@ public class PLCControlService {
             lineBodyReport.setAddress(sendAddr);
             lineBodyReport.setDeviceType(commandType);
             lineBodyReport.setReqCode(reqCode);
-            String workType = msgBody.substring(2,4);
-            String workPoint = msgBody.substring(0,2);
+            String workType = msgBody.substring(4,6);
+            String workPoint = msgBody.substring(2,4);
             if (workType.equals("01")){
                 logger.info("线体通知{}：呼叫货架补入"+ plcRespone.getAddress()+":"+workPoint);
                 lineBodyReport.setWorkPoint(workPoint);
