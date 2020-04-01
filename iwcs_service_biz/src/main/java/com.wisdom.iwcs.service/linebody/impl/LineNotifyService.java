@@ -60,9 +60,16 @@ public class LineNotifyService {
         String workPoint = lineBodyReport.getWorkPoint();
         //查询这点有货架或没有完结的任务没
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(workPoint);
-        if (baseMapBerth !=null && (baseMapBerth.getInLock() != 0 || !Strings.isNullOrEmpty(baseMapBerth.getPodCode()))){
+        if (baseMapBerth == null){
             msgStatus = "02";
-        }else {
+            logger.info("该点位不存在!"+workPoint);
+        }else if (!Strings.isNullOrEmpty(baseMapBerth.getPodCode())){
+            msgStatus = "02";
+            logger.info("该点位已有货架！"+workPoint);
+        }else if (baseMapBerth.getInLock() != 0 ){
+            msgStatus = "02";
+            logger.info("该点位已被锁！"+workPoint);
+        } else {
             //创建 呼叫货架补入 任务
             List<String> staticViaPaths = new ArrayList<>();
             staticViaPaths.add(workPoint);
@@ -100,8 +107,12 @@ public class LineNotifyService {
 
         //查询这点有货架没
         BaseMapBerth baseMapBerth = baseMapBerthMapper.selectByPointAlias(workPoint);
-        if (Strings.isNullOrEmpty(baseMapBerth.getPodCode())){
+        if (baseMapBerth == null){
             msgStatus = "02";
+            logger.info("该点位不存在！"+workPoint);
+        }else if (Strings.isNullOrEmpty(baseMapBerth.getPodCode())){
+            msgStatus = "02";
+            logger.info("该点位没有货架！"+workPoint);
         }else{
             List<String> staticViaPaths = new ArrayList<>();
             staticViaPaths.add(workPoint);
