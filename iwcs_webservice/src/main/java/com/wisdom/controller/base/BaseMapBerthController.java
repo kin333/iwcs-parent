@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.GET_ALLTORAGE_INFO;
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.GET_ALLTORAGE_INFO_DESC;
-import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.SRC_PDA;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceCode.*;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.InterfaceName.*;
+import static com.wisdom.iwcs.common.utils.InterfaceLogConstants.SrcClientCode.*;
 
 /**
  * 对BaseMapBerth的操作
